@@ -18,46 +18,31 @@ public class ProdutoService {
     public ProdutoRepository produtoRepository;
 
     public List<ProdutoDTO> listarTodosProdutos() {
-        return ProdutoParaProdutoDTO.converterParaProduto(produtoRepository.findAll());
+        return ProdutoParaProdutoDTO.converterVariosProdutos(produtoRepository.findAll());
     }
 
     public List<ProdutoDTO> listarProdutosDisponiveis(){
-        return ProdutoParaProdutoDTO.converterParaProduto(produtoRepository.findByDisponibilidade(true));
+        return ProdutoParaProdutoDTO.converterVariosProdutos(produtoRepository.findByDisponibilidade(true));
     }
 
     public List<ProdutoDTO> listarProdutosIndisponiveis() {
-        return ProdutoParaProdutoDTO.converterParaProduto(produtoRepository.findByDisponibilidade(false));
+        return ProdutoParaProdutoDTO.converterVariosProdutos(produtoRepository.findByDisponibilidade(false));
     }
 
-    /* método com streans e lambda */
+
     public List<ProdutoDTO> listarProdutosComQntdBaixa(){
-        return ProdutoParaProdutoDTO.converterParaProduto(produtoRepository.findByQuantidadeAtualLessThan(11));
+        return ProdutoParaProdutoDTO.converterVariosProdutos(produtoRepository.findByQuantidadeAtualLessThan(11));
     }
 
-
-    public ProdutoDTO adicionarNovoProduto(ProdutoDTO produtoDTO) {
-        if(produtoDTO.getQuantidadeAtual() < 0 ){
+    public ProdutoDTO adicionarNovoProduto(ProdutoDTO produtoRecebidoDTO) {
+        if(produtoRecebidoDTO.getQuantidadeAtual() < 0 ){
             throw new IllegalArgumentException("A quantidade do produto não pode ser negativa");
         }
+        Produto novoProduto = instanciarProduto(produtoRecebidoDTO);
 
-            Produto produto = new Produto();
-            produto.setNome(produtoDTO.getNome());
-            produto.setPreco(produtoDTO.getPreco());
-            produto.setDescricao(produtoDTO.getDescricao());
-            produto.setDisponibilidade(produtoDTO.getDisponibilidade());
-            produto.setQuantidadeAtual(produtoDTO.getQuantidadeAtual());
+        Produto produtoSalvo = produtoRepository.save(novoProduto);
 
-            Produto produtoSalvo = produtoRepository.save(produto);
-
-            ProdutoDTO produtoDTOretornado = new ProdutoDTO(
-                    produtoSalvo.getId(),
-                    produtoSalvo.getNome(),
-                    produtoSalvo.getDescricao(),
-                    produtoSalvo.getPreco(),
-                    produtoSalvo.getQuantidadeAtual(),
-                    produtoSalvo.getDisponibilidade()
-            );
-            return produtoDTOretornado;
+        return ProdutoParaProdutoDTO.converterUmProduto(produtoSalvo);
         }
 
     public List<ProdutoDTO> atualizarVariosProdutos(List<ProdutoDTO> produtosParaAtualizarDTO) {
@@ -83,7 +68,7 @@ public class ProdutoService {
         produtoRepository.saveAll(produtosEncontrados);
 
         //  Converte de volta os Produtos em DTOs para retornar como resposta
-        return ProdutoParaProdutoDTO.converterParaProduto(produtosEncontrados);
+        return ProdutoParaProdutoDTO.converterVariosProdutos(produtosEncontrados);
     }
 
         public Produto atualizarProduto(long id, Produto produtoAtualizado) {
@@ -110,6 +95,13 @@ public class ProdutoService {
             throw new ProdutoPossuiHistorico("Este produto possui histórico/vinculo com ItensPedidos, se fosse excluido perderiamos os dados deste histórico");
         }
     }
+    public Produto instanciarProduto(ProdutoDTO produtoDTO){
+        Produto novoProduto = new Produto();
+        novoProduto.setNome(produtoDTO.getNome());
+        novoProduto.setPreco(produtoDTO.getPreco());
+        novoProduto.setDescricao(produtoDTO.getDescricao());
+        novoProduto.setDisponibilidade(produtoDTO.getDisponibilidade());
+        novoProduto.setQuantidadeAtual(produtoDTO.getQuantidadeAtual());
+        return novoProduto;
+    }
 }
-
-
