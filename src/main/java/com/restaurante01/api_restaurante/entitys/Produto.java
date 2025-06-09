@@ -21,12 +21,10 @@ public class Produto {
     @Positive(message = "preço deve ser positivo")
     private double preco;
 
-
     private long quantidadeAtual;
 
     @NotNull(message = "Disponibilidade precisa ser definida")
     private boolean disponibilidade;
-
 
     public Produto(){
 
