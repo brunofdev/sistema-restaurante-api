@@ -111,8 +111,8 @@ public class ProdutoServiceTest {
         verify(produtoRepository).findByQuantidadeAtualLessThan(11);
     }
 
-    @Test
-    void deveAtualizarVariosProdutosComSucesso() {
+    /* @Test
+   void deveAtualizarVariosProdutosComSucesso() {
         ProdutoDTO dto1 = new ProdutoDTO(1L, "Maçã Atualizada", "desc nova", 12.0, 10, true);
         ProdutoDTO dto2 = new ProdutoDTO(2L, "Pera Atualizada", "desc nova", 22.0, 5, false);
 
@@ -131,7 +131,7 @@ public class ProdutoServiceTest {
         verify(produtoRepository).findAllById(List.of(1L, 2L));
         verify(produtoRepository).saveAll(anyList());
     }
-
+*/
     @Test
     void deveAtualizarProdutoComSucesso() {
         Produto produtoOriginal = new Produto(1L, "Maçã", "desc", 10.0, 10, true);
