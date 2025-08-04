@@ -1,4 +1,5 @@
 package com.restaurante01.api_restaurante.produto.service;
+import com.restaurante01.api_restaurante.produto.exceptions.ProdutoNaoEncontradoException;
 import com.restaurante01.api_restaurante.produto.exceptions.ProdutoQntdNegativa;
 import com.restaurante01.api_restaurante.produto.factory.ProdutoFactory;
 import com.restaurante01.api_restaurante.produto.mapper.ProdutoMapper;
@@ -61,18 +62,17 @@ public class ProdutoService {
         return ProdutoMapper.converterVariosProdutos(produtosEncontrados);
     }
 
-        public Produto atualizarProduto(long id, Produto produtoAtualizado) {
+        public ProdutoDTO atualizarProduto(long id, ProdutoDTO produtoAtualizado) {
+        produtoValidator.validarProduto(produtoAtualizado);
         Produto produtoModificado = produtoRepository.findById(id)
-                  .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
-            if (produtoAtualizado.getPreco() < 0) {
-            throw new PrecoProdutoNegativoException("Preço não pode ser negativo");
-        }
+                  .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto não encontrado"));
         produtoModificado.setNome(produtoAtualizado.getNome());
         produtoModificado.setDescricao(produtoAtualizado.getDescricao());
         produtoModificado.setPreco(produtoAtualizado.getPreco());
         produtoModificado.setQuantidadeAtual(produtoAtualizado.getQuantidadeAtual());
         produtoModificado.setDisponibilidade(produtoAtualizado.getDisponibilidade());
-        return produtoRepository.save(produtoModificado);
+
+        return ProdutoMapper.converterUmProduto(produtoRepository.save(produtoModificado));
     }
 
     public Produto deletarProduto(long id) {

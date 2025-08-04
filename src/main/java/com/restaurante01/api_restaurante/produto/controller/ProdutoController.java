@@ -38,9 +38,9 @@ public class ProdutoController {
     public ResponseEntity<ProdutoDTO> adicionarProduto(@RequestBody ProdutoDTO produtoDTO){
         return ResponseEntity.ok(produtoService.adicionarNovoProduto(produtoDTO));
     }
-    @PutMapping("/{id}")
-    public ResponseEntity<Produto> atualizarProduto(@PathVariable long id, @RequestBody Produto produto){
-        Produto produtoAtualizado = produtoService.atualizarProduto(id, produto);
+    @PutMapping("/atualizar-um-produto/{id}")
+    public ResponseEntity<ProdutoDTO> atualizarProduto(@PathVariable long id, @RequestBody ProdutoDTO produto){
+        ProdutoDTO produtoAtualizado = produtoService.atualizarProduto(id, produto);
         return  ResponseEntity.ok(produtoAtualizado);
     }
     @PutMapping("/atualizar-varios-produtos")

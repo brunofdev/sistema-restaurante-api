@@ -12,7 +12,7 @@ public class ProdutoExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<String> handleJsonParseError(HttpMessageNotReadableException ex) {
         String mensagemAmigavel =
-                " ::::::::::Dados Invalidos de maneira errada::::::::::\n " +
+                " ::::::::::Dados enviados de maneira errada::::::::::\n " +
                 ":::Json deve ser neste formato para utilizar a api::::" +
                 "{\n" +
                 "    \"nome\": \"Café Premium master\", STRING\n" +
@@ -22,5 +22,11 @@ public class ProdutoExceptionHandler {
                 "    \"disponibilidade\": dwdqwd  BOOLEAN\n" +
                 "    }\n";
         return new ResponseEntity<>(mensagemAmigavel, HttpStatus.BAD_REQUEST);
+
+
+        }
+    @ExceptionHandler(ProdutoNaoEncontradoException.class)
+    public ResponseEntity<String> handleProdutoNaoEncontrado(ProdutoNaoEncontradoException ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 }
