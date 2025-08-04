@@ -28,15 +28,15 @@ public class ProdutoService {
         this.produtoMapper = produtoMapper;
     }
     public List<ProdutoDTO> listarTodosProdutos() {
-        return ProdutoMapper.converterVariosProdutos(produtoRepository.findAll());
+        return produtoMapper.converterVariosProdutos(produtoRepository.findAll());
     }
 
     public List<ProdutoDTO> listarProdutosDisponiveis(){
-        return ProdutoMapper.converterVariosProdutos(produtoRepository.findByDisponibilidade(true));
+        return produtoMapper.converterVariosProdutos(produtoRepository.findByDisponibilidade(true));
     }
 
     public List<ProdutoDTO> listarProdutosIndisponiveis() {
-        return ProdutoMapper.converterVariosProdutos(produtoRepository.findByDisponibilidade(false));
+        return produtoMapper.converterVariosProdutos(produtoRepository.findByDisponibilidade(false));
     }
     public Produto listarUmProdutoPorId(long id){
         return produtoRepository.findById(id).orElseThrow(() ->
@@ -45,14 +45,14 @@ public class ProdutoService {
 
 
     public List<ProdutoDTO> listarProdutosComQntdBaixa(){
-        return ProdutoMapper.converterVariosProdutos(produtoRepository.findByQuantidadeAtualLessThan(11));
+        return produtoMapper.converterVariosProdutos(produtoRepository.findByQuantidadeAtualLessThan(11));
     }
 
     public ProdutoDTO adicionarNovoProduto(ProdutoDTO produtoDTO) {
             produtoValidator.validarProduto(produtoDTO);
             Produto novoProduto = ProdutoFactory.instanciarProduto(produtoDTO);  /* */
             Produto produtoSalvo = produtoRepository.save(novoProduto);
-            return ProdutoMapper.converterUmProduto(produtoSalvo);
+            return produtoMapper.converterUmProduto(produtoSalvo);
         }
 
     public List<ProdutoDTO> atualizarDiversosProdutos(List<ProdutoDTO> produtosParaAtualizarDTO) {
@@ -68,7 +68,7 @@ public class ProdutoService {
             produto.setQuantidadeAtual(produtoAtualizado.getQuantidadeAtual());
         }
         produtoRepository.saveAll(produtosEncontrados);
-        return ProdutoMapper.converterVariosProdutos(produtosEncontrados);
+        return produtoMapper.converterVariosProdutos(produtosEncontrados);
     }
 
         public ProdutoDTO atualizarProduto(long id, ProdutoDTO produtoAtualizado) {
@@ -80,14 +80,14 @@ public class ProdutoService {
         produtoModificado.setQuantidadeAtual(produtoAtualizado.getQuantidadeAtual());
         produtoModificado.setDisponibilidade(produtoAtualizado.getDisponibilidade());
 
-        return ProdutoMapper.converterUmProduto(produtoRepository.save(produtoModificado));
+        return produtoMapper.converterUmProduto(produtoRepository.save(produtoModificado));
     }
 
     public Produto deletarProduto(long id) {
         try {
-            Produto produtoSerDeletado = listarUmProdutoPorId(id);
-            produtoRepository.delete(produtoSerDeletado);
-            return produtoSerDeletado;
+            Produto produtoDeletado = listarUmProdutoPorId(id);
+            produtoRepository.delete(produtoDeletado);
+            return produtoDeletado;
         } catch (DataIntegrityViolationException e) {
             throw new ProdutoPossuiHistorico("Este produto possui histórico/vinculo com ItensPedidos, se fosse excluido perderiamos os dados deste histórico");
         }
