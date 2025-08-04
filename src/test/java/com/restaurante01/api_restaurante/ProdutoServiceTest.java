@@ -3,17 +3,10 @@ package com.restaurante01.api_restaurante;
 <<<<<<< Updated upstream
 import com.restaurante01.api_restaurante.dto.ProdutoDTO;
 import com.restaurante01.api_restaurante.entitys.Produto;
-import com.restaurante01.api_restaurante.excepetions.PrecoProdutoNegativoException;
-import com.restaurante01.api_restaurante.excepetions.ProdutoPossuiHistorico;
 import com.restaurante01.api_restaurante.repository.ProdutoRepository;
 import com.restaurante01.api_restaurante.services.ProdutoService;
 =======
-import com.restaurante01.api_restaurante.produto.ProdutoDTO;
-import com.restaurante01.api_restaurante.produto.Produto;
-import com.restaurante01.api_restaurante.produto.exceptions.PrecoProdutoNegativoException;
 import com.restaurante01.api_restaurante.produto.exceptions.ProdutoPossuiHistorico;
-import com.restaurante01.api_restaurante.produto.ProdutoRepository;
-import com.restaurante01.api_restaurante.produto.ProdutoService;
 >>>>>>> Stashed changes
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
