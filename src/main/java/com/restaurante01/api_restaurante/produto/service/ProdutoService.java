@@ -1,6 +1,5 @@
 package com.restaurante01.api_restaurante.produto.service;
 import com.restaurante01.api_restaurante.produto.exceptions.ProdutoNaoEncontradoException;
-import com.restaurante01.api_restaurante.produto.exceptions.ProdutoQntdNegativa;
 import com.restaurante01.api_restaurante.produto.factory.ProdutoFactory;
 import com.restaurante01.api_restaurante.produto.mapper.ProdutoMapper;
 import com.restaurante01.api_restaurante.produto.dto.ProdutoDTO;
@@ -8,7 +7,6 @@ import com.restaurante01.api_restaurante.produto.entity.Produto;
 import com.restaurante01.api_restaurante.produto.repository.ProdutoRepository;
 import com.restaurante01.api_restaurante.produto.validator.ProdutoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.restaurante01.api_restaurante.produto.exceptions.PrecoProdutoNegativoException;
 import com.restaurante01.api_restaurante.produto.exceptions.ProdutoPossuiHistorico;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -18,10 +16,17 @@ import java.util.stream.Collectors;
 
 @Service
 public class ProdutoService {
-    @Autowired
-    public ProdutoRepository produtoRepository;
-    public ProdutoValidator produtoValidator;
 
+    private final ProdutoRepository produtoRepository;
+    private final ProdutoValidator produtoValidator;
+    private final ProdutoMapper produtoMapper;
+
+    @Autowired
+    public ProdutoService(ProdutoRepository produtoRepository, ProdutoValidator produtoValidator, ProdutoMapper produtoMapper) {
+        this.produtoRepository = produtoRepository;
+        this.produtoValidator = produtoValidator;
+        this.produtoMapper = produtoMapper;
+    }
     public List<ProdutoDTO> listarTodosProdutos() {
         return ProdutoMapper.converterVariosProdutos(produtoRepository.findAll());
     }
