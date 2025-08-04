@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.produto;
+package com.restaurante01.api_restaurante.produto.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

@@ -1,4 +1,7 @@
-package com.restaurante01.api_restaurante.produto;
+package com.restaurante01.api_restaurante.produto.factory;
+
+import com.restaurante01.api_restaurante.produto.dto.ProdutoDTO;
+import com.restaurante01.api_restaurante.produto.entity.Produto;
 
 public class ProdutoFactory {
     public static Produto instanciarProduto(ProdutoDTO produtoDTO){

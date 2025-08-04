@@ -1,4 +1,6 @@
-package com.restaurante01.api_restaurante.produto;
+package com.restaurante01.api_restaurante.produto.mapper;
+
+import com.restaurante01.api_restaurante.produto.dto.ProdutoDTO;
 
 import java.util.List;
 

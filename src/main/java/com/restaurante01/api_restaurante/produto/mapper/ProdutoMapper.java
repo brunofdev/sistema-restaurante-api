@@ -1,9 +1,12 @@
-package com.restaurante01.api_restaurante.produto;
+package com.restaurante01.api_restaurante.produto.mapper;
+
+import com.restaurante01.api_restaurante.produto.dto.ProdutoDTO;
+import com.restaurante01.api_restaurante.produto.entity.Produto;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProdutoParaProdutoDTO {
+public class ProdutoMapper {
     public static List<ProdutoDTO> converterVariosProdutos(List<Produto>produtos){
         List<ProdutoDTO> produtosDto = new ArrayList<>();
         for(Produto produto : produtos){

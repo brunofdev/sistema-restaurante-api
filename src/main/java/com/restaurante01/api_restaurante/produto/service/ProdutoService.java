@@ -1,4 +1,9 @@
-package com.restaurante01.api_restaurante.produto;
+package com.restaurante01.api_restaurante.produto.service;
+import com.restaurante01.api_restaurante.produto.factory.ProdutoFactory;
+import com.restaurante01.api_restaurante.produto.mapper.ProdutoMapper;
+import com.restaurante01.api_restaurante.produto.dto.ProdutoDTO;
+import com.restaurante01.api_restaurante.produto.entity.Produto;
+import com.restaurante01.api_restaurante.produto.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.restaurante01.api_restaurante.produto.exceptions.PrecoProdutoNegativoException;
 import com.restaurante01.api_restaurante.produto.exceptions.ProdutoPossuiHistorico;
@@ -14,20 +19,20 @@ public class ProdutoService {
     public ProdutoRepository produtoRepository;
 
     public List<ProdutoDTO> listarTodosProdutos() {
-        return ProdutoParaProdutoDTO.converterVariosProdutos(produtoRepository.findAll());
+        return ProdutoMapper.converterVariosProdutos(produtoRepository.findAll());
     }
 
     public List<ProdutoDTO> listarProdutosDisponiveis(){
-        return ProdutoParaProdutoDTO.converterVariosProdutos(produtoRepository.findByDisponibilidade(true));
+        return ProdutoMapper.converterVariosProdutos(produtoRepository.findByDisponibilidade(true));
     }
 
     public List<ProdutoDTO> listarProdutosIndisponiveis() {
-        return ProdutoParaProdutoDTO.converterVariosProdutos(produtoRepository.findByDisponibilidade(false));
+        return ProdutoMapper.converterVariosProdutos(produtoRepository.findByDisponibilidade(false));
     }
 
 
     public List<ProdutoDTO> listarProdutosComQntdBaixa(){
-        return ProdutoParaProdutoDTO.converterVariosProdutos(produtoRepository.findByQuantidadeAtualLessThan(11));
+        return ProdutoMapper.converterVariosProdutos(produtoRepository.findByQuantidadeAtualLessThan(11));
     }
 
     public ProdutoDTO adicionarNovoProduto(ProdutoDTO produtoRecebidoDTO) {
@@ -38,7 +43,7 @@ public class ProdutoService {
 
         Produto produtoSalvo = produtoRepository.save(novoProduto);
 
-        return ProdutoParaProdutoDTO.converterUmProduto(produtoSalvo);
+        return ProdutoMapper.converterUmProduto(produtoSalvo);
         }
 
     public List<ProdutoDTO> atualizarDiversosProdutos(List<ProdutoDTO> produtosParaAtualizarDTO) {
@@ -54,7 +59,7 @@ public class ProdutoService {
             produto.setQuantidadeAtual(produtoAtualizado.getQuantidadeAtual());
         }
         produtoRepository.saveAll(produtosEncontrados);
-        return ProdutoParaProdutoDTO.converterVariosProdutos(produtosEncontrados);
+        return ProdutoMapper.converterVariosProdutos(produtosEncontrados);
     }
 
         public Produto atualizarProduto(long id, Produto produtoAtualizado) {

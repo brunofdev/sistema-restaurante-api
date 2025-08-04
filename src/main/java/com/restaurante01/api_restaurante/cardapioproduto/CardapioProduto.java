@@ -4,7 +4,7 @@ package com.restaurante01.api_restaurante.cardapioproduto;
 //Esta classe faz um intermediario entre produto e cardapio, para poder ter variações de preços e quantidades.
 
 import com.restaurante01.api_restaurante.cardapio.Cardapio;
-import com.restaurante01.api_restaurante.produto.Produto;
+import com.restaurante01.api_restaurante.produto.entity.Produto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
