@@ -38,6 +38,10 @@ public class ProdutoService {
     public List<ProdutoDTO> listarProdutosIndisponiveis() {
         return ProdutoMapper.converterVariosProdutos(produtoRepository.findByDisponibilidade(false));
     }
+    public Produto listarUmProdutoPorId(long id){
+        return produtoRepository.findById(id).orElseThrow(() ->
+                new ProdutoNaoEncontradoException("Produto não encontrado"));
+    }
 
 
     public List<ProdutoDTO> listarProdutosComQntdBaixa(){
@@ -69,8 +73,7 @@ public class ProdutoService {
 
         public ProdutoDTO atualizarProduto(long id, ProdutoDTO produtoAtualizado) {
         produtoValidator.validarProduto(produtoAtualizado);
-        Produto produtoModificado = produtoRepository.findById(id)
-                  .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto não encontrado"));
+        Produto produtoModificado = listarUmProdutoPorId(id);
         produtoModificado.setNome(produtoAtualizado.getNome());
         produtoModificado.setDescricao(produtoAtualizado.getDescricao());
         produtoModificado.setPreco(produtoAtualizado.getPreco());
@@ -82,8 +85,7 @@ public class ProdutoService {
 
     public Produto deletarProduto(long id) {
         try {
-            Produto produtoSerDeletado = produtoRepository.findById(id).orElseThrow(() ->
-                    new RuntimeException("Produto não encontrado"));
+            Produto produtoSerDeletado = listarUmProdutoPorId(id);
             produtoRepository.delete(produtoSerDeletado);
             return produtoSerDeletado;
         } catch (DataIntegrityViolationException e) {
