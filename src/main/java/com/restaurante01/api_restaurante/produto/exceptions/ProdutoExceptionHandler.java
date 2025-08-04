@@ -1,5 +1,5 @@
-package com.restaurante01.api_restaurante.config;
-import com.restaurante01.api_restaurante.controllers.ProdutoController;
+package com.restaurante01.api_restaurante.produto.exceptions;
+import com.restaurante01.api_restaurante.produto.ProdutoController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;

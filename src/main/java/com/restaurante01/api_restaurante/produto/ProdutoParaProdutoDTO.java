@@ -1,7 +1,4 @@
-package com.restaurante01.api_restaurante.conversoes;
-
-import com.restaurante01.api_restaurante.dto.ProdutoDTO;
-import com.restaurante01.api_restaurante.entitys.Produto;
+package com.restaurante01.api_restaurante.produto;
 
 import java.util.ArrayList;
 import java.util.List;

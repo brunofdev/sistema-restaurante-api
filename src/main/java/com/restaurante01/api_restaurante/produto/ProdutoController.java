@@ -1,10 +1,6 @@
-package com.restaurante01.api_restaurante.controllers;
+package com.restaurante01.api_restaurante.produto;
 
 
-import com.restaurante01.api_restaurante.dto.AtualizarLoteProdutosRespostaDTO;
-import com.restaurante01.api_restaurante.dto.ProdutoDTO;
-import com.restaurante01.api_restaurante.entitys.Produto;
-import com.restaurante01.api_restaurante.services.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

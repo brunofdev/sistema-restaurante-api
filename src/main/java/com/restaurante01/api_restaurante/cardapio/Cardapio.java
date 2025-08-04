@@ -1,8 +1,8 @@
-package com.restaurante01.api_restaurante.entitys;
+package com.restaurante01.api_restaurante.cardapio;
 
+import com.restaurante01.api_restaurante.cardapioproduto.CardapioProduto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import org.w3c.dom.stylesheets.LinkStyle;
 
 import java.util.List;
 

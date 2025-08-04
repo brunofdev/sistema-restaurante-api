@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.dto;
+package com.restaurante01.api_restaurante.cep;
 
 public class BuscarCepDTO {
     private String cep;

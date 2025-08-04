@@ -1,12 +1,4 @@
-package com.restaurante01.api_restaurante.dto;
-
-import com.restaurante01.api_restaurante.entitys.Produto;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-
-import java.util.ArrayList;
-import java.util.List;
+package com.restaurante01.api_restaurante.produto;
 
 public class ProdutoDTO {
         private Long id;

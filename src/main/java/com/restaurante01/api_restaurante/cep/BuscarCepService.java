@@ -1,6 +1,5 @@
-package com.restaurante01.api_restaurante.services;
+package com.restaurante01.api_restaurante.cep;
 
-import com.restaurante01.api_restaurante.dto.BuscarCepDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 

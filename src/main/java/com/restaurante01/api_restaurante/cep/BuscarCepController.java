@@ -1,7 +1,5 @@
-package com.restaurante01.api_restaurante.controllers;
+package com.restaurante01.api_restaurante.cep;
 
-import com.restaurante01.api_restaurante.dto.BuscarCepDTO;
-import com.restaurante01.api_restaurante.services.BuscarCepService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,10 +1,6 @@
-package com.restaurante01.api_restaurante.services;
-import com.restaurante01.api_restaurante.conversoes.ProdutoParaProdutoDTO;
-import com.restaurante01.api_restaurante.dto.ProdutoDTO;
-import com.restaurante01.api_restaurante.entitys.Produto;
-import com.restaurante01.api_restaurante.excepetions.PrecoProdutoNegativoException;
-import com.restaurante01.api_restaurante.excepetions.ProdutoPossuiHistorico;
-import com.restaurante01.api_restaurante.repository.ProdutoRepository;
+package com.restaurante01.api_restaurante.produto;
+import com.restaurante01.api_restaurante.produto.exceptions.PrecoProdutoNegativoException;
+import com.restaurante01.api_restaurante.produto.exceptions.ProdutoPossuiHistorico;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -38,7 +34,7 @@ public class ProdutoService {
         if(produtoRecebidoDTO.getQuantidadeAtual() < 0 ){
             throw new IllegalArgumentException("A quantidade do produto não pode ser negativa");
         }
-        Produto novoProduto = instanciarProduto(produtoRecebidoDTO);
+        Produto novoProduto = ProdutoFactory.instanciarProduto(produtoRecebidoDTO);
 
         Produto produtoSalvo = produtoRepository.save(novoProduto);
 
@@ -84,14 +80,5 @@ public class ProdutoService {
         } catch (DataIntegrityViolationException e) {
             throw new ProdutoPossuiHistorico("Este produto possui histórico/vinculo com ItensPedidos, se fosse excluido perderiamos os dados deste histórico");
         }
-    }
-    public Produto instanciarProduto(ProdutoDTO produtoDTO){
-        Produto novoProduto = new Produto();
-        novoProduto.setNome(produtoDTO.getNome());
-        novoProduto.setPreco(produtoDTO.getPreco());
-        novoProduto.setDescricao(produtoDTO.getDescricao());
-        novoProduto.setDisponibilidade(produtoDTO.getDisponibilidade());
-        novoProduto.setQuantidadeAtual(produtoDTO.getQuantidadeAtual());
-        return novoProduto;
     }
 }
