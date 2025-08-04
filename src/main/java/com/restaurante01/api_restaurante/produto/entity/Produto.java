@@ -38,7 +38,7 @@ public class Produto {
         this.disponibilidade = disponibilidade;
 
     }
-        public Long getId() {
+    public Long getId() {
         return id;
     }
 

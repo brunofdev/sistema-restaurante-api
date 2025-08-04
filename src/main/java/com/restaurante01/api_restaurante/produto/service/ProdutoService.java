@@ -1,9 +1,11 @@
 package com.restaurante01.api_restaurante.produto.service;
+import com.restaurante01.api_restaurante.produto.exceptions.ProdutoQntdNegativa;
 import com.restaurante01.api_restaurante.produto.factory.ProdutoFactory;
 import com.restaurante01.api_restaurante.produto.mapper.ProdutoMapper;
 import com.restaurante01.api_restaurante.produto.dto.ProdutoDTO;
 import com.restaurante01.api_restaurante.produto.entity.Produto;
 import com.restaurante01.api_restaurante.produto.repository.ProdutoRepository;
+import com.restaurante01.api_restaurante.produto.validator.ProdutoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.restaurante01.api_restaurante.produto.exceptions.PrecoProdutoNegativoException;
 import com.restaurante01.api_restaurante.produto.exceptions.ProdutoPossuiHistorico;
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 public class ProdutoService {
     @Autowired
     public ProdutoRepository produtoRepository;
+    public ProdutoValidator produtoValidator;
 
     public List<ProdutoDTO> listarTodosProdutos() {
         return ProdutoMapper.converterVariosProdutos(produtoRepository.findAll());
@@ -35,15 +38,11 @@ public class ProdutoService {
         return ProdutoMapper.converterVariosProdutos(produtoRepository.findByQuantidadeAtualLessThan(11));
     }
 
-    public ProdutoDTO adicionarNovoProduto(ProdutoDTO produtoRecebidoDTO) {
-        if(produtoRecebidoDTO.getQuantidadeAtual() < 0 ){
-            throw new IllegalArgumentException("A quantidade do produto não pode ser negativa");
-        }
-        Produto novoProduto = ProdutoFactory.instanciarProduto(produtoRecebidoDTO);
-
-        Produto produtoSalvo = produtoRepository.save(novoProduto);
-
-        return ProdutoMapper.converterUmProduto(produtoSalvo);
+    public ProdutoDTO adicionarNovoProduto(ProdutoDTO produtoDTO) {
+            produtoValidator.validarProduto(produtoDTO);
+            Produto novoProduto = ProdutoFactory.instanciarProduto(produtoDTO);  /* */
+            Produto produtoSalvo = produtoRepository.save(novoProduto);
+            return ProdutoMapper.converterUmProduto(produtoSalvo);
         }
 
     public List<ProdutoDTO> atualizarDiversosProdutos(List<ProdutoDTO> produtosParaAtualizarDTO) {
