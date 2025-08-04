@@ -1,7 +1,7 @@
 package com.restaurante01.api_restaurante.produto.controller;
 
 
-import com.restaurante01.api_restaurante.produto.mapper.AtualizarLoteProdutosRespostaDTO;
+import com.restaurante01.api_restaurante.produto.dto.LoteProdutosResponseDTO;
 import com.restaurante01.api_restaurante.produto.dto.ProdutoDTO;
 import com.restaurante01.api_restaurante.produto.service.ProdutoService;
 import com.restaurante01.api_restaurante.produto.entity.Produto;
@@ -44,9 +44,9 @@ public class ProdutoController {
         return  ResponseEntity.ok(produtoAtualizado);
     }
     @PutMapping("/atualizar-varios-produtos")
-    public ResponseEntity<AtualizarLoteProdutosRespostaDTO> atualizarProdutos(@RequestBody List<ProdutoDTO> produtos){
+    public ResponseEntity<LoteProdutosResponseDTO> atualizarProdutos(@RequestBody List<ProdutoDTO> produtos){
         List<ProdutoDTO> produtoAtualizado = produtoService.atualizarDiversosProdutos(produtos);
-        AtualizarLoteProdutosRespostaDTO resposta = new AtualizarLoteProdutosRespostaDTO
+        LoteProdutosResponseDTO resposta = new LoteProdutosResponseDTO
                 ("Um total de: " + produtoAtualizado.toArray().length + " Foram atualizados\n"
                         , produtoAtualizado);
         return  ResponseEntity.ok(resposta);

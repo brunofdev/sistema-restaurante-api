@@ -1,14 +1,12 @@
-package com.restaurante01.api_restaurante.produto.mapper;
-
-import com.restaurante01.api_restaurante.produto.dto.ProdutoDTO;
+package com.restaurante01.api_restaurante.produto.dto;
 
 import java.util.List;
 
-public class AtualizarLoteProdutosRespostaDTO {
+public class LoteProdutosResponseDTO {
     private String mensagem;
     private List<ProdutoDTO> produtos;
 
-    public AtualizarLoteProdutosRespostaDTO(String mensagem, List<ProdutoDTO> produtos) {
+    public LoteProdutosResponseDTO(String mensagem, List<ProdutoDTO> produtos) {
         this.mensagem = mensagem;
         this.produtos = produtos;
     }
