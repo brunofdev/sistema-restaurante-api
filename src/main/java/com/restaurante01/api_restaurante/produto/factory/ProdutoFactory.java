@@ -13,4 +13,11 @@ public class ProdutoFactory {
         novoProduto.setQuantidadeAtual(produtoDTO.getQuantidadeAtual());
         return novoProduto;
     }
+    public static void atualizarProduto(Produto produto, ProdutoDTO dto) {
+        produto.setNome(dto.getNome());
+        produto.setDescricao(dto.getDescricao());
+        produto.setPreco(dto.getPreco());
+        produto.setQuantidadeAtual(dto.getQuantidadeAtual());
+        produto.setDisponibilidade(dto.getDisponibilidade());
+    }
 }

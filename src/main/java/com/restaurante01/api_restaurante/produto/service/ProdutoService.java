@@ -38,9 +38,14 @@ public class ProdutoService {
     public List<ProdutoDTO> listarProdutosIndisponiveis() {
         return produtoMapper.converterVariosProdutos(produtoRepository.findByDisponibilidade(false));
     }
-    public Produto listarUmProdutoPorId(long id){
-        return produtoRepository.findById(id).orElseThrow(() ->
-                new ProdutoNaoEncontradoException("Produto não encontrado"));
+    public ProdutoDTO listarUmProdutoPorId(long id){
+        return produtoMapper.converterUmProduto(produtoRepository.findById(id).orElseThrow(() ->
+                new ProdutoNaoEncontradoException("Produto não encontrado")));
+    }
+    /*este método é de uso exclusivo para modificar estados no banco, como atualizar ou deletar um produto*/
+    private Produto buscarProdutoPorId(long id) {
+        return produtoRepository.findById(id)
+                .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto não encontrado"));
     }
 
 
@@ -71,21 +76,16 @@ public class ProdutoService {
         return produtoMapper.converterVariosProdutos(produtosEncontrados);
     }
 
-        public ProdutoDTO atualizarProduto(long id, ProdutoDTO produtoAtualizado) {
+    public ProdutoDTO atualizarProduto(long id, ProdutoDTO produtoAtualizado) {
         produtoValidator.validarProduto(produtoAtualizado);
-        Produto produtoModificado = listarUmProdutoPorId(id);
-        produtoModificado.setNome(produtoAtualizado.getNome());
-        produtoModificado.setDescricao(produtoAtualizado.getDescricao());
-        produtoModificado.setPreco(produtoAtualizado.getPreco());
-        produtoModificado.setQuantidadeAtual(produtoAtualizado.getQuantidadeAtual());
-        produtoModificado.setDisponibilidade(produtoAtualizado.getDisponibilidade());
-
-        return produtoMapper.converterUmProduto(produtoRepository.save(produtoModificado));
+        Produto produtoExistente = buscarProdutoPorId(id);
+        ProdutoFactory.atualizarProduto(produtoExistente, produtoAtualizado);
+        return produtoMapper.converterUmProduto(produtoRepository.save(produtoExistente));
     }
 
     public Produto deletarProduto(long id) {
         try {
-            Produto produtoDeletado = listarUmProdutoPorId(id);
+            Produto produtoDeletado = buscarProdutoPorId(id);
             produtoRepository.delete(produtoDeletado);
             return produtoDeletado;
         } catch (DataIntegrityViolationException e) {

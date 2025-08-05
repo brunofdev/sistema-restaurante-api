@@ -2,10 +2,12 @@ package com.restaurante01.api_restaurante.produto.mapper;
 
 import com.restaurante01.api_restaurante.produto.dto.ProdutoDTO;
 import com.restaurante01.api_restaurante.produto.entity.Produto;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class ProdutoMapper {
     public static List<ProdutoDTO> converterVariosProdutos(List<Produto>produtos){
         List<ProdutoDTO> produtosDto = new ArrayList<>();
