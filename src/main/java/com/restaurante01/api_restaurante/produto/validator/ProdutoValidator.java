@@ -17,6 +17,8 @@ public class ProdutoValidator {
         }
     }
     public void validarListaDeProdutos(List<ProdutoDTO> produtosParaValidar){
-        /*implementar validações de listas de produtos recebidas*/
+        for(ProdutoDTO produto : produtosParaValidar){
+            validarProduto(produto);
+        }
     }
 }

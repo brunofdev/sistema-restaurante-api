@@ -66,6 +66,7 @@ public class ProdutoService {
     }
 
     public List<ProdutoDTO> atualizarDiversosProdutos(List<ProdutoDTO> produtosParaAtualizarDTO){
+        produtoValidator.validarListaDeProdutos(produtosParaAtualizarDTO);
         Map<Long, ProdutoDTO> idsMap = produtoMapper.extrairIdsProdutosDTO(produtosParaAtualizarDTO);
         List<Produto> produtosEncontrados = encontrarProdutos(idsMap.keySet());
         for (Produto produto : produtosEncontrados) {
