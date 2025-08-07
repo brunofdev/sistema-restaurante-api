@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Set;
 
 
-import static com.restaurante01.api_restaurante.produto.utils.ProdutoUtils.extrairIdsProdutosDTO;
 
 @Service
 public class ProdutoService {
@@ -67,7 +66,7 @@ public class ProdutoService {
     }
 
     public List<ProdutoDTO> atualizarDiversosProdutos(List<ProdutoDTO> produtosParaAtualizarDTO){
-        Map<Long, ProdutoDTO> idsMap = extrairIdsProdutosDTO(produtosParaAtualizarDTO);
+        Map<Long, ProdutoDTO> idsMap = produtoMapper.extrairIdsProdutosDTO(produtosParaAtualizarDTO);
         List<Produto> produtosEncontrados = encontrarProdutos(idsMap.keySet());
         for (Produto produto : produtosEncontrados) {
             ProdutoDTO produtoAtualizado = idsMap.get(produto.getId());

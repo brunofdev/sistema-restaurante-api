@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class ProdutoMapper {
@@ -24,7 +26,7 @@ public class ProdutoMapper {
         }
         return produtosDto;
     }
-    public static ProdutoDTO converterUmProduto(Produto produto){
+    public ProdutoDTO converterUmProduto(Produto produto){
          ProdutoDTO produtoConvertidoDTO = new ProdutoDTO(
                 produto.getId(),
                 produto.getNome(),
@@ -35,6 +37,8 @@ public class ProdutoMapper {
         );
          return produtoConvertidoDTO;
     }
-
-
+    public static Map<Long, ProdutoDTO> extrairIdsProdutosDTO(List<ProdutoDTO> loteProdutosDTO) {
+        return loteProdutosDTO.stream()
+                .collect(Collectors.toMap(ProdutoDTO::getId, dto -> dto));
+    }
 }
