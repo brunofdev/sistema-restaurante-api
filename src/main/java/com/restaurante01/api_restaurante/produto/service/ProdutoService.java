@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
+
+
+import static com.restaurante01.api_restaurante.produto.utils.ProdutoUtils.extrairIdsProdutosDTO;
 
 @Service
 public class ProdutoService {
@@ -60,14 +62,9 @@ public class ProdutoService {
             Produto produtoSalvo = produtoRepository.save(novoProduto);
             return produtoMapper.converterUmProduto(produtoSalvo);
         }
-    private Map<Long, ProdutoDTO> extrairIdsProdutosDTO(List<ProdutoDTO> loteProdutosDTO){
-        return loteProdutosDTO.stream()
-                .collect(Collectors.toMap(ProdutoDTO::getId, dto -> dto));
-    }
     private List<Produto> encontrarProdutos(Set<Long> idsMap){
-       return produtoRepository.findAllById(idsMap);
+        return produtoRepository.findAllById(idsMap);
     }
-
 
     public List<ProdutoDTO> atualizarDiversosProdutos(List<ProdutoDTO> produtosParaAtualizarDTO){
         Map<Long, ProdutoDTO> idsMap = extrairIdsProdutosDTO(produtosParaAtualizarDTO);
