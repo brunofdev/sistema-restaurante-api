@@ -12,6 +12,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,11 +60,18 @@ public class ProdutoService {
             Produto produtoSalvo = produtoRepository.save(novoProduto);
             return produtoMapper.converterUmProduto(produtoSalvo);
         }
-
-    public List<ProdutoDTO> atualizarDiversosProdutos(List<ProdutoDTO> produtosParaAtualizarDTO) {
-        Map<Long, ProdutoDTO> idsMap = produtosParaAtualizarDTO.stream()
+    private Map<Long, ProdutoDTO> extrairIdsProdutosDTO(List<ProdutoDTO> loteProdutosDTO){
+        return loteProdutosDTO.stream()
                 .collect(Collectors.toMap(ProdutoDTO::getId, dto -> dto));
-        List<Produto> produtosEncontrados = produtoRepository.findAllById(idsMap.keySet());
+    }
+    private List<Produto> encontrarProdutos(Set<Long> idsMap){
+       return produtoRepository.findAllById(idsMap);
+    }
+
+
+    public List<ProdutoDTO> atualizarDiversosProdutos(List<ProdutoDTO> produtosParaAtualizarDTO){
+        Map<Long, ProdutoDTO> idsMap = extrairIdsProdutosDTO(produtosParaAtualizarDTO);
+        List<Produto> produtosEncontrados = encontrarProdutos(idsMap.keySet());
         for (Produto produto : produtosEncontrados) {
             ProdutoDTO produtoAtualizado = idsMap.get(produto.getId());
             produto.setNome(produtoAtualizado.getNome());
