@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class ProdutoMapper {
-    public static List<ProdutoDTO> converterVariosProdutos(List<Produto>produtos){
+    public  List<ProdutoDTO> converterVariosProdutos(List<Produto>produtos){
         List<ProdutoDTO> produtosDto = new ArrayList<>();
         for(Produto produto : produtos){
             ProdutoDTO produtoDTO = new ProdutoDTO(
@@ -27,7 +27,7 @@ public class ProdutoMapper {
         return produtosDto;
     }
     public ProdutoDTO converterUmProduto(Produto produto){
-         ProdutoDTO produtoConvertidoDTO = new ProdutoDTO(
+         return new ProdutoDTO(
                 produto.getId(),
                 produto.getNome(),
                 produto.getDescricao(),
@@ -35,10 +35,23 @@ public class ProdutoMapper {
                 produto.getQuantidadeAtual(),
                 produto.getDisponibilidade()
         );
-         return produtoConvertidoDTO;
     }
-    public static Map<Long, ProdutoDTO> extrairIdsProdutosDTO(List<ProdutoDTO> loteProdutosDTO) {
+    public Map<Long, ProdutoDTO> extrairIdsProdutosDTO(List<ProdutoDTO> loteProdutosDTO) {
         return loteProdutosDTO.stream()
                 .collect(Collectors.toMap(ProdutoDTO::getId, dto -> dto));
+    }
+    public  void atualizarProduto(Produto produto, ProdutoDTO dto) {
+        produto.setNome(dto.getNome());
+        produto.setDescricao(dto.getDescricao());
+        produto.setPreco(dto.getPreco());
+        produto.setQuantidadeAtual(dto.getQuantidadeAtual());
+        produto.setDisponibilidade(dto.getDisponibilidade());
+    }
+    public  List<Produto> atualizarProdutosEmLote (Map<Long, ProdutoDTO> idsMapeados, List<Produto> produtosEncontrados){
+        for (Produto produto : produtosEncontrados) {
+            ProdutoDTO produtoAtualizado = idsMapeados.get(produto.getId());
+            atualizarProduto(produto, produtoAtualizado);
+        }
+        return produtosEncontrados;
     }
 }

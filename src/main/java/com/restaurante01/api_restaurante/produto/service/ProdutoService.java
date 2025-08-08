@@ -44,48 +44,41 @@ public class ProdutoService {
         return produtoMapper.converterUmProduto(produtoRepository.findById(id).orElseThrow(() ->
                 new ProdutoNaoEncontradoException("Produto não encontrado")));
     }
-    /*este método é de uso exclusivo para modificar estados no banco, como atualizar ou deletar um produto*/
     private Produto buscarProdutoPorId(long id) {
         return produtoRepository.findById(id)
                 .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto não encontrado"));
     }
-
-
     public List<ProdutoDTO> listarProdutosComQntdBaixa(){
         return produtoMapper.converterVariosProdutos(produtoRepository.findByQuantidadeAtualLessThan(11));
     }
-
     public ProdutoDTO adicionarNovoProduto(ProdutoDTO produtoDTO) {
             produtoValidator.validarProduto(produtoDTO);
             Produto novoProduto = ProdutoFactory.instanciarProduto(produtoDTO);  /* */
             Produto produtoSalvo = produtoRepository.save(novoProduto);
             return produtoMapper.converterUmProduto(produtoSalvo);
         }
-    private List<Produto> encontrarProdutos(Set<Long> idsMap){
-        return produtoRepository.findAllById(idsMap);
+    private List<Produto> buscarProdutosPorIds(Set<Long> idsMapeados){
+        return produtoRepository.findAllById(idsMapeados);
     }
-
     public List<ProdutoDTO> atualizarLoteProdutos(List<ProdutoDTO> loteProdutosDTO){
         produtoValidator.validarListaDeProdutos(loteProdutosDTO);
-        Map<Long, ProdutoDTO> idsMap = produtoMapper.extrairIdsProdutosDTO(loteProdutosDTO);
-        List<Produto> produtosEncontrados = encontrarProdutos(idsMap.keySet());
-        List<Produto>produtosAtualizados = ProdutoFactory.atualizarProdutoEmLote(idsMap, produtosEncontrados);
+        Map<Long, ProdutoDTO> mapaProdutosPorId = produtoMapper.extrairIdsProdutosDTO(loteProdutosDTO);
+        List<Produto> produtosEncontrados = buscarProdutosPorIds(mapaProdutosPorId.keySet());
+        List<Produto>produtosAtualizados = produtoMapper.atualizarProdutosEmLote(mapaProdutosPorId, produtosEncontrados);
         produtoRepository.saveAll(produtosAtualizados);
         return produtoMapper.converterVariosProdutos(produtosAtualizados);
     }
-
     public ProdutoDTO atualizarProduto(long id, ProdutoDTO produtoAtualizado) {
         produtoValidator.validarProduto(produtoAtualizado);
         Produto produtoExistente = buscarProdutoPorId(id);
-        ProdutoFactory.atualizarProduto(produtoExistente, produtoAtualizado);
+        produtoMapper.atualizarProduto(produtoExistente, produtoAtualizado);
         return produtoMapper.converterUmProduto(produtoRepository.save(produtoExistente));
     }
-
-    public Produto deletarProduto(long id) {
+    public ProdutoDTO deletarProduto(long id) {
         try {
             Produto produtoDeletado = buscarProdutoPorId(id);
             produtoRepository.delete(produtoDeletado);
-            return produtoDeletado;
+            return produtoMapper.converterUmProduto(produtoDeletado);
         } catch (DataIntegrityViolationException e) {
             throw new ProdutoPossuiHistorico("Este produto possui histórico/vinculo com ItensPedidos, se fosse excluido perderiamos os dados deste histórico");
         }
