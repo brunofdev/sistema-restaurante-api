@@ -45,7 +45,7 @@ public class ProdutoController {
     }
     @PutMapping("/atualizar-varios-produtos")
     public ResponseEntity<LoteProdutosResponseDTO> atualizarProdutos(@RequestBody List<ProdutoDTO> produtos){
-        List<ProdutoDTO> produtoAtualizado = produtoService.atualizarDiversosProdutos(produtos);
+        List<ProdutoDTO> produtoAtualizado = produtoService.atualizarLoteProdutos(produtos);
         LoteProdutosResponseDTO resposta = new LoteProdutosResponseDTO
                 ("Um total de: " + produtoAtualizado.toArray().length + " Foram atualizados\n"
                         , produtoAtualizado);

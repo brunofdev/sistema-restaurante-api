@@ -65,20 +65,13 @@ public class ProdutoService {
         return produtoRepository.findAllById(idsMap);
     }
 
-    public List<ProdutoDTO> atualizarDiversosProdutos(List<ProdutoDTO> produtosParaAtualizarDTO){
-        produtoValidator.validarListaDeProdutos(produtosParaAtualizarDTO);
-        Map<Long, ProdutoDTO> idsMap = produtoMapper.extrairIdsProdutosDTO(produtosParaAtualizarDTO);
+    public List<ProdutoDTO> atualizarLoteProdutos(List<ProdutoDTO> loteProdutosDTO){
+        produtoValidator.validarListaDeProdutos(loteProdutosDTO);
+        Map<Long, ProdutoDTO> idsMap = produtoMapper.extrairIdsProdutosDTO(loteProdutosDTO);
         List<Produto> produtosEncontrados = encontrarProdutos(idsMap.keySet());
-        for (Produto produto : produtosEncontrados) {
-            ProdutoDTO produtoAtualizado = idsMap.get(produto.getId());
-            produto.setNome(produtoAtualizado.getNome());
-            produto.setDescricao(produtoAtualizado.getDescricao());
-            produto.setPreco(produtoAtualizado.getPreco());
-            produto.setDisponibilidade(produtoAtualizado.getDisponibilidade());
-            produto.setQuantidadeAtual(produtoAtualizado.getQuantidadeAtual());
-        }
-        produtoRepository.saveAll(produtosEncontrados);
-        return produtoMapper.converterVariosProdutos(produtosEncontrados);
+        List<Produto>produtosAtualizados = ProdutoFactory.atualizarProdutoEmLote(idsMap, produtosEncontrados);
+        produtoRepository.saveAll(produtosAtualizados);
+        return produtoMapper.converterVariosProdutos(produtosAtualizados);
     }
 
     public ProdutoDTO atualizarProduto(long id, ProdutoDTO produtoAtualizado) {
