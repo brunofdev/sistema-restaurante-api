@@ -17,7 +17,9 @@ public class Cardapio {
     @NotNull
     private boolean disponibilidade;
     @NotNull
+    @Column(name = "dtinicio")
     private Date dataInicio;
+    @Column(name = "dtfim")
     private Date dataFim;
 
 
