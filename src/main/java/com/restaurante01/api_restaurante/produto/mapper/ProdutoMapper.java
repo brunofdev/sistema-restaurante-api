@@ -11,22 +11,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class ProdutoMapper {
-    public  List<ProdutoDTO> converterVariosProdutos(List<Produto>produtos){
-        List<ProdutoDTO> produtosDto = new ArrayList<>();
-        for(Produto produto : produtos){
-            ProdutoDTO produtoDTO = new ProdutoDTO(
-                    produto.getId(),
-                    produto.getNome(),
-                    produto.getDescricao(),
-                    produto.getPreco(),
-                    produto.getQuantidadeAtual(),
-                    produto.getDisponibilidade()
-            );
-            produtosDto.add(produtoDTO);
-        }
-        return produtosDto;
-    }
-    public ProdutoDTO converterUmProduto(Produto produto){
+    public ProdutoDTO mappearUmProduto(Produto produto){
          return new ProdutoDTO(
                 produto.getId(),
                 produto.getNome(),
@@ -35,6 +20,11 @@ public class ProdutoMapper {
                 produto.getQuantidadeAtual(),
                 produto.getDisponibilidade()
         );
+    }
+public  List<ProdutoDTO> mappearLoteProdutos(List<Produto>loteProdutos){
+        return loteProdutos.stream()
+                .map(this::mappearUmProduto)
+                .toList();
     }
     public Map<Long, ProdutoDTO> extrairIdsProdutosDTO(List<ProdutoDTO> loteProdutosDTO) {
         return loteProdutosDTO.stream()
