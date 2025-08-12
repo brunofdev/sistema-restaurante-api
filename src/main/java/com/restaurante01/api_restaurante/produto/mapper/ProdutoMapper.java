@@ -1,5 +1,6 @@
 package com.restaurante01.api_restaurante.produto.mapper;
 
+import com.restaurante01.api_restaurante.core.mapper.AbstractMapper;
 import com.restaurante01.api_restaurante.produto.dto.ProdutoDTO;
 import com.restaurante01.api_restaurante.produto.entity.Produto;
 import org.springframework.stereotype.Component;
@@ -10,8 +11,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class ProdutoMapper {
-    public ProdutoDTO mappearUmProduto(Produto produto){
+public class ProdutoMapper extends AbstractMapper<Produto, ProdutoDTO> {
+   @Override
+    public ProdutoDTO mapearEntityParaDTO(Produto produto){
          return new ProdutoDTO(
                 produto.getId(),
                 produto.getNome(),
@@ -20,11 +22,6 @@ public class ProdutoMapper {
                 produto.getQuantidadeAtual(),
                 produto.getDisponibilidade()
         );
-    }
-public  List<ProdutoDTO> mappearLoteProdutos(List<Produto>loteProdutos){
-        return loteProdutos.stream()
-                .map(this::mappearUmProduto)
-                .toList();
     }
     public Map<Long, ProdutoDTO> extrairIdsProdutosDTO(List<ProdutoDTO> loteProdutosDTO) {
         return loteProdutosDTO.stream()
