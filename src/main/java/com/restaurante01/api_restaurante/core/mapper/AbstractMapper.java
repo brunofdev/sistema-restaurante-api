@@ -9,7 +9,6 @@ public abstract class AbstractMapper<Entity, DTO> implements Mapper<Entity, DTO>
                 .map(this::mapearEntityParaDTO)
                 .toList();
     }
-
     @Override
     public abstract DTO mapearEntityParaDTO (Entity entity);
 

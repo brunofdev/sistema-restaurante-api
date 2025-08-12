@@ -11,5 +11,4 @@ public interface Mapper <Entity,DTO>{
     DTO mapearEntityParaDTO(Entity entity);
     List<DTO> mapearLoteParaDTO(List<Entity> loteEntitys);
 
-
 }
