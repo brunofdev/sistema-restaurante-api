@@ -20,6 +20,4 @@ public class CardapioService {
     public List<CardapioDTO> listarTodosCardapios(){
         return cardapioMapper.mappearLoteCardapio(cardapioRepository.findAll());
     }
-
-
 }
