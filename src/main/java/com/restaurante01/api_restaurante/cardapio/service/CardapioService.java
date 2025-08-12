@@ -20,7 +20,7 @@ public class CardapioService {
         this.cardapioMapper = cardapioMapper;
     }
     public List<CardapioDTO> listarTodosCardapios(){
-        return cardapioRepository.findAll();
+        return cardapioMapper.mappearLoteCardapio(cardapioRepository.findAll());
     }
 
 
