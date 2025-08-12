@@ -52,7 +52,7 @@ public class Cardapio {
         this.dataInicio = dataInicio;
     }
 
-    public boolean isDisponibilidade() {
+    public boolean getDisponibilidade() {
         return disponibilidade;
     }
 
