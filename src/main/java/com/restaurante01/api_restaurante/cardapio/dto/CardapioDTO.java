@@ -30,7 +30,7 @@ public class CardapioDTO {
     public Date getDataInicio() {
         return dataInicio;
     }
-    public boolean isDisponibilidade() {
+    public boolean getDisponibilidade() {
         return disponibilidade;
     }
     public Date getDataFim() {

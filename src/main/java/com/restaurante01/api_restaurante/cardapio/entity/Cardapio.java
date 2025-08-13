@@ -27,13 +27,13 @@ public class Cardapio {
 
     }
 
-    public Cardapio(String nome, String descricao, boolean disponibilidade, Date dataInicio, Date dataFim, long id) {
+    public Cardapio(long id,String nome, String descricao, boolean disponibilidade, Date dataInicio, Date dataFim) {
+        this.id = id;
         this.nome = nome;
         this.descricao = descricao;
         this.disponibilidade = disponibilidade;
         this.dataInicio = dataInicio;
         this.dataFim = dataFim;
-        this.id = id;
     }
 
     public Date getDataFim() {
