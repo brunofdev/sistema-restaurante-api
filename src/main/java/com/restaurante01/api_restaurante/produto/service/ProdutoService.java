@@ -30,18 +30,18 @@ public class ProdutoService {
         this.produtoMapper = produtoMapper;
     }
     public List<ProdutoDTO> listarTodosProdutos() {
-        return produtoMapper.mapearLoteParaDTO(produtoRepository.findAll());
+        return produtoMapper.mapearListaDeEntidadeParaDTO(produtoRepository.findAll());
     }
 
     public List<ProdutoDTO> listarProdutosDisponiveis(){
-        return produtoMapper.mapearLoteParaDTO(produtoRepository.findByDisponibilidade(true));
+        return produtoMapper.mapearListaDeEntidadeParaDTO(produtoRepository.findByDisponibilidade(true));
     }
 
     public List<ProdutoDTO> listarProdutosIndisponiveis() {
-        return produtoMapper.mapearLoteParaDTO(produtoRepository.findByDisponibilidade(false));
+        return produtoMapper.mapearListaDeEntidadeParaDTO(produtoRepository.findByDisponibilidade(false));
     }
     public ProdutoDTO listarUmProdutoPorId(long id){
-        return produtoMapper.mapearEntityParaDTO(produtoRepository.findById(id).orElseThrow(() ->
+        return produtoMapper.mapearUmaEntidadeParaDTO(produtoRepository.findById(id).orElseThrow(() ->
                 new ProdutoNaoEncontradoException("Produto não encontrado")));
     }
     private Produto buscarProdutoPorId(long id) {
@@ -49,13 +49,13 @@ public class ProdutoService {
                 .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto não encontrado"));
     }
     public List<ProdutoDTO> listarProdutosComQntdBaixa(){
-        return produtoMapper.mapearLoteParaDTO(produtoRepository.findByQuantidadeAtualLessThan(11));
+        return produtoMapper.mapearListaDeEntidadeParaDTO(produtoRepository.findByQuantidadeAtualLessThan(11));
     }
     public ProdutoDTO adicionarNovoProduto(ProdutoDTO produtoDTO) {
             produtoValidator.validarProduto(produtoDTO);
             Produto novoProduto = ProdutoFactory.instanciarProduto(produtoDTO);  /* */
             Produto produtoSalvo = produtoRepository.save(novoProduto);
-            return produtoMapper.mapearEntityParaDTO(produtoSalvo);
+            return produtoMapper.mapearUmaEntidadeParaDTO(produtoSalvo);
         }
     private List<Produto> buscarProdutosPorIds(Set<Long> idsMapeados){
         return produtoRepository.findAllById(idsMapeados);
@@ -66,19 +66,19 @@ public class ProdutoService {
         List<Produto> produtosEncontrados = buscarProdutosPorIds(mapaProdutosPorId.keySet());
         List<Produto>produtosAtualizados = produtoMapper.atualizarProdutosEmLote(mapaProdutosPorId, produtosEncontrados);
         produtoRepository.saveAll(produtosAtualizados);
-        return produtoMapper.mapearLoteParaDTO(produtosAtualizados);
+        return produtoMapper.mapearListaDeEntidadeParaDTO(produtosAtualizados);
     }
     public ProdutoDTO atualizarProduto(long id, ProdutoDTO produtoAtualizado) {
         produtoValidator.validarProduto(produtoAtualizado);
         Produto produtoExistente = buscarProdutoPorId(id);
         produtoMapper.atualizarProduto(produtoExistente, produtoAtualizado);
-        return produtoMapper.mapearEntityParaDTO(produtoRepository.save(produtoExistente));
+        return produtoMapper.mapearUmaEntidadeParaDTO(produtoRepository.save(produtoExistente));
     }
     public ProdutoDTO deletarProduto(long id) {
         try {
             Produto produtoDeletado = buscarProdutoPorId(id);
             produtoRepository.delete(produtoDeletado);
-            return produtoMapper.mapearEntityParaDTO(produtoDeletado);
+            return produtoMapper.mapearUmaEntidadeParaDTO(produtoDeletado);
         } catch (DataIntegrityViolationException e) {
             throw new ProdutoPossuiHistorico("Este produto possui histórico/vinculo com ItensPedidos, se fosse excluido perderiamos os dados deste histórico");
         }

@@ -11,7 +11,7 @@ import java.util.List;
 public class CardapioMapper extends AbstractMapper<Cardapio, CardapioDTO> {
 
     @Override
-    public CardapioDTO mapearEntityParaDTO(Cardapio cardapio){
+    public CardapioDTO mapearUmaEntidadeParaDTO(Cardapio cardapio){
         return new CardapioDTO(
                 cardapio.getId(),
                 cardapio.getNome(),

@@ -14,24 +14,26 @@ import java.util.List;
  */
 public abstract class AbstractMapper<Entity, DTO> implements Mapper<Entity, DTO> {
     /**
-     * Implementação padrão para mapear uma lista de entidades para DTOs,
-     * utilizando stream e o método {@link #mapearEntityParaDTO(Entity)}.
-     * @param entities Lista de entidades a serem convertidas
-     * @return Lista de DTOs correspondentes
-     */
-    @Override
-    public List<DTO> mapearLoteParaDTO(List<Entity> entities) {
-        return entities.stream()
-                .map(this::mapearEntityParaDTO) // delega a conversão individual para a subclasse
-                .toList();
-    }
-
-    /**
      * Método abstrato que deve ser implementado para converter
      * uma única entidade em seu DTO correspondente.
      * @param entity Entidade a ser convertida
      * @return DTO equivalente à entidade
      */
     @Override
-    public abstract DTO mapearEntityParaDTO(Entity entity);
+    public abstract DTO mapearUmaEntidadeParaDTO(Entity entity);
+
+
+    /**
+     * Implementação padrão para mapear uma lista de entidades para DTOs,
+     * utilizando stream e o método {@link #mapearUmaEntidadeParaDTO(Entity)}.
+     * @param entities Lista de entidades a serem convertidas
+     * @return Lista de DTOs correspondentes
+     */
+    @Override
+    public List<DTO> mapearListaDeEntidadeParaDTO(List<Entity> entities) {
+        return entities.stream()
+                .map(this::mapearUmaEntidadeParaDTO) // delega a conversão individual para a subclasse
+                .toList();
+    }
+
 }

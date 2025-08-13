@@ -19,12 +19,12 @@ public interface Mapper<Entity, DTO> {
      * @param entity Objeto entidade a ser convertido
      * @return Objeto DTO equivalente à entidade fornecida
      */
-    DTO mapearEntityParaDTO(Entity entity);
+    DTO mapearUmaEntidadeParaDTO(Entity entity);
 
     /**
      * Converte uma lista de entidades do domínio para uma lista de DTOs correspondentes.
      * @param loteEntitys Lista de entidades a serem convertidas
      * @return Lista de DTOs correspondentes
      */
-    List<DTO> mapearLoteParaDTO(List<Entity> loteEntitys);
+    List<DTO> mapearListaDeEntidadeParaDTO(List<Entity> loteEntitys);
 }

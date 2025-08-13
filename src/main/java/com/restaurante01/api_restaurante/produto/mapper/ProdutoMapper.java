@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Component
 public class ProdutoMapper extends AbstractMapper<Produto, ProdutoDTO> {
    @Override
-    public ProdutoDTO mapearEntityParaDTO(Produto produto){
+    public ProdutoDTO mapearUmaEntidadeParaDTO(Produto produto){
          return new ProdutoDTO(
                 produto.getId(),
                 produto.getNome(),
