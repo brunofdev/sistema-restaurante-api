@@ -20,8 +20,7 @@ public abstract class AbstractMapper<Entity, DTO> implements Mapper<Entity, DTO>
      * @return DTO equivalente à entidade
      */
     @Override
-    public abstract DTO mapearUmaEntidadeParaDTO(Entity entity);
-
+    public abstract DTO mapearUmaEntidadeParaDTO(Entity entidade);
 
     /**
      * Implementação padrão para mapear uma lista de entidades para DTOs,
@@ -30,10 +29,19 @@ public abstract class AbstractMapper<Entity, DTO> implements Mapper<Entity, DTO>
      * @return Lista de DTOs correspondentes
      */
     @Override
-    public List<DTO> mapearListaDeEntidadeParaDTO(List<Entity> entities) {
-        return entities.stream()
+    public List<DTO> mapearListaDeEntidadeParaDTO(List<Entity> listaEntidade) {
+        return listaEntidade.stream()
                 .map(this::mapearUmaEntidadeParaDTO) // delega a conversão individual para a subclasse
                 .toList();
     }
 
+    @Override
+    public abstract Entity mapearUmaDtoParaEntidade(DTO dto);
+
+    @Override
+    public List<Entity> mapearListaDeDtoParaEntidade(List<DTO> listaDto) {
+        return listaDto.stream()
+                .map(this::mapearUmaDtoParaEntidade) // delega a conversão individual para a subclasse
+                .toList();
+    }
 }

@@ -23,7 +23,7 @@ public class ProdutoMapper extends AbstractMapper<Produto, ProdutoDTO> {
                 produto.getDisponibilidade()
         );
     }
-    public Map<Long, ProdutoDTO> extrairIdsProdutosDTO(List<ProdutoDTO> loteProdutosDTO) {
+    public Map<Long, ProdutoDTO> mapearIdsEntidadeParaDTO(List<ProdutoDTO> loteProdutosDTO) {
         return loteProdutosDTO.stream()
                 .collect(Collectors.toMap(ProdutoDTO::getId, dto -> dto));
     }

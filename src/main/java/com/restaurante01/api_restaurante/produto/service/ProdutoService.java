@@ -62,7 +62,7 @@ public class ProdutoService {
     }
     public List<ProdutoDTO> atualizarLoteProdutos(List<ProdutoDTO> loteProdutosDTO){
         produtoValidator.validarListaDeProdutos(loteProdutosDTO);
-        Map<Long, ProdutoDTO> mapaProdutosPorId = produtoMapper.extrairIdsProdutosDTO(loteProdutosDTO);
+        Map<Long, ProdutoDTO> mapaProdutosPorId = produtoMapper.mapearIdsEntidadeParaDTO(loteProdutosDTO);
         List<Produto> produtosEncontrados = buscarProdutosPorIds(mapaProdutosPorId.keySet());
         List<Produto>produtosAtualizados = produtoMapper.atualizarProdutosEmLote(mapaProdutosPorId, produtosEncontrados);
         produtoRepository.saveAll(produtosAtualizados);
