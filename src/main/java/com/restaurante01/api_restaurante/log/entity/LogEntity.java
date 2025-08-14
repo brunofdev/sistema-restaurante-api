@@ -2,41 +2,48 @@ package com.restaurante01.api_restaurante.log.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.stereotype.Repository;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
 @Table(name = "logs_sistema")
 public class LogEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
+
     @NotNull
     private String error;
+
     @NotNull
-    private String menssagem;
+    private String mensagem;
+
     @NotNull
     private String linha;
+
     @NotNull
     private String nomeClasse;
+
     @NotNull
     private LocalDate data;
+
     @NotNull
     private LocalTime hora;
 
-    public LogEntity (){
-    }
+    public LogEntity() {}
 
-    public LogEntity(long id, String error, String menssagem, String linha, String nomeClasse, LocalDate data, LocalTime hora) {
-        this.id = id;
+    public LogEntity(String error, String mensagem, String linha, String nomeClasse) {
         this.error = error;
-        this.menssagem = menssagem;
+        this.mensagem = mensagem;
         this.linha = linha;
         this.nomeClasse = nomeClasse;
-        this.data = data;
-        this.hora = hora;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.data = LocalDate.now();
+        this.hora = LocalTime.now();
     }
 
     public long getId() {
@@ -55,12 +62,12 @@ public class LogEntity {
         this.error = error;
     }
 
-    public String getMenssagem() {
-        return menssagem;
+    public String getMensagem() {
+        return mensagem;
     }
 
-    public void setMenssagem(String menssagem) {
-        this.menssagem = menssagem;
+    public void setMensagem(String menssagem) {
+        this.mensagem = menssagem;
     }
 
     public String getLinha() {
