@@ -1,16 +1,23 @@
 package com.restaurante01.api_restaurante.cardapio.dto;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.time.LocalDate;
+
 
 public class CardapioDTO {
-    private final long id;
+    private final Long id;
     private final String nome;
     private final String descricao;
-    private final boolean disponibilidade;
-    private final Date dataInicio;
-    private final Date dataFim;
+    private final Boolean disponibilidade;
 
-    public CardapioDTO(long id, String nome, String descricao, boolean disponibilidade, Date dataInicio, Date dataFim) {
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private final LocalDate dataInicio;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private final LocalDate dataFim;
+
+    public CardapioDTO(Long id, String nome, String descricao, Boolean disponibilidade, LocalDate dataInicio, LocalDate dataFim) {
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;
@@ -18,7 +25,7 @@ public class CardapioDTO {
         this.dataInicio = dataInicio;
         this.dataFim = dataFim;
     }
-    public long getId() {
+    public Long getId() {
         return id;
     }
     public String getNome() {
@@ -27,13 +34,13 @@ public class CardapioDTO {
     public String getDescricao() {
         return descricao;
     }
-    public Date getDataInicio() {
+    public LocalDate getDataInicio() {
         return dataInicio;
     }
-    public boolean getDisponibilidade() {
+    public Boolean getDisponibilidade() {
         return disponibilidade;
     }
-    public Date getDataFim() {
+    public LocalDate getDataFim() {
         return dataFim;
     }
 

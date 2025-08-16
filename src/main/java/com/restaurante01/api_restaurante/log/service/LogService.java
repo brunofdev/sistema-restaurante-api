@@ -1,7 +1,6 @@
-package com.restaurante01.api_restaurante.log;
+package com.restaurante01.api_restaurante.log.service;
 
 import com.restaurante01.api_restaurante.log.repository.LogRepository;
-import org.apache.juli.logging.Log;
 import org.springframework.stereotype.Service;
 
 @Service

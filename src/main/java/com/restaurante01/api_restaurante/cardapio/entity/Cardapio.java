@@ -1,6 +1,8 @@
 package com.restaurante01.api_restaurante.cardapio.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDate;
 import java.util.Date;
 
 
@@ -9,25 +11,25 @@ import java.util.Date;
 public class Cardapio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @NotNull
     private String nome;
     @NotNull
     private String descricao;
     @NotNull
-    private boolean disponibilidade;
+    private Boolean disponibilidade;
     @NotNull
     @Column(name = "dtinicio")
-    private Date dataInicio;
+    private LocalDate dataInicio;
     @Column(name = "dtfim")
-    private Date dataFim;
+    private LocalDate dataFim;
 
 
     public Cardapio(){
 
     }
 
-    public Cardapio(long id,String nome, String descricao, boolean disponibilidade, Date dataInicio, Date dataFim) {
+    public Cardapio(Long id,String nome, String descricao, Boolean disponibilidade, LocalDate dataInicio, LocalDate dataFim) {
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;
@@ -36,27 +38,27 @@ public class Cardapio {
         this.dataFim = dataFim;
     }
 
-    public Date getDataFim() {
+    public LocalDate getDataFim() {
         return dataFim;
     }
 
-    public void setDataFim(Date dataFim) {
+    public void setDataFim(LocalDate dataFim) {
         this.dataFim = dataFim;
     }
 
-    public Date getDataInicio() {
+    public LocalDate getDataInicio() {
         return dataInicio;
     }
 
-    public void setDataInicio(Date dataInicio) {
+    public void setDataInicio(LocalDate dataInicio) {
         this.dataInicio = dataInicio;
     }
 
-    public boolean getDisponibilidade() {
+    public Boolean getDisponibilidade() {
         return disponibilidade;
     }
 
-    public void setDisponibilidade(boolean disponibilidade) {
+    public void setDisponibilidade(Boolean disponibilidade) {
         this.disponibilidade = disponibilidade;
     }
 
@@ -76,11 +78,11 @@ public class Cardapio {
         this.nome = nome;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 }
