@@ -12,22 +12,22 @@ public class ProdutoValidator {
         if(produtoDTO.getId() == null){
             throw new ProdutoIdVazioException("Id não pode ser vazio");
         }
-        else if(produtoDTO.getNome().isEmpty() || produtoDTO.getNome() == null){
+        if(produtoDTO.getNome() == null || produtoDTO.getNome().isEmpty()){
             throw new ProdutoNomeVazioException("Nome não pode ser vazio");
         }
-        else if(produtoDTO.getDescricao() == null || produtoDTO.getDescricao().isEmpty()){
+        if(produtoDTO.getDescricao() == null || produtoDTO.getDescricao().isEmpty()){
             throw new ProdutoDescVazioException("Descrição não pode ser vazia");
         }
-        else if(produtoDTO.getDisponibilidade() == null){
+        if(produtoDTO.getDisponibilidade() == null){
             throw new ProdutoDisponibilidadeVazioException("Disponibilidade não pode ser vazio");
         }
-        else if(produtoDTO.getPreco() == null){
-            throw new ProdutoPrecoVazioExceptionException("Preço não pode ser vazio");
+        if(produtoDTO.getPreco() == null){
+            throw new ProdutoPrecoVazioException("Preço não pode ser vazio");
         }
-        else if(produtoDTO.getQuantidadeAtual() < 0) {
+        if(produtoDTO.getQuantidadeAtual() < 0) {
             throw new ProdutoQntdNegativa("A quantidade do produto não pode ser negativa");
         }
-        else if(produtoDTO.getPreco() < 0) {
+        if(produtoDTO.getPreco() < 0) {
             throw new PrecoProdutoNegativoException("Preço do produto não pode ser negativo");
         }
 
