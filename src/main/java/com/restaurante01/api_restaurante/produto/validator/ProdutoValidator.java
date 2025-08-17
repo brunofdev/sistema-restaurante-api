@@ -30,8 +30,6 @@ public class ProdutoValidator {
         if(produtoDTO.getPreco() < 0) {
             throw new PrecoProdutoNegativoException("Preço do produto não pode ser negativo");
         }
-
-
     }
     public void validarListaDeProdutos(List<ProdutoDTO> produtosParaValidar){
         for(ProdutoDTO produto : produtosParaValidar){
