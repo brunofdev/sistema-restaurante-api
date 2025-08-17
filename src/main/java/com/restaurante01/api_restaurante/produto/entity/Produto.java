@@ -19,17 +19,17 @@ public class Produto {
 
     @NotNull(message = "Preço não pode ser vazio")
     @Positive(message = "preço deve ser positivo")
-    private double preco;
+    private Double preco;
 
-    private long quantidadeAtual;
+    private Long quantidadeAtual;
 
     @NotNull(message = "Disponibilidade precisa ser definida")
-    private boolean disponibilidade;
+    private Boolean disponibilidade;
 
     public Produto(){
 
     }
-    public Produto(Long id,String nome, String descricao, double preco, long quantidadeAtual, boolean disponibilidade) {
+    public Produto(Long id,String nome, String descricao, Double preco, Long quantidadeAtual, Boolean disponibilidade) {
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;
@@ -62,23 +62,20 @@ public class Produto {
         this.descricao = descricao;
     }
 
-    public double getPreco() {
+    public Double getPreco() {
         return preco;
     }
 
-    public void setPreco(double preco) {
+    public void setPreco(Double preco) {
         this.preco = preco;
     }
 
-    public boolean isDisponibilidade() {
-        return disponibilidade;
-    }
 
-    public void setDisponibilidade(boolean disponibilidade) {
+    public void setDisponibilidade(Boolean disponibilidade) {
         this.disponibilidade = disponibilidade;
     }
 
-    public boolean getDisponibilidade() {
+    public Boolean getDisponibilidade() {
         return disponibilidade;
     }
 

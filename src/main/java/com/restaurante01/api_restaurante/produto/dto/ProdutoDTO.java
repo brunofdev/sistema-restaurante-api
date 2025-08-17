@@ -4,12 +4,12 @@ public class ProdutoDTO {
         private Long id;
         private String nome;
         private String descricao;
-        private double preco;
-        private long quantidadeAtual;
-        private boolean disponibilidade;
+        private Double preco;
+        private Long quantidadeAtual;
+        private Boolean disponibilidade;
 
 
-    public ProdutoDTO(Long id,String nome, String descricao, double preco, long quantidadeAtual, boolean disponibilidade) {
+    public ProdutoDTO(Long id,String nome, String descricao, Double preco, Long quantidadeAtual, Boolean disponibilidade) {
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;
@@ -17,27 +17,27 @@ public class ProdutoDTO {
         this.quantidadeAtual = quantidadeAtual;
         this.disponibilidade = disponibilidade;
     }
-    public double getPreco() {
+    public Double getPreco() {
         return preco;
     }
 
-    public void setPreco(double preco) {
+    public void setPreco(Double preco) {
         this.preco = preco;
     }
 
-    public long getQuantidadeAtual() {
+    public Long getQuantidadeAtual() {
         return quantidadeAtual;
     }
 
-    public void setQuantidadeAtual(long quantidadeAtual) {
+    public void setQuantidadeAtual(Long quantidadeAtual) {
         this.quantidadeAtual = quantidadeAtual;
     }
 
-    public boolean getDisponibilidade() {
+    public Boolean getDisponibilidade() {
         return disponibilidade;
     }
 
-    public void setDisponibilidade(boolean disponibilidade) {
+    public void setDisponibilidade(Boolean disponibilidade) {
         this.disponibilidade = disponibilidade;
     }
 
