@@ -28,4 +28,9 @@ public class CardapioController {
     public ResponseEntity<CardapioDTO> atualizarCardapio(@PathVariable Long id, @RequestBody CardapioDTO cardapioDTO){
         return ResponseEntity.ok(cardapioService.atualizarCardapio(id, cardapioDTO));
     }
+    @DeleteMapping("deletar-por-id/{id}")
+        public ResponseEntity<CardapioDTO> deletarCardapio(@PathVariable Long id){
+        return ResponseEntity.ok(cardapioService.deletarCardapio(id));
+        }
+
 }
