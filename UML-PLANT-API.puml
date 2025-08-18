@@ -1,0 +1,166 @@
+@startuml
+title Sistema de Restaurante - Backend Completo
+
+' ===== ENTITIES =====
+class Produto <<Entity>> {
+    - id : Long <<@Id>>
+    - nome : String
+    - descricao : String
+    - preco : Double
+    - disponibilidade : Boolean
+}
+
+class Cardapio <<Entity>> {
+    - id : Long <<@Id>>
+    - nome : String
+    - descricao : String
+    - dataInicio : Date
+    - dataFim : Date
+}
+
+class CardapioProduto <<Entity>> {
+    - id : Long <<@Id>>
+    - cardapio : Cardapio <<@ManyToOne>>
+    - produto : Produto <<@ManyToOne>>
+    - quantidade : Integer
+    - precoPromocional : Double
+}
+
+' ===== DTOs =====
+class ProdutoDTO <<DTO>> {
+    - id : Long
+    - nome : String
+    - descricao : String
+    - preco : Double
+}
+
+class CardapioDTO <<DTO>> {
+    - id : Long
+    - nome : String
+    - descricao : String
+    - dataInicio : Date
+    - dataFim : Date
+}
+
+' ===== REPOSITORIES =====
+class ProdutoRepository <<Repository>>
+class CardapioRepository <<Repository>>
+class CardapioProdutoRepository <<Repository>>
+
+' ===== MAPPERS =====
+class ProdutoMapper <<Mapper>> {
+    + toDTO(produto: Produto) : ProdutoDTO
+    + toEntity(dto: ProdutoDTO) : Produto
+}
+
+class CardapioMapper <<Mapper>> {
+    + toDTO(cardapio: Cardapio) : CardapioDTO
+    + toEntity(dto: CardapioDTO) : Cardapio
+}
+
+' ===== FACTORIES =====
+class ProdutoFactory <<Factory>> {
+    + criarProduto(dto: ProdutoDTO) : Produto
+}
+
+class CardapioFactory <<Factory>> {
+    + criarCardapio(dto: CardapioDTO) : Cardapio
+}
+
+' ===== VALIDATORS =====
+class ProdutoValidator <<Validator>> {
+    + validar(dto: ProdutoDTO)
+}
+
+class CardapioValidator <<Validator>> {
+    + validar(dto: CardapioDTO)
+}
+
+' ===== SERVICES =====
+class ProdutoService <<Service>>
+class CardapioService <<Service>>
+
+' ===== CONTROLLERS =====
+class ProdutoController <<RestController>>
+class CardapioController <<RestController>>
+
+' ===== RELACIONAMENTOS =====
+Cardapio "1" -- "0..*" CardapioProduto : contém >
+Produto "1" -- "0..*" CardapioProduto : está presente em >
+
+ProdutoRepository --> Produto : gerencia
+CardapioRepository --> Cardapio : gerencia
+CardapioProdutoRepository --> CardapioProduto : gerencia
+
+ProdutoService --> ProdutoRepository : usa
+CardapioService --> CardapioRepository : usa
+CardapioService --> CardapioProdutoRepository : usa
+
+ProdutoService --> ProdutoMapper
+CardapioService --> CardapioMapper
+
+ProdutoService --> ProdutoValidator
+CardapioService --> CardapioValidator
+
+ProdutoFactory --> Produto
+CardapioFactory --> Cardapio
+
+ProdutoController --> ProdutoService : chama
+CardapioController --> CardapioService : chama
+
+ProdutoMapper --> ProdutoDTO
+ProdutoMapper --> Produto
+CardapioMapper --> CardapioDTO
+CardapioMapper --> Cardapio
+
+' ===== ORDEM DE IMPLEMENTAÇÃO =====
+note top of Produto
+(1) Criar Entities
+end note
+
+note top of ProdutoRepository
+(2) Criar Repositories
+end note
+
+note top of ProdutoMapper
+(3) Criar Mappers e DTOs
+end note
+
+note top of ProdutoFactory
+(4) Criar Factories
+end note
+
+note top of ProdutoValidator
+(5) Criar Validators
+end note
+
+note top of ProdutoService
+(6) Criar Services
+end note
+
+note top of ProdutoController
+(7) Criar Controllers
+end note
+
+' ===== LEGENDA =====
+legend right
+  Ordem sugerida:
+  (1) Entities 
+  -> (2) Repositories 
+  -> (3) Mappers/DTOs 
+  -> (4) Factories 
+  -> (5) Validators 
+  -> (6) Services 
+  -> (7) Controllers
+
+  Relacionamentos:
+    - "contém >" : Cardápio contém um ou mais produtos via CardapioProduto
+    - "está presente em >" : Produto pode estar em vários cardápios
+    - "gerencia" : Repositório lida com operações de banco
+    - "usa" : Service utiliza o repositório
+    - "valida" : Validator garante integridade dos dados
+    - "fabrica" : Factory cria entidades prontas
+    - "mapeia" : Mapper converte entre entidade e DTO
+endlegend
+
+@enduml
