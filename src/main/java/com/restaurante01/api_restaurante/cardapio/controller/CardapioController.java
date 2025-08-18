@@ -4,10 +4,7 @@ import com.restaurante01.api_restaurante.cardapio.dto.CardapioDTO;
 import com.restaurante01.api_restaurante.cardapio.service.CardapioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,6 +18,14 @@ public class CardapioController {
     @GetMapping("/listar-todos-cardapios")
     public ResponseEntity<List<CardapioDTO>> solicitarCardapios(){
         return ResponseEntity.ok(cardapioService.listarTodosCardapios());
-    }
 
+    }
+    @PostMapping("/adicionar-novo-cardapio")
+    public ResponseEntity<CardapioDTO> adicionarNovoCardapio(@RequestBody CardapioDTO cardapioDTO){
+        return ResponseEntity.ok(cardapioService.adicionarNovoCardapio(cardapioDTO));
+    }
+    @PutMapping("/atualizar-um-cardapio/{id}")
+    public ResponseEntity<CardapioDTO> atualizarCardapio(@PathVariable Long id, @RequestBody CardapioDTO cardapioDTO){
+        return ResponseEntity.ok(cardapioService.atualizarCardapio(id, cardapioDTO));
+    }
 }

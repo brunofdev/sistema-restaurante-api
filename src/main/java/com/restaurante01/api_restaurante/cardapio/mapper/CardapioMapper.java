@@ -29,4 +29,12 @@ public class CardapioMapper extends AbstractMapper<Cardapio, CardapioDTO> {
                 cardapioDTO.getDataFim()
                 );
     }
+    public Cardapio atualizarCampos(Cardapio cardapioExistente ,CardapioDTO cardapioAtualizado){
+        cardapioExistente.setNome(cardapioAtualizado.getNome());
+        cardapioExistente.setDescricao(cardapioAtualizado.getDescricao());
+        cardapioExistente.setDisponibilidade(cardapioAtualizado.getDisponibilidade());
+        cardapioExistente.setDataInicio(cardapioAtualizado.getDataInicio());
+        cardapioExistente.setDataFim(cardapioAtualizado.getDataFim());
+        return cardapioExistente;
+    }
 }

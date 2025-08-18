@@ -11,10 +11,10 @@ public class CardapioDTO {
     private final String descricao;
     private final Boolean disponibilidade;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private final LocalDate dataInicio;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private final LocalDate dataFim;
 
     public CardapioDTO(Long id, String nome, String descricao, Boolean disponibilidade, LocalDate dataInicio, LocalDate dataFim) {

@@ -1,9 +1,9 @@
 package com.restaurante01.api_restaurante.cardapio.entity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 
 @Entity
@@ -20,8 +20,10 @@ public class Cardapio {
     private Boolean disponibilidade;
     @NotNull
     @Column(name = "dtinicio")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dataInicio;
     @Column(name = "dtfim")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dataFim;
 
 

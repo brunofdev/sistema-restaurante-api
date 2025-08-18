@@ -68,7 +68,7 @@ public class ProdutoService {
         produtoRepository.saveAll(produtosAtualizados);
         return produtoMapper.mapearListaDeEntidadeParaDTO(produtosAtualizados);
     }
-    public ProdutoDTO atualizarProduto(long id, ProdutoDTO produtoAtualizado) {
+    public ProdutoDTO atualizarProduto(Long id, ProdutoDTO produtoAtualizado) {
         produtoValidator.validarProduto(produtoAtualizado);
         Produto produtoExistente = buscarProdutoPorId(id);
         produtoMapper.atualizarProduto(produtoExistente, produtoAtualizado);
