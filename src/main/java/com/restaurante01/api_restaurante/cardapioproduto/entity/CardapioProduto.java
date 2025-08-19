@@ -7,40 +7,43 @@ import com.restaurante01.api_restaurante.cardapio.entity.Cardapio;
 import com.restaurante01.api_restaurante.produto.entity.Produto;
 import jakarta.persistence.*;
 
-@Entity
-@Table(name = "CARDAPIO_PRODUTOS")
-public class CardapioProduto {
+import java.util.Objects;
 
+@Entity
+@Table(name = "CARDAPIO_PRODUTO", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"cardapio_id", "produto_id"})
+})
+public class CardapioProduto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "cardapio_id")
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "cardapio_id", nullable = false)
     private Cardapio cardapio;
-
-    @ManyToOne
-    @JoinColumn(name = "produto_id")
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "produto_id", nullable = false)
     private Produto produto;
+
 
     @Column(name = "preco_customizado")
     private Double precoCustomizado;
     @Column(name = "qtd_customizada")
-    private int quantidadeCustomizada;
+    private Integer quantidadeCustomizada;
     @Column(name = "desc_customizada")
     private String descricaoCustomizada;
     @Column(name = "disp_customizada")
     private Boolean disponibilidadeCustomizada;
+    @Column(name = "obs")
     private String observacao;
 
     public CardapioProduto(){
-
     }
-    public CardapioProduto(long id, Cardapio cardapio, Produto produto, Double precoCustomizado,
+    public CardapioProduto(
+                           Long id, Cardapio cardapio, Produto produto, Double precoCustomizado,
                            int quantidadeCustomizada, Boolean disponibilidadeCustomizada,
                            String observacao, String descricaoCustomizada)
     {
-        this.id = id;
         this.cardapio = cardapio;
         this.produto = produto;
         this.precoCustomizado = precoCustomizado;
@@ -50,11 +53,11 @@ public class CardapioProduto {
         this.descricaoCustomizada = descricaoCustomizada;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -82,11 +85,11 @@ public class CardapioProduto {
         this.precoCustomizado = precoCustomizado;
     }
 
-    public int getQuantidadeCustomizada() {
+    public Integer getQuantidadeCustomizada() {
         return quantidadeCustomizada;
     }
 
-    public void setQuantidadeCustomizada(int quantidadeCustomizada) {
+    public void setQuantidadeCustomizada(Integer quantidadeCustomizada) {
         this.quantidadeCustomizada = quantidadeCustomizada;
     }
 
@@ -98,6 +101,14 @@ public class CardapioProduto {
         this.descricaoCustomizada = descricaoCustomizada;
     }
 
+    public Boolean getDisponibilidadeCustomizada() {
+        return disponibilidadeCustomizada;
+    }
+
+    public void setDisponibilidadeCustomizada(Boolean disponibilidadeCustomizada) {
+        this.disponibilidadeCustomizada = disponibilidadeCustomizada;
+    }
+
     public String getObservacao() {
         return observacao;
     }
@@ -106,11 +117,15 @@ public class CardapioProduto {
         this.observacao = observacao;
     }
 
-    public Boolean getDisponibilidadeCustomizada() {
-        return disponibilidadeCustomizada;
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        CardapioProduto that = (CardapioProduto) o;
+        return Objects.equals(id, that.id);
     }
 
-    public void setDisponibilidadeCustomizada(Boolean disponibilidadeCustomizada) {
-        this.disponibilidadeCustomizada = disponibilidadeCustomizada;
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }
