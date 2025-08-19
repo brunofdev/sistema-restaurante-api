@@ -6,9 +6,7 @@ import com.restaurante01.api_restaurante.cardapio.exceptions.CardapioNaoEncontra
 import com.restaurante01.api_restaurante.cardapio.mapper.CardapioMapper;
 import com.restaurante01.api_restaurante.cardapio.repository.CardapioRepository;
 import com.restaurante01.api_restaurante.cardapio.validator.CardapioValidator;
-import com.restaurante01.api_restaurante.produto.exceptions.ProdutoNaoEncontradoException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
