@@ -15,37 +15,43 @@ import java.util.Map;
 @Component
 public class CardapioProdutoMapper {
 
-    public List<CardapioProdutoDTO> mapearEntidadeComDTO (List<CardapioProduto> lista){
+    public CardapioProdutoDTO mapearCardapio(Cardapio cardapio){
+        CardapioProdutoDTO cardapioProdutoDTO = new CardapioProdutoDTO();
+        cardapioProdutoDTO.setId(cardapio.getId());
+        cardapioProdutoDTO.setNome(cardapio.getNome());
+        cardapioProdutoDTO.setDescricao(cardapio.getDescricao());
+        cardapioProdutoDTO.setDisponibilidade(cardapio.getDisponibilidade());
+        cardapioProdutoDTO.setDataInicio(cardapio.getDataInicio());
+        cardapioProdutoDTO.setDataFim(cardapio.getDataFim());
+        cardapioProdutoDTO.setProdutos(new ArrayList<>());
+        return cardapioProdutoDTO;
+    }
+    public ProdutoCustomDTO mapearProdutoCustomDTO (Produto produto, CardapioProduto cardapioProduto){
+        ProdutoCustomDTO produtoCustomDTO = new ProdutoCustomDTO();
+        produtoCustomDTO.setIdProduto(produto.getId());
+        produtoCustomDTO.setNome(produto.getNome());
+        produtoCustomDTO.setDescricao(produto.getDescricao());
+        produtoCustomDTO.setPreco(produto.getPreco());
+        produtoCustomDTO.setQuantidadeAtual(produto.getQuantidadeAtual());
+        produtoCustomDTO.setDisponibilidade(produto.getDisponibilidade());
+        produtoCustomDTO.setPrecoCustomizado(cardapioProduto.getPrecoCustomizado());
+        produtoCustomDTO.setDescricaoCustomizada(cardapioProduto.getDescricaoCustomizada());
+        produtoCustomDTO.setQuantidadeCustomizada(cardapioProduto.getQuantidadeCustomizada());
+        produtoCustomDTO.setDisponibilidadeCustomizada(cardapioProduto.getDisponibilidadeCustomizada());
+        produtoCustomDTO.setObservacao(cardapioProduto.getObservacao());
+        return produtoCustomDTO;
+    }
+
+    public List<CardapioProdutoDTO> mapearCardapioComProduto (List<CardapioProduto> lista){
         Map<Long, CardapioProdutoDTO> map = new LinkedHashMap<>();
 
         for(CardapioProduto cp : lista){
             Cardapio cardapio = cp.getCardapio();
             CardapioProdutoDTO dto = map.computeIfAbsent(cardapio.getId(), id ->{
-                CardapioProdutoDTO c = new CardapioProdutoDTO();
-                c.setId(cardapio.getId());
-                c.setNome(cardapio.getNome());
-                c.setDescricao(cardapio.getDescricao());
-                c.setDisponibilidade(cardapio.getDisponibilidade());
-                c.setDataInicio(cardapio.getDataInicio());
-                c.setDataFim(cardapio.getDataFim());
-                c.setProdutos(new ArrayList<>());
-                return c;
+                return mapearCardapio(cardapio);
         });
             Produto produto = cp.getProduto();
-            ProdutoCustomDTO produtoCustomDTO = new ProdutoCustomDTO();
-            produtoCustomDTO.setIdProduto(produto.getId());
-            produtoCustomDTO.setNome(produto.getNome());
-            produtoCustomDTO.setDescricao(produto.getDescricao());
-            produtoCustomDTO.setPreco(produto.getPreco());
-            produtoCustomDTO.setQuantidadeAtual(produto.getQuantidadeAtual());
-            produtoCustomDTO.setDisponibilidade(produto.getDisponibilidade());
-
-            produtoCustomDTO.setPrecoCustomizado(cp.getPrecoCustomizado());
-            produtoCustomDTO.setDescricaoCustomizada(cp.getDescricaoCustomizada());
-            produtoCustomDTO.setQuantidadeCustomizada(cp.getQuantidadeCustomizada());
-            produtoCustomDTO.setDisponibilidadeCustomizada(cp.getDisponibilidadeCustomizada());
-            produtoCustomDTO.setObservacao(cp.getObservacao());
-
+            ProdutoCustomDTO produtoCustomDTO = mapearProdutoCustomDTO(produto, cp);
             dto.getProdutos().add(produtoCustomDTO);
     }
         return new ArrayList<>(map.values());

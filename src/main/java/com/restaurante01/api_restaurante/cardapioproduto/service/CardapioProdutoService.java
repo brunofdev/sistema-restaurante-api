@@ -22,6 +22,6 @@ public class CardapioProdutoService {
     }
 
     public List<CardapioProdutoDTO> listarCardapiosProdutos(){
-        return cardapioProdutoMapper.mapearEntidadeComDTO(cardapioProdutoRepository.findAll());
+        return cardapioProdutoMapper.mapearCardapioComProduto(cardapioProdutoRepository.findAll());
     }
 }
