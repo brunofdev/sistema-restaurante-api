@@ -1,6 +1,7 @@
 package com.restaurante01.api_restaurante.cardapioproduto.controller;
 
 
+import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.entity.CardapioProduto;
 import com.restaurante01.api_restaurante.cardapioproduto.service.CardapioProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class CardapioProdutoController {
     @Autowired private CardapioProdutoService cardapioProdutoService;
 
     @GetMapping("/obter-todos-cardapios")
-    public ResponseEntity<List<CardapioProduto>> listarCardapioProdutos(){
+    public ResponseEntity<List<CardapioProdutoDTO>> listarCardapioProdutos(){
         return ResponseEntity.ok(cardapioProdutoService.listarCardapiosProdutos());
     }
 }
