@@ -41,11 +41,10 @@ public class CardapioProdutoMapper {
         produtoCustomDTO.setObservacao(cardapioProduto.getObservacao());
         return produtoCustomDTO;
     }
-
-    public List<CardapioProdutoDTO> mapearCardapioComProduto (List<CardapioProduto> lista){
+    public List<CardapioProdutoDTO> mapearCardapioComProduto (List<CardapioProduto> listaDeCardapioProduto){
         Map<Long, CardapioProdutoDTO> map = new LinkedHashMap<>();
 
-        for(CardapioProduto cp : lista){
+        for(CardapioProduto cp : listaDeCardapioProduto){
             Cardapio cardapio = cp.getCardapio();
             CardapioProdutoDTO dto = map.computeIfAbsent(cardapio.getId(), id ->{
                 return mapearCardapio(cardapio);
