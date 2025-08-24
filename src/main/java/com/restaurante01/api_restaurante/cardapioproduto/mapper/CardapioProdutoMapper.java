@@ -1,9 +1,12 @@
 package com.restaurante01.api_restaurante.cardapioproduto.mapper;
 
+import com.restaurante01.api_restaurante.cardapio.dto.CardapioDTO;
 import com.restaurante01.api_restaurante.cardapio.entity.Cardapio;
 import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoDTO;
+import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoSaveDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.entity.CardapioProduto;
 import com.restaurante01.api_restaurante.produto.dto.ProdutoCustomDTO;
+import com.restaurante01.api_restaurante.produto.dto.ProdutoDTO;
 import com.restaurante01.api_restaurante.produto.entity.Produto;
 import org.springframework.stereotype.Component;
 
@@ -54,5 +57,18 @@ public class CardapioProdutoMapper {
             dto.getProdutos().add(produtoCustomDTO);
     }
         return new ArrayList<>(map.values());
+    }
+    public CardapioProdutoSaveDTO instanciarCardapioProdutoSaveDTO(ProdutoDTO produto, CardapioDTO cardapio){
+        CardapioProdutoSaveDTO cardapioProdutoSaveDTO = new CardapioProdutoSaveDTO();
+        cardapioProdutoSaveDTO.setMessage("Associado com sucesso");
+        cardapioProdutoSaveDTO.setProduto(produto);
+        cardapioProdutoSaveDTO.setCardapio(cardapio);
+        return  cardapioProdutoSaveDTO;
+    }
+    public CardapioProduto instanciarCardapioProduto(Produto produto, Cardapio cardapio){
+        CardapioProduto cardapioProduto = new CardapioProduto();
+        cardapioProduto.setProduto(produto);
+        cardapioProduto.setCardapio(cardapio);
+        return cardapioProduto;
     }
 }

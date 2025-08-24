@@ -2,6 +2,7 @@ package com.restaurante01.api_restaurante.cardapioproduto.controller;
 
 
 import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoDTO;
+import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoSaveDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.entity.CardapioProduto;
 import com.restaurante01.api_restaurante.cardapioproduto.service.CardapioProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,8 @@ public class CardapioProdutoController {
         return ResponseEntity.ok(cardapioProdutoService.listarCardapiosProdutos());
     }
     @PostMapping("/associar-produto-a-cardapio")
-    public ResponseEntity<CardapioProduto> associarProdutoCardapio(@RequestBody CardapioProduto cardapioProduto){
-        return ResponseEntity.ok(cardapioProdutoService.associarProdutoCardapio(cardapioProduto));
+    public ResponseEntity<CardapioProdutoSaveDTO> associarProdutoCardapio(@RequestParam Long idProduto,
+                                                                          @RequestParam Long idCardapio){
+        return ResponseEntity.ok(cardapioProdutoService.associarProdutoCardapio(idProduto,idCardapio));
     }
 }

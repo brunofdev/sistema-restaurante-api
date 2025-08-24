@@ -5,6 +5,7 @@ import com.restaurante01.api_restaurante.cardapio.entity.Cardapio;
 import com.restaurante01.api_restaurante.cardapio.mapper.CardapioMapper;
 import com.restaurante01.api_restaurante.cardapio.service.CardapioService;
 import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoDTO;
+import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoSaveDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.entity.CardapioProduto;
 import com.restaurante01.api_restaurante.cardapioproduto.mapper.CardapioProdutoMapper;
 import com.restaurante01.api_restaurante.cardapioproduto.repository.CardapioProdutoRepository;
@@ -41,12 +42,15 @@ public class CardapioProdutoService {
     public List<CardapioProdutoDTO> listarCardapiosProdutos(){
         return cardapioProdutoMapper.mapearCardapioComProduto(cardapioProdutoRepository.findAll());
     }
-    public CardapioProduto associarProdutoCardapio(Long idProduto, Long idCardapio){
+    public CardapioProdutoSaveDTO associarProdutoCardapio(Long idProduto, Long idCardapio){
         Produto produto = produtoMapper.mapearUmaDtoParaEntidade(produtoService.listarUmProdutoPorId(idProduto));
         Cardapio cardapio = cardapioMapper.mapearUmaDtoParaEntidade(cardapioService.listarUmCardapio(idCardapio));
-        CardapioProduto cardapioProduto = new CardapioProduto();
-        cardapioProduto.setProduto(produto);
-        cardapioProduto.setCardapio(cardapio);
-        return cardapioProduto;
+        cardapioProdutoRepository.save(cardapioProdutoMapper.instanciarCardapioProduto(produto, cardapio));
+        CardapioProdutoSaveDTO cardapioProdutoSaveDTO = cardapioProdutoMapper.instanciarCardapioProdutoSaveDTO(
+                produtoMapper.mapearUmaEntidadeParaDTO(produto),
+                cardapioMapper.mapearUmaEntidadeParaDTO(cardapio));
+        return cardapioProdutoSaveDTO;
+
+
     }
 }
