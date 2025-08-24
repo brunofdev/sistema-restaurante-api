@@ -54,6 +54,5 @@ public class CardapioProdutoMapper {
             dto.getProdutos().add(produtoCustomDTO);
     }
         return new ArrayList<>(map.values());
-
     }
 }

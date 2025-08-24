@@ -39,6 +39,7 @@ public class CardapioProduto {
 
     public CardapioProduto(){
     }
+
     public CardapioProduto(
                            Long id, Cardapio cardapio, Produto produto, Double precoCustomizado,
                            int quantidadeCustomizada, Boolean disponibilidadeCustomizada,

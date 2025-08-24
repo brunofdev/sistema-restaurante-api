@@ -50,4 +50,9 @@ public class CardapioService {
         cardapioRepository.delete(cardapioDeletado);
         return cardapioMapper.mapearUmaEntidadeParaDTO(cardapioDeletado);
     }
+
+    public CardapioDTO listarUmCardapio(Long idCardapio) {
+        return cardapioMapper.mapearUmaEntidadeParaDTO(cardapioRepository.findById(idCardapio).orElseThrow(() ->
+        new CardapioNaoEncontradoException("Cardapio não encontrado")));
+    }
 }
