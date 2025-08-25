@@ -6,8 +6,6 @@ import com.restaurante01.api_restaurante.cardapio.mapper.CardapioMapper;
 import com.restaurante01.api_restaurante.cardapio.service.CardapioService;
 import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioComListaProdutoDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoAssociacaoDTO;
-import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoDTO;
-import com.restaurante01.api_restaurante.cardapioproduto.entity.CardapioProduto;
 import com.restaurante01.api_restaurante.cardapioproduto.factory.CardapioProdutoFactory;
 import com.restaurante01.api_restaurante.cardapioproduto.mapper.CardapioProdutoMapper;
 import com.restaurante01.api_restaurante.cardapioproduto.repository.CardapioProdutoRepository;
