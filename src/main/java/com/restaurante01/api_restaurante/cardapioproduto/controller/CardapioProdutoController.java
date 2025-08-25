@@ -26,7 +26,7 @@ public class CardapioProdutoController {
     public ResponseEntity<List<CardapioComListaProdutoDTO>> listarCardapioProdutos() {
         return ResponseEntity.ok(cardapioProdutoService.listarCardapiosProdutos());
     }
-    @PostMapping("/associar-produto-a-cardapio")
+    @PostMapping("/associar-cardapioproduto")
     public ResponseEntity<CardapioProdutoAssociacaoDTO> associarProdutoCardapio(@RequestParam Long idProduto,
                                                                                 @RequestParam Long idCardapio) {
         return ResponseEntity.status(HttpStatus.CREATED).body(cardapioProdutoService.associarProdutoAoCardapio(idProduto, idCardapio));
