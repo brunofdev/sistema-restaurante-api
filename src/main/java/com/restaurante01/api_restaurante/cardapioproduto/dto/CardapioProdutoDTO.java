@@ -1,32 +1,36 @@
 package com.restaurante01.api_restaurante.cardapioproduto.dto;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.restaurante01.api_restaurante.produto.dto.ProdutoCustomDTO;
 
-
-import java.time.LocalDate;
-import java.util.List;
-
+import com.restaurante01.api_restaurante.cardapio.entity.Cardapio;
+import com.restaurante01.api_restaurante.produto.entity.Produto;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 public class CardapioProdutoDTO {
     private Long id;
-    private String nome;
-    private String descricao;
-    private Boolean disponibilidade;
-    private LocalDate dataInicio;
-    private LocalDate dataFim;
+    private Cardapio cardapio;
+    private Produto produto;
+    private Double precoCustomizado;
+    private Integer quantidadeCustomizada;
+    private String descricaoCustomizada;
+    private Boolean disponibilidadeCustomizada;
+    private String observacao;
 
-    private List<ProdutoCustomDTO> produtos;
+    public CardapioProdutoDTO() {
+    }
 
-    public CardapioProdutoDTO(){};
-    public CardapioProdutoDTO(Long id, String nome, String descricao, Boolean disponibilidade,
-                              LocalDate dataInicio, LocalDate dataFim, List<ProdutoCustomDTO> produtos) {
+    public CardapioProdutoDTO(Long id, Cardapio cardapio, Produto produto, Double precoCustomizado,
+                              Integer quantidadeCustomizada, String descricaoCustomizada,
+                              Boolean disponibilidadeCustomizada, String observacao) {
         this.id = id;
-        this.nome = nome;
-        this.descricao = descricao;
-        this.disponibilidade = disponibilidade;
-        this.dataInicio = dataInicio;
-        this.dataFim = dataFim;
-        this.produtos = produtos;
+        this.cardapio = cardapio;
+        this.produto = produto;
+        this.precoCustomizado = precoCustomizado;
+        this.quantidadeCustomizada = quantidadeCustomizada;
+        this.descricaoCustomizada = descricaoCustomizada;
+        this.disponibilidadeCustomizada = disponibilidadeCustomizada;
+        this.observacao = observacao;
     }
 
     public Long getId() {
@@ -37,51 +41,59 @@ public class CardapioProdutoDTO {
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public Cardapio getCardapio() {
+        return cardapio;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setCardapio(Cardapio cardapio) {
+        this.cardapio = cardapio;
     }
 
-    public String getDescricao() {
-        return descricao;
+    public Produto getProduto() {
+        return produto;
     }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
+    public void setProduto(Produto produto) {
+        this.produto = produto;
     }
 
-    public Boolean getDisponibilidade() {
-        return disponibilidade;
+    public Double getPrecoCustomizado() {
+        return precoCustomizado;
     }
 
-    public void setDisponibilidade(Boolean disponibilidade) {
-        this.disponibilidade = disponibilidade;
+    public void setPrecoCustomizado(Double precoCustomizado) {
+        this.precoCustomizado = precoCustomizado;
     }
 
-    public LocalDate getDataInicio() {
-        return dataInicio;
+    public Integer getQuantidadeCustomizada() {
+        return quantidadeCustomizada;
     }
 
-    public void setDataInicio(LocalDate dataInicio) {
-        this.dataInicio = dataInicio;
+    public void setQuantidadeCustomizada(Integer quantidadeCustomizada) {
+        this.quantidadeCustomizada = quantidadeCustomizada;
     }
 
-    public LocalDate getDataFim() {
-        return dataFim;
+    public String getDescricaoCustomizada() {
+        return descricaoCustomizada;
     }
 
-    public void setDataFim(LocalDate dataFim) {
-        this.dataFim = dataFim;
+    public void setDescricaoCustomizada(String descricaoCustomizada) {
+        this.descricaoCustomizada = descricaoCustomizada;
     }
 
-    public List<ProdutoCustomDTO> getProdutos() {
-        return produtos;
+    public Boolean getDisponibilidadeCustomizada() {
+        return disponibilidadeCustomizada;
     }
 
-    public void setProdutos(List<ProdutoCustomDTO> produtos) {
-        this.produtos = produtos;
+    public void setDisponibilidadeCustomizada(Boolean disponibilidadeCustomizada) {
+        this.disponibilidadeCustomizada = disponibilidadeCustomizada;
+    }
+
+    public String getObservacao() {
+        return observacao;
+    }
+
+    public void setObservacao(String observacao) {
+        this.observacao = observacao;
     }
 }

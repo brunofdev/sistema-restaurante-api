@@ -1,13 +1,13 @@
 package com.restaurante01.api_restaurante.cardapioproduto.controller;
 
 
+import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioComListaProdutoDTO;
+import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoAssociacaoDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoDTO;
-import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoSaveDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.entity.CardapioProduto;
 import com.restaurante01.api_restaurante.cardapioproduto.service.CardapioProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,15 +17,17 @@ import java.util.List;
 @RequestMapping("/cardapioproduto")
 public class CardapioProdutoController {
 
-    @Autowired private CardapioProdutoService cardapioProdutoService;
+    @Autowired
+    private CardapioProdutoService cardapioProdutoService;
 
     @GetMapping("/obter-todos-cardapios")
-    public ResponseEntity<List<CardapioProdutoDTO>> listarCardapioProdutos(){
+    public ResponseEntity<List<CardapioComListaProdutoDTO>> listarCardapioProdutos() {
         return ResponseEntity.ok(cardapioProdutoService.listarCardapiosProdutos());
     }
+
     @PostMapping("/associar-produto-a-cardapio")
-    public ResponseEntity<CardapioProdutoSaveDTO> associarProdutoCardapio(@RequestParam Long idProduto,
-                                                                          @RequestParam Long idCardapio){
-        return ResponseEntity.ok(cardapioProdutoService.associarProdutoCardapio(idProduto,idCardapio));
+    public ResponseEntity<CardapioProdutoAssociacaoDTO> associarProdutoCardapio(@RequestParam Long idProduto,
+                                                                                @RequestParam Long idCardapio) {
+        return ResponseEntity.ok(cardapioProdutoService.associarProdutoAoCardapio(idProduto, idCardapio));
     }
 }

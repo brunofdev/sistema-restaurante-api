@@ -4,16 +4,13 @@ import com.restaurante01.api_restaurante.cardapio.dto.CardapioDTO;
 
 import com.restaurante01.api_restaurante.produto.dto.ProdutoDTO;
 
-
-import java.time.LocalDate;
-
-public class CardapioProdutoSaveDTO {
+public class CardapioProdutoAssociacaoDTO {
     private String message;
     private ProdutoDTO produto;
     private CardapioDTO cardapio;
 
-    public CardapioProdutoSaveDTO(){};
-    public CardapioProdutoSaveDTO(String message, ProdutoDTO produto, CardapioDTO cardapio) {
+    public CardapioProdutoAssociacaoDTO(){};
+    public CardapioProdutoAssociacaoDTO(String message, ProdutoDTO produto, CardapioDTO cardapio) {
         this.message = message;
         this.produto = produto;
         this.cardapio = cardapio;
