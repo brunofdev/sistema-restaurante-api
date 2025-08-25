@@ -44,7 +44,7 @@ public class ProdutoService {
         return produtoMapper.mapearUmaEntidadeParaDTO(produtoRepository.findById(id).orElseThrow(() ->
                 new ProdutoNaoEncontradoException("Produto não encontrado")));
     }
-    private Produto buscarProdutoPorId(long id) {
+    public Produto buscarProdutoPorId(long id) {
         return produtoRepository.findById(id)
                 .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto não encontrado"));
     }

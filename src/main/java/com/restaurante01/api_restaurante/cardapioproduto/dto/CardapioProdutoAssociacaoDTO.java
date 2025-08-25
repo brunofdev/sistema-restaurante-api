@@ -2,18 +2,22 @@ package com.restaurante01.api_restaurante.cardapioproduto.dto;
 
 import com.restaurante01.api_restaurante.cardapio.dto.CardapioDTO;
 
+import com.restaurante01.api_restaurante.cardapio.entity.Cardapio;
 import com.restaurante01.api_restaurante.produto.dto.ProdutoDTO;
+import com.restaurante01.api_restaurante.produto.entity.Produto;
 
 public class CardapioProdutoAssociacaoDTO {
     private String message;
-    private ProdutoDTO produto;
-    private CardapioDTO cardapio;
+    private CardapioDTO cardapioDTO;
+    private ProdutoDTO produtoDTO;
 
-    public CardapioProdutoAssociacaoDTO(){};
-    public CardapioProdutoAssociacaoDTO(String message, ProdutoDTO produto, CardapioDTO cardapio) {
+    public CardapioProdutoAssociacaoDTO() {
+    }
+
+    public CardapioProdutoAssociacaoDTO(String message, ProdutoDTO produtoDTO, CardapioDTO cardapioDTO) {
         this.message = message;
-        this.produto = produto;
-        this.cardapio = cardapio;
+        this.produtoDTO = produtoDTO;
+        this.cardapioDTO = cardapioDTO;
     }
 
     public String getMessage() {
@@ -24,19 +28,19 @@ public class CardapioProdutoAssociacaoDTO {
         this.message = message;
     }
 
-    public ProdutoDTO getProduto() {
-        return produto;
+    public ProdutoDTO getProdutoDTO() {
+        return produtoDTO;
     }
 
-    public void setProduto(ProdutoDTO produto) {
-        this.produto = produto;
+    public void setProdutoDTO(ProdutoDTO produtoDTO) {
+        this.produtoDTO = produtoDTO;
     }
 
-    public CardapioDTO getCardapio() {
-        return cardapio;
+    public CardapioDTO getCardapioDTO() {
+        return cardapioDTO;
     }
 
-    public void setCardapio(CardapioDTO cardapio) {
-        this.cardapio = cardapio;
+    public void setCardapioDTO(CardapioDTO cardapioDTO) {
+        this.cardapioDTO = cardapioDTO;
     }
 }

@@ -42,7 +42,7 @@ public class CardapioProduto {
 
     public CardapioProduto(
                            Long id, Cardapio cardapio, Produto produto, Double precoCustomizado,
-                           int quantidadeCustomizada, Boolean disponibilidadeCustomizada,
+                           Integer quantidadeCustomizada, Boolean disponibilidadeCustomizada,
                            String observacao, String descricaoCustomizada)
     {
         this.cardapio = cardapio;

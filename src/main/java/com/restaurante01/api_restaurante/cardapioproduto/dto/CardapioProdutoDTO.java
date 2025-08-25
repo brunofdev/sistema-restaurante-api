@@ -1,6 +1,8 @@
 package com.restaurante01.api_restaurante.cardapioproduto.dto;
 
+import com.restaurante01.api_restaurante.cardapio.dto.CardapioDTO;
 import com.restaurante01.api_restaurante.cardapio.entity.Cardapio;
+import com.restaurante01.api_restaurante.produto.dto.ProdutoDTO;
 import com.restaurante01.api_restaurante.produto.entity.Produto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -9,8 +11,8 @@ import jakarta.persistence.ManyToOne;
 
 public class CardapioProdutoDTO {
     private Long id;
-    private Cardapio cardapio;
-    private Produto produto;
+    private CardapioDTO cardapio;
+    private ProdutoDTO produto;
     private Double precoCustomizado;
     private Integer quantidadeCustomizada;
     private String descricaoCustomizada;
@@ -20,7 +22,7 @@ public class CardapioProdutoDTO {
     public CardapioProdutoDTO() {
     }
 
-    public CardapioProdutoDTO(Long id, Cardapio cardapio, Produto produto, Double precoCustomizado,
+    public CardapioProdutoDTO(Long id, CardapioDTO cardapio, ProdutoDTO produto, Double precoCustomizado,
                               Integer quantidadeCustomizada, String descricaoCustomizada,
                               Boolean disponibilidadeCustomizada, String observacao) {
         this.id = id;
@@ -41,19 +43,19 @@ public class CardapioProdutoDTO {
         this.id = id;
     }
 
-    public Cardapio getCardapio() {
+    public CardapioDTO getCardapio() {
         return cardapio;
     }
 
-    public void setCardapio(Cardapio cardapio) {
+    public void setCardapio(CardapioDTO cardapio) {
         this.cardapio = cardapio;
     }
 
-    public Produto getProduto() {
+    public ProdutoDTO getProduto() {
         return produto;
     }
 
-    public void setProduto(Produto produto) {
+    public void setProduto(ProdutoDTO produto) {
         this.produto = produto;
     }
 
