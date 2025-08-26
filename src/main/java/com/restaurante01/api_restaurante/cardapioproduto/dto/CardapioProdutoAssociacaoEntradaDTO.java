@@ -1,15 +1,21 @@
 package com.restaurante01.api_restaurante.cardapioproduto.dto;
 
+import jakarta.validation.constraints.NotNull;
+
 public class CardapioProdutoAssociacaoEntradaDTO {
-    private long idCardapio;
-    private long idProduto;
+    @NotNull(message = "ID do cardapio deve ser enviada")
+    private Long idCardapio;
+    @NotNull (message = "ID do produto deve ser enviada")
+    private Long idProduto;
     private Double precoCustomizado;
     private Integer quantidadeCustomizada;
     private String descricaoCustomizada;
     private Boolean disponibilidadeCustomizada;
     private String observacao;
 
-    public CardapioProdutoAssociacaoEntradaDTO(long idCardapio, long idProduto,Double precoCustomizado, Integer quantidadeCustomizada, String descricaoCustomizada, Boolean disponibilidadeCustomizada, String observacao) {
+    public CardapioProdutoAssociacaoEntradaDTO(){}
+
+    public CardapioProdutoAssociacaoEntradaDTO(Long idCardapio, Long idProduto,Double precoCustomizado, Integer quantidadeCustomizada, String descricaoCustomizada, Boolean disponibilidadeCustomizada, String observacao) {
         this.idCardapio = idCardapio;
         this.idProduto = idProduto;
         this.precoCustomizado = precoCustomizado;
@@ -19,19 +25,19 @@ public class CardapioProdutoAssociacaoEntradaDTO {
         this.observacao = observacao;
     }
 
-    public long getIdCardapio() {
+    public Long getIdCardapio() {
         return idCardapio;
     }
 
-    public void setIdCardapio(long idCardapio) {
+    public void setIdCardapio(Long idCardapio) {
         this.idCardapio = idCardapio;
     }
 
-    public long getIdProduto() {
+    public Long getIdProduto() {
         return idProduto;
     }
 
-    public void setIdProduto(long idProduto) {
+    public void setIdProduto(Long idProduto) {
         this.idProduto = idProduto;
     }
 

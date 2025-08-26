@@ -5,6 +5,7 @@ import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoAsso
 import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioComListaProdutoDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoAssociacaoRespostaDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.service.CardapioProdutoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class CardapioProdutoController {
         return ResponseEntity.ok(cardapioProdutoService.listarCardapiosProdutos());
     }
     @PostMapping("/associar-cardapioproduto")
-    public ResponseEntity<CardapioProdutoAssociacaoRespostaDTO> associarProdutoCardapio(@RequestBody CardapioProdutoAssociacaoEntradaDTO cardapioProdutoAssociacaoEntradaDTO) {
+    public ResponseEntity<CardapioProdutoAssociacaoRespostaDTO> associarProdutoCardapio(@RequestBody @Valid CardapioProdutoAssociacaoEntradaDTO cardapioProdutoAssociacaoEntradaDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(cardapioProdutoService.associarProdutoAoCardapio(cardapioProdutoAssociacaoEntradaDTO));
     }
 }
