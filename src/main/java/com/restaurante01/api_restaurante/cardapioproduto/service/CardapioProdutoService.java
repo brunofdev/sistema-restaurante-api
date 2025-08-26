@@ -4,8 +4,9 @@ package com.restaurante01.api_restaurante.cardapioproduto.service;
 
 import com.restaurante01.api_restaurante.cardapio.entity.Cardapio;
 import com.restaurante01.api_restaurante.cardapio.service.CardapioService;
+import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoAssociacaoEntradaDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioComListaProdutoDTO;
-import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoAssociacaoDTO;
+import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoAssociacaoRespostaDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.entity.CardapioProduto;
 import com.restaurante01.api_restaurante.cardapioproduto.mapper.CardapioProdutoMapper;
 import com.restaurante01.api_restaurante.cardapioproduto.repository.CardapioProdutoRepository;
@@ -41,11 +42,11 @@ public class CardapioProdutoService {
         return cardapioProdutoMapper.mapearCardapioComListaDeProduto(cardapioProdutoRepository.findAll());
     }
 
-    public CardapioProdutoAssociacaoDTO associarProdutoAoCardapio(Long idProduto, Long idCardapio) {
-        Produto produto = produtoService.buscarProdutoPorId(idProduto);
-        Cardapio cardapio = cardapioService.buscarCardapioPorId(idCardapio);
-        CardapioProduto cardapioProduto = cardapioProdutoMapper.mapearCardapioProduto(produto, cardapio);
+    public CardapioProdutoAssociacaoRespostaDTO associarProdutoAoCardapio(CardapioProdutoAssociacaoEntradaDTO cardapioProdutoAssociacaoEntradaDTO) {
+        Produto produto = produtoService.buscarProdutoPorId(cardapioProdutoAssociacaoEntradaDTO.getIdProduto()); /*Pode ocorrer exception aqui*/
+        Cardapio cardapio = cardapioService.buscarCardapioPorId(cardapioProdutoAssociacaoEntradaDTO.getIdCardapio());/*Pode ocorrer exception aqui*/
+        CardapioProduto cardapioProduto = cardapioProdutoMapper.mapearCardapioProduto(produto, cardapio, cardapioProdutoAssociacaoEntradaDTO);
         cardapioProdutoRepository.save(cardapioProduto);
-        return cardapioProdutoMapper.criarCardapioProdutoAssociacaoDTO(cardapioProduto);
+        return cardapioProdutoMapper.mapearCardapioProdutoAssociacaoDTO(cardapioProduto);
     }
 }

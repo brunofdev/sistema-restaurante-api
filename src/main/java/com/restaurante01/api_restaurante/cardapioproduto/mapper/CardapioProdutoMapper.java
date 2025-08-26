@@ -2,8 +2,9 @@ package com.restaurante01.api_restaurante.cardapioproduto.mapper;
 
 import com.restaurante01.api_restaurante.cardapio.entity.Cardapio;
 import com.restaurante01.api_restaurante.cardapio.mapper.CardapioMapper;
+import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoAssociacaoEntradaDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioComListaProdutoDTO;
-import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoAssociacaoDTO;
+import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoAssociacaoRespostaDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.entity.CardapioProduto;
 import com.restaurante01.api_restaurante.core.mapper.AbstractMapper;
@@ -53,11 +54,16 @@ public class CardapioProdutoMapper extends AbstractMapper<CardapioProduto, Carda
                 cardapioProdutoDTO.getDescricaoCustomizada()
         );
     }
-    public CardapioProdutoAssociacaoDTO criarCardapioProdutoAssociacaoDTO(CardapioProduto cardapioProduto){
-        return new CardapioProdutoAssociacaoDTO(
+    public CardapioProdutoAssociacaoRespostaDTO mapearCardapioProdutoAssociacaoDTO(CardapioProduto cardapioProduto){
+        return new CardapioProdutoAssociacaoRespostaDTO(
                 "O produto: " + cardapioProduto.getProduto().getNome() + " foi associado ao " + cardapioProduto.getCardapio().getNome(),
+                cardapioMapper.mapearUmaEntidadeParaDTO(cardapioProduto.getCardapio()),
                 produtoMapper.mapearUmaEntidadeParaDTO(cardapioProduto.getProduto()),
-                cardapioMapper.mapearUmaEntidadeParaDTO(cardapioProduto.getCardapio())
+                cardapioProduto.getPrecoCustomizado(),
+                cardapioProduto.getQuantidadeCustomizada(),
+                cardapioProduto.getDisponibilidadeCustomizada(),
+                cardapioProduto.getObservacao(),
+                cardapioProduto.getDescricaoCustomizada()
         );
     }
 
@@ -67,7 +73,7 @@ public class CardapioProdutoMapper extends AbstractMapper<CardapioProduto, Carda
         for(CardapioProduto cp : listaDeCardapioProduto){
             Cardapio cardapio = cp.getCardapio();
             CardapioComListaProdutoDTO dto = map.computeIfAbsent(cardapio.getId(), id ->{
-                return criarCardapioProdutoDTO(cardapio);
+                return mapearCardapioProdutoDTO(cardapio);
         });
             Produto produto = cp.getProduto();
             ProdutoCustomDTO produtoCustomDTO = criarProdutoCustomDTO(produto, cp);
@@ -75,19 +81,19 @@ public class CardapioProdutoMapper extends AbstractMapper<CardapioProduto, Carda
     }
         return new ArrayList<>(map.values());
     }
-    public CardapioProduto mapearCardapioProduto(Produto produto, Cardapio cardapio){
+    public CardapioProduto mapearCardapioProduto(Produto produto, Cardapio cardapio, CardapioProdutoAssociacaoEntradaDTO cardapioProdutoAssociacaoEntradaDTO){
         return new CardapioProduto(
                 null,
                 cardapio,
                 produto,
-                null,
-                null,
-                true,
-                null,
-                null
+                cardapioProdutoAssociacaoEntradaDTO.getPrecoCustomizado(),
+                cardapioProdutoAssociacaoEntradaDTO.getQuantidadeCustomizada(),
+                cardapioProdutoAssociacaoEntradaDTO.getDisponibilidadeCustomizada(),
+                cardapioProdutoAssociacaoEntradaDTO.getObservacao(),
+                cardapioProdutoAssociacaoEntradaDTO.getDescricaoCustomizada()
         );
     }
-    public CardapioComListaProdutoDTO criarCardapioProdutoDTO(Cardapio cardapio) {
+    public CardapioComListaProdutoDTO mapearCardapioProdutoDTO(Cardapio cardapio) {
         CardapioComListaProdutoDTO cardapioProdutoDTO = new CardapioComListaProdutoDTO();
         cardapioProdutoDTO.setId(cardapio.getId());
         cardapioProdutoDTO.setNome(cardapio.getNome());
