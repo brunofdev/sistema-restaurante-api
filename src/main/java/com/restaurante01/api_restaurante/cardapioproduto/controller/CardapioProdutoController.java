@@ -31,4 +31,14 @@ public class CardapioProdutoController {
                                                                                 @RequestParam Long idCardapio) {
         return ResponseEntity.status(HttpStatus.CREATED).body(cardapioProdutoService.associarProdutoAoCardapio(idProduto, idCardapio));
     }
+    @DeleteMapping("cardapio{idCardapio}/produto{idProduto}")
+    public ResponseEntity<Void> desassociarProdutoCardapio(@PathVariable long idCardapio, @PathVariable long idProduto){
+        boolean removido = cardapioProdutoService.desassociarProdutoCardapio(idCardapio, idProduto);
+        if(removido){
+            return ResponseEntity.noContent().build();
+        }
+        else{
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

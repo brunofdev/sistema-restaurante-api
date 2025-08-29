@@ -11,6 +11,7 @@ import com.restaurante01.api_restaurante.cardapioproduto.mapper.CardapioProdutoM
 import com.restaurante01.api_restaurante.cardapioproduto.repository.CardapioProdutoRepository;
 import com.restaurante01.api_restaurante.produto.entity.Produto;
 import com.restaurante01.api_restaurante.produto.service.ProdutoService;
+import org.hibernate.exception.DataException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,4 +49,25 @@ public class CardapioProdutoService {
         cardapioProdutoRepository.save(cardapioProduto);
         return cardapioProdutoMapper.criarCardapioProdutoAssociacaoDTO(cardapioProduto);
     }
+    public boolean desassociarProdutoCardapio(long idCardapio, long idProduto){
+        try {
+            cardapioProdutoRepository.deleteProdutoFromCardapio(idCardapio, idProduto);
+            return true;
+        }catch (DataException e){
+            return false;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
