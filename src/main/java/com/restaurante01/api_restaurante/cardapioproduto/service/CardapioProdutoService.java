@@ -28,15 +28,11 @@ public class CardapioProdutoService {
 
 
     @Autowired
-    public CardapioProdutoService(CardapioProdutoRepository cardapioProdutoRepository,
-                                  CardapioProdutoMapper cardapioProdutoMapper,
-                                  ProdutoService produtoService, CardapioService cardapioService
-                                 ) {
+    public CardapioProdutoService(CardapioProdutoRepository cardapioProdutoRepository,CardapioProdutoMapper cardapioProdutoMapper,ProdutoService produtoService, CardapioService cardapioService){
         this.cardapioProdutoRepository = cardapioProdutoRepository;
         this.cardapioProdutoMapper = cardapioProdutoMapper;
         this.produtoService = produtoService;
         this.cardapioService = cardapioService;
-
     }
 
     public List<CardapioComListaProdutoDTO> listarCardapiosProdutos() {
@@ -51,10 +47,12 @@ public class CardapioProdutoService {
         return cardapioProdutoMapper.mapearCardapioProdutoAssociacaoDTO(cardapioProduto);
     }
     public boolean desassociarProdutoCardapio(long idCardapio, long idProduto){
-        try {
-            cardapioProdutoRepository.deleteProdutoFromCardapio(idCardapio, idProduto);
-            return true;
-        }catch (DataException e){
+       int existeAssociado =  cardapioProdutoRepository.encontrarProdutoCardapio(idCardapio, idProduto);
+        if(existeAssociado >= 1){
+           cardapioProdutoRepository.deleteProdutoFromCardapio(idCardapio, idProduto);
+           return true;
+       }
+        else{
             return false;
         }
     }
