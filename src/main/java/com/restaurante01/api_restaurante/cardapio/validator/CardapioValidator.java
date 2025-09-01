@@ -1,13 +1,13 @@
 package com.restaurante01.api_restaurante.cardapio.validator;
 
-import com.restaurante01.api_restaurante.cardapio.dto.CardapioDTO;
+import com.restaurante01.api_restaurante.cardapio.dto.CardapioCreateDTO;
 import com.restaurante01.api_restaurante.cardapio.exceptions.*;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CardapioValidator {
 
-    public void validarCardapio(CardapioDTO cardapio){
+    public void validarCardapio(CardapioCreateDTO cardapio){
         if(cardapio.getNome() == null || cardapio.getNome().isEmpty()){
             throw new CardapioSemNomeException("O nome não pode ser vazio");
         }

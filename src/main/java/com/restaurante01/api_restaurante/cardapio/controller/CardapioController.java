@@ -1,5 +1,6 @@
 package com.restaurante01.api_restaurante.cardapio.controller;
 
+import com.restaurante01.api_restaurante.cardapio.dto.CardapioCreateDTO;
 import com.restaurante01.api_restaurante.cardapio.dto.CardapioDTO;
 import com.restaurante01.api_restaurante.cardapio.service.CardapioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +22,11 @@ public class CardapioController {
 
     }
     @PostMapping("/adicionar-novo-cardapio")
-    public ResponseEntity<CardapioDTO> adicionarNovoCardapio(@RequestBody CardapioDTO cardapioDTO){
+    public ResponseEntity<CardapioDTO> adicionarNovoCardapio(@RequestBody CardapioCreateDTO cardapioDTO){
         return ResponseEntity.ok(cardapioService.adicionarNovoCardapio(cardapioDTO));
     }
     @PutMapping("/atualizar-um-cardapio/{id}")
-    public ResponseEntity<CardapioDTO> atualizarCardapio(@PathVariable Long id, @RequestBody CardapioDTO cardapioDTO){
+    public ResponseEntity<CardapioDTO> atualizarCardapio(@PathVariable Long id, @RequestBody CardapioCreateDTO cardapioDTO){
         return ResponseEntity.ok(cardapioService.atualizarCardapio(id, cardapioDTO));
     }
     @DeleteMapping("deletar-por-id/{id}")
