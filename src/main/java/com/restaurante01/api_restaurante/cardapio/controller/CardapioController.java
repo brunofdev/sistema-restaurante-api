@@ -17,23 +17,21 @@ public class CardapioController {
     @Autowired
     private CardapioService cardapioService;
 
-    @GetMapping("/listar-todos-cardapios")
+    @GetMapping("/listar-todos")
     public ResponseEntity<List<CardapioDTO>> solicitarCardapios(){
         return ResponseEntity.ok(cardapioService.listarTodosCardapios());
-
     }
-    @PostMapping("/adicionar-novo-cardapio")
+    @PostMapping("/adicionar-novo")
     public ResponseEntity<CardapioDTO> adicionarNovoCardapio(@Valid @RequestBody CardapioCreateDTO cardapioDTO){
         return ResponseEntity.ok(cardapioService.adicionarNovoCardapio(cardapioDTO));
     }
-    @PutMapping("/atualizar-um-cardapio/{id}")
-    public ResponseEntity<CardapioDTO> atualizarCardapio(@PathVariable Long id, @Valid @RequestBody CardapioCreateDTO cardapioDTO){
-        return ResponseEntity.ok(cardapioService.atualizarCardapio(id, cardapioDTO));
+    @PutMapping("/atualizar-um/{cardapioId}")
+    public ResponseEntity<CardapioDTO> atualizarCardapio(@PathVariable Long cardapioId, @Valid @RequestBody CardapioCreateDTO cardapioDTO){
+        return ResponseEntity.ok(cardapioService.atualizarCardapio(cardapioId, cardapioDTO));
     }
-    @DeleteMapping("deletar-por-id/{id}")
-        public ResponseEntity<CardapioDTO> deletarCardapio(@PathVariable Long id){
-            cardapioService.deletarCardapio(id);
+    @DeleteMapping("{cardapioId}")
+        public ResponseEntity<CardapioDTO> deletarCardapio(@PathVariable Long cardapioId){
+            cardapioService.deletarCardapio(cardapioId);
             return ResponseEntity.noContent().build();
         }
-
 }

@@ -21,7 +21,7 @@ public class CardapioProdutoController {
     @Autowired
     private CardapioProdutoService cardapioProdutoService;
 
-    @GetMapping("/obter-todos-cardapios")
+    @GetMapping("/obter-todas-associacoes")
     public ResponseEntity<List<CardapioComListaProdutoDTO>> listarCardapioProdutos() {
         return ResponseEntity.ok(cardapioProdutoService.listarCardapiosProdutos());
     }
