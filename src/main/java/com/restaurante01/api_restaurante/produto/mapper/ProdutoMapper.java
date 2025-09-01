@@ -16,8 +16,8 @@ public class ProdutoMapper extends AbstractMapper<Produto, ProdutoDTO> {
     public ProdutoDTO mapearUmaEntidadeParaDTO(Produto produto){
          return new ProdutoDTO(
                 produto.getId(),
-                produto.getNome(),
-                produto.getDescricao(),
+                produto.getNome().trim().replaceAll("\\s+", " "),
+                produto.getDescricao().trim().replaceAll("\\s+", " "),
                 produto.getPreco(),
                 produto.getQuantidadeAtual(),
                 produto.getDisponibilidade()
@@ -27,8 +27,8 @@ public class ProdutoMapper extends AbstractMapper<Produto, ProdutoDTO> {
     public Produto mapearUmaDtoParaEntidade(ProdutoDTO produtoDTO) {
         return new Produto(
                 produtoDTO.getId(),
-                produtoDTO.getNome(),
-                produtoDTO.getDescricao(),
+                produtoDTO.getNome().trim().replaceAll("\\s+", " "),
+                produtoDTO.getDescricao().trim().replaceAll("\\s+", " "),
                 produtoDTO.getPreco(),
                 produtoDTO.getQuantidadeAtual(),
                 produtoDTO.getDisponibilidade()
@@ -39,8 +39,8 @@ public class ProdutoMapper extends AbstractMapper<Produto, ProdutoDTO> {
                 .collect(Collectors.toMap(ProdutoDTO::getId, dto -> dto));
     }
     public  void atualizarProduto(Produto produto, ProdutoDTO dto) {
-        produto.setNome(dto.getNome());
-        produto.setDescricao(dto.getDescricao());
+        produto.setNome(dto.getNome().trim().replaceAll("\\s+", " "));
+        produto.setDescricao(dto.getDescricao().trim().replaceAll("\\s+", " "));
         produto.setPreco(dto.getPreco());
         produto.setQuantidadeAtual(dto.getQuantidadeAtual());
         produto.setDisponibilidade(dto.getDisponibilidade());

@@ -6,4 +6,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CardapioRepository extends JpaRepository<Cardapio, Long> {
+
+    boolean existsByNome(String nome);
+
+
 }
