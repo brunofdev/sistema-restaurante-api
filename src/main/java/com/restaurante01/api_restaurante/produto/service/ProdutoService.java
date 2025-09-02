@@ -1,4 +1,5 @@
 package com.restaurante01.api_restaurante.produto.service;
+import com.restaurante01.api_restaurante.produto.dto.ProdutoCreateDTO;
 import com.restaurante01.api_restaurante.produto.exceptions.ProdutoNaoEncontradoException;
 import com.restaurante01.api_restaurante.produto.factory.ProdutoFactory;
 import com.restaurante01.api_restaurante.produto.mapper.ProdutoMapper;
@@ -13,8 +14,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-
 
 @Service
 public class ProdutoService {
@@ -51,7 +50,8 @@ public class ProdutoService {
     public List<ProdutoDTO> listarProdutosComQntdBaixa(){
         return produtoMapper.mapearListaDeEntidadeParaDTO(produtoRepository.findByQuantidadeAtualLessThan(11));
     }
-    public ProdutoDTO adicionarNovoProduto(ProdutoDTO produtoDTO) {
+    public ProdutoDTO adicionarNovoProduto(ProdutoCreateDTO produtoCreateDTO) {
+            ProdutoDTO produtoDTO = produtoMapper.mapearProdutoDTO(produtoCreateDTO);
             produtoValidator.validarProduto(produtoDTO);
             Produto novoProduto = ProdutoFactory.instanciarProduto(produtoDTO);  /* */
             Produto produtoSalvo = produtoRepository.save(novoProduto);

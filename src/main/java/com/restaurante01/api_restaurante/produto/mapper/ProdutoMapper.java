@@ -1,6 +1,7 @@
 package com.restaurante01.api_restaurante.produto.mapper;
 
 import com.restaurante01.api_restaurante.core.mapper.AbstractMapper;
+import com.restaurante01.api_restaurante.produto.dto.ProdutoCreateDTO;
 import com.restaurante01.api_restaurante.produto.dto.ProdutoDTO;
 import com.restaurante01.api_restaurante.produto.entity.Produto;
 import org.springframework.stereotype.Component;
@@ -51,5 +52,15 @@ public class ProdutoMapper extends AbstractMapper<Produto, ProdutoDTO> {
             atualizarProduto(produto, produtoAtualizado);
         }
         return produtosEncontrados;
+    }
+    public ProdutoDTO mapearProdutoDTO(ProdutoCreateDTO produtoCreateDTO){
+       return new ProdutoDTO(
+               null,
+               produtoCreateDTO.getNome(),
+               produtoCreateDTO.getDescricao(),
+               produtoCreateDTO.getPreco(),
+               produtoCreateDTO.getQuantidadeAtual(),
+               produtoCreateDTO.getDisponibilidade()
+       );
     }
 }

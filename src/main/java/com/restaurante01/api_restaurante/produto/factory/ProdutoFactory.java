@@ -15,7 +15,9 @@ public class ProdutoFactory {
         novoProduto.setDescricao(produtoDTO.getDescricao());
         novoProduto.setDisponibilidade(produtoDTO.getDisponibilidade());
         novoProduto.setQuantidadeAtual(produtoDTO.getQuantidadeAtual());
+        System.out.println(produtoDTO);
         return novoProduto;
+
     }
 
 }

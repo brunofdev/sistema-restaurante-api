@@ -1,8 +1,7 @@
 package com.restaurante01.api_restaurante.produto.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name = "produto")
@@ -11,19 +10,20 @@ public class Produto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Nome não pode ser vazio")
+    @NotBlank(message = "Nome não pode ser vazio")
     private String nome;
 
-    @NotNull(message = "Descrição não pode ser vazia")
+    @NotBlank(message = "Descrição não pode ser vazia")
     private String descricao;
 
-    @NotNull(message = "Preço não pode ser vazio")
-    @Positive(message = "preço deve ser positivo")
+    @NotNull(message = "Quantidade deve ser zero ou positivo")
+    @PositiveOrZero(message = "preço deve ser positivo")
     private Double preco;
 
+
+    @Min(value = 0, message = "Quantidade minima deve ser zero")
     private Long quantidadeAtual;
 
-    @NotNull(message = "Disponibilidade precisa ser definida")
     private Boolean disponibilidade;
 
     public Produto(){

@@ -2,11 +2,12 @@ package com.restaurante01.api_restaurante.produto.controller;
 
 
 import com.restaurante01.api_restaurante.produto.dto.LoteProdutosResponseDTO;
+import com.restaurante01.api_restaurante.produto.dto.ProdutoCreateDTO;
 import com.restaurante01.api_restaurante.produto.dto.ProdutoDTO;
 import com.restaurante01.api_restaurante.produto.service.ProdutoService;
-import com.restaurante01.api_restaurante.produto.entity.Produto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/produtos")
+@Validated
 public class ProdutoController {
     @Autowired
     private ProdutoService produtoService;
@@ -35,7 +37,7 @@ public class ProdutoController {
         return ResponseEntity.ok(produtoService.listarProdutosComQntdBaixa());
     }
     @PostMapping("/adicionar-produto")
-    public ResponseEntity<ProdutoDTO> adicionarProduto(@RequestBody ProdutoDTO produtoDTO){
+    public ResponseEntity<ProdutoDTO> adicionarProduto(@RequestBody ProdutoCreateDTO produtoDTO){
         return ResponseEntity.ok(produtoService.adicionarNovoProduto(produtoDTO));
     }
     @PutMapping("/atualizar-um-produto/{id}")
