@@ -1,9 +1,17 @@
 package com.restaurante01.api_restaurante.produto.dto;
 
+import jakarta.validation.constraints.*;
+
 public class ProdutoCreateDTO {
+    @NotBlank
     private String nome;
+    @NotBlank
     private String descricao;
+    @NotNull
+    @PositiveOrZero
     private Double preco;
+    @NotNull
+    @Min(0)
     private Long quantidadeAtual;
     private Boolean disponibilidade;
 
