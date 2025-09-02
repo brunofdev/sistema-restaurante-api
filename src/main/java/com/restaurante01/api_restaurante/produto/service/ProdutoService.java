@@ -1,4 +1,5 @@
 package com.restaurante01.api_restaurante.produto.service;
+import com.restaurante01.api_restaurante.cardapio.exceptions.CardapioNaoEncontradoException;
 import com.restaurante01.api_restaurante.produto.dto.ProdutoCreateDTO;
 import com.restaurante01.api_restaurante.produto.exceptions.ProdutoNaoEncontradoException;
 import com.restaurante01.api_restaurante.produto.factory.ProdutoFactory;
@@ -74,13 +75,9 @@ public class ProdutoService {
         produtoMapper.atualizarProduto(produtoExistente, produtoAtualizado);
         return produtoMapper.mapearUmaEntidadeParaDTO(produtoRepository.save(produtoExistente));
     }
-    public ProdutoDTO deletarProduto(long id) {
-        try {
-            Produto produtoDeletado = buscarProdutoPorId(id);
-            produtoRepository.delete(produtoDeletado);
-            return produtoMapper.mapearUmaEntidadeParaDTO(produtoDeletado);
-        } catch (DataIntegrityViolationException e) {
-            throw new ProdutoPossuiHistorico("Este produto possui histórico/vinculo com ItensPedidos, se fosse excluido perderiamos os dados deste histórico");
-        }
+    public void deletarProduto(long id) {
+        Produto produto = produtoRepository.findById(id)
+                .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto com id " + id + " não encontrado"));;
+        produtoRepository.delete(produto);
     }
 }

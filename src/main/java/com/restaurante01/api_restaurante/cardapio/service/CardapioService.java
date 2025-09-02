@@ -50,11 +50,10 @@ public class CardapioService {
                 .orElseThrow(() -> new CardapioNaoEncontradoException("Cardapio não encontrado no banco"));
         return cardapioMapper.mapearUmaEntidadeParaDTO(cardapioSalvo);
     }
-    public boolean deletarCardapio(Long id){
+    public void deletarCardapio(Long id){
         Cardapio cardapioDeletado = cardapioRepository.findById(id)
                 .orElseThrow(() -> new CardapioNaoEncontradoException("Cardápio com id " + id + " não encontrado"));
         cardapioRepository.delete(cardapioDeletado);
-        return true;
     }
 
     public CardapioDTO listarUmCardapio(Long idCardapio) {

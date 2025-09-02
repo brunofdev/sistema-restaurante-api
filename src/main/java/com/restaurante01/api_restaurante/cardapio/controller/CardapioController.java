@@ -30,7 +30,7 @@ public class CardapioController {
         return ResponseEntity.ok(cardapioService.atualizarCardapio(cardapioId, cardapioDTO));
     }
     @DeleteMapping("{cardapioId}")
-        public ResponseEntity<CardapioDTO> deletarCardapio(@PathVariable Long cardapioId){
+        public ResponseEntity<Void> deletarCardapio(@PathVariable("cardapioId") Long cardapioId){
             cardapioService.deletarCardapio(cardapioId);
             return ResponseEntity.noContent().build();
         }
