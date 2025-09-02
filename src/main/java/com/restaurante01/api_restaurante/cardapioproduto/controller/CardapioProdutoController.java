@@ -6,16 +6,20 @@ import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioComListaPro
 import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoAssociacaoRespostaDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.service.CardapioProdutoService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/cardapioproduto")
+@Validated
 public class CardapioProdutoController {
 
     @Autowired
@@ -30,7 +34,7 @@ public class CardapioProdutoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(cardapioProdutoService.associarProdutoAoCardapio(cardapioProdutoAssociacaoEntradaDTO));
     }
     @DeleteMapping("cardapio{idCardapio}/produto{idProduto}")
-    public ResponseEntity<Void> desassociarProdutoCardapio(@PathVariable long idCardapio, @PathVariable long idProduto){
+    public ResponseEntity<Void> desassociarProdutoCardapio(@PathVariable @Min(1) long idCardapio, @PathVariable @Min(1) long idProduto){
         boolean removido = cardapioProdutoService.removerAssociacaoCardapioProduto(idCardapio, idProduto);
         if(removido){
             return ResponseEntity.noContent().build();

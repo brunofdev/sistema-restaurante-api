@@ -10,11 +10,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class CardapioValidator {
 
-    public void verificarCardapioExistente(boolean valor){
-
-        return;
-    }
-
     public void validarCardapio(CardapioCreateDTO cardapio, boolean valor){
         if(valor == true){
             throw new CardapioMesmoNomeExcepetion("Já existe cardapio com o mesmo nome");
