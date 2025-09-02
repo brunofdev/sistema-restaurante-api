@@ -15,21 +15,6 @@ import java.util.Map;
 @ControllerAdvice(assignableTypes = ProdutoController.class)
 public class ProdutoExceptionHandler {
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<String> handleJsonParseError(HttpMessageNotReadableException ex) {
-        String mensagemAmigavel =
-                " ::::::::::Dados enviados de maneira errada::::::::::\n " +
-                ":::Json deve ser neste formato para utilizar a api::::" +
-                "{\n" +
-                "    \"nome\": \"Café Premium master\", STRING\n" +
-                "    \"preco\": 79.14,  DOUBLE\n" +
-                "    \"descricao\": \"Café especial torrado e moído\", STRING\n" +
-                "    \"quantidadeAtual\": 10, LONG\n" +
-                "    \"disponibilidade\": dwdqwd  BOOLEAN\n" +
-                "    }\n";
-        return new ResponseEntity<>(mensagemAmigavel, HttpStatus.BAD_REQUEST);
-        }
-
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Map<String, Object>> ConstraintViolationExceptionHandlerException(ConstraintViolationException ex) {
         Map<String, Object> body = new HashMap<>();
