@@ -1,6 +1,4 @@
 package com.restaurante01.api_restaurante.produto.controller;
-
-
 import com.restaurante01.api_restaurante.produto.dto.saida.LoteProdutosResponseDTO;
 import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoCreateDTO;
 import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoDTO;

@@ -54,7 +54,7 @@ public class ProdutoService {
     }
     public ProdutoDTO adicionarNovoProduto(ProdutoCreateDTO produtoCreateDTO) {
             ProdutoDTO produtoDTO = produtoMapper.mapearProdutoDTO(produtoCreateDTO);
-            produtoValidator.validarProduto(produtoDTO, encontrarPorNome(produtoDTO.getNome()));
+            produtoValidator.validarProduto(produtoDTO);
             Produto novoProduto = ProdutoFactory.instanciarProduto(produtoDTO);  /* */
             Produto produtoSalvo = produtoRepository.save(novoProduto);
             return produtoMapper.mapearUmaEntidadeParaDTO(produtoSalvo);
@@ -71,7 +71,7 @@ public class ProdutoService {
         return produtoMapper.mapearListaDeEntidadeParaDTO(produtosAtualizados);
     }
     public ProdutoDTO atualizarProduto(ProdutoDTO produtoAtualizado) {
-        produtoValidator.validarProduto(produtoAtualizado, encontrarPorNome(FormatarString.limparEspacos(produtoAtualizado.getNome())));
+        produtoValidator.validarProduto(produtoAtualizado);
         Produto produtoExistente = buscarProdutoPorId(produtoAtualizado.getId());
         produtoMapper.atualizarProduto(produtoExistente, produtoAtualizado);
         return produtoMapper.mapearUmaEntidadeParaDTO(produtoRepository.save(produtoExistente));
