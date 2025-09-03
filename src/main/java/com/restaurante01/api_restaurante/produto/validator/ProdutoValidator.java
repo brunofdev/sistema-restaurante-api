@@ -1,7 +1,6 @@
 package com.restaurante01.api_restaurante.produto.validator;
 
-import com.restaurante01.api_restaurante.produto.dto.ProdutoDTO;
-import com.restaurante01.api_restaurante.produto.exceptions.*;
+import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

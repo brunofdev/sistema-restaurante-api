@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.produto.dto;
+package com.restaurante01.api_restaurante.produto.dto.saida;
 
 public class ProdutoCustomDTO {
     private Long idProduto;

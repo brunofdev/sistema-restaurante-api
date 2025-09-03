@@ -1,13 +1,7 @@
 package com.restaurante01.api_restaurante.cardapioproduto.dto;
 
 import com.restaurante01.api_restaurante.cardapio.dto.CardapioDTO;
-import com.restaurante01.api_restaurante.cardapio.entity.Cardapio;
-import com.restaurante01.api_restaurante.produto.dto.ProdutoDTO;
-import com.restaurante01.api_restaurante.produto.entity.Produto;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoDTO;
 
 public class CardapioProdutoDTO {
     private Long id;

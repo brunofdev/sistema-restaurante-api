@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.produto.dto;
+package com.restaurante01.api_restaurante.produto.dto.entrada;
 
 import jakarta.validation.constraints.*;
 

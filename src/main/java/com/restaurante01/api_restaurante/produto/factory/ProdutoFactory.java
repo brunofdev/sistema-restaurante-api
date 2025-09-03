@@ -1,11 +1,7 @@
 package com.restaurante01.api_restaurante.produto.factory;
 
-import com.restaurante01.api_restaurante.produto.dto.ProdutoDTO;
+import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoDTO;
 import com.restaurante01.api_restaurante.produto.entity.Produto;
-
-
-import java.util.List;
-import java.util.Map;
 
 public class ProdutoFactory {
     public static Produto instanciarProduto(ProdutoDTO produtoDTO){

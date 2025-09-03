@@ -1,4 +1,6 @@
-package com.restaurante01.api_restaurante.produto.dto;
+package com.restaurante01.api_restaurante.produto.dto.saida;
+
+import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoDTO;
 
 import java.util.List;
 

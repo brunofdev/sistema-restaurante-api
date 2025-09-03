@@ -1,16 +1,13 @@
 package com.restaurante01.api_restaurante.produto.service;
-import com.restaurante01.api_restaurante.cardapio.exceptions.CardapioNaoEncontradoException;
-import com.restaurante01.api_restaurante.produto.dto.ProdutoCreateDTO;
+import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoCreateDTO;
 import com.restaurante01.api_restaurante.produto.exceptions.ProdutoNaoEncontradoException;
 import com.restaurante01.api_restaurante.produto.factory.ProdutoFactory;
 import com.restaurante01.api_restaurante.produto.mapper.ProdutoMapper;
-import com.restaurante01.api_restaurante.produto.dto.ProdutoDTO;
+import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoDTO;
 import com.restaurante01.api_restaurante.produto.entity.Produto;
 import com.restaurante01.api_restaurante.produto.repository.ProdutoRepository;
 import com.restaurante01.api_restaurante.produto.validator.ProdutoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.restaurante01.api_restaurante.produto.exceptions.ProdutoPossuiHistorico;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
@@ -69,9 +66,9 @@ public class ProdutoService {
         produtoRepository.saveAll(produtosAtualizados);
         return produtoMapper.mapearListaDeEntidadeParaDTO(produtosAtualizados);
     }
-    public ProdutoDTO atualizarProduto(Long id, ProdutoDTO produtoAtualizado) {
+    public ProdutoDTO atualizarProduto(ProdutoDTO produtoAtualizado) {
         produtoValidator.validarProduto(produtoAtualizado);
-        Produto produtoExistente = buscarProdutoPorId(id);
+        Produto produtoExistente = buscarProdutoPorId(produtoAtualizado.getId());
         produtoMapper.atualizarProduto(produtoExistente, produtoAtualizado);
         return produtoMapper.mapearUmaEntidadeParaDTO(produtoRepository.save(produtoExistente));
     }

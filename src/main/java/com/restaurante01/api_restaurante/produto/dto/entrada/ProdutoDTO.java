@@ -1,10 +1,20 @@
-package com.restaurante01.api_restaurante.produto.dto;
+package com.restaurante01.api_restaurante.produto.dto.entrada;
+
+import jakarta.validation.constraints.*;
 
 public class ProdutoDTO {
+        @NotNull(message = "Preço deve ser informado")
+        @Positive
         private Long id;
+        @NotBlank(message = "Nome não deve ser vazio")
         private String nome;
+        @NotBlank(message = "Descrição não deve ser vazia")
         private String descricao;
+        @NotNull(message = "Preço deve ser informado")
+        @PositiveOrZero(message = "Preço deve ser zero ou positivo")
         private Double preco;
+        @NotNull(message = "Quantidade deve ser zero ou positivo")
+        @Min(value = 0, message = "Quantidade minima deve ser zero")
         private Long quantidadeAtual;
         private Boolean disponibilidade;
 

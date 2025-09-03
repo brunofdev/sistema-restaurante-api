@@ -1,9 +1,9 @@
 package com.restaurante01.api_restaurante.produto.controller;
 
 
-import com.restaurante01.api_restaurante.produto.dto.LoteProdutosResponseDTO;
-import com.restaurante01.api_restaurante.produto.dto.ProdutoCreateDTO;
-import com.restaurante01.api_restaurante.produto.dto.ProdutoDTO;
+import com.restaurante01.api_restaurante.produto.dto.saida.LoteProdutosResponseDTO;
+import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoCreateDTO;
+import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoDTO;
 import com.restaurante01.api_restaurante.produto.service.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -40,9 +40,9 @@ public class ProdutoController {
     public ResponseEntity<ProdutoDTO> adicionarProduto(@RequestBody ProdutoCreateDTO produtoDTO){
         return ResponseEntity.ok(produtoService.adicionarNovoProduto(produtoDTO));
     }
-    @PutMapping("/atualizar-um-produto/{id}")
-    public ResponseEntity<ProdutoDTO> atualizarProduto(@PathVariable long id, @RequestBody ProdutoDTO produto){
-        ProdutoDTO produtoAtualizado = produtoService.atualizarProduto(id, produto);
+    @PutMapping("/atualizar-um-produto")
+    public ResponseEntity<ProdutoDTO> atualizarProduto(@RequestBody ProdutoDTO produto){
+        ProdutoDTO produtoAtualizado = produtoService.atualizarProduto(produto);
         return  ResponseEntity.ok(produtoAtualizado);
     }
     @PutMapping("/atualizar-varios-produtos")

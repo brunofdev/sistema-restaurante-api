@@ -8,7 +8,7 @@ import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoAsso
 import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.entity.CardapioProduto;
 import com.restaurante01.api_restaurante.core.mapper.AbstractMapper;
-import com.restaurante01.api_restaurante.produto.dto.ProdutoCustomDTO;
+import com.restaurante01.api_restaurante.produto.dto.saida.ProdutoCustomDTO;
 import com.restaurante01.api_restaurante.produto.entity.Produto;
 import com.restaurante01.api_restaurante.produto.mapper.ProdutoMapper;
 import org.springframework.stereotype.Component;

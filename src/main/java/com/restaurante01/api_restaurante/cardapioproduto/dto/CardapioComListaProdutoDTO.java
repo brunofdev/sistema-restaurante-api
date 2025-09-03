@@ -1,5 +1,5 @@
 package com.restaurante01.api_restaurante.cardapioproduto.dto;
-import com.restaurante01.api_restaurante.produto.dto.ProdutoCustomDTO;
+import com.restaurante01.api_restaurante.produto.dto.saida.ProdutoCustomDTO;
 
 
 import java.time.LocalDate;

@@ -2,7 +2,7 @@ package com.restaurante01.api_restaurante.cardapioproduto.dto;
 
 import com.restaurante01.api_restaurante.cardapio.dto.CardapioDTO;
 
-import com.restaurante01.api_restaurante.produto.dto.ProdutoDTO;
+import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoDTO;
 
 public class CardapioProdutoAssociacaoRespostaDTO {
     private String message;
