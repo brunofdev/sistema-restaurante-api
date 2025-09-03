@@ -34,7 +34,6 @@ public class ProdutoValidator {
             throw new ProdutoNomeInvalidoException("Nome deve possuir MENOS (30) caracteres");
         }
     }
-    //precisa implementar esta validação em lote
     public void validarListaDeProdutos(List<ProdutoDTO> produtosParaValidar){
         for(ProdutoDTO produto : produtosParaValidar){
             validarProduto(produto);
