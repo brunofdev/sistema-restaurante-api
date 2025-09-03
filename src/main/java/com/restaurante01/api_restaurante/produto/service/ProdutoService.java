@@ -1,4 +1,5 @@
 package com.restaurante01.api_restaurante.produto.service;
+import com.restaurante01.api_restaurante.core.utils.FormatarString;
 import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoCreateDTO;
 import com.restaurante01.api_restaurante.produto.exceptions.ProdutoNaoEncontradoException;
 import com.restaurante01.api_restaurante.produto.factory.ProdutoFactory;
@@ -41,6 +42,9 @@ public class ProdutoService {
         return produtoMapper.mapearUmaEntidadeParaDTO(produtoRepository.findById(id).orElseThrow(() ->
                 new ProdutoNaoEncontradoException("Produto não encontrado")));
     }
+    public boolean encontrarPorNome(String nome){
+        return produtoRepository.existsByNome(nome);
+    }
     public Produto buscarProdutoPorId(long id) {
         return produtoRepository.findById(id)
                 .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto não encontrado"));
@@ -50,7 +54,7 @@ public class ProdutoService {
     }
     public ProdutoDTO adicionarNovoProduto(ProdutoCreateDTO produtoCreateDTO) {
             ProdutoDTO produtoDTO = produtoMapper.mapearProdutoDTO(produtoCreateDTO);
-            produtoValidator.validarProduto(produtoDTO);
+            produtoValidator.validarProduto(produtoDTO, encontrarPorNome(produtoDTO.getNome()));
             Produto novoProduto = ProdutoFactory.instanciarProduto(produtoDTO);  /* */
             Produto produtoSalvo = produtoRepository.save(novoProduto);
             return produtoMapper.mapearUmaEntidadeParaDTO(produtoSalvo);
@@ -67,7 +71,7 @@ public class ProdutoService {
         return produtoMapper.mapearListaDeEntidadeParaDTO(produtosAtualizados);
     }
     public ProdutoDTO atualizarProduto(ProdutoDTO produtoAtualizado) {
-        produtoValidator.validarProduto(produtoAtualizado);
+        produtoValidator.validarProduto(produtoAtualizado, encontrarPorNome(FormatarString.limparEspacos(produtoAtualizado.getNome())));
         Produto produtoExistente = buscarProdutoPorId(produtoAtualizado.getId());
         produtoMapper.atualizarProduto(produtoExistente, produtoAtualizado);
         return produtoMapper.mapearUmaEntidadeParaDTO(produtoRepository.save(produtoExistente));

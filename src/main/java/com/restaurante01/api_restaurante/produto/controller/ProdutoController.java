@@ -5,6 +5,7 @@ import com.restaurante01.api_restaurante.produto.dto.saida.LoteProdutosResponseD
 import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoCreateDTO;
 import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoDTO;
 import com.restaurante01.api_restaurante.produto.service.ProdutoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -37,16 +38,16 @@ public class ProdutoController {
         return ResponseEntity.ok(produtoService.listarProdutosComQntdBaixa());
     }
     @PostMapping("/adicionar-produto")
-    public ResponseEntity<ProdutoDTO> adicionarProduto(@RequestBody ProdutoCreateDTO produtoDTO){
+    public ResponseEntity<ProdutoDTO> adicionarProduto(@Valid @RequestBody ProdutoCreateDTO produtoDTO){
         return ResponseEntity.ok(produtoService.adicionarNovoProduto(produtoDTO));
     }
     @PutMapping("/atualizar-um-produto")
-    public ResponseEntity<ProdutoDTO> atualizarProduto(@RequestBody ProdutoDTO produto){
+    public ResponseEntity<ProdutoDTO> atualizarProduto(@Valid @RequestBody  ProdutoDTO produto){
         ProdutoDTO produtoAtualizado = produtoService.atualizarProduto(produto);
         return  ResponseEntity.ok(produtoAtualizado);
     }
     @PutMapping("/atualizar-varios-produtos")
-    public ResponseEntity<LoteProdutosResponseDTO> atualizarProdutos(@RequestBody List<ProdutoDTO> produtos){
+    public ResponseEntity<LoteProdutosResponseDTO> atualizarProdutos(@Valid @RequestBody List<ProdutoDTO> produtos){
         List<ProdutoDTO> produtoAtualizado = produtoService.atualizarLoteProdutos(produtos);
         LoteProdutosResponseDTO resposta = new LoteProdutosResponseDTO
                 ("Um total de: " + produtoAtualizado.toArray().length + " Foram atualizados\n"

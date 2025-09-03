@@ -13,4 +13,6 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
     List<Produto> findByQuantidadeAtualLessThan(int quantidade);
 
+    boolean existsByNome(String nome);
+
 }
