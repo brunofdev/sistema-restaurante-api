@@ -11,4 +11,5 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     List<Produto> findByDisponibilidade(boolean disponibilidade);
     List<Produto> findByQuantidadeAtualLessThan(int quantidade);
     boolean existsByNome(String nome);
+    Produto findByNome(String nomeProduto);
 }
