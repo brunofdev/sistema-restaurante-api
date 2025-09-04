@@ -7,6 +7,9 @@ import com.restaurante01.api_restaurante.core.utils.FormatarString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 @Component
 public class CardapioValidator {
 
@@ -14,7 +17,6 @@ public class CardapioValidator {
         if(valor == true){
             throw new CardapioMesmoNomeExcepetion("Já existe cardapio com o mesmo nome");
         }
-
         String nome = FormatarString.limparEspacos(cardapio.getNome());
         String descricao = FormatarString.limparEspacos(cardapio.getDescricao());
 

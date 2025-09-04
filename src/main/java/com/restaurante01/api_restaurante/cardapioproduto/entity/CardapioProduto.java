@@ -129,4 +129,8 @@ public class CardapioProduto {
     public int hashCode() {
         return Objects.hashCode(id);
     }
+
+    public Object equals() {
+        return null;
+    }
 }

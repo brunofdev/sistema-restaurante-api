@@ -19,5 +19,6 @@ public interface CardapioProdutoRepository extends JpaRepository<CardapioProduto
     @Query(value = "DELETE FROM cardapio_produto cp WHERE cp.cardapio_id = :idCardapio AND cp.produto_id = :idProduto", nativeQuery = true)
     void deleteProdutoFromCardapio(@Param("idCardapio") long idCardapio, @Param("idProduto") long idProduto);
 
+    CardapioProduto findByCardapioId(long id);
 
 }

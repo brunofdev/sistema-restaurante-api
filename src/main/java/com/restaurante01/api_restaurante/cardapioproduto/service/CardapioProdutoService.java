@@ -4,7 +4,9 @@ import com.restaurante01.api_restaurante.cardapio.service.CardapioService;
 import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoAssociacaoEntradaDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioComListaProdutoDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoAssociacaoRespostaDTO;
+import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.entity.CardapioProduto;
+import com.restaurante01.api_restaurante.cardapioproduto.exceptions.AssociacaoNaoExisteException;
 import com.restaurante01.api_restaurante.cardapioproduto.mapper.CardapioProdutoMapper;
 import com.restaurante01.api_restaurante.cardapioproduto.repository.CardapioProdutoRepository;
 import com.restaurante01.api_restaurante.cardapioproduto.validation.CardapioProdutoValidator;
@@ -56,6 +58,13 @@ public class CardapioProdutoService {
         }
         cardapioProdutoRepository.deleteProdutoFromCardapio(idCardapio, idProduto);
         return true;
+    }
+    public CardapioProdutoDTO listarUmCardapioComProduto(long idCardapio){
+        CardapioProduto cardapioProduto = cardapioProdutoRepository.findByCardapioId(idCardapio);
+        if (cardapioProduto == null){
+           return new CardapioProdutoDTO();
+        }
+        return cardapioProdutoMapper.mapearUmaEntidadeParaDTO(cardapioProduto);
     }
 
 
