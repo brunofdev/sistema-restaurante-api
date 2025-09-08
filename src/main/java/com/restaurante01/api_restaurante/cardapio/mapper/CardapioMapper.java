@@ -48,4 +48,15 @@ public class CardapioMapper extends AbstractMapper<Cardapio, CardapioDTO> {
         cardapioExistente.setDataFim(cardapioAtualizado.getDataFim());
         return cardapioExistente;
     }
+
+    public CardapioDTO mapearCardapioCreateParaCardapioDTO(CardapioCreateDTO cardapioCreateDTO) {
+        return new CardapioDTO(
+                null,
+                cardapioCreateDTO.getNome(),
+                cardapioCreateDTO.getDescricao(),
+                cardapioCreateDTO.getDisponibilidade(),
+                cardapioCreateDTO.getDataInicio(),
+                cardapioCreateDTO.getDataFim()
+        );
+    }
 }

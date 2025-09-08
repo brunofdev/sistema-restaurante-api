@@ -35,21 +35,24 @@ public class CardapioService {
         return cardapioMapper.mapearListaDeEntidadeParaDTO(cardapioRepository.findAll());
     }
     public CardapioDTO adicionarNovoCardapio(CardapioCreateDTO cardapioCreateDTO){
-        cardapioValidator.validarCardapio(cardapioCreateDTO, cardapioRepository.existsByNome(FormatarString.limparEspacos(cardapioCreateDTO.getNome())));
+        CardapioDTO cardapioDTO = cardapioMapper.mapearCardapioCreateParaCardapioDTO(cardapioCreateDTO);
+        cardapioValidator.validarCardapio(cardapioDTO, cardapioRepository.existsByNome(FormatarString.limparEspacos(cardapioDTO.getNome())));
         Cardapio novoCardapio = cardapioMapper.mapearCardapioCreateParaEntidade(cardapioCreateDTO);
         cardapioRepository.save(novoCardapio);
         return cardapioMapper.mapearUmaEntidadeParaDTO(novoCardapio);
     }
-    public CardapioDTO atualizarCardapio(Long id, CardapioCreateDTO cardapioCreateDTO) {
-        cardapioValidator.validarCardapio(cardapioCreateDTO, cardapioRepository.existsByNome(FormatarString.limparEspacos(cardapioCreateDTO.getNome())));
-        Cardapio cardapioSalvo = cardapioRepository.findById(id)
+    /* AJUSTAR
+    public CardapioDTO atualizarCardapio(CardapioDTO cardapioDTO) {
+        cardapioValidator.validarCardapio(cardapioDTO, cardapioRepository.existsByNome(FormatarString.limparEspacos(cardapioDTO.getNome())));
+        Cardapio cardapioSalvo = cardapioRepository.findById(cardapioDTO.getId())
                 .map(cardapioExistente -> {
-                    cardapioMapper.atualizarCampos(cardapioExistente, cardapioCreateDTO);
+                    cardapioMapper.atualizarCampos(cardapioExistente, cardapioDTO);
                     return cardapioRepository.save(cardapioExistente);
                 })
                 .orElseThrow(() -> new CardapioNaoEncontradoException("Cardapio não encontrado no banco"));
         return cardapioMapper.mapearUmaEntidadeParaDTO(cardapioSalvo);
     }
+     */
     public void deletarCardapio(Long id){
         Cardapio cardapioDeletado = cardapioRepository.findById(id)
                 .orElseThrow(() -> new CardapioNaoEncontradoException("Cardápio com id " + id + " não encontrado"));

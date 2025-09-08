@@ -6,10 +6,9 @@ import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioComListaPro
 import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoAssociacaoRespostaDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.entity.CardapioProduto;
-import com.restaurante01.api_restaurante.cardapioproduto.exceptions.AssociacaoNaoExisteException;
 import com.restaurante01.api_restaurante.cardapioproduto.mapper.CardapioProdutoMapper;
 import com.restaurante01.api_restaurante.cardapioproduto.repository.CardapioProdutoRepository;
-import com.restaurante01.api_restaurante.cardapioproduto.validation.CardapioProdutoValidator;
+import com.restaurante01.api_restaurante.cardapioproduto.validator.CardapioProdutoValidator;
 import com.restaurante01.api_restaurante.produto.entity.Produto;
 import com.restaurante01.api_restaurante.produto.service.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;

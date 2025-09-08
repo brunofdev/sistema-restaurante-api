@@ -3,6 +3,7 @@ package com.restaurante01.api_restaurante.cardapio.controller;
 import com.restaurante01.api_restaurante.cardapio.dto.CardapioCreateDTO;
 import com.restaurante01.api_restaurante.cardapio.dto.CardapioDTO;
 import com.restaurante01.api_restaurante.cardapio.service.CardapioService;
+import com.restaurante01.api_restaurante.core.utils.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,20 +19,22 @@ public class CardapioController {
     private CardapioService cardapioService;
 
     @GetMapping("/listar-todos")
-    public ResponseEntity<List<CardapioDTO>> solicitarCardapios(){
-        return ResponseEntity.ok(cardapioService.listarTodosCardapios());
+    public ResponseEntity<ApiResponse<List<CardapioDTO>>> solicitarCardapios(){
+        return ResponseEntity.ok(ApiResponse.success("Recurso encontrado" , cardapioService.listarTodosCardapios()));
     }
     @PostMapping("/adicionar-novo")
-    public ResponseEntity<CardapioDTO> adicionarNovoCardapio(@Valid @RequestBody CardapioCreateDTO cardapioDTO){
-        return ResponseEntity.ok(cardapioService.adicionarNovoCardapio(cardapioDTO));
+    public ResponseEntity<ApiResponse<CardapioDTO>> adicionarNovoCardapio(@Valid @RequestBody CardapioCreateDTO cardapioDTO){
+        return ResponseEntity.ok(ApiResponse.success("Recurso criado" , cardapioService.adicionarNovoCardapio(cardapioDTO)));
     }
+    /*ajustar
     @PutMapping("/atualizar-um/{cardapioId}")
-    public ResponseEntity<CardapioDTO> atualizarCardapio(@PathVariable Long cardapioId, @Valid @RequestBody CardapioCreateDTO cardapioDTO){
-        return ResponseEntity.ok(cardapioService.atualizarCardapio(cardapioId, cardapioDTO));
+    public ResponseEntity<ApiResponse<CardapioDTO>> atualizarCardapio(@PathVariable Long cardapioId, @Valid @RequestBody CardapioCreateDTO cardapioDTO){
+        return ResponseEntity.ok(ApiResponse.success("Recurso atualizado", cardapioService.atualizarCardapio(cardapioId, cardapioDTO)));
     }
+     */
     @DeleteMapping("{cardapioId}")
-        public ResponseEntity<Void> deletarCardapio(@PathVariable("cardapioId") Long cardapioId){
+    public ResponseEntity<ApiResponse> deletarCardapio(@PathVariable("cardapioId") Long cardapioId){
             cardapioService.deletarCardapio(cardapioId);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok(ApiResponse.success("Recurso removido", null));
         }
 }

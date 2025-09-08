@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.cardapioproduto.validation;
+package com.restaurante01.api_restaurante.cardapioproduto.validator;
 
 import com.restaurante01.api_restaurante.cardapio.exceptions.CardapioIdNegativoException;
 import com.restaurante01.api_restaurante.cardapio.exceptions.CardapioIdVazioException;

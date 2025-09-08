@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface CardapioRepository extends JpaRepository<Cardapio, Long> {
 
     boolean existsByNome(String nome);
-
+    Cardapio findByNome(String nome);
 
 }
