@@ -30,11 +30,9 @@ public class ProdutoService {
     public List<ProdutoDTO> listarTodosProdutos() {
         return produtoMapper.mapearListaDeEntidadeParaDTO(produtoRepository.findAll());
     }
-
     public List<ProdutoDTO> listarProdutosDisponiveis(){
         return produtoMapper.mapearListaDeEntidadeParaDTO(produtoRepository.findByDisponibilidade(true));
     }
-
     public List<ProdutoDTO> listarProdutosIndisponiveis() {
         return produtoMapper.mapearListaDeEntidadeParaDTO(produtoRepository.findByDisponibilidade(false));
     }

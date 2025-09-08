@@ -1,8 +1,10 @@
 package com.restaurante01.api_restaurante.produto.controller;
+import com.restaurante01.api_restaurante.core.utils.ApiResponse;
 import com.restaurante01.api_restaurante.produto.dto.saida.LoteProdutosResponseDTO;
 import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoCreateDTO;
 import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoDTO;
 import com.restaurante01.api_restaurante.produto.service.ProdutoService;
+import jakarta.validation.ReportAsSingleViolation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,43 +21,47 @@ public class ProdutoController {
     @Autowired
     private ProdutoService produtoService;
 
+    @GetMapping("/{idProduto}")
+    public ResponseEntity<ApiResponse<ProdutoDTO>> listarUmProduto(@PathVariable("idProduto") long id){
+        ProdutoDTO produto = produtoService.listarUmProdutoPorId(id);
+        return ResponseEntity.ok(ApiResponse.success("Recurso encontrado", produto));
+    }
     @GetMapping("/todos-produtos")
-    public ResponseEntity<List<ProdutoDTO>> listarTodosOsProdutos(){
-        return ResponseEntity.ok(produtoService.listarTodosProdutos());
+    public ResponseEntity<ApiResponse<List<ProdutoDTO>>> listarTodosOsProdutos(){
+        return ResponseEntity.ok(ApiResponse.success("Recurso encontrado", produtoService.listarTodosProdutos()));
     }
     @GetMapping("/produtos-disponiveis")
-    public ResponseEntity<List<ProdutoDTO>> listarApenasDisponiveis(){
-        return ResponseEntity.ok(produtoService.listarProdutosDisponiveis());
+    public ResponseEntity<ApiResponse<List<ProdutoDTO>>> listarApenasDisponiveis(){
+        return ResponseEntity.ok(ApiResponse.success("Recurso encontrado", produtoService.listarProdutosDisponiveis()));
     }
     @GetMapping("/produtos-indisponiveis")
-    public ResponseEntity<List<ProdutoDTO>> listarIndisponiveis(){
-        return ResponseEntity.ok(produtoService.listarProdutosIndisponiveis());
+    public ResponseEntity<ApiResponse<List<ProdutoDTO>>> listarIndisponiveis(){
+        return ResponseEntity.ok(ApiResponse.success("Recurso encontrado" , produtoService.listarProdutosIndisponiveis()));
     }
     @GetMapping("produtos-com-baixa-quantidade")
-    public ResponseEntity<List<ProdutoDTO>> listarProdutosComBaixaQntd(){
-        return ResponseEntity.ok(produtoService.listarProdutosComQntdBaixa());
+    public ResponseEntity<ApiResponse<List<ProdutoDTO>>> listarProdutosComBaixaQntd(){
+        return ResponseEntity.ok(ApiResponse.success("Recurso encontrado", produtoService.listarProdutosComQntdBaixa()));
     }
     @PostMapping("/adicionar-produto")
-    public ResponseEntity<ProdutoDTO> adicionarProduto(@Valid @RequestBody ProdutoCreateDTO produtoDTO){
-        return ResponseEntity.ok(produtoService.adicionarNovoProduto(produtoDTO));
+    public ResponseEntity<ApiResponse<ProdutoDTO>> adicionarProduto(@Valid @RequestBody ProdutoCreateDTO produtoDTO){
+        return ResponseEntity.ok(ApiResponse.success("Recurso criado" , produtoService.adicionarNovoProduto(produtoDTO)));
     }
     @PutMapping("/atualizar-um-produto")
-    public ResponseEntity<ProdutoDTO> atualizarProduto(@Valid @RequestBody  ProdutoDTO produto){
-        ProdutoDTO produtoAtualizado = produtoService.atualizarProduto(produto);
-        return  ResponseEntity.ok(produtoAtualizado);
+    public ResponseEntity<ApiResponse<ProdutoDTO>> atualizarProduto(@Valid @RequestBody  ProdutoDTO produto){
+        return  ResponseEntity.ok(ApiResponse.success("Produto atualizado", produtoService.atualizarProduto(produto)));
     }
     @PutMapping("/atualizar-varios-produtos")
-    public ResponseEntity<LoteProdutosResponseDTO> atualizarProdutos(@Valid @RequestBody List<ProdutoDTO> produtos){
+    public ResponseEntity<ApiResponse<LoteProdutosResponseDTO>> atualizarProdutos(@Valid @RequestBody List<ProdutoDTO> produtos){
         List<ProdutoDTO> produtoAtualizado = produtoService.atualizarLoteProdutos(produtos);
         LoteProdutosResponseDTO resposta = new LoteProdutosResponseDTO
                 ("Um total de: " + produtoAtualizado.toArray().length + " Foram atualizados\n"
                         , produtoAtualizado);
-        return  ResponseEntity.ok(resposta);
+        return  ResponseEntity.ok(ApiResponse.success("Atualização em lote realizada" , resposta));
     }
     @DeleteMapping("/{produtoId}")
-        public ResponseEntity<Void> deletarProduto(@PathVariable long produtoId){
+        public ResponseEntity<ApiResponse> deletarProduto(@PathVariable long produtoId){
         produtoService.deletarProduto(produtoId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.success("Recurso deletado", null));
 
 
     }

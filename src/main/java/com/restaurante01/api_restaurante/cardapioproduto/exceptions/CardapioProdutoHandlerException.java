@@ -3,6 +3,8 @@ package com.restaurante01.api_restaurante.cardapioproduto.exceptions;
 import com.restaurante01.api_restaurante.cardapio.exceptions.CardapioIdNegativoException;
 import com.restaurante01.api_restaurante.cardapio.exceptions.CardapioIdVazioException;
 import com.restaurante01.api_restaurante.cardapio.exceptions.CardapioNaoEncontradoException;
+import com.restaurante01.api_restaurante.cardapioproduto.controller.CardapioProdutoController;
+import com.restaurante01.api_restaurante.produto.controller.ProdutoController;
 import com.restaurante01.api_restaurante.produto.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestControllerAdvice
+@RestControllerAdvice(assignableTypes = CardapioProdutoController.class)
 public class CardapioProdutoHandlerException {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
