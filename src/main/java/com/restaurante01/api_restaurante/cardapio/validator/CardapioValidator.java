@@ -25,29 +25,24 @@ public class CardapioValidator {
         this.cardapioRepository = cardapioRepository;
     }
 
-
-    public void validarCardapio(CardapioDTO cardapio, boolean valor) {
-        String nomeCardapio = FormatarString.limparEspacos(cardapio.getNome());
+    public void validarCardapio(CardapioDTO cardapioDTO) {
+        String nomeCardapio = FormatarString.limparEspacos(cardapioDTO.getNome());
+        String descricao = FormatarString.limparEspacos(cardapioDTO.getDescricao());
+        if (nomeCardapio.length() <= 3) {
+            throw new CardapioNomeInvalidoException("O nome deve possuir mais de três caracteres");
+        }
+        if (cardapioDTO.getDataInicio().isAfter(cardapioDTO.getDataFim())) {
+            throw new CardapioDataIniMaiorQueDataFimException("A data de inicio não pode ser maior que data fim");
+        }
+        //garante idempotência no verbo put do controlador
         Cardapio cardapioExistente = cardapioRepository.findByNome(nomeCardapio);
         if (cardapioExistente != null) {
-            if (cardapio.getId() == null || !cardapioExistente.getId().equals(cardapio.getId())) {
-                throw new ProdutoMesmoNomeExistenteException(
-                        "Nome de Produto  **" + nomeCardapio + "** já existe no sistema"
+            if (cardapioDTO.getId() == null || !cardapioExistente.getId().equals(cardapioDTO.getId())) {
+                throw new CardapioMesmoNomeExcepetion(
+                    "Nome do Cardapio:  **" + nomeCardapio + "** já existe no sistema"
                 );
-            }
-                if (valor == true) {
-                    throw new CardapioMesmoNomeExcepetion("Já existe cardapio com o mesmo nome");
-                }
-                String nome = FormatarString.limparEspacos(cardapio.getNome());
-                String descricao = FormatarString.limparEspacos(cardapio.getDescricao());
-
-                if (nome.length() <= 3) {
-                    throw new CardapioNomeInvalidoException("O nome deve possuir mais de três caracteres");
-                }
-                if (cardapio.getDataInicio().isAfter(cardapio.getDataFim())) {
-                    throw new CardapioDataIniMaiorQueDataFimException("A data de inicio não pode ser maior que data fim");
-                }
             }
         }
     }
+}
 

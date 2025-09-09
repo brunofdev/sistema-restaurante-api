@@ -44,6 +44,13 @@ public class CardapioHandlerException {
                 .body(ApiResponse.error("Erro ao cadastrar cardápio", apiError));
     }
 
+    @ExceptionHandler(CardapioNaoEncontradoException.class)
+    public ResponseEntity<ApiResponse<ApiError>> handleCardapioNaoEncontrado(CardapioNaoEncontradoException ex) {
+        ApiError apiError = buildApiError(HttpStatus.BAD_REQUEST, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error("Recurso a ser atualizado não existe no sistema", apiError));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<ApiError>> handleValidationErrors(MethodArgumentNotValidException ex) {
         String mensagem = ex.getBindingResult().getFieldErrors().stream()

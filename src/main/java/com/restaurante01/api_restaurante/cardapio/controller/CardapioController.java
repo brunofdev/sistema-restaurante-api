@@ -26,12 +26,12 @@ public class CardapioController {
     public ResponseEntity<ApiResponse<CardapioDTO>> adicionarNovoCardapio(@Valid @RequestBody CardapioCreateDTO cardapioDTO){
         return ResponseEntity.ok(ApiResponse.success("Recurso criado" , cardapioService.adicionarNovoCardapio(cardapioDTO)));
     }
-    /*ajustar
-    @PutMapping("/atualizar-um/{cardapioId}")
-    public ResponseEntity<ApiResponse<CardapioDTO>> atualizarCardapio(@PathVariable Long cardapioId, @Valid @RequestBody CardapioCreateDTO cardapioDTO){
-        return ResponseEntity.ok(ApiResponse.success("Recurso atualizado", cardapioService.atualizarCardapio(cardapioId, cardapioDTO)));
+
+    @PutMapping("/atualizar-um")
+    public ResponseEntity<ApiResponse<CardapioDTO>> atualizarCardapio(@Valid @RequestBody CardapioDTO cardapioDTO){
+        return ResponseEntity.ok(ApiResponse.success("Recurso atualizado", cardapioService.atualizarCardapio(cardapioDTO)));
     }
-     */
+
     @DeleteMapping("{cardapioId}")
     public ResponseEntity<ApiResponse> deletarCardapio(@PathVariable("cardapioId") Long cardapioId){
             cardapioService.deletarCardapio(cardapioId);

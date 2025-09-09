@@ -53,12 +53,18 @@ public class ProdutoService {
     public ProdutoDTO adicionarNovoProduto(ProdutoCreateDTO produtoCreateDTO) {
             ProdutoDTO produtoDTO = produtoMapper.mapearProdutoDTO(produtoCreateDTO);
             produtoValidator.validarProduto(produtoDTO);
-            Produto novoProduto = ProdutoFactory.instanciarProduto(produtoDTO);  /* */
+            Produto novoProduto = produtoMapper.mapearUmaDtoParaEntidade(produtoDTO);  /* */
             Produto produtoSalvo = produtoRepository.save(novoProduto);
             return produtoMapper.mapearUmaEntidadeParaDTO(produtoSalvo);
         }
     private List<Produto> buscarProdutosPorIds(Set<Long> idsMapeados){
         return produtoRepository.findAllById(idsMapeados);
+    }
+    public ProdutoDTO atualizarProduto(ProdutoDTO produtoAtualizado) {
+        produtoValidator.validarProduto(produtoAtualizado);
+        Produto produtoExistente = buscarProdutoPorId(produtoAtualizado.getId());
+        produtoMapper.atualizarProduto(produtoExistente, produtoAtualizado);
+        return produtoMapper.mapearUmaEntidadeParaDTO(produtoRepository.save(produtoExistente));
     }
     public List<ProdutoDTO> atualizarLoteProdutos(List<ProdutoDTO> loteProdutosDTO){
         produtoValidator.validarListaDeProdutos(loteProdutosDTO);
@@ -67,12 +73,6 @@ public class ProdutoService {
         List<Produto>produtosAtualizados = produtoMapper.atualizarProdutosEmLote(mapaProdutosPorId, produtosEncontrados);
         produtoRepository.saveAll(produtosAtualizados);
         return produtoMapper.mapearListaDeEntidadeParaDTO(produtosAtualizados);
-    }
-    public ProdutoDTO atualizarProduto(ProdutoDTO produtoAtualizado) {
-        produtoValidator.validarProduto(produtoAtualizado);
-        Produto produtoExistente = buscarProdutoPorId(produtoAtualizado.getId());
-        produtoMapper.atualizarProduto(produtoExistente, produtoAtualizado);
-        return produtoMapper.mapearUmaEntidadeParaDTO(produtoRepository.save(produtoExistente));
     }
     public void deletarProduto(long id) {
         Produto produto = produtoRepository.findById(id)

@@ -19,12 +19,17 @@ public class ProdutoValidator {
     public ProdutoValidator(ProdutoRepository produtoRepository){
         this.produtoRepository = produtoRepository;
     }
-    public ProdutoRepository getProdutoRepository() {
-        return produtoRepository;
-    }
+
     public void validarProduto(ProdutoDTO produtoDTO) {
         String nomeProduto = FormatarString.limparEspacos(produtoDTO.getNome());
         Produto produtoExistente = produtoRepository.findByNome(nomeProduto);
+        if(produtoDTO.getNome().length() <= 3){
+            throw new ProdutoNomeInvalidoException("Nome **" + nomeProduto + "** deve possuir MAIS de três (3) caracteres");
+        }
+        if(produtoDTO.getNome().length() >= 30){
+            throw new ProdutoNomeInvalidoException("Nome **" + nomeProduto + "** deve possuir MENOS (30) caracteres");
+        }
+        //garante idempotência no verbo put do controlador
         if (produtoExistente != null) {
             if (produtoDTO.getId() == null || !produtoExistente.getId().equals(produtoDTO.getId())) {
                 throw new ProdutoMesmoNomeExistenteException(
@@ -32,18 +37,10 @@ public class ProdutoValidator {
                 );
             }
         }
-        if(produtoDTO.getNome().length() <= 3){
-            throw new ProdutoNomeInvalidoException("Nome **" + nomeProduto + "** deve possuir MAIS de três (3) caracteres");
-        }
-        if(produtoDTO.getNome().length() >= 30){
-            throw new ProdutoNomeInvalidoException("Nome **" + nomeProduto + "** deve possuir MENOS (30) caracteres");
-        }
     }
-    /*encontrado bug, este método é utilizado por enquanto, somente com o vergo put, que deve ser idempotente, ou seja
-    //caso seja enviado um produto com o mesmo nome, ele deve realizar a operação com o mesmo nome de qualquer forma*/
     public void validarListaDeProdutos(List<ProdutoDTO> produtosParaValidar){
-        for(ProdutoDTO produto : produtosParaValidar){
-            validarProduto(produto);
+        for(ProdutoDTO produtoDTO : produtosParaValidar){
+            validarProduto(produtoDTO);
          }
     }
 }
