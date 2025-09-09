@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.cardapioproduto.dto;
+package com.restaurante01.api_restaurante.cardapioproduto.dto.saida;
 import com.restaurante01.api_restaurante.produto.dto.saida.ProdutoCustomDTO;
 
 

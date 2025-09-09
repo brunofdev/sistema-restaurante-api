@@ -2,7 +2,7 @@ package com.restaurante01.api_restaurante.cardapioproduto.validator;
 
 import com.restaurante01.api_restaurante.cardapio.exceptions.CardapioIdNegativoException;
 import com.restaurante01.api_restaurante.cardapio.exceptions.CardapioIdVazioException;
-import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoAssociacaoEntradaDTO;
+import com.restaurante01.api_restaurante.cardapioproduto.dto.entrada.CardapioProdutoAssociacaoEntradaDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.exceptions.AssociacaoExistenteCardapioProdutoException;
 import com.restaurante01.api_restaurante.produto.exceptions.PrecoProdutoNegativoException;
 import com.restaurante01.api_restaurante.produto.exceptions.ProdutoIdNegativoException;

@@ -1,58 +1,50 @@
-package com.restaurante01.api_restaurante.cardapio.dto;
+package com.restaurante01.api_restaurante.cardapio.dto.entrada;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
-
-public class CardapioDTO {
-    @Min(value = 1, message = "Id não pode ser zero (0)")
-    @NotNull(message = "O id não pode ser vazio")
-    private final Long id;
-    @NotBlank(message = "Nome não pode ser vazio")
+public class CardapioCreateDTO {
+    @NotBlank(message = "O Nome não pode ser vazio")
     private final String nome;
-    @NotBlank(message = "Descrição não pode ser vazio")
+    @NotBlank(message = "A descrição não pode ser vazia")
     private final String descricao;
+    @NotNull(message = "A disponibilidade do cardápio deve ser preenchida")
     private final Boolean disponibilidade;
-
-    @NotNull(message = "A Data de Inicio não pode ser vazia")
+    @NotNull(message = "A Data do cardápio deve ser preenchida")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private final LocalDate dataInicio;
-
-    @NotNull(message = "A Data de término não pode ser vazia")
+    @NotNull(message = "A Data do cardápio deve ser preenchida")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private final LocalDate dataFim;
 
-
-    public CardapioDTO(Long id, String nome, String descricao, Boolean disponibilidade, LocalDate dataInicio, LocalDate dataFim) {
-        this.id = id;
+    public CardapioCreateDTO(String nome, String descricao, Boolean disponibilidade, LocalDate dataInicio, LocalDate dataFim) {
         this.nome = nome;
         this.descricao = descricao;
         this.disponibilidade = disponibilidade;
         this.dataInicio = dataInicio;
         this.dataFim = dataFim;
     }
-    public Long getId() {
-        return id;
-    }
+
     public String getNome() {
         return nome;
     }
+
     public String getDescricao() {
         return descricao;
     }
-    public LocalDate getDataInicio() {
-        return dataInicio;
-    }
+
     public Boolean getDisponibilidade() {
         return disponibilidade;
     }
+
+    public LocalDate getDataInicio() {
+        return dataInicio;
+    }
+
     public LocalDate getDataFim() {
         return dataFim;
     }
-
-
 }

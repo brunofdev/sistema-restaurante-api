@@ -1,7 +1,7 @@
 package com.restaurante01.api_restaurante.cardapio.mapper;
 
-import com.restaurante01.api_restaurante.cardapio.dto.CardapioCreateDTO;
-import com.restaurante01.api_restaurante.cardapio.dto.CardapioDTO;
+import com.restaurante01.api_restaurante.cardapio.dto.entrada.CardapioCreateDTO;
+import com.restaurante01.api_restaurante.cardapio.dto.saida.CardapioDTO;
 import com.restaurante01.api_restaurante.cardapio.entity.Cardapio;
 import com.restaurante01.api_restaurante.core.mapper.AbstractMapper;
 import com.restaurante01.api_restaurante.core.utils.FormatarString;

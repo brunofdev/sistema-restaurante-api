@@ -1,10 +1,10 @@
 package com.restaurante01.api_restaurante.cardapioproduto.controller;
 
 
-import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoAssociacaoEntradaDTO;
-import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioComListaProdutoDTO;
-import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoAssociacaoRespostaDTO;
-import com.restaurante01.api_restaurante.cardapioproduto.dto.CardapioProdutoDTO;
+import com.restaurante01.api_restaurante.cardapioproduto.dto.entrada.CardapioProdutoAssociacaoEntradaDTO;
+import com.restaurante01.api_restaurante.cardapioproduto.dto.saida.CardapioComListaProdutoDTO;
+import com.restaurante01.api_restaurante.cardapioproduto.dto.saida.CardapioProdutoAssociacaoRespostaDTO;
+import com.restaurante01.api_restaurante.cardapioproduto.dto.entrada.CardapioProdutoDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.service.CardapioProdutoService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;

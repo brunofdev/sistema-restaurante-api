@@ -1,6 +1,6 @@
-package com.restaurante01.api_restaurante.cardapioproduto.dto;
+package com.restaurante01.api_restaurante.cardapioproduto.dto.entrada;
 
-import com.restaurante01.api_restaurante.cardapio.dto.CardapioDTO;
+import com.restaurante01.api_restaurante.cardapio.dto.saida.CardapioDTO;
 import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoDTO;
 
 public class CardapioProdutoDTO {

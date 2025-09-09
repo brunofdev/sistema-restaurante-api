@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.cardapioproduto.dto;
+package com.restaurante01.api_restaurante.cardapioproduto.dto.entrada;
 
 import jakarta.validation.constraints.NotNull;
 

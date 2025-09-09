@@ -1,19 +1,12 @@
 package com.restaurante01.api_restaurante.cardapio.validator;
 
-import com.restaurante01.api_restaurante.cardapio.dto.CardapioCreateDTO;
-import com.restaurante01.api_restaurante.cardapio.dto.CardapioDTO;
+import com.restaurante01.api_restaurante.cardapio.dto.saida.CardapioDTO;
 import com.restaurante01.api_restaurante.cardapio.entity.Cardapio;
 import com.restaurante01.api_restaurante.cardapio.exceptions.*;
 import com.restaurante01.api_restaurante.cardapio.repository.CardapioRepository;
-import com.restaurante01.api_restaurante.cardapio.service.CardapioService;
 import com.restaurante01.api_restaurante.core.utils.FormatarString;
-import com.restaurante01.api_restaurante.produto.entity.Produto;
-import com.restaurante01.api_restaurante.produto.exceptions.ProdutoMesmoNomeExistenteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Component
 public class CardapioValidator {

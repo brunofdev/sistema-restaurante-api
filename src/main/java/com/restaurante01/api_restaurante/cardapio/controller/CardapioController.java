@@ -1,7 +1,7 @@
 package com.restaurante01.api_restaurante.cardapio.controller;
 
-import com.restaurante01.api_restaurante.cardapio.dto.CardapioCreateDTO;
-import com.restaurante01.api_restaurante.cardapio.dto.CardapioDTO;
+import com.restaurante01.api_restaurante.cardapio.dto.entrada.CardapioCreateDTO;
+import com.restaurante01.api_restaurante.cardapio.dto.saida.CardapioDTO;
 import com.restaurante01.api_restaurante.cardapio.service.CardapioService;
 import com.restaurante01.api_restaurante.core.utils.ApiResponse;
 import jakarta.validation.Valid;
