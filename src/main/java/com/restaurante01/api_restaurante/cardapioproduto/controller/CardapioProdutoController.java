@@ -23,6 +23,9 @@ import java.util.List;
 @Validated
 public class CardapioProdutoController {
 
+    //Padronizar retorno de resposta utilizando a classe ApiResponse
+    //Ajustar as exceptions para retornar o mesmo padrão das outras funcionalidades
+    //Verificar metodo de delete
     @Autowired
     private CardapioProdutoService cardapioProdutoService;
 

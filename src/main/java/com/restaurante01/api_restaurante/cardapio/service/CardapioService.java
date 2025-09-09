@@ -56,7 +56,6 @@ public class CardapioService {
         return cardapioRepository.findById(id)
                 .orElseThrow(() -> new CardapioNaoEncontradoException("Cardápio a ser atualizado não foi encontrado no sistema"));
     }
-
     public CardapioDTO listarUmCardapio(Long idCardapio) {
         return cardapioMapper.mapearUmaEntidadeParaDTO(cardapioRepository.findById(idCardapio).orElseThrow(() ->
         new CardapioNaoEncontradoException("Cardapio não encontrado")));
