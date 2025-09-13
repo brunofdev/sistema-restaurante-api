@@ -6,6 +6,7 @@ import com.restaurante01.api_restaurante.cardapioproduto.dto.saida.CardapioComLi
 import com.restaurante01.api_restaurante.cardapioproduto.dto.saida.CardapioProdutoAssociacaoRespostaDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.dto.entrada.CardapioProdutoDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.service.CardapioProdutoService;
+import com.restaurante01.api_restaurante.core.utils.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,25 +31,20 @@ public class CardapioProdutoController {
     private CardapioProdutoService cardapioProdutoService;
 
     @GetMapping("/obter-todas-associacoes")
-    public ResponseEntity<List<CardapioComListaProdutoDTO>> listarCardapioProdutos() {
-        return ResponseEntity.ok(cardapioProdutoService.listarCardapiosProdutos());
+    public ResponseEntity<ApiResponse<List<CardapioComListaProdutoDTO>>> listarCardapioProdutos() {
+        return ResponseEntity.ok(ApiResponse.success("Recurso disponbilizado", cardapioProdutoService.listarCardapiosProdutos()));
     }
     @GetMapping("/cardapio/{idCardapio}")
-    public ResponseEntity<CardapioProdutoDTO> listarAssociacaoPorIdCardapio(@PathVariable long idCardapio){
-        return ResponseEntity.ok(cardapioProdutoService.listarUmCardapioComProduto(idCardapio));
+    public ResponseEntity<ApiResponse<CardapioProdutoDTO>> listarAssociacaoPorIdCardapio(@PathVariable long idCardapio){
+        return ResponseEntity.ok(ApiResponse.success("Recurso encontrado", cardapioProdutoService.listarUmCardapioComProduto(idCardapio)));
     }
     @PostMapping("/associar-cardapioproduto")
-    public ResponseEntity<CardapioProdutoAssociacaoRespostaDTO> associarProdutoCardapio(@RequestBody @Valid CardapioProdutoAssociacaoEntradaDTO cardapioProdutoAssociacaoEntradaDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(cardapioProdutoService.associarProdutoAoCardapio(cardapioProdutoAssociacaoEntradaDTO));
+    public ResponseEntity<ApiResponse<CardapioProdutoAssociacaoRespostaDTO>> associarProdutoCardapio(@RequestBody @Valid CardapioProdutoAssociacaoEntradaDTO cardapioProdutoAssociacaoEntradaDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("Recurso criado", cardapioProdutoService.criarAssociacaoProdutoAoCardapio(cardapioProdutoAssociacaoEntradaDTO)));
     }
     @DeleteMapping("cardapio{idCardapio}/produto{idProduto}")
-    public ResponseEntity<Void> desassociarProdutoCardapio(@PathVariable @Min(1) long idCardapio, @PathVariable @Min(1) long idProduto){
-        boolean removido = cardapioProdutoService.removerAssociacaoCardapioProduto(idCardapio, idProduto);
-        if(removido){
-            return ResponseEntity.noContent().build();
-        }
-        else{
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<ApiResponse<Void>> desassociarProdutoCardapio(@PathVariable @Min(1) long idCardapio, @PathVariable @Min(1) long idProduto){
+            cardapioProdutoService.removerAssociacaoCardapioProduto(idCardapio, idProduto);
+            return ResponseEntity.ok().body(ApiResponse.success("Recurso deletado", null));
     }
 }

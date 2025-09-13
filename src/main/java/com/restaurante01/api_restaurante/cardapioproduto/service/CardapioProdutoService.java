@@ -6,6 +6,7 @@ import com.restaurante01.api_restaurante.cardapioproduto.dto.saida.CardapioComLi
 import com.restaurante01.api_restaurante.cardapioproduto.dto.saida.CardapioProdutoAssociacaoRespostaDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.dto.entrada.CardapioProdutoDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.entity.CardapioProduto;
+import com.restaurante01.api_restaurante.cardapioproduto.exceptions.NaoExisteAssociacaoException;
 import com.restaurante01.api_restaurante.cardapioproduto.mapper.CardapioProdutoMapper;
 import com.restaurante01.api_restaurante.cardapioproduto.repository.CardapioProdutoRepository;
 import com.restaurante01.api_restaurante.cardapioproduto.validator.CardapioProdutoValidator;
@@ -38,7 +39,7 @@ public class CardapioProdutoService {
         return cardapioProdutoMapper.mapearCardapioComListaDeProduto(cardapioProdutoRepository.findAll());
     }
 
-    public CardapioProdutoAssociacaoRespostaDTO associarProdutoAoCardapio(CardapioProdutoAssociacaoEntradaDTO cardapioProdutoAssociacaoEntradaDTO) {
+    public CardapioProdutoAssociacaoRespostaDTO criarAssociacaoProdutoAoCardapio(CardapioProdutoAssociacaoEntradaDTO cardapioProdutoAssociacaoEntradaDTO) {
         boolean existeAssociacao = verificarAssociacaoEntreProdutoCardapio(cardapioProdutoAssociacaoEntradaDTO.getIdCardapio(), cardapioProdutoAssociacaoEntradaDTO.getIdProduto());
         cardapioProdutoValidator.validarCardapioProdutoAssociacaoEntradaDTO(cardapioProdutoAssociacaoEntradaDTO, existeAssociacao);
         Produto produto = produtoService.buscarProdutoPorId(cardapioProdutoAssociacaoEntradaDTO.getIdProduto()); /*Pode ocorrer exception aqui*/
@@ -51,12 +52,12 @@ public class CardapioProdutoService {
          return cardapioProdutoRepository.encontrarProdutoCardapio(idCardapio, idProduto) >= 1;
 
     }
-    public boolean removerAssociacaoCardapioProduto(long idCardapio, long idProduto){
+    public void removerAssociacaoCardapioProduto(long idCardapio, long idProduto){
         if (!verificarAssociacaoEntreProdutoCardapio(idCardapio, idProduto)) {
-            return false;
+            throw new NaoExisteAssociacaoException("Não existe associação entre produto e cardapio");
         }
         cardapioProdutoRepository.deleteProdutoFromCardapio(idCardapio, idProduto);
-        return true;
+
     }
     public CardapioProdutoDTO listarUmCardapioComProduto(long idCardapio){
         CardapioProduto cardapioProduto = cardapioProdutoRepository.findByCardapioId(idCardapio);
