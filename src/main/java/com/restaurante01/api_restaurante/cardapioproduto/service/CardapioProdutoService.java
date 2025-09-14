@@ -6,7 +6,7 @@ import com.restaurante01.api_restaurante.cardapioproduto.dto.saida.CardapioComLi
 import com.restaurante01.api_restaurante.cardapioproduto.dto.saida.CardapioProdutoAssociacaoRespostaDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.dto.entrada.CardapioProdutoDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.entity.CardapioProduto;
-import com.restaurante01.api_restaurante.cardapioproduto.exceptions.NaoExisteAssociacaoException;
+import com.restaurante01.api_restaurante.cardapioproduto.exceptions.AssociacaoNaoExisteException;
 import com.restaurante01.api_restaurante.cardapioproduto.mapper.CardapioProdutoMapper;
 import com.restaurante01.api_restaurante.cardapioproduto.repository.CardapioProdutoRepository;
 import com.restaurante01.api_restaurante.cardapioproduto.validator.CardapioProdutoValidator;
@@ -54,7 +54,7 @@ public class CardapioProdutoService {
     }
     public void removerAssociacaoCardapioProduto(long idCardapio, long idProduto){
         if (!verificarAssociacaoEntreProdutoCardapio(idCardapio, idProduto)) {
-            throw new NaoExisteAssociacaoException("Não existe associação entre produto e cardapio");
+            throw new AssociacaoNaoExisteException("Não existe associação entre produto e cardapio");
         }
         cardapioProdutoRepository.deleteProdutoFromCardapio(idCardapio, idProduto);
 
