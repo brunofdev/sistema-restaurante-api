@@ -42,9 +42,13 @@ public class CardapioProdutoController {
     public ResponseEntity<ApiResponse<CardapioProdutoAssociacaoRespostaDTO>> associarProdutoCardapio(@RequestBody @Valid CardapioProdutoAssociacaoEntradaDTO cardapioProdutoAssociacaoEntradaDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("Recurso criado", cardapioProdutoService.criarAssociacaoProdutoCardapio(cardapioProdutoAssociacaoEntradaDTO)));
     }
+    @PutMapping("atualizar-campos-custom")
+    public ResponseEntity<ApiResponse<CardapioProdutoAssociacaoRespostaDTO>> atualizaCamposCustom(@RequestBody @Valid CardapioProdutoAssociacaoEntradaDTO dto){
+        return ResponseEntity.ok().body(ApiResponse.success("Recurso atualizado", cardapioProdutoService.atualizarCamposCustom(dto)));
+    }
     @DeleteMapping("cardapio{idCardapio}/produto{idProduto}")
     public ResponseEntity<ApiResponse<Void>> desassociarProdutoCardapio(@PathVariable @Min(1) long idCardapio, @PathVariable @Min(1) long idProduto){
-            cardapioProdutoService.removerAssociacaoCardapioProduto(idCardapio, idProduto);
+            cardapioProdutoService.deletarAssociacaoCardapioProduto(idCardapio, idProduto);
             return ResponseEntity.ok().body(ApiResponse.success("Recurso deletado", null));
     }
 }

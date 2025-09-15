@@ -35,37 +35,47 @@ public class CardapioProdutoService {
         this.cardapioService = cardapioService;
     }
 
+    public boolean verificarAssociacaoEntreProdutoCardapio(long idCardapio, long idProduto) {
+        return cardapioProdutoRepository.encontrarProdutoCardapio(idCardapio, idProduto) >= 1;
+
+    }
+    public CardapioProduto encontrarUmCardapioComProduto (long idCardapio, long idProduto){
+        return cardapioProdutoRepository.findByCardapioIdAndProdutoId(idCardapio, idProduto)
+                .orElseThrow(() -> new AssociacaoNaoExisteException("Não existe associação entre o cardapio e o produto enviado"));
+    }
     public List<CardapioComListaProdutoDTO> listarCardapiosProdutos() {
         return cardapioProdutoMapper.mapearCardapioComListaDeProduto(cardapioProdutoRepository.findAll());
     }
-
-    public CardapioProdutoAssociacaoRespostaDTO criarAssociacaoProdutoCardapio(CardapioProdutoAssociacaoEntradaDTO cardapioProdutoAssociacaoEntradaDTO) {
-        boolean existeAssociacao = verificarAssociacaoEntreProdutoCardapio(cardapioProdutoAssociacaoEntradaDTO.getIdCardapio(), cardapioProdutoAssociacaoEntradaDTO.getIdProduto());
-        cardapioProdutoValidator.validarCardapioProdutoAssociacaoEntradaDTO(cardapioProdutoAssociacaoEntradaDTO, existeAssociacao);
-        Produto produto = produtoService.buscarProdutoPorId(cardapioProdutoAssociacaoEntradaDTO.getIdProduto()); /*Pode ocorrer exception aqui*/
-        Cardapio cardapio = cardapioService.buscarCardapioPorId(cardapioProdutoAssociacaoEntradaDTO.getIdCardapio());/*Pode ocorrer exception aqui*/
-        CardapioProduto cardapioProduto = cardapioProdutoMapper.mapearCardapioProduto(produto, cardapio, cardapioProdutoAssociacaoEntradaDTO);
+    public CardapioProdutoDTO listarUmCardapioComProduto(long idCardapio){
+        CardapioProduto cardapioProduto = cardapioProdutoRepository.findByCardapioId(idCardapio);
+        if (cardapioProduto == null){
+            return new CardapioProdutoDTO();
+        }
+        return cardapioProdutoMapper.mapearUmaEntidadeParaDTO(cardapioProduto);
+    }
+    public CardapioProdutoAssociacaoRespostaDTO criarAssociacaoProdutoCardapio(CardapioProdutoAssociacaoEntradaDTO dto) {
+        cardapioProdutoValidator.validarCardapioProdutoAssociacaoEntradaDTO(dto, verificarAssociacaoEntreProdutoCardapio(dto.getIdCardapio(), dto.getIdProduto()), false);
+        Produto produto = produtoService.buscarProdutoPorId(dto.getIdProduto()); /*Pode ocorrer exception aqui*/
+        Cardapio cardapio = cardapioService.buscarCardapioPorId(dto.getIdCardapio());/*Pode ocorrer exception aqui*/
+        CardapioProduto cardapioProduto = cardapioProdutoMapper.mapearCardapioProduto(produto, cardapio, dto);
         cardapioProdutoRepository.save(cardapioProduto);
         return cardapioProdutoMapper.mapearCardapioProdutoAssociacaoDTO(cardapioProduto);
     }
-    public boolean verificarAssociacaoEntreProdutoCardapio(long idCardapio, long idProduto) {
-         return cardapioProdutoRepository.encontrarProdutoCardapio(idCardapio, idProduto) >= 1;
-
+    public CardapioProdutoAssociacaoRespostaDTO atualizarCamposCustom(CardapioProdutoAssociacaoEntradaDTO dto){
+        CardapioProduto cardapioProduto = encontrarUmCardapioComProduto(dto.getIdCardapio(), dto.getIdProduto());
+        cardapioProdutoValidator.validarCardapioProdutoAssociacaoEntradaDTO(dto, verificarAssociacaoEntreProdutoCardapio(dto.getIdCardapio(), dto.getIdProduto()), true);
+        CardapioProduto cardapioProdutoAtualizado = cardapioProdutoMapper.mapearCamposCustom(cardapioProduto, dto);
+        cardapioProdutoRepository.save(cardapioProdutoAtualizado);
+        return cardapioProdutoMapper.mapearCardapioProdutoAssociacaoDTO(cardapioProdutoAtualizado);
     }
-    public void removerAssociacaoCardapioProduto(long idCardapio, long idProduto){
+    public void deletarAssociacaoCardapioProduto(long idCardapio, long idProduto){
         if (!verificarAssociacaoEntreProdutoCardapio(idCardapio, idProduto)) {
             throw new AssociacaoNaoExisteException("Não existe associação entre produto e cardapio");
         }
         cardapioProdutoRepository.deleteProdutoFromCardapio(idCardapio, idProduto);
 
     }
-    public CardapioProdutoDTO listarUmCardapioComProduto(long idCardapio){
-        CardapioProduto cardapioProduto = cardapioProdutoRepository.findByCardapioId(idCardapio);
-        if (cardapioProduto == null){
-           return new CardapioProdutoDTO();
-        }
-        return cardapioProdutoMapper.mapearUmaEntidadeParaDTO(cardapioProduto);
-    }
+
 
 
 

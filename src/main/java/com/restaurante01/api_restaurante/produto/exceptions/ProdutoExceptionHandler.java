@@ -63,5 +63,8 @@ public class ProdutoExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ApiResponse.error("Erro ao buscar recurso", apiError));
     }
+
+
+
 }
 

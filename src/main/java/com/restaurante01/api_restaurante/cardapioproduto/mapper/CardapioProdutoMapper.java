@@ -119,6 +119,14 @@ public class CardapioProdutoMapper extends AbstractMapper<CardapioProduto, Carda
         produtoCustomDTO.setObservacao(cardapioProduto.getObservacao());
         return produtoCustomDTO;
     }
+    public CardapioProduto mapearCamposCustom(CardapioProduto cardapioProduto, CardapioProdutoAssociacaoEntradaDTO dto){
+        cardapioProduto.setPrecoCustomizado(dto.getPrecoCustomizado());
+        cardapioProduto.setObservacao(dto.getObservacao());
+        cardapioProduto.setDescricaoCustomizada(dto.getDescricaoCustomizada());
+        cardapioProduto.setDisponibilidadeCustomizada(dto.getDisponibilidadeCustomizada());
+        cardapioProduto.setQuantidadeCustomizada(dto.getQuantidadeCustomizada());
+        return cardapioProduto;
+    }
 
 
 }

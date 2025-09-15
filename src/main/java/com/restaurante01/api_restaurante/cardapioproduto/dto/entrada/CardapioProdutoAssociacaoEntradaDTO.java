@@ -6,7 +6,9 @@ import jakarta.validation.constraints.Positive;
 
 public class CardapioProdutoAssociacaoEntradaDTO {
     @NotNull(message = "ID do cardapio deve ser enviada")
+    @Min(1)
     private Long idCardapio;
+    @Min(1)
     @NotNull (message = "ID do produto deve ser enviada")
     private Long idProduto;
     @Min(0)

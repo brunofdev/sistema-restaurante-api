@@ -103,6 +103,17 @@ public class CardapioProdutoHandlerException {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ApiResponse.error("Quantidade do produto inválida", apiError));
     }
+    @ExceptionHandler(ProdutoDescricaoInvalidaExcpetion.class)
+    public ResponseEntity<ApiResponse<ApiError>> handleDescProdutoInvalida(ProdutoDescricaoInvalidaExcpetion ex){
+        ApiError apiError = new ApiError();
+        apiError.setStatus(HttpStatus.NOT_FOUND.value());
+        apiError.setError("Bad Request");
+        apiError.setMessage(ex.getMessage());
+        apiError.setTimestamp(LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error("Erro ao buscar recurso", apiError));
+    }
 
 
 }
