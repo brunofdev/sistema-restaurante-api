@@ -46,11 +46,9 @@ public class CardapioProdutoService {
     public List<CardapioComListaProdutoDTO> listarCardapiosProdutos() {
         return cardapioProdutoMapper.mapearCardapioComListaDeProduto(cardapioProdutoRepository.findAll());
     }
-    public CardapioProdutoDTO listarUmCardapioComProduto(long idCardapio){
-        CardapioProduto cardapioProduto = cardapioProdutoRepository.findByCardapioId(idCardapio);
-        if (cardapioProduto == null){
-            return new CardapioProdutoDTO();
-        }
+    public CardapioProdutoDTO listaUmCardapioComProduto(long idCardapio){
+        CardapioProduto cardapioProduto = cardapioProdutoRepository.findByCardapioId(idCardapio)
+                .orElseThrow(() -> new AssociacaoNaoExisteException("Não existe associação entre o cardápio e o produto enviado"));
         return cardapioProdutoMapper.mapearUmaEntidadeParaDTO(cardapioProduto);
     }
     public CardapioProdutoAssociacaoRespostaDTO criarAssociacaoProdutoCardapio(CardapioProdutoAssociacaoEntradaDTO dto) {

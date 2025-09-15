@@ -36,7 +36,7 @@ public class CardapioProdutoController {
     }
     @GetMapping("/cardapio/{idCardapio}")
     public ResponseEntity<ApiResponse<CardapioProdutoDTO>> listarAssociacaoPorIdCardapio(@PathVariable long idCardapio){
-        return ResponseEntity.ok(ApiResponse.success("Recurso encontrado", cardapioProdutoService.listarUmCardapioComProduto(idCardapio)));
+        return ResponseEntity.ok(ApiResponse.success("Recurso encontrado", cardapioProdutoService.listaUmCardapioComProduto(idCardapio)));
     }
     @PostMapping("/associar-cardapioproduto")
     public ResponseEntity<ApiResponse<CardapioProdutoAssociacaoRespostaDTO>> associarProdutoCardapio(@RequestBody @Valid CardapioProdutoAssociacaoEntradaDTO cardapioProdutoAssociacaoEntradaDTO) {

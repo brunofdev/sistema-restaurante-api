@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface CardapioProdutoRepository extends JpaRepository<CardapioProduto, Long> {
 
-    CardapioProduto findByCardapioId(long id);
+    Optional <CardapioProduto> findByCardapioId(long id);
     Optional<CardapioProduto> findByCardapioIdAndProdutoId(long cardapioId, long produtoId);
     @Query(value = "SELECT EXISTS (SELECT 1 FROM cardapio_produto cp WHERE cp.cardapio_id = :idCardapio AND cp.produto_id = :idProduto)", nativeQuery = true)
     int encontrarProdutoCardapio(@Param("idCardapio") long idCardapio, @Param("idProduto") long idProduto);
