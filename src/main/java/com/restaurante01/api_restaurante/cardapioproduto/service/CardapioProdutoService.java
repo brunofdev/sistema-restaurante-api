@@ -39,7 +39,7 @@ public class CardapioProdutoService {
         return cardapioProdutoMapper.mapearCardapioComListaDeProduto(cardapioProdutoRepository.findAll());
     }
 
-    public CardapioProdutoAssociacaoRespostaDTO criarAssociacaoProdutoAoCardapio(CardapioProdutoAssociacaoEntradaDTO cardapioProdutoAssociacaoEntradaDTO) {
+    public CardapioProdutoAssociacaoRespostaDTO criarAssociacaoProdutoCardapio(CardapioProdutoAssociacaoEntradaDTO cardapioProdutoAssociacaoEntradaDTO) {
         boolean existeAssociacao = verificarAssociacaoEntreProdutoCardapio(cardapioProdutoAssociacaoEntradaDTO.getIdCardapio(), cardapioProdutoAssociacaoEntradaDTO.getIdProduto());
         cardapioProdutoValidator.validarCardapioProdutoAssociacaoEntradaDTO(cardapioProdutoAssociacaoEntradaDTO, existeAssociacao);
         Produto produto = produtoService.buscarProdutoPorId(cardapioProdutoAssociacaoEntradaDTO.getIdProduto()); /*Pode ocorrer exception aqui*/

@@ -40,7 +40,7 @@ public class CardapioProdutoController {
     }
     @PostMapping("/associar-cardapioproduto")
     public ResponseEntity<ApiResponse<CardapioProdutoAssociacaoRespostaDTO>> associarProdutoCardapio(@RequestBody @Valid CardapioProdutoAssociacaoEntradaDTO cardapioProdutoAssociacaoEntradaDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("Recurso criado", cardapioProdutoService.criarAssociacaoProdutoAoCardapio(cardapioProdutoAssociacaoEntradaDTO)));
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("Recurso criado", cardapioProdutoService.criarAssociacaoProdutoCardapio(cardapioProdutoAssociacaoEntradaDTO)));
     }
     @DeleteMapping("cardapio{idCardapio}/produto{idProduto}")
     public ResponseEntity<ApiResponse<Void>> desassociarProdutoCardapio(@PathVariable @Min(1) long idCardapio, @PathVariable @Min(1) long idProduto){

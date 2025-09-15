@@ -1,13 +1,17 @@
 package com.restaurante01.api_restaurante.cardapioproduto.dto.entrada;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public class CardapioProdutoAssociacaoEntradaDTO {
     @NotNull(message = "ID do cardapio deve ser enviada")
     private Long idCardapio;
     @NotNull (message = "ID do produto deve ser enviada")
     private Long idProduto;
+    @Min(0)
     private Double precoCustomizado;
+    @Min(0)
     private Integer quantidadeCustomizada;
     private String descricaoCustomizada;
     private Boolean disponibilidadeCustomizada;

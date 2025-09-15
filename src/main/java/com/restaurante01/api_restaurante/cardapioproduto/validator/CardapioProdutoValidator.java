@@ -16,18 +16,6 @@ public class CardapioProdutoValidator {
         if(existeAssociacao){
             throw new AssociacaoExistenteCardapioProdutoException("Produto já associadao ao Cardapio");
         }
-        if(dto.getIdCardapio() == null || dto.getIdCardapio() == 0){
-            throw new CardapioIdVazioException("ID do Cardapio não pode ser zero");
-        }
-        if(dto.getIdCardapio() < 0){
-            throw new CardapioIdNegativoException("O id do cardapio não pode ser valor negativo");
-        }
-        if(dto.getIdProduto() == null || dto.getIdProduto() == 0){
-            throw new ProdutoIdVazioException("Id do Produto não pode ser zero");
-        }
-        if(dto.getIdProduto() < 0){
-            throw new ProdutoIdNegativoException("O id do produto não pode ser um valor negativo");
-        }
         if(dto.getPrecoCustomizado() < 0){
             throw new PrecoProdutoNegativoException("O preço customizado não pode ser negativo");
         }
