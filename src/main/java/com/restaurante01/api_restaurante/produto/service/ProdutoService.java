@@ -53,7 +53,7 @@ public class ProdutoService {
     public ProdutoDTO adicionarNovoProduto(ProdutoCreateDTO produtoCreateDTO) {
             ProdutoDTO produtoDTO = produtoMapper.mapearProdutoDTO(produtoCreateDTO);
             produtoValidator.validarProduto(produtoDTO);
-            Produto novoProduto = produtoMapper.mapearUmaDtoParaEntidade(produtoDTO);  /* */
+            Produto novoProduto = produtoMapper.mapearUmaDtoParaEntidade(produtoDTO);
             Produto produtoSalvo = produtoRepository.save(novoProduto);
             return produtoMapper.mapearUmaEntidadeParaDTO(produtoSalvo);
         }

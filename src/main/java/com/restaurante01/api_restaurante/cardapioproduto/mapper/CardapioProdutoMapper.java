@@ -69,7 +69,6 @@ public class CardapioProdutoMapper extends AbstractMapper<CardapioProduto, Carda
 
     public List<CardapioComListaProdutoDTO> mapearCardapioComListaDeProduto(List<CardapioProduto> listaDeCardapioProduto){
         Map<Long, CardapioComListaProdutoDTO> map = new LinkedHashMap<>();
-
         for(CardapioProduto cp : listaDeCardapioProduto){
             Cardapio cardapio = cp.getCardapio();
             CardapioComListaProdutoDTO dto = map.computeIfAbsent(cardapio.getId(), id ->{

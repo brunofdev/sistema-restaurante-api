@@ -4,6 +4,7 @@ import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoDTO;
 import com.restaurante01.api_restaurante.produto.entity.Produto;
 import com.restaurante01.api_restaurante.produto.exceptions.ProdutoMesmoNomeExistenteException;
 import com.restaurante01.api_restaurante.produto.exceptions.ProdutoNomeInvalidoException;
+import com.restaurante01.api_restaurante.produto.exceptions.ProdutoQntdNegativa;
 import com.restaurante01.api_restaurante.produto.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,9 @@ public class ProdutoValidator {
     public void validarProduto(ProdutoDTO produtoDTO) {
         String nomeProduto = FormatarString.limparEspacos(produtoDTO.getNome());
         Produto produtoExistente = produtoRepository.findByNome(nomeProduto);
+        if(produtoDTO.getQuantidadeAtual() < 0){
+            throw new ProdutoQntdNegativa("Quantidade não pode ser negativa");
+        }
         if(produtoDTO.getNome().length() <= 3){
             throw new ProdutoNomeInvalidoException("Nome **" + nomeProduto + "** deve possuir MAIS de três (3) caracteres");
         }
