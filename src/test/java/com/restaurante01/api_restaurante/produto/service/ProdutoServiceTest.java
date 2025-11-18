@@ -1,8 +1,8 @@
 package com.restaurante01.api_restaurante.produto.service;
-
 import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoCreateDTO;
 import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoDTO;
 import com.restaurante01.api_restaurante.produto.entity.Produto;
+import com.restaurante01.api_restaurante.produto.exceptions.ProdutoNaoEncontradoException;
 import com.restaurante01.api_restaurante.produto.exceptions.ProdutoNomeInvalidoException;
 import com.restaurante01.api_restaurante.produto.exceptions.ProdutoQntdNegativa;
 import com.restaurante01.api_restaurante.produto.mapper.ProdutoMapper;
@@ -13,6 +13,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -30,6 +33,11 @@ public class ProdutoServiceTest {
     @InjectMocks
     private ProdutoService produtoService;
 
+
+    /*
+    Testes do metodo:
+    ProdutoDTO adicionarNovoProduto(ProdutoCreateDTO produtoCreateDTO)
+    */
     @Test
     void quandoCriarNovoProduto_ComDadosValidos_DeveSalverEretornarProdutoDTO(){
         ProdutoCreateDTO dadosEntrada = new ProdutoCreateDTO("churrus", "testando a descricao",
@@ -58,7 +66,6 @@ public class ProdutoServiceTest {
         verify(produtoRepository, times(1)).save(any(Produto.class));
         verify(produtoMapper, times(1)).mapearUmaEntidadeParaDTO(any(Produto.class));
     }
-
     @Test
     void deveLancarExceptionQuandoValidatorFalharAoCadastrarProduto() {
         ProdutoCreateDTO entrada = new ProdutoCreateDTO("ab", "desc", 10.0, 10L, true);
@@ -74,7 +81,6 @@ public class ProdutoServiceTest {
 
         verify(produtoRepository, never()).save(any());
     }
-
     @Test
     void deveLancarProdutoQntdNegativa() {
         ProdutoCreateDTO entrada = new ProdutoCreateDTO("nome", "desc", 10.0, 1L, true);
@@ -90,4 +96,112 @@ public class ProdutoServiceTest {
 
         verify(produtoRepository, never()).save(any());
     }
+
+    /*
+    Testes do metodo:
+    ProdutoDTO listarUmProdutoPorId(long id)
+    */
+    @Test
+    void deveRetornarProdutoDTOQuandoProdutoExistir() {
+        // ARRANGE
+        long id = 1L;
+
+        Produto produto = new Produto();
+        produto.setId(id);
+
+        ProdutoDTO produtoDTO = new ProdutoDTO(id, "Teste", "Desc", 10.0, 5L, true);
+
+        when(produtoRepository.findById(id)).thenReturn(Optional.of(produto));
+        when(produtoMapper.mapearUmaEntidadeParaDTO(produto)).thenReturn(produtoDTO);
+
+        ProdutoDTO resultado = produtoService.listarUmProdutoPorId(id);
+
+        assertNotNull(resultado);
+        assertEquals(id, resultado.getId());
+
+        verify(produtoRepository).findById(id);
+        verify(produtoMapper).mapearUmaEntidadeParaDTO(produto);
+    }
+    @Test
+    void deveLancarExcecaoQuandoProdutoNaoExistir(){
+        long id = 1L;
+        when(produtoRepository.findById(id)).thenReturn(Optional.empty());
+        assertThrows(ProdutoNaoEncontradoException.class,
+                () -> produtoService.listarUmProdutoPorId(id));
+        verify(produtoMapper, never()).mapearUmaEntidadeParaDTO(any());
+    }
+
+    /*
+    Testes do metodo:
+    ProdutoDTO atualizarProduto(ProdutoDTO produtoAtualizado)
+    */
+    @Test
+    void deveAtualizarUmProdutoExistente(){
+        // ---------- ARRANGE ----------
+        ProdutoDTO produtoAtualizado = new ProdutoDTO(
+                1L, "Novo Nome", "Nova Desc", 50.0, 10L, true
+        );
+
+        Produto produtoExistente = new Produto(
+                1L, "Nome Antigo", "Desc Antiga", 30.0, 5L, false
+        );
+
+        Produto produtoDepoisAtualizacao = new Produto(
+                1L, "Novo Nome", "Nova Desc", 50.0, 10L, true
+        );
+
+        ProdutoDTO produtoRetornadoMapper = new ProdutoDTO(
+                1L, "Novo Nome", "Nova Desc", 50.0, 10L, true
+        );
+
+        doNothing().when(produtoValidator).validarProduto(any());
+        when(produtoRepository.findById(1L)).thenReturn(Optional.of(produtoExistente));
+
+        // atualizarProduto() é void → simulamos comportamento
+        doAnswer(invoc -> {
+            Produto entidade = invoc.getArgument(0);
+            ProdutoDTO dto = invoc.getArgument(1);
+
+            entidade.setNome(dto.getNome());
+            entidade.setDescricao(dto.getDescricao());
+            entidade.setPreco(dto.getPreco());
+            entidade.setQuantidadeAtual(dto.getQuantidadeAtual());
+            entidade.setDisponibilidade(dto.getDisponibilidade());
+            return null;
+        }).when(produtoMapper).atualizarProduto(any(), any());
+
+        // save deve retornar um produto
+        when(produtoRepository.save(produtoExistente))
+                .thenReturn(produtoDepoisAtualizacao);
+
+        when(produtoMapper.mapearUmaEntidadeParaDTO(produtoDepoisAtualizacao))
+                .thenReturn(produtoRetornadoMapper);
+
+        ProdutoDTO resultado = produtoService.atualizarProduto(produtoAtualizado);
+
+        // ---------- ASSERT ----------
+        assertNotNull(resultado);
+        assertEquals("Novo Nome", resultado.getNome());
+        assertEquals("Nova Desc", resultado.getDescricao());
+        assertEquals(50.0, resultado.getPreco());
+        assertEquals(10L, resultado.getQuantidadeAtual());
+        assertTrue(resultado.getDisponibilidade());
+
+
+        // ---------- VERIFY ----------
+        verify(produtoValidator).validarProduto(produtoAtualizado);
+        verify(produtoRepository).findById(1L);
+        verify(produtoMapper).atualizarProduto(produtoExistente, produtoAtualizado);
+        verify(produtoRepository).save(produtoExistente);
+        verify(produtoMapper).mapearUmaEntidadeParaDTO(produtoDepoisAtualizacao);
+    }
+
+
+
+
+
+
+
+
+
 }
