@@ -19,7 +19,7 @@ public class Usuario {
     private String nome;
     @Column(name="user_name", nullable = false, unique = true)
     private String userName;
-    @Column(name="password", nullable = false)
+    @Column(name="senha", nullable = false)
     private String senha;
     @Column(name="email", nullable = true, unique = true)
     private String email;
@@ -34,7 +34,7 @@ public class Usuario {
     @Column(name = "cidade", nullable = true)
     private  String cidade;
     @Column(name = "cep", nullable = true)
-    private long cep;
+    private String cep;
     @Column(name = "numero_residencia", nullable = true)
     private int numeroResidencia;
     @Column(name = "complemento", nullable = false)
