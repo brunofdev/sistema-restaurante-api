@@ -27,6 +27,8 @@ public class SecurityConfigurations {
     // 1. LISTA DE ROTAS PÚBLICAS (Array de Strings é melhor que List para o Spring)
     private static final String[] PUBLIC_ENDPOINTS = {
             "/usuarios/cadastro",
+            "/usuarios/obter-todos",
+            "/api/auth/login",
             "/v3/api-docs/**", // Swagger
             "/swagger-ui/**",  // Swagger
             "/swagger-ui.html" // Swagger
@@ -38,7 +40,6 @@ public class SecurityConfigurations {
             "/produtos/adicionar-produto", UserRole.ADMIN1
 
     );
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
@@ -59,7 +60,6 @@ public class SecurityConfigurations {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
-
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();

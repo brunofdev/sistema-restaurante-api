@@ -11,6 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/usuarios")
@@ -29,5 +31,9 @@ public class UsuarioController {
         CadastrarUsuarioDTO dtoComSenhaEncoded = dto.withSenha(senhaCriptografada);
         UsuarioDTO usuarioCriadoDTO = usuarioService.cadastrarNovoUsuario(dtoComSenhaEncoded);
         return ResponseEntity.ok(ApiResponse.success("Recurso criado" , usuarioCriadoDTO));
+    }
+    @GetMapping("/obter-todos")
+    public ResponseEntity<ApiResponse<List<UsuarioDTO>>> listarUsuarios(){
+        return ResponseEntity.ok(ApiResponse.success("Recurso disponivel", usuarioService.listarUsuarios()));
     }
 }

@@ -11,6 +11,8 @@ import com.restaurante01.api_restaurante.usuarios.validator.UsuarioValidator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UsuarioService {
 
@@ -41,5 +43,9 @@ public class UsuarioService {
             throw new InvalidCredentialsException("Credenciais invalidas");
         };
         return usuarioMapper.mapearUsuarioParaUsuarioDTO(usuario);
+    }
+
+    public List<UsuarioDTO> listarUsuarios() {
+        return usuarioMapper.mapearListaUsuarioParaUsuarioDTO(usuarioRepository.findAll());
     }
 }

@@ -6,11 +6,14 @@ import com.restaurante01.api_restaurante.usuarios.entity.Usuario;
 import com.restaurante01.api_restaurante.usuarios.enums.UserRole;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class UsuarioMapper {
     public Usuario mappearNovoUsuario(CadastrarUsuarioDTO dto) {
         Usuario usuario = new Usuario();
         usuario.setNome(dto.nome());
+        usuario.setSenha(dto.senha());
         usuario.setCpf(dto.cpf());
         usuario.setTelefone(dto.telefone());
         usuario.setEmail(dto.email());
@@ -28,7 +31,11 @@ public class UsuarioMapper {
         return new UsuarioDTO(
                 novoUsuario.getId(),
                 novoUsuario.getNome(),
-                novoUsuario.getUserName(),
+                novoUsuario.getUsername(),
                 novoUsuario.getRole());
+    }
+    public List<UsuarioDTO> mapearListaUsuarioParaUsuarioDTO(List<Usuario> usuarios){
+        return usuarios.stream()
+                .map(usuario -> mapearUsuarioParaUsuarioDTO(usuario)).toList();
     }
 }

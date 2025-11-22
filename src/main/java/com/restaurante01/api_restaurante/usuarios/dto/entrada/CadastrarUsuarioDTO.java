@@ -59,14 +59,14 @@ public record CadastrarUsuarioDTO(
         return new CadastrarUsuarioDTO(
                 this.nome(),
                 this.cpf(),
-                this.telefone(),
                 this.email().toUpperCase(),
-                senhaCriptografada, // <--- A única coisa que muda
+                this.telefone(),// <--- A única coisa que muda
                 this.userName().toUpperCase(),
+                senhaCriptografada,
                 this.estado().toUpperCase(),
                 this.cidade().toUpperCase(),
-                this.rua().toUpperCase(),
                 this.cep(),
+                this.rua().toUpperCase(),
                 this.numero(),
                 this.complemento().toUpperCase()
         );
