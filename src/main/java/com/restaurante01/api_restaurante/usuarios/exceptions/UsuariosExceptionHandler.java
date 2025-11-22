@@ -3,6 +3,7 @@ package com.restaurante01.api_restaurante.usuarios.exceptions;
 
 import com.restaurante01.api_restaurante.core.utils.ApiError;
 import com.restaurante01.api_restaurante.core.utils.ApiResponse;
+import com.restaurante01.api_restaurante.usuarios.controller.UsuarioController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -13,9 +14,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.LocalDateTime;
 
-@ControllerAdvice
-public class GlobalExceptionHandler {
-    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+@ControllerAdvice(assignableTypes = UsuarioController.class)
+public class UsuariosExceptionHandler {
+    private static final Logger logger = LoggerFactory.getLogger(UsuariosExceptionHandler.class);
 
     // Trata exceções de usuário não encontrado
     @ExceptionHandler(UserNotFoundException.class)

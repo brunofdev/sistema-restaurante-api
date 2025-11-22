@@ -1,6 +1,7 @@
 package com.restaurante01.api_restaurante.autenticacao.exceptions;
 
 
+import com.restaurante01.api_restaurante.autenticacao.controller.AuthenticationController;
 import com.restaurante01.api_restaurante.core.utils.ApiError;
 import com.restaurante01.api_restaurante.core.utils.ApiResponse;
 import org.slf4j.Logger;
@@ -13,9 +14,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.LocalDateTime;
 
-@ControllerAdvice
-public class GlobalExceptionHandler {
-    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+@ControllerAdvice(assignableTypes = AuthenticationController.class)
+public class AutenticadorExceptionHandler {
+    private static final Logger logger = LoggerFactory.getLogger(AutenticadorExceptionHandler.class);
 
     // Handler específico para a exceção que o AuthenticationService lança
     @ExceptionHandler(InvalidCredentialsException.class)

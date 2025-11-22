@@ -59,6 +59,19 @@ public class JwtProvider {
         final String usernameFromToken = extractUsername(token);
         return (usernameFromToken.equals(username) && !isTokenExpired(token));
     }
+    /**
+     * Tenta validar o token e retornar o usuário.
+     * Se o token estiver inválido ou expirado, não quebra a aplicação, apenas retorna null.
+     */
+    public String validateToken(String token) {
+        try {
+            // Tenta extrair o usuário (isso vai falhar se o token for inválido/expirado)
+            return extractUsername(token);
+        } catch (Exception e) {
+            // Se der qualquer erro (token expirado, assinatura ruim, malformado), retorna null
+            return null;
+        }
+    }
 
     // --- Métodos Privados Auxiliares ---
 
