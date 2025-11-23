@@ -10,7 +10,7 @@ public record CadastrarUsuarioDTO(
         String nome,
 
         @NotBlank(message = "O CPF é obrigatório.")
-        @Pattern(regexp = "\\d{3}\\.?\\d{3}\\.?\\d{3}-?\\d{2}", message = "O CPF deve estar no formato 000.000.000-00 ou apenas números.")
+        @Pattern(regexp = "\\d{11}", message = "O CPF deve conter exatamente 11 dígitos numéricos.")
         String cpf,
 
         @NotBlank(message = "O e-mail é obrigatório.")

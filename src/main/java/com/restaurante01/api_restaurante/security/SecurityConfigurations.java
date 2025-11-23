@@ -27,6 +27,8 @@ public class SecurityConfigurations {
     // 1. LISTA DE ROTAS PÚBLICAS (Array de Strings é melhor que List para o Spring)
     private static final String[] PUBLIC_ENDPOINTS = {
             "/usuarios/cadastro",
+            "/usuarios/cadastro-admin1",
+            "/usuarios/cadastro-admin3",
             "/usuarios/obter-todos",
             "/api/auth/login",
             "/v3/api-docs/**", // Swagger
@@ -37,8 +39,8 @@ public class SecurityConfigurations {
     // 2. MAPA DE ROTAS PROTEGIDAS (URL -> Nível Mínimo de Acesso)
     // Dica: Use o Enum UserRole.ADMIN3, etc.
     private static final Map<String, UserRole> PROTECTED_ROUTES = Map.of(
-            "/produtos/adicionar-produto", UserRole.ADMIN1
-
+            "/produtos/adicionar-produto", UserRole.ADMIN1,
+            "/produtos/todos-produtos", UserRole.ADMIN2
     );
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -51,7 +53,7 @@ public class SecurityConfigurations {
                     PROTECTED_ROUTES.forEach((url, role) -> {
                         authorize.requestMatchers(url).hasRole(role.name());
                     });
-                authorize.anyRequest().authenticated();
+                authorize.anyRequest().hasRole("ADMIN3");
                 })
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

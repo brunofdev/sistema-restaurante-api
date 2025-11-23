@@ -4,6 +4,7 @@ import com.restaurante01.api_restaurante.produto.dto.saida.LoteProdutosResponseD
 import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoCreateDTO;
 import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoDTO;
 import com.restaurante01.api_restaurante.produto.service.ProdutoService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.ReportAsSingleViolation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/produtos")
 @Validated
+@SecurityRequirement(name = "bearerAuth")
 public class ProdutoController {
     @Autowired
     private ProdutoService produtoService;

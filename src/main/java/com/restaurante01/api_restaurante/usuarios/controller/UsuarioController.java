@@ -36,4 +36,20 @@ public class UsuarioController {
     public ResponseEntity<ApiResponse<List<UsuarioDTO>>> listarUsuarios(){
         return ResponseEntity.ok(ApiResponse.success("Recurso disponivel", usuarioService.listarUsuarios()));
     }
+    //endpoint para teste apenas
+    @PostMapping("/cadastro-admin1")
+    public ResponseEntity<ApiResponse<UsuarioDTO>> cadastrarUsuarioAdmin1(@Valid @RequestBody CadastrarUsuarioDTO dto){
+        String senhaCriptografada = passwordEncoder.encode(dto.senha());
+        CadastrarUsuarioDTO dtoComSenhaEncoded = dto.withSenha(senhaCriptografada);
+        UsuarioDTO usuarioCriadoDTO = usuarioService.cadastrarNovoUsuarioAdmin1(dtoComSenhaEncoded);
+        return ResponseEntity.ok(ApiResponse.success("Recurso criado" , usuarioCriadoDTO));
+    }
+    //endpoint para teste apenas
+    @PostMapping("/cadastro-admin3")
+    public ResponseEntity<ApiResponse<UsuarioDTO>> cadastrarUsuarioAdmin3(@Valid @RequestBody CadastrarUsuarioDTO dto){
+        String senhaCriptografada = passwordEncoder.encode(dto.senha());
+        CadastrarUsuarioDTO dtoComSenhaEncoded = dto.withSenha(senhaCriptografada);
+        UsuarioDTO usuarioCriadoDTO = usuarioService.cadastrarNovoUsuarioAdmin3(dtoComSenhaEncoded);
+        return ResponseEntity.ok(ApiResponse.success("Recurso criado" , usuarioCriadoDTO));
+    }
 }
