@@ -21,7 +21,11 @@ public class ProdutoMapper extends AbstractMapper<Produto, ProdutoDTO> {
                  FormatarString.limparEspacos(produto.getDescricao()),
                  produto.getPreco(),
                  produto.getQuantidadeAtual(),
-                 produto.getDisponibilidade()
+                 produto.getDisponibilidade(),
+                 produto.getDataCriacao(),
+                 produto.getDataAtualizacao(),
+                 produto.getCriadoPor(),
+                 produto.getAtualizadoPor()
         );
     }
     @Override
@@ -60,7 +64,11 @@ public class ProdutoMapper extends AbstractMapper<Produto, ProdutoDTO> {
                FormatarString.limparEspacos(produtoCreateDTO.getDescricao()),
                produtoCreateDTO.getPreco(),
                produtoCreateDTO.getQuantidadeAtual(),
-               produtoCreateDTO.getDisponibilidade()
+               produtoCreateDTO.getDisponibilidade(),
+               null,
+               null,
+               null,
+               null
        );
     }
 }

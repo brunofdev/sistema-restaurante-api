@@ -16,14 +16,14 @@ public interface Mapper<Entity, DTO> {
 
     /**
      * Converte uma entidade do domínio para o seu DTO correspondente.
-     * @param entity Objeto entidade a ser convertido
+     * @param entidade Objeto entidade a ser convertido
      * @return Objeto DTO equivalente à entidade fornecida
      */
     DTO mapearUmaEntidadeParaDTO(Entity entidade);
 
     /**
      * Converte uma lista de entidades do domínio para uma lista de DTOs correspondentes.
-     * @param loteEntitys Lista de entidades a serem convertidas
+     * @param listaEntidade Lista de entidades a serem convertidas
      * @return Lista de DTOs correspondentes
      */
     List<DTO> mapearListaDeEntidadeParaDTO(List<Entity> listaEntidade);
@@ -43,7 +43,7 @@ public interface Mapper<Entity, DTO> {
      * Este método facilita a conversão em lote, otimizando operações de persistência
      * ou processamento de coleções de dados recebidas.
      *
-     * @param loteDTO Lista de DTOs a serem convertidos.
+     * @param listaDTO Lista de DTOs a serem convertidos.
      * @return Lista de Entities correspondentes aos DTOs fornecidos.
      */
     List<Entity> mapearListaDeDtoParaEntidade(List<DTO> listaDTO);

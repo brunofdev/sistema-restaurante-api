@@ -1,11 +1,14 @@
 package com.restaurante01.api_restaurante.produto.entity;
 
+import com.restaurante01.api_restaurante.security.Auditable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "produto")
-public class Produto {
+@EqualsAndHashCode(callSuper = true)
+public class Produto extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -35,7 +35,7 @@ public class ProdutoServiceTest {
         ProdutoCreateDTO dadosEntrada = new ProdutoCreateDTO("churrus", "testando a descricao",
                 26.5, 15L, true);
         ProdutoDTO dto = new ProdutoDTO(1L, "churrus", "testando a descricao",
-                26.5, 15l, true);
+                26.5, 15l, true, null, null, null, null);
         Produto novoProduto = new Produto();
         Produto produtoSalvo = new Produto();
 
@@ -62,7 +62,7 @@ public class ProdutoServiceTest {
     @Test
     void deveLancarExceptionQuandoValidatorFalharAoCadastrarProduto() {
         ProdutoCreateDTO entrada = new ProdutoCreateDTO("ab", "desc", 10.0, 10L, true);
-        ProdutoDTO dtoMapeado = new ProdutoDTO(null, "ab", "desc", 10.0, 10L, true);
+        ProdutoDTO dtoMapeado = new ProdutoDTO(null, "ab", "desc", 10.0, 10L, true, null, null, null, null);
 
         when(produtoMapper.mapearProdutoDTO(any())).thenReturn(dtoMapeado);
 
@@ -78,7 +78,7 @@ public class ProdutoServiceTest {
     @Test
     void deveLancarProdutoQntdNegativa() {
         ProdutoCreateDTO entrada = new ProdutoCreateDTO("nome", "desc", 10.0, 1L, true);
-        ProdutoDTO dto = new ProdutoDTO(null, "nome", "desc", 10.0, 1L, true);
+        ProdutoDTO dto = new ProdutoDTO(null, "nome", "desc", 10.0, 1L, true, null, null, null, null);
 
         when(produtoMapper.mapearProdutoDTO(any())).thenReturn(dto);
 
