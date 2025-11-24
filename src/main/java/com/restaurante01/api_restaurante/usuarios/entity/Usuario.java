@@ -35,12 +35,14 @@ public class Usuario implements UserDetails {
     private String telefone;
     @Column(name = "estado", nullable = true)
     private String estado;
-    @Column(name = "rua", nullable = true)
-    private String rua;
+    @Column(name = "bairro", nullable = true)
+    private  String bairro;
     @Column(name = "cidade", nullable = true)
     private  String cidade;
     @Column(name = "cep", nullable = true)
     private String cep;
+    @Column(name = "rua", nullable = true)
+    private String rua;
     @Column(name = "numero_residencia", nullable = true)
     private int numeroResidencia;
     @Column(name = "complemento", nullable = false)

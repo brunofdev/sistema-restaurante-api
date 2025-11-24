@@ -40,6 +40,9 @@ public record CadastrarUsuarioDTO(
         @NotBlank(message = "A cidade é obrigatória.")
         String cidade,
 
+        @NotBlank(message = "O bairro é obrigatório.")
+        String bairro,
+
         @NotBlank(message = "O CEP é obrigatório.")
         @Pattern(regexp = "\\d{5}-?\\d{3}", message = "O CEP deve estar no formato 00000-000 ou apenas números.")
         String cep,
@@ -65,6 +68,7 @@ public record CadastrarUsuarioDTO(
                 senhaCriptografada,
                 this.estado().toUpperCase(),
                 this.cidade().toUpperCase(),
+                this.bairro().toUpperCase(),
                 this.cep(),
                 this.rua().toUpperCase(),
                 this.numero(),

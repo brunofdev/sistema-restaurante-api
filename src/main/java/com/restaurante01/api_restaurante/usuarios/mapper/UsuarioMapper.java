@@ -19,6 +19,7 @@ public class UsuarioMapper {
         usuario.setEmail(dto.email());
         usuario.setEstado(dto.estado());
         usuario.setCidade(dto.cidade());
+        usuario.setBairro(dto.bairro());
         usuario.setRua(dto.rua());
         usuario.setCep(dto.cep());
         usuario.setNumeroResidencia(dto.numero());
