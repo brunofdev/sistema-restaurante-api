@@ -24,16 +24,13 @@ public class Pedido extends Auditable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "id", nullable = false)
+    @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private StatusPedido statusPedido = StatusPedido.PENDENTE;
 
-    // RELACIONAMENTO PAI -> FILHOS
-    // CascadeType.ALL: Se eu salvar o Pedido, salva os Itens automaticamente.
-    // orphanRemoval = true: Se eu remover um item da lista, ele é deletado do banco.
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPedido> itens = new ArrayList<>();
 
@@ -43,7 +40,6 @@ public class Pedido extends Auditable {
     @Column(nullable = false)
     private String enderecoEntrega;
 
-    //criar metodos auxiliares da entidade, para garantir a qualidade dos dados e facilitar a vida do service
     public void adicionarItem(ItemPedido item){
         itens.add(item);
         item.setPedido(this);

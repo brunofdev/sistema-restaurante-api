@@ -57,7 +57,7 @@ public class ProdutoService {
             Produto produtoSalvo = produtoRepository.save(novoProduto);
             return produtoMapper.mapearUmaEntidadeParaDTO(produtoSalvo);
         }
-    private List<Produto> buscarProdutosPorIds(Set<Long> idsMapeados){
+    public List<Produto> buscarProdutosPorIds(Set<Long> idsMapeados){
         return produtoRepository.findAllById(idsMapeados);
     }
     public ProdutoDTO atualizarProduto(ProdutoDTO produtoAtualizado) {

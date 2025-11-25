@@ -39,8 +39,11 @@ public class SecurityConfigurations {
     // 2. MAPA DE ROTAS PROTEGIDAS (URL -> Nível Mínimo de Acesso)
     // Dica: Use o Enum UserRole.ADMIN3, etc.
     private static final Map<String, UserRole> PROTECTED_ROUTES = Map.of(
-            "/produtos/adicionar-produto", UserRole.ADMIN1,
-            "/produtos/todos-produtos", UserRole.ADMIN2
+            "/produtos/adicionar-produto", UserRole.USER,
+            "/produtos/todos-produtos", UserRole.USER,
+            "/pedido/criar-pedido", UserRole.USER,
+            "/pedido/obter-todos-pedidos", UserRole.USER
+
     );
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
