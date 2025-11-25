@@ -4,6 +4,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
+import java.math.BigDecimal;
+
 public class CardapioProdutoAssociacaoEntradaDTO {
     @NotNull(message = "ID do cardapio deve ser enviada")
     @Min(1)
@@ -12,7 +14,7 @@ public class CardapioProdutoAssociacaoEntradaDTO {
     @NotNull (message = "ID do produto deve ser enviada")
     private Long idProduto;
     @Min(0)
-    private Double precoCustomizado;
+    private BigDecimal precoCustomizado;
     @Min(0)
     private Integer quantidadeCustomizada;
     private String descricaoCustomizada;
@@ -21,7 +23,7 @@ public class CardapioProdutoAssociacaoEntradaDTO {
 
     public CardapioProdutoAssociacaoEntradaDTO(){}
 
-    public CardapioProdutoAssociacaoEntradaDTO(Long idCardapio, Long idProduto,Double precoCustomizado, Integer quantidadeCustomizada, String descricaoCustomizada, Boolean disponibilidadeCustomizada, String observacao) {
+    public CardapioProdutoAssociacaoEntradaDTO(Long idCardapio, Long idProduto,BigDecimal precoCustomizado, Integer quantidadeCustomizada, String descricaoCustomizada, Boolean disponibilidadeCustomizada, String observacao) {
         this.idCardapio = idCardapio;
         this.idProduto = idProduto;
         this.precoCustomizado = precoCustomizado;
@@ -47,11 +49,11 @@ public class CardapioProdutoAssociacaoEntradaDTO {
         this.idProduto = idProduto;
     }
 
-    public Double getPrecoCustomizado() {
+    public BigDecimal getPrecoCustomizado() {
         return precoCustomizado;
     }
 
-    public void setPrecoCustomizado(Double precoCustomizado) {
+    public void setPrecoCustomizado(BigDecimal precoCustomizado) {
         this.precoCustomizado = precoCustomizado;
     }
 

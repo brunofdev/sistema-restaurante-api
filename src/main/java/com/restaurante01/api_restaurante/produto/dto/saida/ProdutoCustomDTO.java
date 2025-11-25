@@ -1,21 +1,23 @@
 package com.restaurante01.api_restaurante.produto.dto.saida;
 
+import java.math.BigDecimal;
+
 public class ProdutoCustomDTO {
     private Long idProduto;
     private String nome;
     private String descricao;
-    private Double preco;
+    private BigDecimal preco;
     private Long quantidadeAtual;
     private Boolean disponibilidade;
-    private Double precoCustomizado;
+    private BigDecimal precoCustomizado;
     private Integer quantidadeCustomizada;
     private String descricaoCustomizada;
     private Boolean disponibilidadeCustomizada;
     private String observacao;
 
     public ProdutoCustomDTO(){}
-    public ProdutoCustomDTO(Long idProduto, String nome, String descricao, Double preco,
-                            Long quantidadeAtual, Boolean disponibilidade, Double precoCustomizado,
+    public ProdutoCustomDTO(Long idProduto, String nome, String descricao, BigDecimal preco,
+                            Long quantidadeAtual, Boolean disponibilidade, BigDecimal precoCustomizado,
                             Integer quantidadeCustomizada, String descricaoCustomizada, Boolean disponibilidadeCustomizada,
                             String observacao) {
         this.idProduto = idProduto;
@@ -55,11 +57,11 @@ public class ProdutoCustomDTO {
         this.descricao = descricao;
     }
 
-    public Double getPreco() {
+    public BigDecimal getPreco() {
         return preco;
     }
 
-    public void setPreco(Double preco) {
+    public void setPreco(BigDecimal preco) {
         this.preco = preco;
     }
 
@@ -79,11 +81,11 @@ public class ProdutoCustomDTO {
         this.disponibilidade = disponibilidade;
     }
 
-    public Double getPrecoCustomizado() {
+    public BigDecimal getPrecoCustomizado() {
         return precoCustomizado;
     }
 
-    public void setPrecoCustomizado(Double precoCustomizado) {
+    public void setPrecoCustomizado(BigDecimal precoCustomizado) {
         this.precoCustomizado = precoCustomizado;
     }
 

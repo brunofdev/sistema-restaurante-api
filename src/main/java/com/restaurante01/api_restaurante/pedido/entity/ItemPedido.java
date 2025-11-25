@@ -33,4 +33,12 @@ public class ItemPedido {
     @Column(name = "preco_unitario", nullable = false)
     private BigDecimal precoUnitario;
 
+
+    public BigDecimal calcularSubTotal(){
+        if(precoUnitario == null || quantidade == null){
+            return BigDecimal.ZERO;
+        }
+        return precoUnitario.multiply(BigDecimal.valueOf(quantidade));
+    }
+
 }

@@ -12,6 +12,8 @@ import com.restaurante01.api_restaurante.produto.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 @Component
 public class CardapioProdutoValidator {
 
@@ -23,7 +25,7 @@ public class CardapioProdutoValidator {
     }
 
     public void validarCardapioProdutoAssociacaoEntradaDTO(CardapioProdutoAssociacaoEntradaDTO dto,  boolean existeAssociacao, boolean estaAtualizandoApenas){
-        if(dto.getPrecoCustomizado() < 0){
+        if(dto.getPrecoCustomizado().compareTo(BigDecimal.ZERO) < 0){
             throw new PrecoProdutoNegativoException("O preço customizado não pode ser negativo");
         }
         if(dto.getQuantidadeCustomizada() < 0){

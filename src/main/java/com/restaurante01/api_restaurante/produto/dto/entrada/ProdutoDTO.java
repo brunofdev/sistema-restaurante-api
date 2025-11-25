@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -21,7 +22,7 @@ public class ProdutoDTO {
         private String descricao;
         @NotNull(message = "Preço deve ser informado")
         @PositiveOrZero(message = "Preço deve ser zero ou positivo")
-        private Double preco;
+        private BigDecimal preco;
         @NotNull(message = "Quantidade deve ser zero ou positivo")
         @Min(value = 0, message = "Quantidade minima deve ser zero")
         private Long quantidadeAtual;

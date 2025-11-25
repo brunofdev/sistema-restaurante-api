@@ -35,7 +35,7 @@ public class Pedido extends Auditable {
     // CascadeType.ALL: Se eu salvar o Pedido, salva os Itens automaticamente.
     // orphanRemoval = true: Se eu remover um item da lista, ele é deletado do banco.
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemPedido> itemPedido = new ArrayList<>();
+    private List<ItemPedido> itens = new ArrayList<>();
 
     @Column(nullable = false)
     private BigDecimal valorTotal = BigDecimal.ZERO;
@@ -44,4 +44,21 @@ public class Pedido extends Auditable {
     private String enderecoEntrega;
 
     //criar metodos auxiliares da entidade, para garantir a qualidade dos dados e facilitar a vida do service
-}
+    public void adicionarItem(ItemPedido item){
+        itens.add(item);
+        item.setPedido(this);
+        calcularTotal();
+    }
+    public void removerItem(ItemPedido item){
+        itens.remove(item);
+        item.setPedido(null);
+        calcularTotal();
+    }
+    public void calcularTotal(){
+       this.valorTotal = itens.stream()
+               .map(ItemPedido::calcularSubTotal)
+               .reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
+    }
+
+

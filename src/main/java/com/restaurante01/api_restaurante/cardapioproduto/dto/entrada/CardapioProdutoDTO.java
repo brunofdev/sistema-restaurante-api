@@ -3,11 +3,13 @@ package com.restaurante01.api_restaurante.cardapioproduto.dto.entrada;
 import com.restaurante01.api_restaurante.cardapio.dto.saida.CardapioDTO;
 import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoDTO;
 
+import java.math.BigDecimal;
+
 public class CardapioProdutoDTO {
     private Long id;
     private CardapioDTO cardapio;
     private ProdutoDTO produto;
-    private Double precoCustomizado;
+    private BigDecimal precoCustomizado;
     private Integer quantidadeCustomizada;
     private String descricaoCustomizada;
     private Boolean disponibilidadeCustomizada;
@@ -16,7 +18,7 @@ public class CardapioProdutoDTO {
     public CardapioProdutoDTO() {
     }
 
-    public CardapioProdutoDTO(Long id, CardapioDTO cardapio, ProdutoDTO produto, Double precoCustomizado,
+    public CardapioProdutoDTO(Long id, CardapioDTO cardapio, ProdutoDTO produto, BigDecimal precoCustomizado,
                               Integer quantidadeCustomizada, String descricaoCustomizada,
                               Boolean disponibilidadeCustomizada, String observacao) {
         this.id = id;
@@ -53,11 +55,11 @@ public class CardapioProdutoDTO {
         this.produto = produto;
     }
 
-    public Double getPrecoCustomizado() {
+    public BigDecimal getPrecoCustomizado() {
         return precoCustomizado;
     }
 
-    public void setPrecoCustomizado(Double precoCustomizado) {
+    public void setPrecoCustomizado(BigDecimal precoCustomizado) {
         this.precoCustomizado = precoCustomizado;
     }
 

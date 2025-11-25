@@ -13,6 +13,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -33,9 +36,9 @@ public class ProdutoServiceTest {
     @Test
     void quandoCriarNovoProduto_ComDadosValidos_DeveSalverEretornarProdutoDTO(){
         ProdutoCreateDTO dadosEntrada = new ProdutoCreateDTO("churrus", "testando a descricao",
-                26.5, 15L, true);
+                new BigDecimal(26.5), 15L, true);
         ProdutoDTO dto = new ProdutoDTO(1L, "churrus", "testando a descricao",
-                26.5, 15l, true, null, null, null, null);
+                new BigDecimal(26.5), 15l, true, null, null, null, null);
         Produto novoProduto = new Produto();
         Produto produtoSalvo = new Produto();
 
@@ -61,8 +64,8 @@ public class ProdutoServiceTest {
 
     @Test
     void deveLancarExceptionQuandoValidatorFalharAoCadastrarProduto() {
-        ProdutoCreateDTO entrada = new ProdutoCreateDTO("ab", "desc", 10.0, 10L, true);
-        ProdutoDTO dtoMapeado = new ProdutoDTO(null, "ab", "desc", 10.0, 10L, true, null, null, null, null);
+        ProdutoCreateDTO entrada = new ProdutoCreateDTO("ab", "desc", new BigDecimal(10.0), 10L, true);
+        ProdutoDTO dtoMapeado = new ProdutoDTO(null, "ab", "desc", new BigDecimal(10.0), 10L, true, null, null, null, null);
 
         when(produtoMapper.mapearProdutoDTO(any())).thenReturn(dtoMapeado);
 
@@ -77,8 +80,8 @@ public class ProdutoServiceTest {
 
     @Test
     void deveLancarProdutoQntdNegativa() {
-        ProdutoCreateDTO entrada = new ProdutoCreateDTO("nome", "desc", 10.0, 1L, true);
-        ProdutoDTO dto = new ProdutoDTO(null, "nome", "desc", 10.0, 1L, true, null, null, null, null);
+        ProdutoCreateDTO entrada = new ProdutoCreateDTO("nome", "desc", new BigDecimal(10.0), 1L, true);
+        ProdutoDTO dto = new ProdutoDTO(null, "nome", "desc", new BigDecimal(10.0), 1L, true, null, null, null, null);
 
         when(produtoMapper.mapearProdutoDTO(any())).thenReturn(dto);
 

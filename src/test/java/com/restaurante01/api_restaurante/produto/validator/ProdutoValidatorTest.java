@@ -10,6 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -26,7 +28,7 @@ class ProdutoValidatorTest {
     @Test
     void deveValidarProdutoSemErros(){
         ProdutoDTO produtoDTO = new ProdutoDTO(
-                null,"teste", "teste", 23.5, 15L, true,null, null, null, null);
+                null,"teste", "teste", new BigDecimal(23.5), 15L, true,null, null, null, null);
         Produto produtoExistente = new Produto();
         when(produtoRepository.findByNome("teste")).thenReturn(null);
         assertDoesNotThrow(() -> produtoValidator.validarProduto(produtoDTO));
@@ -34,7 +36,7 @@ class ProdutoValidatorTest {
     @Test
     void deveLancarExcecaoQuandoNomeDoProdutoJaExiste(){
         ProdutoDTO produtoDTO = new ProdutoDTO(
-                null,"teste", "teste", 23.5, 15L, true, null, null, null, null);
+                null,"teste", "teste", new BigDecimal(23.5), 15L, true, null, null, null, null);
         Produto produtoExistente = new Produto();
         produtoExistente.setNome("teste");
         when(produtoRepository.findByNome("teste")).thenReturn(produtoExistente);

@@ -7,6 +7,7 @@ import com.restaurante01.api_restaurante.cardapio.entity.Cardapio;
 import com.restaurante01.api_restaurante.produto.entity.Produto;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -27,7 +28,7 @@ public class CardapioProduto {
 
 
     @Column(name = "preco_customizado")
-    private Double precoCustomizado;
+    private BigDecimal precoCustomizado;
     @Column(name = "qtd_customizada")
     private Integer quantidadeCustomizada;
     @Column(name = "desc_customizada")
@@ -41,7 +42,7 @@ public class CardapioProduto {
     }
 
     public CardapioProduto(
-                           Long id, Cardapio cardapio, Produto produto, Double precoCustomizado,
+                           Long id, Cardapio cardapio, Produto produto, BigDecimal precoCustomizado,
                            Integer quantidadeCustomizada, Boolean disponibilidadeCustomizada,
                            String observacao, String descricaoCustomizada)
     {
@@ -78,11 +79,11 @@ public class CardapioProduto {
         this.produto = produto;
     }
 
-    public Double getPrecoCustomizado() {
+    public BigDecimal getPrecoCustomizado() {
         return precoCustomizado;
     }
 
-    public void setPrecoCustomizado(Double precoCustomizado) {
+    public void setPrecoCustomizado(BigDecimal precoCustomizado) {
         this.precoCustomizado = precoCustomizado;
     }
 
