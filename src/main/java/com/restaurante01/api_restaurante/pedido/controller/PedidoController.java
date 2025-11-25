@@ -1,11 +1,9 @@
 package com.restaurante01.api_restaurante.pedido.controller;
 
 import com.restaurante01.api_restaurante.core.utils.ApiResponse;
-import com.restaurante01.api_restaurante.pedido.PedidoService;
+import com.restaurante01.api_restaurante.pedido.service.PedidoService;
 import com.restaurante01.api_restaurante.pedido.dto.entrada.CriarPedidoDTO;
 import com.restaurante01.api_restaurante.pedido.dto.saida.PedidoDTO;
-import com.restaurante01.api_restaurante.pedido.entity.Pedido;
-import com.restaurante01.api_restaurante.produto.service.ProdutoService;
 import com.restaurante01.api_restaurante.usuarios.entity.Usuario;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
