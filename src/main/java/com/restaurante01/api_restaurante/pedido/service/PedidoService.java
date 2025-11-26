@@ -34,13 +34,12 @@ public class PedidoService {
     public PedidoDTO criarNovoPedido(pedidoCriacaoDTO pedidoCriacaoDTO, Usuario usuario){
         Pedido pedido = new Pedido();
         List<ItemPedido> itens = new ArrayList<>();
-        for(ItemPedidoSolicitadoDTO dto : pedidoCriacaoDTO.itens()) {
+        pedidoCriacaoDTO.itens().forEach(dto -> {
             Produto produto = produtoRepository.findById(dto.idProduto()).orElseThrow(() -> new ProdutoNaoEncontradoException("Produto Não encontrado"));
             ItemPedido item = pedidoMapper.mapearItemPedido(dto.quantidade(), produto);
             pedido.adicionarItem(item);
-        }
+        });
         pedidoMapper.mapearPedido(pedido, usuario);
-        pedido.calcularTotal();
         pedidoRepository.save(pedido);
         return pedidoMapper.mapearPedidoDto(pedido);
     }
