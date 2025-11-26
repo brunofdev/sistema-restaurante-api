@@ -1,18 +1,18 @@
 package com.restaurante01.api_restaurante.pedido.service;
 
 
-import com.restaurante01.api_restaurante.pedido.Enum.StatusPedido;
 import com.restaurante01.api_restaurante.pedido.mapper.PedidoMapper;
-import com.restaurante01.api_restaurante.pedido.dto.entrada.pedidoCriacaoDTO;
+import com.restaurante01.api_restaurante.pedido.dto.entrada.PedidoCriacaoDTO;
 import com.restaurante01.api_restaurante.pedido.dto.entrada.ItemPedidoSolicitadoDTO;
 import com.restaurante01.api_restaurante.pedido.dto.saida.PedidoDTO;
 import com.restaurante01.api_restaurante.pedido.entity.ItemPedido;
 import com.restaurante01.api_restaurante.pedido.entity.Pedido;
 import com.restaurante01.api_restaurante.pedido.repository.PedidoRepository;
 import com.restaurante01.api_restaurante.produto.entity.Produto;
-import com.restaurante01.api_restaurante.produto.exceptions.ProdutoNaoEncontradoException;
-import com.restaurante01.api_restaurante.produto.repository.ProdutoRepository;
+import com.restaurante01.api_restaurante.produto.service.ProdutoService;
 import com.restaurante01.api_restaurante.usuarios.entity.Usuario;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,29 +23,32 @@ public class PedidoService {
 
     private final PedidoRepository pedidoRepository;
     private final PedidoMapper pedidoMapper;
-    private final ProdutoRepository produtoRepository;
+    private final ProdutoService produtoService;
 
-    public PedidoService (PedidoRepository pedidoRepository, PedidoMapper pedidoMapper, ProdutoRepository produtoRepository){
+    public PedidoService (PedidoRepository pedidoRepository, PedidoMapper pedidoMapper, ProdutoService produtoService){
         this.pedidoRepository = pedidoRepository;
         this.pedidoMapper = pedidoMapper;
-        this.produtoRepository = produtoRepository;
+        this.produtoService = produtoService;
     }
 
-    public PedidoDTO criarNovoPedido(pedidoCriacaoDTO pedidoCriacaoDTO, Usuario usuario){
+    public PedidoDTO criarNovoPedido(PedidoCriacaoDTO pedidoCriacaoDTO, Usuario usuario){
         Pedido pedido = new Pedido();
         List<ItemPedido> itens = new ArrayList<>();
-        pedidoCriacaoDTO.itens().forEach(dto -> {
-            Produto produto = produtoRepository.findById(dto.idProduto()).orElseThrow(() -> new ProdutoNaoEncontradoException("Produto Não encontrado"));
-            ItemPedido item = pedidoMapper.mapearItemPedido(dto.quantidade(), produto);
-            pedido.adicionarItem(item);
-        });
+        vincularItemAoPedido(pedido, pedidoCriacaoDTO.itens());
         pedidoMapper.mapearPedido(pedido, usuario);
         pedidoRepository.save(pedido);
         return pedidoMapper.mapearPedidoDto(pedido);
     }
+    private void vincularItemAoPedido(Pedido pedido, List<ItemPedidoSolicitadoDTO> itens){
+        itens.forEach(item -> {
+        Produto produto = produtoService.encontrarProdutoPorId(item.idProduto());
+        ItemPedido itemPedido = pedidoMapper.mapearItemPedido(item.quantidade(), produto);
+        pedido.adicionarItem(itemPedido);
+        });
+    }
 
-    public List<PedidoDTO> listarPedidos (){
-        List<Pedido> pedidos = pedidoRepository.findAll();
-        return pedidoMapper.mapearListaPedidoDTO(pedidos);
+    public Page<PedidoDTO> listarPedidos (Pageable pageable){
+        return pedidoRepository.findAll(pageable)
+                .map(pedidoMapper::mapearPedidoDto);
     }
 }

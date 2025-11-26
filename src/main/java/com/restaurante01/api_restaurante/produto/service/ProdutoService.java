@@ -40,6 +40,10 @@ public class ProdutoService {
         return produtoMapper.mapearUmaEntidadeParaDTO(produtoRepository.findById(id).orElseThrow(() ->
                 new ProdutoNaoEncontradoException("Produto não encontrado")));
     }
+    public  Produto encontrarProdutoPorId(Long id){
+       return  produtoRepository.findById(id).
+               orElseThrow(() -> new ProdutoNaoEncontradoException("O produto não foi localizado no sistema"));
+    }
     public boolean encontrarPorNome(String nome){
         return produtoRepository.existsByNome(nome);
     }
