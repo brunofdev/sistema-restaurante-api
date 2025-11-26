@@ -21,7 +21,6 @@ import java.util.List;
 
 @Service
 public class PedidoService {
-
     private final PedidoRepository pedidoRepository;
     private final PedidoMapper pedidoMapper;
     private final ProdutoService produtoService;
@@ -46,7 +45,7 @@ public class PedidoService {
     }
     private void montarPedido(Pedido pedido, Usuario usuario){
         pedido.setUsuario(usuario);
-        pedido.setEnderecoEntrega("Endereço de teste");
+        pedido.setEnderecoEntrega("Endereço de teste"); //ajustar para cliente poder informar endereço alternativo
         pedido.setStatusPedido(StatusPedido.PENDENTE);
     }
     public Page<PedidoDTO> listarPedidos (Pageable pageable){

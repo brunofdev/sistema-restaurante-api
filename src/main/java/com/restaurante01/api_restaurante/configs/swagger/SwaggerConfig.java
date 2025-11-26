@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.core.configs;
+package com.restaurante01.api_restaurante.configs.swagger;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

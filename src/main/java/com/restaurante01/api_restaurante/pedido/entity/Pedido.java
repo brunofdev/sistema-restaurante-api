@@ -2,7 +2,7 @@ package com.restaurante01.api_restaurante.pedido.entity;
 
 
 import com.restaurante01.api_restaurante.pedido.Enum.StatusPedido;
-import com.restaurante01.api_restaurante.security.Auditable;
+import com.restaurante01.api_restaurante.security.auditoria.Auditable;
 import com.restaurante01.api_restaurante.usuarios.entity.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
@@ -37,7 +37,7 @@ public class Pedido extends Auditable {
     @Column(nullable = false)
     private BigDecimal valorTotal = BigDecimal.ZERO;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String enderecoEntrega;
 
     public void adicionarItem(ItemPedido item){

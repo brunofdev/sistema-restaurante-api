@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,10 +29,14 @@ public class PedidoController {
     @Autowired
     private PedidoService pedidoService;
 
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
     @PostMapping("/criar-pedido")
     public ResponseEntity<ApiResponse<PedidoDTO>> criarPedido(@Validated @RequestBody PedidoCriacaoDTO dto, @AuthenticationPrincipal Usuario usuarioLogado){
-        return ResponseEntity.ok(ApiResponse.success("Recurso Criado", pedidoService.criarNovoPedido(dto, usuarioLogado)));
-
+        PedidoDTO novoPedido = pedidoService.criarNovoPedido(dto, usuarioLogado);
+        messagingTemplate.convertAndSend("/topico/admin-pedidos", novoPedido);
+        return ResponseEntity.ok(ApiResponse.success("Recurso Criado",novoPedido));
     }
     @GetMapping("obter-todos-pedidos")
     public ResponseEntity<ApiResponse<Page<PedidoDTO>>> listarPedidosFeitos(@PageableDefault(page = 0, size = 10, sort = "dataCriacao", direction = Sort.Direction.DESC)

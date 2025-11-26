@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.security;
+package com.restaurante01.api_restaurante.security.springsecurity;
 
 
 import com.restaurante01.api_restaurante.usuarios.enums.UserRole;
@@ -33,7 +33,8 @@ public class SecurityConfigurations {
             "/api/auth/login",
             "/v3/api-docs/**", // Swagger
             "/swagger-ui/**",  // Swagger
-            "/swagger-ui.html" // Swagger
+            "/swagger-ui.html",
+            "/ws/**" // WebSocket liberado publicamente para testes
     };
 
     // 2. MAPA DE ROTAS PROTEGIDAS (URL -> Nível Mínimo de Acesso)

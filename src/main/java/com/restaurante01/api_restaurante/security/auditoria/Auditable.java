@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.security;
+package com.restaurante01.api_restaurante.security.auditoria;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

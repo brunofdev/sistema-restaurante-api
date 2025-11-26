@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.security;
+package com.restaurante01.api_restaurante.security.springsecurity;
 
 import com.restaurante01.api_restaurante.autenticacao.jwt.JwtProvider;
 import com.restaurante01.api_restaurante.usuarios.entity.Usuario;
@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
