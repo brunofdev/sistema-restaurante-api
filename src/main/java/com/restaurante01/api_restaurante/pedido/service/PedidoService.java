@@ -1,6 +1,7 @@
 package com.restaurante01.api_restaurante.pedido.service;
 
 
+import com.restaurante01.api_restaurante.pedido.Enum.StatusPedido;
 import com.restaurante01.api_restaurante.pedido.mapper.PedidoMapper;
 import com.restaurante01.api_restaurante.pedido.dto.entrada.PedidoCriacaoDTO;
 import com.restaurante01.api_restaurante.pedido.dto.entrada.ItemPedidoSolicitadoDTO;
@@ -24,18 +25,15 @@ public class PedidoService {
     private final PedidoRepository pedidoRepository;
     private final PedidoMapper pedidoMapper;
     private final ProdutoService produtoService;
-
     public PedidoService (PedidoRepository pedidoRepository, PedidoMapper pedidoMapper, ProdutoService produtoService){
         this.pedidoRepository = pedidoRepository;
         this.pedidoMapper = pedidoMapper;
         this.produtoService = produtoService;
     }
-
     public PedidoDTO criarNovoPedido(PedidoCriacaoDTO pedidoCriacaoDTO, Usuario usuario){
         Pedido pedido = new Pedido();
-        List<ItemPedido> itens = new ArrayList<>();
+        montarPedido(pedido, usuario);
         vincularItemAoPedido(pedido, pedidoCriacaoDTO.itens());
-        pedidoMapper.mapearPedido(pedido, usuario);
         pedidoRepository.save(pedido);
         return pedidoMapper.mapearPedidoDto(pedido);
     }
@@ -46,9 +44,14 @@ public class PedidoService {
         pedido.adicionarItem(itemPedido);
         });
     }
-
+    private void montarPedido(Pedido pedido, Usuario usuario){
+        pedido.setUsuario(usuario);
+        pedido.setEnderecoEntrega("Endereço de teste");
+        pedido.setStatusPedido(StatusPedido.PENDENTE);
+    }
     public Page<PedidoDTO> listarPedidos (Pageable pageable){
         return pedidoRepository.findAll(pageable)
                 .map(pedidoMapper::mapearPedidoDto);
     }
+
 }

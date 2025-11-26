@@ -14,14 +14,6 @@ import java.util.List;
 
 @Component
 public class PedidoMapper {
-
-
-    public void mapearPedido(Pedido pedido, Usuario usuario){
-        pedido.setUsuario(usuario);
-        pedido.setEnderecoEntrega("Endereço de teste");
-        pedido.setStatusPedido(StatusPedido.PENDENTE);
-    }
-
     public ItemPedido mapearItemPedido (Integer quantidade, Produto produto){
         return new ItemPedido(
                 produto,
