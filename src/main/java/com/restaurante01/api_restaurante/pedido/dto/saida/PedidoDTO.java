@@ -8,6 +8,8 @@ import java.util.List;
 public record PedidoDTO(
         Long id,
         String nomeUsuario,
+        String cpfUsuario,
+        String whatsappUsuario,
         List<ItemPedidoDTO> itens,
         BigDecimal valorTotal,
         StatusPedido statusPedido

@@ -3,7 +3,7 @@ package com.restaurante01.api_restaurante.pedido.service;
 
 import com.restaurante01.api_restaurante.pedido.Enum.StatusPedido;
 import com.restaurante01.api_restaurante.pedido.mapper.PedidoMapper;
-import com.restaurante01.api_restaurante.pedido.dto.entrada.CriarPedidoDTO;
+import com.restaurante01.api_restaurante.pedido.dto.entrada.pedidoCriacaoDTO;
 import com.restaurante01.api_restaurante.pedido.dto.entrada.ItemPedidoSolicitadoDTO;
 import com.restaurante01.api_restaurante.pedido.dto.saida.PedidoDTO;
 import com.restaurante01.api_restaurante.pedido.entity.ItemPedido;
@@ -31,29 +31,22 @@ public class PedidoService {
         this.produtoRepository = produtoRepository;
     }
 
-    public PedidoDTO criarNovoPedido(CriarPedidoDTO pedidoDTO, Usuario usuario){
+    public PedidoDTO criarNovoPedido(pedidoCriacaoDTO pedidoCriacaoDTO, Usuario usuario){
         Pedido pedido = new Pedido();
         List<ItemPedido> itens = new ArrayList<>();
-        for(ItemPedidoSolicitadoDTO dto : pedidoDTO.itens()) {
+        for(ItemPedidoSolicitadoDTO dto : pedidoCriacaoDTO.itens()) {
             Produto produto = produtoRepository.findById(dto.idProduto()).orElseThrow(() -> new ProdutoNaoEncontradoException("Produto Não encontrado"));
-            ItemPedido item = pedidoMapper.mapearItemPedido(dto, produto);
+            ItemPedido item = pedidoMapper.mapearItemPedido(dto.quantidade(), produto);
             pedido.adicionarItem(item);
         }
-        pedido.setUsuario(usuario);
-        pedido.setStatusPedido(StatusPedido.PENDENTE);
-        List<ItemPedido> itens = new ArrayList<>();
-        pedido.setEnderecoEntrega("Teste de endereço alternativo");
+        pedidoMapper.mapearPedido(pedido, usuario);
         pedido.calcularTotal();
         pedidoRepository.save(pedido);
-        return  new PedidoDTO();
-        );
+        return pedidoMapper.mapearPedidoDto(pedido);
     }
 
     public List<PedidoDTO> listarPedidos (){
         List<Pedido> pedidos = pedidoRepository.findAll();
-        List<PedidoDTO> dtos = new ArrayList<>();
-        pedidos.stream().forEach(pedido  -> dtos.add(new PedidoDTO(pedido.getId(), pedido.getUsuario().getNome(), pedido.getValorTotal(), pedido.getStatusPedido())));
-        return dtos;
+        return pedidoMapper.mapearListaPedidoDTO(pedidos);
     }
-
 }
