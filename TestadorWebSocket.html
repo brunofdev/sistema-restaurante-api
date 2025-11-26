@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Teste WebSocket Restaurante</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .btn { padding: 10px 20px; cursor: pointer; background: #4CAF50; color: white; border: none; font-size: 16px;}
+        .btn-red { background: #f44336; }
+        #log { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; background: #f9f9f9; margin-top: 20px;}
+        .msg { border-bottom: 1px solid #eee; padding: 5px 0; }
+        .status { font-weight: bold; color: blue; }
+    </style>
+</head>
+<body>
+
+    <h2>🕵️ Testador de Pedidos em Tempo Real</h2>
+    
+    <div>
+        <button class="btn" onclick="conectar()">1. Conectar no Servidor</button>
+        <button class="btn" onclick="assinar()" disabled id="btnAssinar">2. Ouvir Pedidos (Subscribe)</button>
+    </div>
+
+    <h3>Log de Mensagens:</h3>
+    <div id="log"></div>
+
+    <script>
+        var stompClient = null;
+
+        function log(message, type) {
+            var logDiv = document.getElementById('log');
+            var p = document.createElement('p');
+            p.className = 'msg';
+            p.innerHTML = (type ? '<span class="status">[' + type + ']</span> ' : '') + message;
+            logDiv.appendChild(p);
+            logDiv.scrollTop = logDiv.scrollHeight; // Auto scroll
+        }
+
+        function conectar() {
+            log("Tentando conectar...", "INFO");
+            
+            // AQUI ESTÁ A MÁGICA: Usando SockJS para conectar no seu backend
+            var socket = new SockJS('http://localhost:8080/ws');
+            stompClient = Stomp.over(socket);
+
+            // Desabilita logs chatos no console do navegador
+            stompClient.debug = null; 
+
+            stompClient.connect({}, function (frame) {
+                log("Conectado com sucesso! ✅", "STATUS");
+                document.getElementById('btnAssinar').disabled = false;
+                document.getElementById('btnAssinar').style.backgroundColor = "#2196F3";
+                console.log('Connected: ' + frame);
+            }, function(error) {
+                log("Erro na conexão: " + error, "ERRO ❌");
+                log("Dica: Verifique se o SecurityConfig liberou o /ws/** e se o Docker está rodando.", "DICA");
+            });
+        }
+
+        function assinar() {
+            if (!stompClient) return;
+
+            log("Assinando canal /topico/admin-pedidos...", "INFO");
+            
+            stompClient.subscribe('/topico/admin-pedidos', function (pedido) {
+                // AQUI É ONDE O PEDIDO CHEGA!
+                log("🔔 PEDIDO RECEBIDO!", "SUCESSO");
+                log(pedido.body, "JSON");
+                
+                // Toca um bipesinho se o navegador deixar
+                tocarSom();
+            });
+            
+            document.getElementById('btnAssinar').innerText = "Escutando... 👂";
+            document.getElementById('btnAssinar').disabled = true;
+            document.getElementById('btnAssinar').style.backgroundColor = "#555";
+        }
+
+        function tocarSom() {
+            // Um beep simples
+            var context = new (window.AudioContext || window.webkitAudioContext)();
+            var osc = context.createOscillator();
+            osc.type = 'sine';
+            osc.frequency.value = 800;
+            osc.connect(context.destination);
+            osc.start(); 
+            setTimeout(function () { osc.stop(); }, 100);
+        }
+    </script>
+</body>
+</html>
