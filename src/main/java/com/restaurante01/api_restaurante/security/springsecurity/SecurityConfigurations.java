@@ -14,6 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Map;
 
@@ -35,6 +37,7 @@ public class SecurityConfigurations {
             "/swagger-ui/**",  // Swagger
             "/swagger-ui.html",
             "/ws/**" // WebSocket liberado publicamente para testes
+
     };
 
     // 2. MAPA DE ROTAS PROTEGIDAS (URL -> Nível Mínimo de Acesso)
@@ -43,8 +46,8 @@ public class SecurityConfigurations {
             "/produtos/adicionar-produto", UserRole.USER,
             "/produtos/todos-produtos", UserRole.USER,
             "/pedido/criar-pedido", UserRole.USER,
-            "/pedido/obter-todos-pedidos", UserRole.USER
-
+            "/pedido/obter-todos-pedidos", UserRole.USER,
+            "/pedido/*/status", UserRole.ADMIN1
     );
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -69,5 +72,17 @@ public class SecurityConfigurations {
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
+    }
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**") // Aplica a todas as rotas
+                        .allowedOrigins("*") // Libera para QUALQUER site (para testes)
+                        // .allowedOrigins("http://localhost:63342") // Use assim em produção
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"); // <--- O PATCH PRECISA ESTAR AQUI
+            }
+        };
     }
 }

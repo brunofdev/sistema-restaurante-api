@@ -1,6 +1,7 @@
 package com.restaurante01.api_restaurante.pedido.controller;
 
 import com.restaurante01.api_restaurante.core.utils.ApiResponse;
+import com.restaurante01.api_restaurante.pedido.dto.entrada.StatusPedidoDTO;
 import com.restaurante01.api_restaurante.pedido.service.PedidoService;
 import com.restaurante01.api_restaurante.pedido.dto.entrada.PedidoCriacaoDTO;
 import com.restaurante01.api_restaurante.pedido.dto.saida.PedidoDTO;
@@ -44,4 +45,13 @@ public class PedidoController {
         Page<PedidoDTO> paginaDePedidos = pedidoService.listarPedidos(pageable);
         return ResponseEntity.ok(ApiResponse.success("Recurso obtido", paginaDePedidos));
     }
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<ApiResponse<PedidoDTO>> atualizarStatusPedido(@PathVariable Long id, @RequestBody StatusPedidoDTO novoStatus){
+        PedidoDTO pedidoAtualizado = pedidoService.atualizarStatusPedido(id, novoStatus);
+
+        messagingTemplate.convertAndSend("/topico/pedido/" + id , pedidoAtualizado);
+        messagingTemplate.convertAndSend("/topico/admin-pedidos", pedidoAtualizado);
+        return ResponseEntity.ok(ApiResponse.success("Recurso Atualizado" , pedidoAtualizado));
+    }
+
 }

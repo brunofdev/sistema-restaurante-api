@@ -2,92 +2,276 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Teste WebSocket Restaurante</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Restaurante (Teste Real)</title>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
     <style>
-        body { font-family: sans-serif; padding: 20px; }
-        .btn { padding: 10px 20px; cursor: pointer; background: #4CAF50; color: white; border: none; font-size: 16px;}
-        .btn-red { background: #f44336; }
-        #log { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; background: #f9f9f9; margin-top: 20px;}
-        .msg { border-bottom: 1px solid #eee; padding: 5px 0; }
-        .status { font-weight: bold; color: blue; }
+        :root {
+            --bg-color: #f0f2f5;
+            --client-bg: #ffffff;
+            --admin-bg: #2c3e50;
+            --admin-text: #ecf0f1;
+        }
+
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg-color); height: 100vh; display: flex; flex-direction: column; }
+
+        /* Header */
+        header { background: #333; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; gap: 15px;}
+        .header-left { display: flex; align-items: center; gap: 10px; }
+
+        /* Input do Token no Header */
+        .jwt-input {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #555;
+            background: #444;
+            color: #fff;
+            width: 300px;
+            font-size: 13px;
+        }
+        .jwt-input::placeholder { color: #aaa; }
+
+        .connection-status { font-size: 12px; padding: 4px 8px; border-radius: 4px; background: #555; }
+        .connected { background: #4CAF50; }
+        .disconnected { background: #f44336; }
+
+        /* Layout Dividido */
+        .main-container { display: flex; flex: 1; height: 100%; }
+
+        /* Lado Esquerdo: Cliente */
+        .panel-client { flex: 1; padding: 20px; background: var(--client-bg); border-right: 2px solid #ddd; overflow-y: auto; }
+        .client-card { border: 1px solid #ddd; border-radius: 10px; padding: 20px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.3s; }
+        .status-icon { font-size: 60px; margin: 20px 0; display: block; }
+        .status-text { font-size: 24px; font-weight: bold; color: #333; }
+        .input-group { margin-bottom: 20px; display: flex; gap: 10px; }
+        .input-group input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; flex: 1; }
+
+        /* Cores de Status (Cliente) */
+        .bg-PENDENTE { background-color: #fff3cd; border-color: #ffeeba; }
+        .bg-EM_PREPARACAO { background-color: #cce5ff; border-color: #b8daff; }
+        .bg-PRONTO { background-color: #d4edda; border-color: #c3e6cb; }
+        .bg-SAIU_PARA_ENTREGA { background-color: #d1ecf1; border-color: #bee5eb; }
+        .bg-ENTREGUE { background-color: #d1e7dd; border-color: #badbcc; }
+        .bg-CANCELADO { background-color: #f8d7da; border-color: #f5c6cb; }
+
+        /* Lado Direito: Admin */
+        .panel-admin { flex: 1; padding: 20px; background: var(--admin-bg); color: var(--admin-text); overflow-y: auto; }
+        .order-list { list-style: none; padding: 0; }
+        .order-item { background: #34495e; margin-bottom: 15px; padding: 15px; border-radius: 8px; border-left: 5px solid #e67e22; }
+        .order-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: bold; }
+
+        .action-buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 10px; }
+        .btn-action { padding: 5px; cursor: pointer; border: none; border-radius: 4px; font-size: 11px; font-weight: bold; color: white; transition: opacity 0.2s; }
+        .btn-action:hover { opacity: 0.8; }
+
+        /* Botões */
+        .btn-connect { background: #4CAF50; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; }
+        .btn-blue { background: #2196F3; color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; }
+
+        .act-prep { background: #3498db; }
+        .act-entrega { background: #9b59b6; }
+        .act-pronto { background: #f1c40f; color: black; }
+        .act-fim { background: #27ae60; }
+        .act-cancel { background: #e74c3c; }
+
     </style>
 </head>
 <body>
 
-    <h2>🕵️ Testador de Pedidos em Tempo Real</h2>
-    
-    <div>
-        <button class="btn" onclick="conectar()">1. Conectar no Servidor</button>
-        <button class="btn" onclick="assinar()" disabled id="btnAssinar">2. Ouvir Pedidos (Subscribe)</button>
+<header>
+    <div class="header-left">
+        <span>🤖 Dashboard Test</span>
+        <span id="connectionBadge" class="connection-status disconnected">Desconectado</span>
     </div>
 
-    <h3>Log de Mensagens:</h3>
-    <div id="log"></div>
+    <div style="display: flex; gap: 10px;">
+        <input type="text" id="jwtToken" class="jwt-input" placeholder="Cole aqui seu Token Bearer (sem a palavra Bearer)">
 
-    <script>
-        var stompClient = null;
+        <button class="btn-connect" onclick="conectarSocket()">🔌 CONECTAR</button>
+    </div>
+</header>
 
-        function log(message, type) {
-            var logDiv = document.getElementById('log');
-            var p = document.createElement('p');
-            p.className = 'msg';
-            p.innerHTML = (type ? '<span class="status">[' + type + ']</span> ' : '') + message;
-            logDiv.appendChild(p);
-            logDiv.scrollTop = logDiv.scrollHeight; // Auto scroll
+<div class="main-container">
+
+    <div class="panel-client">
+        <h2>📱 App do Cliente</h2>
+        <p>1. Pegue o ID de um pedido novo na lista ao lado.<br>2. Digite aqui para simular o celular do cliente.</p>
+
+        <div class="input-group">
+            <input type="number" id="clientePedidoId" placeholder="Digite o ID do Pedido (ex: 1)">
+            <button class="btn-blue" onclick="assinarCliente()">👁️ Acompanhar</button>
+        </div>
+
+        <div id="clienteVisor" class="client-card" style="display: none;">
+            <h3>Pedido #<span id="cliId">--</span></h3>
+            <span id="cliIcon" class="status-icon">🕒</span>
+            <div id="cliStatus" class="status-text">Aguardando...</div>
+            <p>Total: R$ <span id="cliTotal">0,00</span></p>
+            <small>Última atualização: <span id="cliData">--</span></small>
+        </div>
+    </div>
+
+    <div class="panel-admin">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2>👨‍🍳 Painel da Cozinha</h2>
+            <small id="adminStatus">Aguardando conexão...</small>
+        </div>
+        <p style="font-size: 0.9em; color: #ccc;">Pedidos criados via Postman aparecerão aqui.</p>
+        <hr style="border-color: #555;">
+
+        <ul id="listaPedidosAdmin" class="order-list">
+        </ul>
+    </div>
+
+</div>
+
+<script>
+    var stompClient = null;
+    const API_URL = 'http://localhost:8080';
+
+    // 1. CONEXÃO WEBSOCKET (Pública por enquanto)
+    function conectarSocket() {
+        var socket = new SockJS(API_URL + '/ws');
+        stompClient = Stomp.over(socket);
+        stompClient.debug = null;
+
+        stompClient.connect({}, function (frame) {
+            document.getElementById('connectionBadge').innerText = "CONECTADO";
+            document.getElementById('connectionBadge').className = "connection-status connected";
+
+            assinarAdminGlobal();
+            alert("Conectado! O Painel Admin já está ouvindo.");
+
+        }, function(error) {
+            alert("Erro ao conectar WebSocket: " + error);
+        });
+    }
+
+    // 2. CLIENTE: OUVIR PEDIDO ESPECÍFICO
+    function assinarCliente() {
+        const id = document.getElementById('clientePedidoId').value;
+        if (!id || !stompClient) return alert("Conecte e digite um ID!");
+
+        // Reset visual
+        document.getElementById('clienteVisor').style.display = 'block';
+        atualizarUICliente({ id: id, status: 'BUSCANDO...', valorTotal: 0 });
+
+        stompClient.subscribe('/topico/pedido/' + id, function (msg) {
+            const pedido = JSON.parse(msg.body);
+            atualizarUICliente(pedido);
+        });
+    }
+
+    function atualizarUICliente(pedido) {
+        const card = document.getElementById('clienteVisor');
+        document.getElementById('cliId').innerText = pedido.id;
+
+        // Tenta pegar o status de 'status' ou 'statusPedido' dependendo do seu DTO
+        const st = pedido.status || pedido.statusPedido;
+        document.getElementById('cliStatus').innerText = st;
+
+        document.getElementById('cliTotal').innerText = pedido.valorTotal;
+        document.getElementById('cliData').innerText = new Date().toLocaleTimeString();
+
+        // Ícones e Cores
+        let icon = "🕒";
+        let classeCor = "";
+
+        if(st === 'PENDENTE') { icon = "🕒"; classeCor = "bg-PENDENTE"; }
+        else if(st === 'EM_PREPARACAO') { icon = "👨‍🍳"; classeCor = "bg-EM_PREPARACAO"; }
+        else if(st === 'SAIU_PARA_ENTREGA') { icon = "🛵"; classeCor = "bg-SAIU_PARA_ENTREGA"; }
+        else if(st === 'ENTREGUE') { icon = "✅"; classeCor = "bg-ENTREGUE"; }
+        else if(st === 'CANCELADO') { icon = "❌"; classeCor = "bg-CANCELADO"; }
+
+        document.getElementById('cliIcon').innerText = icon;
+        card.className = "client-card " + classeCor;
+    }
+
+    // 3. ADMIN: OUVIR TUDO
+    function assinarAdminGlobal() {
+        document.getElementById('adminStatus').innerText = "🟢 Online";
+
+        stompClient.subscribe('/topico/admin-pedidos', function (msg) {
+            const pedido = JSON.parse(msg.body);
+            renderizarCardAdmin(pedido);
+            playNotificationSound();
+        });
+    }
+
+    function renderizarCardAdmin(pedido) {
+        const lista = document.getElementById('listaPedidosAdmin');
+
+        // Se já existe, remove para atualizar (efeito de subir pro topo)
+        const cardExistente = document.getElementById('card-admin-' + pedido.id);
+        if(cardExistente) { cardExistente.remove(); }
+
+        const li = document.createElement('li');
+        li.className = 'order-item';
+        li.id = 'card-admin-' + pedido.id;
+
+        let itensHtml = pedido.itens ? pedido.itens.map(i => `<div>${i.quantidade}x ${i.nomeProduto}</div>`).join('') : 'Sem itens';
+        const st = pedido.status || pedido.statusPedido;
+
+        li.innerHTML = `
+            <div class="order-header">
+                <span>#${pedido.id} - ${pedido.nomeCliente || 'Cliente'}</span>
+                <span style="color: #f1c40f">${st}</span>
+            </div>
+            <div style="font-size: 0.9em; color: #bdc3c7; margin-bottom:10px;">
+                ${itensHtml}
+            </div>
+            <div class="action-buttons">
+                <button class="btn-action act-prep" onclick="alterarStatus(${pedido.id}, 'EM_PREPARACAO')">🔥 Preparar</button>
+                <button class="btn-action act-entrega" onclick="alterarStatus(${pedido.id}, 'SAIU_PARA_ENTREGA')">🛵 Enviar</button>
+                <button class="btn-action act-fim" onclick="alterarStatus(${pedido.id}, 'ENTREGUE')">✅ Finalizar</button>
+                <button class="btn-action act-cancel" onclick="alterarStatus(${pedido.id}, 'CANCELADO')">❌ Cancelar</button>
+            </div>
+        `;
+        lista.prepend(li);
+    }
+
+    // 4. ADMIN: AÇÃO DE MUDAR STATUS (AGORA COM TOKEN!)
+    function alterarStatus(id, novoStatus) {
+        // 1. Pega o Token do Input
+        const token = document.getElementById('jwtToken').value;
+
+        if(!token) {
+            alert("⚠️ ERRO: Você precisa colar um JWT de Admin no campo do topo!");
+            return;
         }
 
-        function conectar() {
-            log("Tentando conectar...", "INFO");
-            
-            // AQUI ESTÁ A MÁGICA: Usando SockJS para conectar no seu backend
-            var socket = new SockJS('http://localhost:8080/ws');
-            stompClient = Stomp.over(socket);
+        if(!confirm(`Mudar pedido #${id} para ${novoStatus}?`)) return;
 
-            // Desabilita logs chatos no console do navegador
-            stompClient.debug = null; 
+        // 2. Faz a chamada REST autenticada
+        fetch(`${API_URL}/pedido/${id}/status`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token // <--- INJEÇÃO DO TOKEN AQUI
+            },
+            body: JSON.stringify({ status: novoStatus })
+        })
+        .then(async response => {
+            if(response.ok) {
+                console.log("Status alterado com sucesso!");
+            } else {
+                const erroJson = await response.json();
+                alert("Erro: " + (erroJson.message || response.statusText));
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Erro de conexão com a API.");
+        });
+    }
 
-            stompClient.connect({}, function (frame) {
-                log("Conectado com sucesso! ✅", "STATUS");
-                document.getElementById('btnAssinar').disabled = false;
-                document.getElementById('btnAssinar').style.backgroundColor = "#2196F3";
-                console.log('Connected: ' + frame);
-            }, function(error) {
-                log("Erro na conexão: " + error, "ERRO ❌");
-                log("Dica: Verifique se o SecurityConfig liberou o /ws/** e se o Docker está rodando.", "DICA");
-            });
-        }
-
-        function assinar() {
-            if (!stompClient) return;
-
-            log("Assinando canal /topico/admin-pedidos...", "INFO");
-            
-            stompClient.subscribe('/topico/admin-pedidos', function (pedido) {
-                // AQUI É ONDE O PEDIDO CHEGA!
-                log("🔔 PEDIDO RECEBIDO!", "SUCESSO");
-                log(pedido.body, "JSON");
-                
-                // Toca um bipesinho se o navegador deixar
-                tocarSom();
-            });
-            
-            document.getElementById('btnAssinar').innerText = "Escutando... 👂";
-            document.getElementById('btnAssinar').disabled = true;
-            document.getElementById('btnAssinar').style.backgroundColor = "#555";
-        }
-
-        function tocarSom() {
-            // Um beep simples
-            var context = new (window.AudioContext || window.webkitAudioContext)();
-            var osc = context.createOscillator();
-            osc.type = 'sine';
-            osc.frequency.value = 800;
-            osc.connect(context.destination);
-            osc.start(); 
-            setTimeout(function () { osc.stop(); }, 100);
-        }
-    </script>
+    function playNotificationSound() {
+        const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+        audio.play().catch(() => {});
+    }
+</script>
 </body>
 </html>
