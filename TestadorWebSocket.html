@@ -3,274 +3,301 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Restaurante (Teste Real)</title>
+    <title>Sistema Restaurante V9 (Full Status)</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
     <style>
-        :root {
-            --bg-color: #f0f2f5;
-            --client-bg: #ffffff;
-            --admin-bg: #2c3e50;
-            --admin-text: #ecf0f1;
-        }
+        :root { --bg: #f0f2f5; --white: #fff; --dark: #2c3e50; --green: #4CAF50; --red: #f44336; --blue: #2196F3; --orange: #ff9800; --purple: #9c27b0; }
+        body { margin: 0; font-family: monospace; background: var(--bg); height: 100vh; display: flex; flex-direction: column; }
 
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg-color); height: 100vh; display: flex; flex-direction: column; }
+        header { background: #333; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .badge { font-size: 11px; padding: 4px 8px; border-radius: 4px; margin-left:10px;}
+        .on { background: var(--green); } .off { background: var(--red); }
 
-        /* Header */
-        header { background: #333; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; gap: 15px;}
-        .header-left { display: flex; align-items: center; gap: 10px; }
+        .container { display: flex; flex: 1; height: 100%; font-family: 'Segoe UI', sans-serif; }
+        .panel { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .panel-left { background: var(--white); border-right: 2px solid #ddd; }
+        .panel-right { background: var(--dark); color: #ecf0f1; }
 
-        /* Input do Token no Header */
-        .jwt-input {
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid #555;
-            background: #444;
-            color: #fff;
-            width: 300px;
-            font-size: 13px;
-        }
-        .jwt-input::placeholder { color: #aaa; }
+        .card { border: 1px solid #ddd; border-radius: 8px; padding: 15px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .card-dark { background: #34495e; border: none; border-left: 5px solid #f1c40f; color: white; }
 
-        .connection-status { font-size: 12px; padding: 4px 8px; border-radius: 4px; background: #555; }
-        .connected { background: #4CAF50; }
-        .disconnected { background: #f44336; }
+        #console-log { height: 150px; background: #000; color: #0f0; font-family: monospace; padding: 10px; overflow-y: scroll; font-size: 12px; border-top: 2px solid #555; }
 
-        /* Layout Dividido */
-        .main-container { display: flex; flex: 1; height: 100%; }
+        .role-badge { background: #ff9800; color: black; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 11px; margin-left: 5px; }
 
-        /* Lado Esquerdo: Cliente */
-        .panel-client { flex: 1; padding: 20px; background: var(--client-bg); border-right: 2px solid #ddd; overflow-y: auto; }
-        .client-card { border: 1px solid #ddd; border-radius: 10px; padding: 20px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.3s; }
-        .status-icon { font-size: 60px; margin: 20px 0; display: block; }
-        .status-text { font-size: 24px; font-weight: bold; color: #333; }
-        .input-group { margin-bottom: 20px; display: flex; gap: 10px; }
-        .input-group input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; flex: 1; }
+        /* Modal Login */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 999; }
+        .box { background: white; padding: 30px; border-radius: 8px; width: 300px; text-align: center; font-family: 'Segoe UI', sans-serif; }
+        input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 10px 20px; cursor: pointer; border-radius: 4px; border: none; font-weight: bold; }
+        .btn-green { background: var(--green); color: white; }
+        .btn-blue { background: var(--blue); color: white; }
+        .hidden { display: none; }
 
-        /* Cores de Status (Cliente) */
-        .bg-PENDENTE { background-color: #fff3cd; border-color: #ffeeba; }
-        .bg-EM_PREPARACAO { background-color: #cce5ff; border-color: #b8daff; }
-        .bg-PRONTO { background-color: #d4edda; border-color: #c3e6cb; }
-        .bg-SAIU_PARA_ENTREGA { background-color: #d1ecf1; border-color: #bee5eb; }
-        .bg-ENTREGUE { background-color: #d1e7dd; border-color: #badbcc; }
-        .bg-CANCELADO { background-color: #f8d7da; border-color: #f5c6cb; }
+        .row { display: flex; gap: 10px; flex-wrap: wrap; }
+        .status-big { font-size: 24px; font-weight: bold; margin: 10px 0; }
 
-        /* Lado Direito: Admin */
-        .panel-admin { flex: 1; padding: 20px; background: var(--admin-bg); color: var(--admin-text); overflow-y: auto; }
-        .order-list { list-style: none; padding: 0; }
-        .order-item { background: #34495e; margin-bottom: 15px; padding: 15px; border-radius: 8px; border-left: 5px solid #e67e22; }
-        .order-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: bold; }
+        /* Botões de Ação Admin */
+        .btn-action { padding: 6px; cursor: pointer; border: none; border-radius: 4px; font-size: 10px; font-weight: bold; color: white; flex: 1; }
+        .act-prep { background: var(--blue); }
+        .act-saiu { background: var(--purple); }
+        .act-fim { background: var(--green); }
+        .act-cancel { background: var(--red); }
+        .act-reset { background: #7f8c8d; } /* Cinza para testar erros */
 
-        .action-buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 10px; }
-        .btn-action { padding: 5px; cursor: pointer; border: none; border-radius: 4px; font-size: 11px; font-weight: bold; color: white; transition: opacity 0.2s; }
-        .btn-action:hover { opacity: 0.8; }
-
-        /* Botões */
-        .btn-connect { background: #4CAF50; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; }
-        .btn-blue { background: #2196F3; color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; }
-
-        .act-prep { background: #3498db; }
-        .act-entrega { background: #9b59b6; }
-        .act-pronto { background: #f1c40f; color: black; }
-        .act-fim { background: #27ae60; }
-        .act-cancel { background: #e74c3c; }
-
+        /* Cores Status */
+        .bg-PENDENTE { background: #fff3cd; }
+        .bg-EM_PREPARACAO { background: #cce5ff; }
+        .bg-SAIU_PARA_ENTREGA { background: #d1ecf1; }
+        .bg-ENTREGUE { background: #d1e7dd; }
+        .bg-CANCELADO { background: #f8d7da; }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="header-left">
-        <span>🤖 Dashboard Test</span>
-        <span id="connectionBadge" class="connection-status disconnected">Desconectado</span>
+<div id="loginModal" class="modal">
+    <div class="box">
+        <h2>🔐 Login Admin</h2>
+        <input type="text" id="loginCpf" placeholder="CPF">
+        <input type="password" id="loginSenha" placeholder="Senha">
+        <button class="btn-green" style="width:100%" onclick="fazerLogin()">ENTRAR</button>
+        <p id="loginMsg" style="color:red; font-size:12px;"></p>
     </div>
+</div>
 
-    <div style="display: flex; gap: 10px;">
-        <input type="text" id="jwtToken" class="jwt-input" placeholder="Cole aqui seu Token Bearer (sem a palavra Bearer)">
-
-        <button class="btn-connect" onclick="conectarSocket()">🔌 CONECTAR</button>
+<header>
+    <div>
+        <b>Dashboard V9</b>
+        <span id="wsStatus" class="badge off">WS: OFFLINE</span>
+    </div>
+    <div>
+        <span id="userDisplay">--</span>
+        <span id="roleDisplay" class="role-badge" style="display:none">--</span>
+        <button onclick="resetarTudo()" style="font-size:10px; margin-left:10px; color:black">SAIR</button>
+        <button class="btn-blue" style="font-size:10px;" onclick="conectarSocket()">RECONECTAR</button>
     </div>
 </header>
 
-<div class="main-container">
-
-    <div class="panel-client">
-        <h2>📱 App do Cliente</h2>
-        <p>1. Pegue o ID de um pedido novo na lista ao lado.<br>2. Digite aqui para simular o celular do cliente.</p>
-
-        <div class="input-group">
-            <input type="number" id="clientePedidoId" placeholder="Digite o ID do Pedido (ex: 1)">
-            <button class="btn-blue" onclick="assinarCliente()">👁️ Acompanhar</button>
+<div class="container">
+    <div class="panel panel-left">
+        <h3>📱 Cliente</h3>
+        <div class="card">
+            <div class="row">
+                <input type="number" id="idProd" placeholder="ID Prod" value="1" style="width:50px">
+                <input type="number" id="qtdProd" placeholder="Qtd" value="1" style="width:50px">
+                <button class="btn-green" onclick="criarPedido()">Pedir</button>
+            </div>
         </div>
-
-        <div id="clienteVisor" class="client-card" style="display: none;">
-            <h3>Pedido #<span id="cliId">--</span></h3>
-            <span id="cliIcon" class="status-icon">🕒</span>
-            <div id="cliStatus" class="status-text">Aguardando...</div>
-            <p>Total: R$ <span id="cliTotal">0,00</span></p>
-            <small>Última atualização: <span id="cliData">--</span></small>
+        <div id="monitorCliente" class="card" style="display:none; text-align: center;">
+            <small>Pedido #<span id="cliId">0</span></small>
+            <div id="cliStatus" class="status-big">--</div>
+            <div>R$ <span id="cliTotal">0.00</span></div>
         </div>
     </div>
 
-    <div class="panel-admin">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h2>👨‍🍳 Painel da Cozinha</h2>
-            <small id="adminStatus">Aguardando conexão...</small>
-        </div>
-        <p style="font-size: 0.9em; color: #ccc;">Pedidos criados via Postman aparecerão aqui.</p>
-        <hr style="border-color: #555;">
-
-        <ul id="listaPedidosAdmin" class="order-list">
-        </ul>
+    <div class="panel panel-right">
+        <h3>👨‍🍳 Cozinha</h3>
+        <div id="listaAdmin"></div>
     </div>
-
 </div>
 
+<div id="console-log">Logs de Depuração...</div>
+
 <script>
-    var stompClient = null;
-    const API_URL = 'http://localhost:8080';
+    const API = 'http://localhost:8080';
+    var stomp = null;
+    var token = localStorage.getItem('token');
 
-    // 1. CONEXÃO WEBSOCKET (Pública por enquanto)
+    function log(msg) {
+        const div = document.getElementById('console-log');
+        div.innerHTML += `<div>> ${msg}</div>`;
+        div.scrollTop = div.scrollHeight;
+        console.log(msg);
+    }
+
+    function parseJwt(token) {
+        try {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        } catch (e) { return null; }
+    }
+
+    function updateUserInfo() {
+        if(token) {
+            const payload = parseJwt(token);
+            if(payload) {
+                const user = payload.sub || "Usuario";
+                const role = payload.role || payload.roles || payload.authorities || "???";
+                document.getElementById('userDisplay').innerText = user;
+                document.getElementById('roleDisplay').innerText = role;
+                document.getElementById('roleDisplay').style.display = 'inline-block';
+                log(`🔍 TOKEN: User=${user} | Role=${role}`);
+            }
+        }
+    }
+
+    window.onload = () => {
+        if(token) {
+            document.getElementById('loginModal').classList.add('hidden');
+            updateUserInfo();
+            setTimeout(conectarSocket, 500);
+        }
+    };
+
+    function resetarTudo() { localStorage.clear(); location.reload(); }
+
+    // === 1. LOGIN ===
+    async function fazerLogin() {
+        const cpf = document.getElementById('loginCpf').value;
+        const senha = document.getElementById('loginSenha').value;
+
+        try {
+            const res = await fetch(`${API}/api/auth/login`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({cpf, senha})
+            });
+            const json = await res.json();
+
+            if(res.ok) {
+                token = json.dados.token;
+                localStorage.setItem('token', token);
+                document.getElementById('loginModal').classList.add('hidden');
+                updateUserInfo();
+                conectarSocket();
+            } else {
+                document.getElementById('loginMsg').innerText = json.message;
+            }
+        } catch(e) { log("Erro Login: " + e); }
+    }
+
+    // === 2. WEBSOCKET ===
     function conectarSocket() {
-        var socket = new SockJS(API_URL + '/ws');
-        stompClient = Stomp.over(socket);
-        stompClient.debug = null;
+        if(stomp && stomp.connected) return;
+        log("Conectando WS (Público)...");
+        var socket = new SockJS(`${API}/ws`);
+        stomp = Stomp.over(socket);
+        stomp.debug = () => {};
 
-        stompClient.connect({}, function (frame) {
-            document.getElementById('connectionBadge').innerText = "CONECTADO";
-            document.getElementById('connectionBadge').className = "connection-status connected";
+        stomp.connect({}, (frame) => {
+            log("✅ WebSocket Conectado!");
+            document.getElementById('wsStatus').innerText = "WS: ONLINE";
+            document.getElementById('wsStatus').className = "badge on";
 
-            assinarAdminGlobal();
-            alert("Conectado! O Painel Admin já está ouvindo.");
+            stomp.subscribe('/topico/admin-pedidos', (msg) => {
+                log("🔔 NOTIFICAÇÃO ADMIN RECEBIDA!");
+                renderAdmin(JSON.parse(msg.body));
+            });
 
-        }, function(error) {
-            alert("Erro ao conectar WebSocket: " + error);
+        }, (err) => {
+            log("❌ Erro WebSocket: " + err);
+            document.getElementById('wsStatus').innerText = "WS: ERRO";
+            document.getElementById('wsStatus').className = "badge off";
         });
     }
 
-    // 2. CLIENTE: OUVIR PEDIDO ESPECÍFICO
-    function assinarCliente() {
-        const id = document.getElementById('clientePedidoId').value;
-        if (!id || !stompClient) return alert("Conecte e digite um ID!");
+    // === 3. CLIENTE ===
+    async function criarPedido() {
+        const idProd = document.getElementById('idProd').value;
+        const qtd = document.getElementById('qtdProd').value;
 
-        // Reset visual
-        document.getElementById('clienteVisor').style.display = 'block';
-        atualizarUICliente({ id: id, status: 'BUSCANDO...', valorTotal: 0 });
+        try {
+            const res = await fetch(`${API}/pedido/criar-pedido`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                body: JSON.stringify({itens: [{ idProduto: idProd, quantidade: qtd }], observacao: "Teste V9"})
+            });
+            const json = await res.json();
+            if(res.ok) {
+                log("✅ Pedido Criado ID: " + json.dados.id);
+                acompanhar(json.dados);
+            } else {
+                log("❌ Erro Criar: " + json.message);
+                alert("Erro ao criar: " + json.message);
+            }
+        } catch(e) { log("Erro Fetch Criar: " + e); }
+    }
 
-        stompClient.subscribe('/topico/pedido/' + id, function (msg) {
-            const pedido = JSON.parse(msg.body);
-            atualizarUICliente(pedido);
+    function acompanhar(pedido) {
+        updateClientUI(pedido);
+        document.getElementById('monitorCliente').style.display = 'block';
+        stomp.subscribe('/topico/pedido/' + pedido.id, (msg) => {
+            log("🔔 CLIENTE: Atualização recebida!");
+            updateClientUI(JSON.parse(msg.body));
         });
     }
 
-    function atualizarUICliente(pedido) {
-        const card = document.getElementById('clienteVisor');
-        document.getElementById('cliId').innerText = pedido.id;
-
-        // Tenta pegar o status de 'status' ou 'statusPedido' dependendo do seu DTO
-        const st = pedido.status || pedido.statusPedido;
+    function updateClientUI(p) {
+        const st = p.status || p.statusPedido;
+        document.getElementById('cliId').innerText = p.id;
         document.getElementById('cliStatus').innerText = st;
+        const total = typeof p.valorTotal === 'number' ? p.valorTotal.toFixed(2) : p.valorTotal;
+        document.getElementById('cliTotal').innerText = total;
 
-        document.getElementById('cliTotal').innerText = pedido.valorTotal;
-        document.getElementById('cliData').innerText = new Date().toLocaleTimeString();
-
-        // Ícones e Cores
-        let icon = "🕒";
-        let classeCor = "";
-
-        if(st === 'PENDENTE') { icon = "🕒"; classeCor = "bg-PENDENTE"; }
-        else if(st === 'EM_PREPARACAO') { icon = "👨‍🍳"; classeCor = "bg-EM_PREPARACAO"; }
-        else if(st === 'SAIU_PARA_ENTREGA') { icon = "🛵"; classeCor = "bg-SAIU_PARA_ENTREGA"; }
-        else if(st === 'ENTREGUE') { icon = "✅"; classeCor = "bg-ENTREGUE"; }
-        else if(st === 'CANCELADO') { icon = "❌"; classeCor = "bg-CANCELADO"; }
-
-        document.getElementById('cliIcon').innerText = icon;
-        card.className = "client-card " + classeCor;
+        const box = document.getElementById('monitorCliente');
+        box.className = "card " + "bg-" + st;
     }
 
-    // 3. ADMIN: OUVIR TUDO
-    function assinarAdminGlobal() {
-        document.getElementById('adminStatus').innerText = "🟢 Online";
+    // === 4. ADMIN ===
+    function renderAdmin(p) {
+        const lista = document.getElementById('listaAdmin');
+        const existe = document.getElementById('adm-' + p.id);
+        if(existe) existe.remove();
 
-        stompClient.subscribe('/topico/admin-pedidos', function (msg) {
-            const pedido = JSON.parse(msg.body);
-            renderizarCardAdmin(pedido);
-            playNotificationSound();
-        });
-    }
+        const st = p.status || p.statusPedido;
+        const div = document.createElement('div');
+        div.id = 'adm-' + p.id;
+        div.className = "card card-dark";
 
-    function renderizarCardAdmin(pedido) {
-        const lista = document.getElementById('listaPedidosAdmin');
-
-        // Se já existe, remove para atualizar (efeito de subir pro topo)
-        const cardExistente = document.getElementById('card-admin-' + pedido.id);
-        if(cardExistente) { cardExistente.remove(); }
-
-        const li = document.createElement('li');
-        li.className = 'order-item';
-        li.id = 'card-admin-' + pedido.id;
-
-        let itensHtml = pedido.itens ? pedido.itens.map(i => `<div>${i.quantidade}x ${i.nomeProduto}</div>`).join('') : 'Sem itens';
-        const st = pedido.status || pedido.statusPedido;
-
-        li.innerHTML = `
-            <div class="order-header">
-                <span>#${pedido.id} - ${pedido.nomeCliente || 'Cliente'}</span>
-                <span style="color: #f1c40f">${st}</span>
+        // LISTA COMPLETA DE BOTÕES PARA TODOS OS STATUS
+        div.innerHTML = `
+            <div style="display:flex; justify-content:space-between">
+                <b>#${p.id} - ${p.nomeUsuario || 'Cliente'}</b>
+                <span style="color:#f1c40f">${st}</span>
             </div>
-            <div style="font-size: 0.9em; color: #bdc3c7; margin-bottom:10px;">
-                ${itensHtml}
+            <div style="margin:10px 0; font-size:12px">
+                ${p.itens ? p.itens.map(i => i.quantidade + 'x ' + i.nomeProduto).join(', ') : ''}
             </div>
-            <div class="action-buttons">
-                <button class="btn-action act-prep" onclick="alterarStatus(${pedido.id}, 'EM_PREPARACAO')">🔥 Preparar</button>
-                <button class="btn-action act-entrega" onclick="alterarStatus(${pedido.id}, 'SAIU_PARA_ENTREGA')">🛵 Enviar</button>
-                <button class="btn-action act-fim" onclick="alterarStatus(${pedido.id}, 'ENTREGUE')">✅ Finalizar</button>
-                <button class="btn-action act-cancel" onclick="alterarStatus(${pedido.id}, 'CANCELADO')">❌ Cancelar</button>
+
+            <div class="row" style="margin-top:10px">
+                <button class="btn-action act-reset" onclick="mudarStatus(${p.id}, 'PENDENTE')">↩️ Reset</button>
+                <button class="btn-action act-prep" onclick="mudarStatus(${p.id}, 'EM_PREPARACAO')">🔥 Preparar</button>
+                <button class="btn-action act-saiu" onclick="mudarStatus(${p.id}, 'SAIU_PARA_ENTREGA')">🛵 Enviar</button>
+            </div>
+            <div class="row" style="margin-top:5px">
+                <button class="btn-action act-fim" onclick="mudarStatus(${p.id}, 'ENTREGUE')">✅ Entregue</button>
+                <button class="btn-action act-cancel" onclick="mudarStatus(${p.id}, 'CANCELADO')">❌ Cancelar</button>
             </div>
         `;
-        lista.prepend(li);
+        lista.prepend(div);
     }
 
-    // 4. ADMIN: AÇÃO DE MUDAR STATUS (AGORA COM TOKEN!)
-    function alterarStatus(id, novoStatus) {
-        // 1. Pega o Token do Input
-        const token = document.getElementById('jwtToken').value;
+    async function mudarStatus(id, status) {
+        log(`🛠️ ADMIN: Mudando #${id} para ${status}...`);
 
-        if(!token) {
-            alert("⚠️ ERRO: Você precisa colar um JWT de Admin no campo do topo!");
-            return;
-        }
-
-        if(!confirm(`Mudar pedido #${id} para ${novoStatus}?`)) return;
-
-        // 2. Faz a chamada REST autenticada
-        fetch(`${API_URL}/pedido/${id}/status`, {
+        const res = await fetch(`${API}/pedido/${id}/status`, {
             method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token // <--- INJEÇÃO DO TOKEN AQUI
-            },
-            body: JSON.stringify({ status: novoStatus })
-        })
-        .then(async response => {
-            if(response.ok) {
-                console.log("Status alterado com sucesso!");
-            } else {
-                const erroJson = await response.json();
-                alert("Erro: " + (erroJson.message || response.statusText));
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            alert("Erro de conexão com a API.");
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+            body: JSON.stringify({ statusPedido: status })
         });
-    }
 
-    function playNotificationSound() {
-        const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
-        audio.play().catch(() => {});
+        if(!res.ok) {
+            // Tenta pegar a mensagem de erro do Spring
+            const json = await res.json();
+            const erroMsg = json.message || json.error || res.statusText;
+
+            log(`❌ ERRO (Status ${res.status}): ${erroMsg}`);
+            alert("⛔ ERRO DE REGRA DE NEGÓCIO:\n\n" + erroMsg);
+        } else {
+            log("✅ PATCH enviado com sucesso!");
+        }
     }
 </script>
 </body>
