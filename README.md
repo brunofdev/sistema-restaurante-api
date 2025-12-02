@@ -37,15 +37,14 @@ Este projeto é uma API RESTful desenvolvida em **Java 17** com **Spring Boot**,
 - **JWT**
 - **Docker**
 
-## 🚧 Status do Projeto
+## Funcionalidades principais (Já implementadas):  
 
-✅ Funcionalidades principais:  
-    Crud de Produtos,
-    Crud de Cardapios,
-    Associa produtos a Cardapios,
-    Cria e atualiza pedidos dinamicamente com WebSocket,
-    Todas as Rotas protegidas por Regras.
-    Autenticação via JWT.
+- **Crud de Produtos,**
+- **Crud de Cardapios,**
+- **Associa produtos a Cardapios,**
+- **Cria e atualiza pedidos dinamicamente com WebSocket,**
+- **Todas as Rotas protegidas por Regras.**
+- **Autenticação via JWT.**
     
 
 
