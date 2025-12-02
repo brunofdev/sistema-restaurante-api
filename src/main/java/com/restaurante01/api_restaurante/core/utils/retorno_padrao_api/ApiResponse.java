@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.core.utils;
+package com.restaurante01.api_restaurante.core.utils.retorno_padrao_api;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

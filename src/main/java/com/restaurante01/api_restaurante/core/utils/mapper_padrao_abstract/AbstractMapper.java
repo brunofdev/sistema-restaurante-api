@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.core.mapper;
+package com.restaurante01.api_restaurante.core.utils.mapper_padrao_abstract;
 
 import java.util.List;
 

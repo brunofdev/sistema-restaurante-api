@@ -1,5 +1,5 @@
 package com.restaurante01.api_restaurante.produto.validator;
-import com.restaurante01.api_restaurante.core.utils.FormatarString;
+import com.restaurante01.api_restaurante.core.utils.formatadores.FormatarString;
 import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoDTO;
 import com.restaurante01.api_restaurante.produto.entity.Produto;
 import com.restaurante01.api_restaurante.produto.exceptions.ProdutoMesmoNomeExistenteException;

@@ -6,7 +6,7 @@ import com.restaurante01.api_restaurante.cardapioproduto.dto.saida.CardapioComLi
 import com.restaurante01.api_restaurante.cardapioproduto.dto.saida.CardapioProdutoAssociacaoRespostaDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.dto.entrada.CardapioProdutoDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.service.CardapioProdutoService;
-import com.restaurante01.api_restaurante.core.utils.ApiResponse;
+import com.restaurante01.api_restaurante.core.utils.retorno_padrao_api.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.restaurante01.api_restaurante.pedido.controller;
 
-import com.restaurante01.api_restaurante.core.utils.ApiResponse;
+import com.restaurante01.api_restaurante.core.utils.retorno_padrao_api.ApiResponse;
 import com.restaurante01.api_restaurante.pedido.dto.entrada.StatusPedidoDTO;
 import com.restaurante01.api_restaurante.pedido.service.PedidoService;
 import com.restaurante01.api_restaurante.pedido.dto.entrada.PedidoCriacaoDTO;
@@ -17,8 +17,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @CrossOrigin(origins = "*")
 @RestController

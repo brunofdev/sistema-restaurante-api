@@ -4,7 +4,7 @@ import com.restaurante01.api_restaurante.cardapio.dto.saida.CardapioDTO;
 import com.restaurante01.api_restaurante.cardapio.entity.Cardapio;
 import com.restaurante01.api_restaurante.cardapio.exceptions.*;
 import com.restaurante01.api_restaurante.cardapio.repository.CardapioRepository;
-import com.restaurante01.api_restaurante.core.utils.FormatarString;
+import com.restaurante01.api_restaurante.core.utils.formatadores.FormatarString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.core.mapper;
+package com.restaurante01.api_restaurante.core.utils.mapper_padrao_abstract;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ public interface Mapper<Entity, DTO> {
 
     /**
      * Converte um DTO de transferência de dados para a sua entidade de domínio correspondente.
-     * Este método é útil para operações de persistência, onde o DTO recebido precisa ser
+     * Este metodo é útil para operações de persistência, onde o DTO recebido precisa ser
      * convertido em uma entidade antes de ser salvo no banco de dados.
      *
      * @param dto Objeto DTO a ser convertido.
@@ -40,7 +40,7 @@ public interface Mapper<Entity, DTO> {
 
     /**
      * Converte uma lista de DTOs de transferência de dados para uma lista de entidades de domínio correspondentes.
-     * Este método facilita a conversão em lote, otimizando operações de persistência
+     * Este metodo facilita a conversão em lote, otimizando operações de persistência
      * ou processamento de coleções de dados recebidas.
      *
      * @param listaDTO Lista de DTOs a serem convertidos.

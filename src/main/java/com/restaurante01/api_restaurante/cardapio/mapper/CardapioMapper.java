@@ -3,8 +3,8 @@ package com.restaurante01.api_restaurante.cardapio.mapper;
 import com.restaurante01.api_restaurante.cardapio.dto.entrada.CardapioCreateDTO;
 import com.restaurante01.api_restaurante.cardapio.dto.saida.CardapioDTO;
 import com.restaurante01.api_restaurante.cardapio.entity.Cardapio;
-import com.restaurante01.api_restaurante.core.mapper.AbstractMapper;
-import com.restaurante01.api_restaurante.core.utils.FormatarString;
+import com.restaurante01.api_restaurante.core.utils.mapper_padrao_abstract.AbstractMapper;
+import com.restaurante01.api_restaurante.core.utils.formatadores.FormatarString;
 import org.springframework.stereotype.Component;
 
 @Component

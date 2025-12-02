@@ -7,7 +7,7 @@ import com.restaurante01.api_restaurante.cardapioproduto.dto.saida.CardapioComLi
 import com.restaurante01.api_restaurante.cardapioproduto.dto.saida.CardapioProdutoAssociacaoRespostaDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.dto.entrada.CardapioProdutoDTO;
 import com.restaurante01.api_restaurante.cardapioproduto.entity.CardapioProduto;
-import com.restaurante01.api_restaurante.core.mapper.AbstractMapper;
+import com.restaurante01.api_restaurante.core.utils.mapper_padrao_abstract.AbstractMapper;
 import com.restaurante01.api_restaurante.produto.dto.saida.ProdutoCustomDTO;
 import com.restaurante01.api_restaurante.produto.entity.Produto;
 import com.restaurante01.api_restaurante.produto.mapper.ProdutoMapper;

@@ -1,6 +1,6 @@
 package com.restaurante01.api_restaurante.usuarios.controller;
 
-import com.restaurante01.api_restaurante.core.utils.ApiResponse;
+import com.restaurante01.api_restaurante.core.utils.retorno_padrao_api.ApiResponse;
 import com.restaurante01.api_restaurante.usuarios.dto.entrada.CadastrarUsuarioDTO;
 import com.restaurante01.api_restaurante.usuarios.dto.saida.UsuarioDTO;
 import com.restaurante01.api_restaurante.usuarios.service.UsuarioService;

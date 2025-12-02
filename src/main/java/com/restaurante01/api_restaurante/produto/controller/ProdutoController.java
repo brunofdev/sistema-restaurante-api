@@ -1,11 +1,10 @@
 package com.restaurante01.api_restaurante.produto.controller;
-import com.restaurante01.api_restaurante.core.utils.ApiResponse;
+import com.restaurante01.api_restaurante.core.utils.retorno_padrao_api.ApiResponse;
 import com.restaurante01.api_restaurante.produto.dto.saida.LoteProdutosResponseDTO;
 import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoCreateDTO;
 import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoDTO;
 import com.restaurante01.api_restaurante.produto.service.ProdutoService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.ReportAsSingleViolation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

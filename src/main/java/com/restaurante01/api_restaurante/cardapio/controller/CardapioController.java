@@ -3,7 +3,7 @@ package com.restaurante01.api_restaurante.cardapio.controller;
 import com.restaurante01.api_restaurante.cardapio.dto.entrada.CardapioCreateDTO;
 import com.restaurante01.api_restaurante.cardapio.dto.saida.CardapioDTO;
 import com.restaurante01.api_restaurante.cardapio.service.CardapioService;
-import com.restaurante01.api_restaurante.core.utils.ApiResponse;
+import com.restaurante01.api_restaurante.core.utils.retorno_padrao_api.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

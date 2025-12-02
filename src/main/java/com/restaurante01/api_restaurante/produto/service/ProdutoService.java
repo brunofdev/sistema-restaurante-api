@@ -1,8 +1,6 @@
 package com.restaurante01.api_restaurante.produto.service;
-import com.restaurante01.api_restaurante.core.utils.FormatarString;
 import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoCreateDTO;
 import com.restaurante01.api_restaurante.produto.exceptions.ProdutoNaoEncontradoException;
-import com.restaurante01.api_restaurante.produto.factory.ProdutoFactory;
 import com.restaurante01.api_restaurante.produto.mapper.ProdutoMapper;
 import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoDTO;
 import com.restaurante01.api_restaurante.produto.entity.Produto;

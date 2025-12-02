@@ -1,5 +1,6 @@
 package com.restaurante01.api_restaurante.usuarios.validator;
 
+import com.restaurante01.api_restaurante.core.utils.validadorcpf.ValidadorCpf;
 import com.restaurante01.api_restaurante.usuarios.dto.entrada.CadastrarUsuarioDTO;
 import com.restaurante01.api_restaurante.usuarios.exceptions.CpfAlreadyExistsException;
 import com.restaurante01.api_restaurante.usuarios.exceptions.EmailAlreadyExistsException;
@@ -14,9 +15,10 @@ public class UsuarioValidator {
     @Autowired
     private UsuarioRepository usuarioRepository;
     public void validarNovoUsuario(CadastrarUsuarioDTO dto, Boolean isUpdate) {
-         checaEmailExiste(dto.email());
-         checaCpfExiste(dto.cpf());
-         checaUserNameExiste(dto.userName());
+        ValidadorCpf.validarCpf(dto.cpf());
+        checaEmailExiste(dto.email());
+        checaCpfExiste(dto.cpf());
+        checaUserNameExiste(dto.userName());
     }
     private void checaEmailExiste(String email){
         if(usuarioRepository.existsByEmail(email)){

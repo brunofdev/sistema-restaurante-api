@@ -1,13 +1,12 @@
 package com.restaurante01.api_restaurante.produto.mapper;
 
-import com.restaurante01.api_restaurante.core.mapper.AbstractMapper;
-import com.restaurante01.api_restaurante.core.utils.FormatarString;
+import com.restaurante01.api_restaurante.core.utils.mapper_padrao_abstract.AbstractMapper;
+import com.restaurante01.api_restaurante.core.utils.formatadores.FormatarString;
 import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoCreateDTO;
 import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoDTO;
 import com.restaurante01.api_restaurante.produto.entity.Produto;
 import org.springframework.stereotype.Component;
 
-import java.text.Normalizer;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
