@@ -1,5 +1,5 @@
 package com.restaurante01.api_restaurante.security.springsecurity;
-import com.restaurante01.api_restaurante.usuarios.enums.UserRole;
+import com.restaurante01.api_restaurante.usuarios.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +15,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -27,33 +26,41 @@ public class SecurityConfigurations {
     @Autowired
     SecurityFilter securityFilter;
 
+    //ROTAS PUBLICAS
     private static final String[] PUBLIC_ENDPOINTS = {
+            "/api/auth/login",
+            "/auth/login",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/produtos/todos-produtos",
+            "/cardapioproduto/obter-todas-associacoes",
+            "/cardapioproduto//cardapio/{idCardapio}",
+            //>>>>>>>>>>>>>LIBERADO PUBLICAMENTE PARA TESTES APENAS<<<<<<<<<<<
             "/usuarios/cadastro",
             "/usuarios/cadastro-admin1",
             "/usuarios/cadastro-admin3",
             "/usuarios/obter-todos",
-            "/api/auth/login",
-            "/auth/login", // Adicionei este caso a URL mude
-            "/v3/api-docs/**",
-            "/swagger-ui/**",
-            "/swagger-ui.html",
-            "/ws/**"
+            "/ws/**" //libera conexão web socket para facilitar os testes de tubulacao
     };
-
-    private static final Map<String, UserRole> PROTECTED_ROUTES = Map.of(
-            "/produtos/adicionar-produto", UserRole.USER,
-            "/produtos/todos-produtos", UserRole.USER,
-            "/pedido/criar-pedido", UserRole.USER,
-            "/pedido/obter-todos-pedidos", UserRole.USER,
-            "/pedido/*/status", UserRole.ADMIN1
+    //ROTAS PROTEGIDAS
+    private static final Map<String, Role> PROTECTED_ROUTES = Map.of(
+            //Apenas USER+
+                 "/pedido/criar-pedido", Role.USER
+            ,"/pedido/obter-todos-pedidos", Role.USER
+            //Apenas ADMIN1+
+            ,"/produtos/adicionar-produto", Role.ADMIN1
+            ,"/pedido/*/status", Role.ADMIN1
+            ,"/cardapioproduto/associar-cardapioproduto", Role.ADMIN1
+            ,"/cardapioproduto/atualizar-campos-custom", Role.ADMIN1
+            //Apenas ADMIN2+
+            ,"/cardapioproduto/cardapio{idCardapio}/produto{idProduto}", Role.ADMIN2
     );
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                // 1. AQUI ESTÁ A CORREÇÃO: Ativa o CORS usando nossa configuração bean
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> {
@@ -66,31 +73,21 @@ public class SecurityConfigurations {
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-
-        // --- MUDE ISTO ---
-        // DE: configuration.setAllowedOrigins(List.of("*"));
-        // PARA:
-        configuration.setAllowedOriginPatterns(List.of("*")); // Usa Padrão em vez de Fixo
-        configuration.setAllowCredentials(true); // <--- IMPORTANTE: Permite cookies/auth
-        // -----------------
-
+        configuration.setAllowedOriginPatterns(List.of("*"));
+        configuration.setAllowCredentials(true);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
-
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();

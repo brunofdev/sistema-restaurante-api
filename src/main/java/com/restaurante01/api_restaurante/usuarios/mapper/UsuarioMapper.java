@@ -3,7 +3,7 @@ package com.restaurante01.api_restaurante.usuarios.mapper;
 import com.restaurante01.api_restaurante.usuarios.dto.entrada.CadastrarUsuarioDTO;
 import com.restaurante01.api_restaurante.usuarios.dto.saida.UsuarioDTO;
 import com.restaurante01.api_restaurante.usuarios.entity.Usuario;
-import com.restaurante01.api_restaurante.usuarios.enums.UserRole;
+import com.restaurante01.api_restaurante.usuarios.enums.Role;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public class UsuarioMapper {
         usuario.setNumeroResidencia(dto.numero());
         usuario.setComplemento(dto.complemento());
         usuario.setUserName(dto.userName());
-        usuario.setRole(UserRole.USER);
+        usuario.setRole(Role.USER);
         return usuario;
     }
     public UsuarioDTO mapearUsuarioParaUsuarioDTO(Usuario novoUsuario) {

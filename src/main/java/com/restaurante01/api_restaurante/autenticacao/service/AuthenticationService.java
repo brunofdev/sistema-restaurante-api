@@ -21,7 +21,7 @@ public class AuthenticationService {
 
     public LoginResponseDTO login(CredenciaisDTO credentials) {
         UsuarioDTO userData = usuarioService.autenticarUsuario(credentials.cpf(), credentials.senha());
-        String token = jwtProvider.generateToken(userData.userName(), userData.userRole());
+        String token = jwtProvider.generateToken(userData.userName(), userData.role());
         return new LoginResponseDTO(token, userData);
     }
 }

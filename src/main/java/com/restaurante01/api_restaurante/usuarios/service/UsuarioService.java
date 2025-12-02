@@ -3,7 +3,7 @@ package com.restaurante01.api_restaurante.usuarios.service;
 import com.restaurante01.api_restaurante.usuarios.dto.entrada.CadastrarUsuarioDTO;
 import com.restaurante01.api_restaurante.usuarios.dto.saida.UsuarioDTO;
 import com.restaurante01.api_restaurante.usuarios.entity.Usuario;
-import com.restaurante01.api_restaurante.usuarios.enums.UserRole;
+import com.restaurante01.api_restaurante.usuarios.enums.Role;
 import com.restaurante01.api_restaurante.usuarios.exceptions.InvalidCredentialsException;
 import com.restaurante01.api_restaurante.usuarios.exceptions.UserDontFoundException;
 import com.restaurante01.api_restaurante.usuarios.mapper.UsuarioMapper;
@@ -41,14 +41,14 @@ public class UsuarioService {
     public UsuarioDTO cadastrarNovoUsuarioAdmin1(CadastrarUsuarioDTO dto){
         usuarioValidator.validarNovoUsuario(dto, false);
         Usuario novoUsuario = usuarioMapper.mappearNovoUsuario(dto);
-        novoUsuario.setRole(UserRole.ADMIN1);
+        novoUsuario.setRole(Role.ADMIN1);
         usuarioRepository.save(novoUsuario);
         return usuarioMapper.mapearUsuarioParaUsuarioDTO(novoUsuario);
     }
     public UsuarioDTO cadastrarNovoUsuarioAdmin3(CadastrarUsuarioDTO dto){
         usuarioValidator.validarNovoUsuario(dto, false);
         Usuario novoUsuario = usuarioMapper.mappearNovoUsuario(dto);
-        novoUsuario.setRole(UserRole.ADMIN3);
+        novoUsuario.setRole(Role.ADMIN3);
         usuarioRepository.save(novoUsuario);
         return usuarioMapper.mapearUsuarioParaUsuarioDTO(novoUsuario);
     }

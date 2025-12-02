@@ -1,6 +1,6 @@
 package com.restaurante01.api_restaurante.autenticacao.jwt;
 
-import com.restaurante01.api_restaurante.usuarios.enums.UserRole;
+import com.restaurante01.api_restaurante.usuarios.enums.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -28,7 +28,7 @@ public class JwtProvider {
     /**
      * Gera um novo token JWT para um usuário.
      */
-    public String generateToken(String username, UserRole role) {
+    public String generateToken(String username, Role role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", role.name());
 

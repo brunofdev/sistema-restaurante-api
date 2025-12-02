@@ -1,6 +1,6 @@
 package com.restaurante01.api_restaurante.usuarios.entity;
 
-import com.restaurante01.api_restaurante.usuarios.enums.UserRole;
+import com.restaurante01.api_restaurante.usuarios.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -48,10 +48,10 @@ public class Usuario implements UserDetails {
     @Column(name = "complemento", nullable = false)
     private String complemento;
     @Enumerated(EnumType.STRING)
-    private UserRole role;
+    private Role role;
 
-    public UserRole getRole(){
-        return (this.role == null) ? UserRole.USER : this.role;
+    public Role getRole(){
+        return (this.role == null) ? Role.USER : this.role;
     }
 
     // --- MÉTODOS OBRIGATÓRIOS DO SPRING SECURITY (UserDetails) ---

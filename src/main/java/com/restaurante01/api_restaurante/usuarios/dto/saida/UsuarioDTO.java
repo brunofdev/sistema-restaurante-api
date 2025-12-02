@@ -1,11 +1,11 @@
 package com.restaurante01.api_restaurante.usuarios.dto.saida;
 
-import com.restaurante01.api_restaurante.usuarios.enums.UserRole;
+import com.restaurante01.api_restaurante.usuarios.enums.Role;
 
 public record UsuarioDTO(
         Long id,
         String nome,
         String userName,
-        UserRole userRole
+        Role role
 ) {
 }
