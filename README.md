@@ -27,21 +27,27 @@ Este projeto é uma API RESTful desenvolvida em **Java 17** com **Spring Boot**,
 - **Java 17+**
 - **Spring Boot**
 - **Spring Data JPA**
+- **Spring Security**
 - **Hibernate**
 - **Swagger/OpenAPI**
-- **MySQL**
+- **Postgree**
 - **JUnit 5**
 - **Mockito**
 - **Maven**
-- **JWT** (em breve)
+- **JWT**
+- **Docker**
 
 ## 🚧 Status do Projeto
 
-✅ Funcionalidades principais implementadas  
-🚧 Melhorias contínuas e novas funcionalidades em desenvolvimento  
-🔐 Autenticação via JWT em fase de implementação
+✅ Funcionalidades principais:  
+    Crud de Produtos,
+    Crud de Cardapios,
+    Associa produtos a Cardapios,
+    Cria e atualiza pedidos dinamicamente com WebSocket,
+    Todas as Rotas protegidas por Regras.
+    Autenticação via JWT.
+    
 
-## 📝 Contribuição
 
-Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou pull requests.
+
 
