@@ -5,7 +5,7 @@ import com.restaurante01.api_restaurante.pedido.Enum.StatusPedido;
 import com.restaurante01.api_restaurante.pedido.exception.StatusPedidoInvalidoException;
 import com.restaurante01.api_restaurante.pedido.exception.StatusPedidoNaoPodeMaisSerAlteradoException;
 import com.restaurante01.api_restaurante.security.auditoria.Auditable;
-import com.restaurante01.api_restaurante.usuarios.entity.Usuario;
+import com.restaurante01.api_restaurante.usuarios.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
 

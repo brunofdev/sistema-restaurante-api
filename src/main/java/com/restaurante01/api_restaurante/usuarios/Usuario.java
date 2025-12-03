@@ -1,6 +1,5 @@
-package com.restaurante01.api_restaurante.usuarios.entity;
+package com.restaurante01.api_restaurante.usuarios;
 
-import com.restaurante01.api_restaurante.usuarios.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@MappedSuperclass
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

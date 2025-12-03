@@ -1,7 +1,7 @@
 package com.restaurante01.api_restaurante.security.springsecurity;
 
 import com.restaurante01.api_restaurante.autenticacao.jwt.JwtProvider;
-import com.restaurante01.api_restaurante.usuarios.entity.Usuario;
+import com.restaurante01.api_restaurante.usuarios.Usuario;
 import com.restaurante01.api_restaurante.usuarios.exceptions.UserDontFoundException;
 import com.restaurante01.api_restaurante.usuarios.repository.UsuarioRepository;
 import jakarta.servlet.FilterChain;

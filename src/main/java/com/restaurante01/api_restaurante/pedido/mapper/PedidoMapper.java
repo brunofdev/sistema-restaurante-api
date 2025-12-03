@@ -1,12 +1,10 @@
 package com.restaurante01.api_restaurante.pedido.mapper;
 
-import com.restaurante01.api_restaurante.pedido.Enum.StatusPedido;
 import com.restaurante01.api_restaurante.pedido.dto.saida.ItemPedidoDTO;
 import com.restaurante01.api_restaurante.pedido.dto.saida.PedidoDTO;
 import com.restaurante01.api_restaurante.pedido.entity.ItemPedido;
 import com.restaurante01.api_restaurante.pedido.entity.Pedido;
 import com.restaurante01.api_restaurante.produto.entity.Produto;
-import com.restaurante01.api_restaurante.usuarios.entity.Usuario;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

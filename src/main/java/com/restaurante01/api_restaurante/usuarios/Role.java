@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.usuarios.enums;
+package com.restaurante01.api_restaurante.usuarios;
 
 public enum Role {
     USER,

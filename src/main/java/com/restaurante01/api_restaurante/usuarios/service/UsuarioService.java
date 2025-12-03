@@ -2,8 +2,8 @@ package com.restaurante01.api_restaurante.usuarios.service;
 
 import com.restaurante01.api_restaurante.usuarios.dto.entrada.CadastrarUsuarioDTO;
 import com.restaurante01.api_restaurante.usuarios.dto.saida.UsuarioDTO;
-import com.restaurante01.api_restaurante.usuarios.entity.Usuario;
-import com.restaurante01.api_restaurante.usuarios.enums.Role;
+import com.restaurante01.api_restaurante.usuarios.Usuario;
+import com.restaurante01.api_restaurante.usuarios.Role;
 import com.restaurante01.api_restaurante.usuarios.exceptions.InvalidCredentialsException;
 import com.restaurante01.api_restaurante.usuarios.exceptions.UserDontFoundException;
 import com.restaurante01.api_restaurante.usuarios.mapper.UsuarioMapper;

@@ -1,9 +1,9 @@
-package com.restaurante01.api_restaurante.usuarios.dto.entrada;
+package com.restaurante01.api_restaurante.usuarios.operador.dto.entrada;
 
-import io.swagger.v3.oas.annotations.media.Schema; // <--- Importante!
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 
-public record CadastrarUsuarioDTO(
+public record CadastrarOperadorDTO(
 
         @Schema(description = "Nome completo do usuário", example = "Bruno de Fraga")
         @NotBlank(message = "O nome não pode estar em branco.")
@@ -71,9 +71,9 @@ public record CadastrarUsuarioDTO(
         String complemento
 ) {
 
-    public CadastrarUsuarioDTO withSenha(String senhaCriptografada) {
+    public CadastrarOperadorDTO withSenha(String senhaCriptografada) {
 
-        return new CadastrarUsuarioDTO(
+        return new CadastrarOperadorDTO(
 
                 this.nome(),
 
