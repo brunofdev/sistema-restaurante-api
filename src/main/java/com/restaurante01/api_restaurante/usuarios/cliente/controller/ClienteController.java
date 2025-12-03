@@ -22,7 +22,7 @@ import java.util.List;
 public class ClienteController {
 
     @Autowired
-    private ClienteService clienteServiceService;
+    private ClienteService clienteService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;

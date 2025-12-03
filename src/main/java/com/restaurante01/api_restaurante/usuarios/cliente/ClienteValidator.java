@@ -1,20 +1,20 @@
-package com.restaurante01.api_restaurante.usuarios.validator;
+package com.restaurante01.api_restaurante.usuarios.cliente;
 
 import com.restaurante01.api_restaurante.core.utils.validadorcpf.ValidadorCpf;
-import com.restaurante01.api_restaurante.usuarios.dto.entrada.CadastrarUsuarioDTO;
+import com.restaurante01.api_restaurante.usuarios.cliente.dto.entrada.CadastrarClienteDTO;
+import com.restaurante01.api_restaurante.usuarios.cliente.repository.ClienteRepository;
 import com.restaurante01.api_restaurante.usuarios.exceptions.CpfAlreadyExistsException;
 import com.restaurante01.api_restaurante.usuarios.exceptions.EmailAlreadyExistsException;
 import com.restaurante01.api_restaurante.usuarios.exceptions.UsernameAlreadyExistsException;
-import com.restaurante01.api_restaurante.usuarios.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UsuarioValidator {
+public class ClienteValidator {
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
-    public void validarNovoUsuario(CadastrarUsuarioDTO dto, Boolean isUpdate) {
+    private ClienteRepository usuarioRepository;
+    public void validarNovoCliente(CadastrarClienteDTO dto, Boolean isUpdate) {
         ValidadorCpf.validarCpf(dto.cpf());
         checaEmailExiste(dto.email());
         checaCpfExiste(dto.cpf());

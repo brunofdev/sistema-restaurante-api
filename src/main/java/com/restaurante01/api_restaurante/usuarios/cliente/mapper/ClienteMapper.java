@@ -27,6 +27,7 @@ public class ClienteMapper {
         cliente.setComplemento(dto.complemento());
         cliente.setUserName(dto.userName());
         cliente.setRole(Role.USER);
+        cliente.setPontuacaoFidelidade(0L);
         return cliente;
     }
     public ClienteDTO mapearClienteParaClienteDTO(Cliente novoCliente) {
