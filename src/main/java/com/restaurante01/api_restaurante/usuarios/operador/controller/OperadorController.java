@@ -29,8 +29,8 @@ public class OperadorController {
     public ResponseEntity<ApiResponse<OperadorDTO>> cadastrarUsuario(@Valid @RequestBody CadastrarOperadorDTO dto){
         String senhaCriptografada = passwordEncoder.encode(dto.senha());
         CadastrarOperadorDTO dtoComSenhaEncoded = dto.withSenha(senhaCriptografada);
-        OperadorDTO clienteCriadoDTO = operadorService.cadastrarNovoOperador(dtoComSenhaEncoded);
-        return ResponseEntity.ok(ApiResponse.success("Recurso criado" , clienteCriadoDTO));
+        OperadorDTO operadorCriadoDTO = operadorService.cadastrarNovoOperador(dtoComSenhaEncoded);
+        return ResponseEntity.ok(ApiResponse.success("Recurso criado" , operadorCriadoDTO));
     }
     @GetMapping("/obter-todos")
     public ResponseEntity<ApiResponse<List<OperadorDTO>>> listarUsuarios(){

@@ -1,7 +1,6 @@
 package com.restaurante01.api_restaurante.usuarios.cliente.service;
 
-import com.restaurante01.api_restaurante.usuarios.Usuario;
-import com.restaurante01.api_restaurante.usuarios.cliente.ClienteValidator;
+import com.restaurante01.api_restaurante.usuarios.cliente.validator.ClienteValidator;
 import com.restaurante01.api_restaurante.usuarios.cliente.dto.entrada.CadastrarClienteDTO;
 import com.restaurante01.api_restaurante.usuarios.cliente.dto.saida.ClienteDTO;
 import com.restaurante01.api_restaurante.usuarios.cliente.entity.Cliente;
