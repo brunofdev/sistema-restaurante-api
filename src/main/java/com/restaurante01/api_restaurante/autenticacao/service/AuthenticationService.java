@@ -4,7 +4,6 @@ package com.restaurante01.api_restaurante.autenticacao.service;
 import com.restaurante01.api_restaurante.autenticacao.dto.CredenciaisDTO;
 import com.restaurante01.api_restaurante.autenticacao.dto.LoginResponseDTO;
 import com.restaurante01.api_restaurante.autenticacao.jwt.JwtProvider;
-import com.restaurante01.api_restaurante.usuarios.dto.saida.UsuarioDTO;
 import com.restaurante01.api_restaurante.usuarios.service.UsuarioService;
 import org.springframework.stereotype.Service;
 

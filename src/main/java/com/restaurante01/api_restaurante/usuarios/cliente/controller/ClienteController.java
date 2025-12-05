@@ -1,8 +1,6 @@
 package com.restaurante01.api_restaurante.usuarios.cliente.controller;
 
 import com.restaurante01.api_restaurante.core.utils.retorno_padrao_api.ApiResponse;
-import com.restaurante01.api_restaurante.usuarios.dto.entrada.CadastrarUsuarioDTO;
-import com.restaurante01.api_restaurante.usuarios.dto.saida.UsuarioDTO;
 import com.restaurante01.api_restaurante.usuarios.cliente.dto.entrada.CadastrarClienteDTO;
 import com.restaurante01.api_restaurante.usuarios.cliente.dto.saida.ClienteDTO;
 import com.restaurante01.api_restaurante.usuarios.cliente.service.ClienteService;
@@ -36,6 +34,6 @@ public class ClienteController {
     }
     @GetMapping("/obter-todos")
     public ResponseEntity<ApiResponse<List<ClienteDTO>>> listarUsuarios(){
-        return ResponseEntity.ok(ApiResponse.success("Recurso disponivel", clienteServiceService.listarClientes()));
+        return ResponseEntity.ok(ApiResponse.success("Recurso disponivel", clienteService.listarClientes()));
     }
 }

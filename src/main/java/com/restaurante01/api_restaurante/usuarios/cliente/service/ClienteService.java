@@ -32,7 +32,7 @@ public class ClienteService {
         return repository.findByCpf(cpf).orElseThrow(
                 () -> new UserDontFoundException("Cliente não encontrado"));
     }
-    public List<ClienteDTO> listarUsuarios() {
+    public List<ClienteDTO> listarClientes() {
         return mapper.mapearListaClienteParaClienteDTO(repository.findAll());
     }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 
 @Component
 public class OperadorMapper {
-    public Operador mappearNovoCliente(CadastrarOperadorDTO dto) {
+    public Operador mappearNovoOperador(CadastrarOperadorDTO dto) {
         Operador operador = new Operador();
         operador.setNome(dto.nome());
         operador.setSenha(dto.senha());
@@ -29,15 +29,15 @@ public class OperadorMapper {
         operador.setRole(Role.USER);
         return operador;
     }
-    public OperadorDTO mapearClienteParaClienteDTO(Operador novoCliente) {
+    public OperadorDTO mapearOperadorParaOperadorDTO(Operador novoOperador) {
         return new OperadorDTO(
-                novoCliente.getId(),
-                novoCliente.getNome(),
-                novoCliente.getUsername(),
-                novoCliente.getRole());
+                novoOperador.getId(),
+                novoOperador.getNome(),
+                novoOperador.getUsername(),
+                novoOperador.getRole());
     }
     public List<OperadorDTO> mapearListaClienteParaClienteDTO(List<Operador> clientes){
         return clientes.stream()
-                .map(operador -> mapearClienteParaClienteDTO(operador)).toList();
+                .map(operador -> mapearOperadorParaOperadorDTO(operador)).toList();
     }
 }
