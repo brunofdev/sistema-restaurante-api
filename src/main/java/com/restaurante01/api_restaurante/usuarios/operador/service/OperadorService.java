@@ -35,7 +35,7 @@ public class OperadorService {
                 () -> new UserDontFoundException("Cliente não encontrado"));
     }
 
-    public List<OperadorDTO> listarOperador() {
+    public List<OperadorDTO> listarOperadores() {
         return mapper.mapearListaClienteParaClienteDTO(repository.findAll());
     }
 }
