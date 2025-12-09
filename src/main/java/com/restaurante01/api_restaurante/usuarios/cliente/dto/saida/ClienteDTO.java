@@ -6,6 +6,7 @@ public record ClienteDTO(
         Long id,
         String nome,
         String userName,
-        Role role
+        Role role,
+        int pontuacaoFidelidade
 ) {
 }

@@ -27,7 +27,7 @@ public class ClienteMapper {
         cliente.setComplemento(dto.complemento());
         cliente.setUserName(dto.userName());
         cliente.setRole(Role.USER);
-        cliente.setPontuacaoFidelidade(0L);
+        cliente.setPontuacaoFidelidade(0);
         return cliente;
     }
     public ClienteDTO mapearClienteParaClienteDTO(Cliente novoCliente) {
@@ -35,7 +35,8 @@ public class ClienteMapper {
                 novoCliente.getId(),
                 novoCliente.getNome(),
                 novoCliente.getUsername(),
-                novoCliente.getRole());
+                novoCliente.getRole(),
+                novoCliente.getPontuacaoFidelidade());
     }
     public List<ClienteDTO> mapearListaClienteParaClienteDTO(List<Cliente> clientes){
         return clientes.stream()
