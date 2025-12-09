@@ -1,6 +1,6 @@
 package com.restaurante01.api_restaurante.autenticacao.jwt;
 
-import com.restaurante01.api_restaurante.usuarios.Role;
+import com.restaurante01.api_restaurante.usuarios.role.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;

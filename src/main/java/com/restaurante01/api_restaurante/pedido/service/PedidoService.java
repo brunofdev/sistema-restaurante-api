@@ -13,7 +13,7 @@ import com.restaurante01.api_restaurante.pedido.entity.Pedido;
 import com.restaurante01.api_restaurante.pedido.repository.PedidoRepository;
 import com.restaurante01.api_restaurante.produto.entity.Produto;
 import com.restaurante01.api_restaurante.produto.service.ProdutoService;
-import com.restaurante01.api_restaurante.usuarios.Usuario;
+import com.restaurante01.api_restaurante.usuarios.usuario_super.Usuario;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

@@ -1,5 +1,6 @@
-package com.restaurante01.api_restaurante.usuarios;
+package com.restaurante01.api_restaurante.usuarios.usuario_super;
 
+import com.restaurante01.api_restaurante.usuarios.role.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

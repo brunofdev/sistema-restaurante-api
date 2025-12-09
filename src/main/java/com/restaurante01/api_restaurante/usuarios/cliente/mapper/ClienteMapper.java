@@ -4,7 +4,7 @@ package com.restaurante01.api_restaurante.usuarios.cliente.mapper;
 import com.restaurante01.api_restaurante.usuarios.cliente.dto.entrada.CadastrarClienteDTO;
 import com.restaurante01.api_restaurante.usuarios.cliente.dto.saida.ClienteDTO;
 import com.restaurante01.api_restaurante.usuarios.cliente.entity.Cliente;
-import com.restaurante01.api_restaurante.usuarios.Role;
+import com.restaurante01.api_restaurante.usuarios.role.Role;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

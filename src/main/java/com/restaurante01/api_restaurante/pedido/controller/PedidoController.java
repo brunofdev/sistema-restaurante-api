@@ -5,7 +5,7 @@ import com.restaurante01.api_restaurante.pedido.dto.entrada.StatusPedidoDTO;
 import com.restaurante01.api_restaurante.pedido.service.PedidoService;
 import com.restaurante01.api_restaurante.pedido.dto.entrada.PedidoCriacaoDTO;
 import com.restaurante01.api_restaurante.pedido.dto.saida.PedidoDTO;
-import com.restaurante01.api_restaurante.usuarios.Usuario;
+import com.restaurante01.api_restaurante.usuarios.usuario_super.Usuario;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

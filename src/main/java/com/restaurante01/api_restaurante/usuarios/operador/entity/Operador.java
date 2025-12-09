@@ -1,6 +1,6 @@
 package com.restaurante01.api_restaurante.usuarios.operador.entity;
 
-import com.restaurante01.api_restaurante.usuarios.Usuario;
+import com.restaurante01.api_restaurante.usuarios.usuario_super.Usuario;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
