@@ -14,7 +14,7 @@ import com.restaurante01.api_restaurante.pedido.repository.PedidoRepository;
 import com.restaurante01.api_restaurante.produto.entity.Produto;
 import com.restaurante01.api_restaurante.produto.service.ProdutoService;
 import com.restaurante01.api_restaurante.usuarios.cliente.entity.Cliente;
-import com.restaurante01.api_restaurante.usuarios.usuario_super.Usuario;
+import com.restaurante01.api_restaurante.usuarios.cliente.service.ClienteService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,16 +26,19 @@ public class PedidoService {
     private final PedidoRepository pedidoRepository;
     private final PedidoMapper pedidoMapper;
     private final ProdutoService produtoService;
-    public PedidoService (PedidoRepository pedidoRepository, PedidoMapper pedidoMapper, ProdutoService produtoService){
+    private final ClienteService clienteService;
+    public PedidoService (PedidoRepository pedidoRepository, PedidoMapper pedidoMapper, ProdutoService produtoService, ClienteService clienteService){
         this.pedidoRepository = pedidoRepository;
         this.pedidoMapper = pedidoMapper;
         this.produtoService = produtoService;
+        this.clienteService = clienteService;
     }
     public PedidoDTO criarNovoPedido(PedidoCriacaoDTO pedidoCriacaoDTO, Cliente cliente){
         Pedido pedido = new Pedido();
-        montarPedido(pedido, cliente);
         vincularItemAoPedido(pedido, pedidoCriacaoDTO.itens());
+        montarPedido(pedido, cliente);
         pedidoRepository.save(pedido);
+        clienteService.atualizaPontuacaoFidelidadeCliente(cliente, pedido.getValorTotal());
         return pedidoMapper.mapearPedidoDto(pedido);
     }
     public PedidoDTO atualizarStatusPedido(Long id, StatusPedidoDTO novoStatus){
@@ -56,7 +59,6 @@ public class PedidoService {
         });
     }
     private void montarPedido(Pedido pedido, Cliente cliente){
-        cliente.acrescentarPontuacao(pedido.getValorTotal());
         pedido.setCliente(cliente);
         pedido.setEnderecoEntrega("Endereço de teste"); //ajustar para cliente poder informar endereço alternativo
         pedido.setStatusPedido(StatusPedido.PENDENTE);

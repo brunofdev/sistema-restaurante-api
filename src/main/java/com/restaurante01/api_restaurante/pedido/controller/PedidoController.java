@@ -8,6 +8,7 @@ import com.restaurante01.api_restaurante.pedido.dto.saida.PedidoDTO;
 import com.restaurante01.api_restaurante.usuarios.cliente.entity.Cliente;
 import com.restaurante01.api_restaurante.usuarios.usuario_super.Usuario;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,8 +40,11 @@ public class PedidoController {
         return ResponseEntity.ok(ApiResponse.success("Recurso Criado",novoPedido));
     }
     @GetMapping("obter-todos-pedidos")
-    public ResponseEntity<ApiResponse<Page<PedidoDTO>>> listarPedidosFeitos(@PageableDefault(page = 0, size = 10, sort = "dataCriacao", direction = Sort.Direction.DESC)
-                                                                            Pageable pageable){
+    public ResponseEntity<ApiResponse<Page<PedidoDTO>>> listarPedidosFeitos(
+            @ParameterObject
+            @PageableDefault(size = 10, sort = "dataCriacao", direction = Sort.Direction.DESC)
+            Pageable pageable)
+    {
         Page<PedidoDTO> paginaDePedidos = pedidoService.listarPedidos(pageable);
         return ResponseEntity.ok(ApiResponse.success("Recurso obtido", paginaDePedidos));
     }

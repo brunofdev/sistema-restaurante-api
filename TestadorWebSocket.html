@@ -280,7 +280,7 @@
     }
 
     async function mudarStatus(id, status) {
-        log(`🛠️ ADMIN: Mudando #${id} para ${status}...`);
+        log(`🛠️ ADMIN: Mudando #${id} para ${status}...`);-=´
 
         const res = await fetch(`${API}/pedido/${id}/status`, {
             method: 'PATCH',

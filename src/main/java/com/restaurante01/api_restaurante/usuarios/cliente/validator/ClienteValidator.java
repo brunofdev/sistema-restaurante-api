@@ -6,6 +6,7 @@ import com.restaurante01.api_restaurante.usuarios.cliente.repository.ClienteRepo
 import com.restaurante01.api_restaurante.usuarios.exceptions.CpfAlreadyExistsException;
 import com.restaurante01.api_restaurante.usuarios.exceptions.EmailAlreadyExistsException;
 import com.restaurante01.api_restaurante.usuarios.exceptions.UsernameAlreadyExistsException;
+import com.restaurante01.api_restaurante.usuarios.operador.repository.OperadorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,25 +14,34 @@ import org.springframework.stereotype.Component;
 public class ClienteValidator {
 
     @Autowired
-    private ClienteRepository usuarioRepository;
+    private ClienteRepository clienteRepository;
+    @Autowired
+    private OperadorRepository operadorRepository;
+
     public void validarNovoCliente(CadastrarClienteDTO dto, Boolean isUpdate) {
         ValidadorCpf.validarCpf(dto.cpf());
+        checaSeUsernameExisteEmOperadores(dto.userName());
         checaEmailExiste(dto.email());
         checaCpfExiste(dto.cpf());
         checaUserNameExiste(dto.userName());
     }
     private void checaEmailExiste(String email){
-        if(usuarioRepository.existsByEmail(email)){
+        if(clienteRepository.existsByEmail(email)){
             throw new EmailAlreadyExistsException("Email ja cadastrado no sistema");
         }
     }
+    private void checaSeUsernameExisteEmOperadores(String userName){
+        if(operadorRepository.existsByUserName(userName)){
+            throw  new UsernameAlreadyExistsException("Username já cadastrado por operador");
+        }
+    }
     private void checaCpfExiste(String cpf){
-        if(usuarioRepository.existsByCpf(cpf)){
+        if(clienteRepository.existsByCpf(cpf)){
             throw new CpfAlreadyExistsException("Cpf já cadastrado no sistema");
         }
     }
     private void checaUserNameExiste(String userName){
-        if(usuarioRepository.existsByUserName(userName)){
+        if(clienteRepository.existsByUserName(userName)){
             throw new UsernameAlreadyExistsException(
                     "Já existe um userName com este Nome cadastrado no sistema");
         }

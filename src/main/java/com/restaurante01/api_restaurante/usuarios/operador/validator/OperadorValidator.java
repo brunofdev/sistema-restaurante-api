@@ -3,6 +3,7 @@ package com.restaurante01.api_restaurante.usuarios.operador.validator;
 import com.restaurante01.api_restaurante.core.utils.validadorcpf.ValidadorCpf;
 import com.restaurante01.api_restaurante.usuarios.cliente.dto.entrada.CadastrarClienteDTO;
 import com.restaurante01.api_restaurante.usuarios.cliente.repository.ClienteRepository;
+import com.restaurante01.api_restaurante.usuarios.cliente.service.ClienteService;
 import com.restaurante01.api_restaurante.usuarios.exceptions.CpfAlreadyExistsException;
 import com.restaurante01.api_restaurante.usuarios.exceptions.EmailAlreadyExistsException;
 import com.restaurante01.api_restaurante.usuarios.exceptions.UsernameAlreadyExistsException;
@@ -16,8 +17,12 @@ public class OperadorValidator {
 
     @Autowired
     private OperadorRepository operadorRepository;
+    @Autowired
+    private ClienteRepository clienteRepository;
+
     public void validarNovoOperador(CadastrarOperadorDTO dto, Boolean isUpdate) {
         ValidadorCpf.validarCpf(dto.cpf());
+        checaUserNameExisteEmCliente(dto.userName());
         checaEmailExiste(dto.email());
         checaCpfExiste(dto.cpf());
         checaUserNameExiste(dto.userName());
@@ -29,6 +34,11 @@ public class OperadorValidator {
     private void checaEmailExiste(String email){
         if(operadorRepository.existsByEmail(email)){
             throw new EmailAlreadyExistsException("Email ja cadastrado no sistema");
+        }
+    }
+    private void checaUserNameExisteEmCliente(String userName){
+        if(clienteRepository.existsByUserName(userName)){
+            throw new UsernameAlreadyExistsException("Já existe Operador com userName cadastrado");
         }
     }
     private void checaCpfExiste(String cpf){

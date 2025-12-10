@@ -12,6 +12,7 @@ import com.restaurante01.api_restaurante.usuarios.role.Role;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -38,6 +39,13 @@ public class ClienteService {
     public Cliente encontrarClientePorCpf(String cpf){
         return repository.findByCpf(cpf).orElseThrow(
                 () -> new UserDontFoundException("Cliente não encontrado"));
+    }
+    public void atualizaPontuacaoFidelidadeCliente(Cliente cliente, BigDecimal totalPedido){
+        cliente.acrescentarPontuacao(totalPedido);
+        repository.save(cliente);
+    }
+    public boolean encontrarClientePorUserName(String userName){
+        return repository.existsByUserName(userName);
     }
     public List<ClienteDTO> listarClientes() {
         return mapper.mapearListaClienteParaClienteDTO(repository.findAll());

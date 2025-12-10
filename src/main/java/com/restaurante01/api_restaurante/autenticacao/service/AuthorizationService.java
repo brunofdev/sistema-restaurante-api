@@ -21,7 +21,7 @@ public class AuthorizationService implements UserDetailsService {
         if (operador.isPresent()){
             return operador.get();
         }
-        var cliente = operadorRepository.findByUserName(userName);
+        var cliente = clienteRepository.findByUserName(userName);
         if(cliente.isPresent()){
             return cliente.get();
         }

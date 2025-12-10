@@ -43,6 +43,9 @@ public class OperadorService {
         return repository.findByCpf(cpf).orElseThrow(
                 () -> new UserDontFoundException("Cliente não encontrado"));
     }
+    public boolean encontrarOperadorPorUserName(String userName){
+        return repository.existsByUserName(userName);
+    }
 
     public List<OperadorDTO> listarOperadores() {
         return mapper.mapearListaClienteParaClienteDTO(repository.findAll());
