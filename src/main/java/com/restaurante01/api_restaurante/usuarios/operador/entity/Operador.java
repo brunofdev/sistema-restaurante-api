@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "operadores")
 @Entity
 public class Operador extends Usuario{
-    @Column(name = "operador")
+    @Column(name = "matricula", unique = true)
     @NotNull
-    private Long operador;
+    private Long matricula;
 }

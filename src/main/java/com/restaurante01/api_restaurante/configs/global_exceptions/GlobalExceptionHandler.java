@@ -12,6 +12,7 @@ import com.restaurante01.api_restaurante.usuarios.exceptions.*;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 
-// Torna global para toda a aplicação
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -52,6 +52,7 @@ public class GlobalExceptionHandler {
     // EXCEÇÕES DO SPRING / VALIDAÇÃO
     // -------------------------------------------------------------------------
 
+    //Erros de validação em DTOs (@RequestBody)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Object>> handleValidation(MethodArgumentNotValidException ex) {
         String mensagem = ex.getBindingResult().getFieldErrors().stream()
@@ -67,16 +68,18 @@ public class GlobalExceptionHandler {
         );
     }
 
+    //Erros de validação em parâmetros (@PathVariable, @RequestParam)
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ApiResponse<Object>> handleConstraint(ConstraintViolationException ex) {
         return buildError(
                 HttpStatus.BAD_REQUEST,
-                "Invalid Data",
+                "Constraint Violation",
                 ex.getMessage(),
                 "Erro de validação dos dados enviados."
         );
     }
 
+    //JSON mal formatado / tipos inválidos no corpo
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiResponse<Object>> handleJSON(HttpMessageNotReadableException ex) {
         return buildError(
@@ -87,10 +90,25 @@ public class GlobalExceptionHandler {
         );
     }
 
+    //Violação de UNIQUE, FK, NOT NULL, etc.
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponse<Object>> handleIntegrity(DataIntegrityViolationException ex) {
+
+        String detalhe = ex.getMostSpecificCause() != null
+                ? ex.getMostSpecificCause().getMessage()
+                : "Violação de integridade no banco.";
+
+        return buildError(
+                HttpStatus.CONFLICT,
+                "Data Integrity Violation",
+                detalhe,
+                "Conflito ao processar os dados. Verifique valores únicos ou relacionamentos."
+        );
+    }
+
     // -------------------------------------------------------------------------
     // EXCEÇÕES CUSTOMIZADAS DA SUA APLICAÇÃO
     // -------------------------------------------------------------------------
-
     @ExceptionHandler({
             // AUTENTICAÇÃO
             InvalidCredentialsException.class,
@@ -131,7 +149,7 @@ public class GlobalExceptionHandler {
 
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
-        // mapeamento automático dos NOT FOUND
+        // Erros 404
         if (ex instanceof ProdutoNaoEncontradoException ||
                 ex instanceof CardapioNaoEncontradoException ||
                 ex instanceof UserNotFoundException ||
@@ -140,7 +158,7 @@ public class GlobalExceptionHandler {
             status = HttpStatus.NOT_FOUND;
         }
 
-        // mapeamento automático dos UNAUTHORIZED
+        // Erro 401
         if (ex instanceof InvalidCredentialsException) {
             status = HttpStatus.UNAUTHORIZED;
         }
@@ -156,7 +174,6 @@ public class GlobalExceptionHandler {
     // -------------------------------------------------------------------------
     // EXCEÇÃO GENÉRICA
     // -------------------------------------------------------------------------
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Object>> handleGeneric(Exception ex) {
         logger.error("Erro inesperado:", ex);

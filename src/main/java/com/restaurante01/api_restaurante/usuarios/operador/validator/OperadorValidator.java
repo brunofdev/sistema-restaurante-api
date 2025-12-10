@@ -21,6 +21,10 @@ public class OperadorValidator {
         checaEmailExiste(dto.email());
         checaCpfExiste(dto.cpf());
         checaUserNameExiste(dto.userName());
+        checaMatricula(dto.matricula());
+    }
+    private void checaMatricula(Long matricula){
+        //adicionar regra caso necessario
     }
     private void checaEmailExiste(String email){
         if(operadorRepository.existsByEmail(email)){

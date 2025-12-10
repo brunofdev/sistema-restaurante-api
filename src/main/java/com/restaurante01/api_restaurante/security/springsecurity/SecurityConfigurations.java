@@ -28,7 +28,8 @@ public class SecurityConfigurations {
 
     //ROTAS PUBLICAS
     private static final String[] PUBLIC_ENDPOINTS = {
-            "/api/auth/login",
+            "/api/auth/cliente-login",
+            "/api/auth/operador-login",
             "/auth/login",
             "/v3/api-docs/**",
             "/swagger-ui/**",
@@ -37,10 +38,10 @@ public class SecurityConfigurations {
             "/cardapioproduto/obter-todas-associacoes",
             "/cardapioproduto//cardapio/{idCardapio}",
             //>>>>>>>>>>>>>LIBERADO PUBLICAMENTE PARA TESTES APENAS<<<<<<<<<<<
-            "/usuarios/cadastro",
-            "/usuarios/cadastro-admin1",
-            "/usuarios/cadastro-admin3",
-            "/usuarios/obter-todos",
+            "/cliente/cadastro",
+            "/cliente/obter-todos",
+            "/operador/cadastro",
+            "/operador/obter-todos",
             "/ws/**" //libera conexão web socket para facilitar os testes de tubulacao
     };
     //ROTAS PROTEGIDAS

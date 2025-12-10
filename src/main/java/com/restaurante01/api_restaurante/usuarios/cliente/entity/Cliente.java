@@ -20,6 +20,22 @@ import java.math.BigDecimal;
 public class Cliente extends Usuario {
     @Column(nullable = false)
     private int pontuacaoFidelidade;
+    @Column(name = "telefone", nullable = true, unique = true)
+    private String telefone;
+    @Column(name = "estado", nullable = true)
+    private String estado;
+    @Column(name = "bairro", nullable = true)
+    private  String bairro;
+    @Column(name = "cidade", nullable = true)
+    private  String cidade;
+    @Column(name = "cep", nullable = true)
+    private String cep;
+    @Column(name = "rua", nullable = true)
+    private String rua;
+    @Column(name = "numero_residencia", nullable = true)
+    private int numeroResidencia;
+    @Column(name = "complemento", nullable = false)
+    private String complemento;
 
     private static final BigDecimal LIMITE_FAIXA_BRONZE = BigDecimal.valueOf(50);
     private static final BigDecimal LIMITE_FAIXA_PRATA = BigDecimal.valueOf(90);

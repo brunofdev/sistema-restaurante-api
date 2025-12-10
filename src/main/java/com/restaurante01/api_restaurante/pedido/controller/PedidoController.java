@@ -5,6 +5,7 @@ import com.restaurante01.api_restaurante.pedido.dto.entrada.StatusPedidoDTO;
 import com.restaurante01.api_restaurante.pedido.service.PedidoService;
 import com.restaurante01.api_restaurante.pedido.dto.entrada.PedidoCriacaoDTO;
 import com.restaurante01.api_restaurante.pedido.dto.saida.PedidoDTO;
+import com.restaurante01.api_restaurante.usuarios.cliente.entity.Cliente;
 import com.restaurante01.api_restaurante.usuarios.usuario_super.Usuario;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +33,8 @@ public class PedidoController {
     private SimpMessagingTemplate messagingTemplate;
 
     @PostMapping("/criar-pedido")
-    public ResponseEntity<ApiResponse<PedidoDTO>> criarPedido(@Validated @RequestBody PedidoCriacaoDTO dto, @AuthenticationPrincipal Usuario usuarioLogado){
-        PedidoDTO novoPedido = pedidoService.criarNovoPedido(dto, usuarioLogado);
+    public ResponseEntity<ApiResponse<PedidoDTO>> criarPedido(@Validated @RequestBody PedidoCriacaoDTO dto, @AuthenticationPrincipal Cliente clienteLogado){
+        PedidoDTO novoPedido = pedidoService.criarNovoPedido(dto, clienteLogado);
         messagingTemplate.convertAndSend("/topico/admin-pedidos", novoPedido);
         return ResponseEntity.ok(ApiResponse.success("Recurso Criado",novoPedido));
     }

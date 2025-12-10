@@ -159,7 +159,7 @@
         const senha = document.getElementById('loginSenha').value;
 
         try {
-            const res = await fetch(`${API}/api/auth/login`, {
+            const res = await fetch(`${API}/api/auth/cliente-login`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({cpf, senha})

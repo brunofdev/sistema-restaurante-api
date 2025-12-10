@@ -32,9 +32,9 @@ public class PedidoMapper {
         pedido.getItens().forEach(item -> itens.add(mapearItemPedidoDto(item)));
         return new PedidoDTO(
                 pedido.getId(),
-                pedido.getUsuario().getNome(),
-                pedido.getUsuario().getCpf(),
-                pedido.getUsuario().getTelefone(),
+                pedido.getCliente().getNome(),
+                pedido.getCliente().getCpf(),
+                pedido.getCliente().getTelefone(),
                 itens,
                 pedido.getValorTotal(),
                 pedido.getStatusPedido()

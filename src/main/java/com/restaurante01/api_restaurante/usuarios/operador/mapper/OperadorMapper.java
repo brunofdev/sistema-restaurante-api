@@ -13,18 +13,10 @@ import java.util.List;
 public class OperadorMapper {
     public Operador mappearNovoOperador(CadastrarOperadorDTO dto) {
         Operador operador = new Operador();
+        operador.setMatricula(dto.matricula());
         operador.setNome(dto.nome());
         operador.setSenha(dto.senha());
         operador.setCpf(dto.cpf());
-        operador.setTelefone(dto.telefone());
-        operador.setEmail(dto.email());
-        operador.setEstado(dto.estado());
-        operador.setCidade(dto.cidade());
-        operador.setBairro(dto.bairro());
-        operador.setRua(dto.rua());
-        operador.setCep(dto.cep());
-        operador.setNumeroResidencia(dto.numero());
-        operador.setComplemento(dto.complemento());
         operador.setUserName(dto.userName());
         operador.setRole(Role.USER);
         return operador;
@@ -38,6 +30,6 @@ public class OperadorMapper {
     }
     public List<OperadorDTO> mapearListaClienteParaClienteDTO(List<Operador> clientes){
         return clientes.stream()
-                .map(operador -> mapearOperadorParaOperadorDTO(operador)).toList();
+                .map(this::mapearOperadorParaOperadorDTO).toList();
     }
 }

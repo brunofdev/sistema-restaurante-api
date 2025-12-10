@@ -10,6 +10,7 @@ import com.restaurante01.api_restaurante.usuarios.operador.entity.Operador;
 import com.restaurante01.api_restaurante.usuarios.operador.mapper.OperadorMapper;
 import com.restaurante01.api_restaurante.usuarios.operador.repository.OperadorRepository;
 import com.restaurante01.api_restaurante.usuarios.operador.validator.OperadorValidator;
+import com.restaurante01.api_restaurante.usuarios.role.Role;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +33,9 @@ public class OperadorService {
 
     public OperadorDTO cadastrarNovoOperador(CadastrarOperadorDTO dtoComSenhaEncoded) {
         validator.validarNovoOperador(dtoComSenhaEncoded, false);
-        Operador operador = repository.save(mapper.mappearNovoOperador(dtoComSenhaEncoded));
+        Operador operador = mapper.mappearNovoOperador(dtoComSenhaEncoded);
+        operador.setRole(Role.ADMIN1);
+        repository.save(operador);
         return mapper.mapearOperadorParaOperadorDTO(operador);
     }
 

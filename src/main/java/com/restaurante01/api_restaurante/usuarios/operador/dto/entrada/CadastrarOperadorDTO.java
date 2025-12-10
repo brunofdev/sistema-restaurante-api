@@ -39,40 +39,14 @@ public record CadastrarOperadorDTO(
                 message = "A senha deve conter no mínimo 8 caracteres...")
         String senha,
 
-        @Schema(description = "Sigla do Estado", example = "SP")
-        @NotBlank(message = "O estado é obrigatório.")
-        @Size(min = 2, max = 2, message = "Utilize a sigla do estado (ex: SP, RJ).")
-        String estado,
-
-        @Schema(description = "Nome da cidade", example = "São Paulo")
-        @NotBlank(message = "A cidade é obrigatória.")
-        String cidade,
-
-        @Schema(description = "Nome do bairro", example = "Centro")
-        @NotBlank(message = "O bairro é obrigatório.")
-        String bairro,
-
-        @Schema(description = "CEP do endereço", example = "01001000")
-        @NotBlank(message = "O CEP é obrigatório.")
-        @Pattern(regexp = "\\d{5}-?\\d{3}", message = "O CEP deve estar no formato 00000-000 ou apenas números.")
-        String cep,
-
-        @Schema(description = "Nome da rua/logradouro", example = "Av. Paulista")
-        @NotBlank(message = "A rua é obrigatória.")
-        String rua,
-
-        @Schema(description = "Número do endereço", example = "1000")
-        @NotNull(message = "O número do endereço é obrigatório.")
-        @Positive(message = "O número deve ser maior que zero.")
-        Integer numero,
-
-        @Schema(description = "Complemento do endereço (opcional)", example = "Apto 42")
-        @Size(max = 100, message = "O complemento deve ter no máximo 100 caracteres.")
-        String complemento
+        @Schema(description = "Matricula", example = "15487")
+        @NotNull(message = "Matricula deve ser preenchida")
+        @Min(value = 1000, message = "Matricula deve ter pelo menos 4 dígitos")
+        @Max(value = 999999, message = "Matricula deve ter no máximo 6 dígitos")
+        Long matricula
 ) {
 
     public CadastrarOperadorDTO withSenha(String senhaCriptografada) {
-
         return new CadastrarOperadorDTO(
 
                 this.nome(),
@@ -81,25 +55,13 @@ public record CadastrarOperadorDTO(
 
                 this.email().toUpperCase(),
 
-                this.telefone(),// <--- A única coisa que muda
+                this.telefone(),
 
                 this.userName().toUpperCase(),
 
                 senhaCriptografada,
 
-                this.estado().toUpperCase(),
-
-                this.cidade().toUpperCase(),
-
-                this.bairro().toUpperCase(),
-
-                this.cep(),
-
-                this.rua().toUpperCase(),
-
-                this.numero(),
-
-                this.complemento().toUpperCase()
+               this.matricula
 
         );
 

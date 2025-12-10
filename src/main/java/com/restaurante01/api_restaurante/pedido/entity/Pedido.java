@@ -5,6 +5,7 @@ import com.restaurante01.api_restaurante.pedido.Enum.StatusPedido;
 import com.restaurante01.api_restaurante.pedido.exception.StatusPedidoInvalidoException;
 import com.restaurante01.api_restaurante.pedido.exception.StatusPedidoNaoPodeMaisSerAlteradoException;
 import com.restaurante01.api_restaurante.security.auditoria.Auditable;
+import com.restaurante01.api_restaurante.usuarios.cliente.entity.Cliente;
 import com.restaurante01.api_restaurante.usuarios.usuario_super.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,7 +28,7 @@ public class Pedido extends Auditable {
 
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
-    private Usuario usuario;
+    private Cliente cliente;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

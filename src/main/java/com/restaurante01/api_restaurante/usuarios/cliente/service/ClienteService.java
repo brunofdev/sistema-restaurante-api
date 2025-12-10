@@ -8,6 +8,7 @@ import com.restaurante01.api_restaurante.usuarios.cliente.mapper.ClienteMapper;
 import com.restaurante01.api_restaurante.usuarios.cliente.repository.ClienteRepository;
 import com.restaurante01.api_restaurante.usuarios.exceptions.InvalidCredentialsException;
 import com.restaurante01.api_restaurante.usuarios.exceptions.UserDontFoundException;
+import com.restaurante01.api_restaurante.usuarios.role.Role;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,9 @@ public class ClienteService {
 
     public ClienteDTO cadastrarNovoCliente(CadastrarClienteDTO dtoComSenhaEncoded) {
         validator.validarNovoCliente(dtoComSenhaEncoded, false);
-        Cliente cliente = repository.save(mapper.mappearNovoCliente(dtoComSenhaEncoded));
+        Cliente cliente = mapper.mappearNovoCliente(dtoComSenhaEncoded);
+        cliente.setRole(Role.USER);
+        repository.save(cliente);
         return mapper.mapearClienteParaClienteDTO(cliente);
     }
     public Cliente encontrarClientePorCpf(String cpf){
