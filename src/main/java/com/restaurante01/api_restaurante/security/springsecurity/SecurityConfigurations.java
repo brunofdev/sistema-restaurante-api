@@ -49,9 +49,11 @@ public class SecurityConfigurations {
             //Apenas USER+
                  "/pedido/criar-pedido", Role.USER
             ,"/pedido/obter-todos-pedidos", Role.USER
+            ,"/pedido/obter-pedidos-do-cliente", Role.USER
             //Apenas ADMIN1+
             ,"/produtos/adicionar-produto", Role.ADMIN1
             ,"/pedido/*/status", Role.ADMIN1
+            ,"/pedido/obter-pedidos-do-dia", Role.ADMIN1
             ,"/cardapioproduto/associar-cardapioproduto", Role.ADMIN1
             ,"/cardapioproduto/atualizar-campos-custom", Role.ADMIN1
             //Apenas ADMIN2+

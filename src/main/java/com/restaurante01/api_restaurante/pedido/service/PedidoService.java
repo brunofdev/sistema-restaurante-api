@@ -20,6 +20,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -40,14 +42,20 @@ public class PedidoService {
         vincularItemAoPedido(pedido, pedidoCriacaoDTO.itens());
         montarPedido(pedido, cliente);
         pedidoRepository.save(pedido);
-        clienteService.atualizaPontuacaoFidelidadeCliente(cliente, pedido.getValorTotal());
         return pedidoMapper.mapearPedidoDto(pedido);
     }
+    @Transactional
     public PedidoDTO atualizarStatusPedido(Long id, StatusPedidoDTO novoStatus){
         Pedido pedido = encontrarPedidoPorId(id);
         pedido.mudarStatus(novoStatus.statusPedido());
         pedidoRepository.save(pedido);
+        verificaStatusPedidoEenviaFidelidade(pedido);
         return pedidoMapper.mapearPedidoDto(pedido);
+    }
+    private void verificaStatusPedidoEenviaFidelidade(Pedido pedido){
+        if(pedido.getStatusPedido() == StatusPedido.ENTREGUE){
+            clienteService.atualizaPontuacaoFidelidadeCliente(pedido.getCliente(), pedido.getValorTotal());
+        }
     }
     public Page<PedidoDTO> listarPedidos (Pageable pageable){
         return pedidoRepository.findAll(pageable)
@@ -67,5 +75,14 @@ public class PedidoService {
     }
     private Pedido encontrarPedidoPorId(Long id){
        return pedidoRepository.findById(id).orElseThrow(() -> new PedidoNaoEncontradoException("Pedido com " + id + " não foi encontrado no sistema"));
+    }
+    public Page<PedidoDTO> listarPedidosDoCliente(Pageable pageable, Cliente cliente){
+        return pedidoRepository.findByCliente(cliente, pageable).map(pedidoMapper::mapearPedidoDto);
+    }
+    public Page<PedidoDTO> listarPedidosDoDia(Pageable pageable){
+        LocalDate hoje = LocalDate.now();
+        LocalDateTime inicioDoDia = hoje.atStartOfDay();
+        LocalDateTime fimDoDia = hoje.atTime(23, 59, 59, 999999999);
+        return pedidoRepository.findByDataCriacaoBetween(inicioDoDia, fimDoDia, pageable).map(pedidoMapper::mapearPedidoDto);
     }
 }

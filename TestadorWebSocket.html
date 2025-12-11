@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restaurante V16 - Smart Error Log</title>
+    <title>Restaurante V21 - Admin Day View</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
@@ -48,7 +48,7 @@
 
         /* CARDS */
         .card { background: white; border-radius: 8px; padding: 12px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 4px solid #b2bec3; }
-        .card-admin { background: #353b48; color: #f5f6fa; border-left: 4px solid var(--warning); }
+        .card-admin { background: #353b48; color: #f5f6fa; border-left: 4px solid var(--warning); margin-bottom: 8px; }
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .status-badge { font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
         .item-list { font-size: 12px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 5px; margin-top: 5px; }
@@ -62,6 +62,10 @@
         .st-ENTREGUE { background: #55efc4; color: #00b894; }
         .st-CANCELADO { background: #ff7675; color: #d63031; }
 
+        /* SECTION HEADERS */
+        .section-header { font-size: 12px; font-weight: bold; color: #7f8c8d; margin: 15px 0 5px 0; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 2px; }
+        .admin-section { color: #b2bec3; border-color: #636e72; margin-top: 20px; }
+
         /* INPUTS & BOTOES */
         input, select { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #b2bec3; border-radius: 4px; font-size: 13px; }
         .row { display: flex; gap: 10px; }
@@ -69,17 +73,16 @@
         .btn-primary { background: var(--primary); color: white; }
         .btn-success { background: var(--success); color: white; }
         .btn-sm { padding: 5px 10px; font-size: 11px; }
+        .btn-toggle { background: #b2bec3; color: white; font-size: 12px; padding: 8px; width: 100%; margin-top: 10px; }
 
         /* ADMIN ACTIONS */
         .actions-bar { display: flex; gap: 5px; margin-top: 10px; }
         .actions-bar button { flex: 1; font-size: 10px; color: white; opacity: 0.9; }
         .actions-bar button:hover { opacity: 1; transform: translateY(-1px); }
 
-        /* LOG CONSOLE INTELIGENTE */
+        /* LOG CONSOLE */
         #console { height: 150px; background: #111; color: #eee; padding: 10px; overflow-y: auto; font-family: monospace; font-size: 11px; border-top: 4px solid #333; }
         .log-line { margin-bottom: 4px; border-bottom: 1px solid #222; padding-bottom: 2px; }
-        .log-time { color: #888; margin-right: 5px; }
-
         .tag-error { background: #c0392b; color: white; padding: 1px 4px; border-radius: 3px; font-size: 10px; margin-right: 5px; }
         .error-type { color: #e74c3c; font-weight: bold; }
         .error-msg { color: #ff7675; }
@@ -99,54 +102,45 @@
 <div id="authModal" class="modal hidden">
     <div class="modal-box">
         <h3 id="modalTitle" style="text-align: center; margin-top: 0;">🔐 Login</h3>
-
         <div class="tabs">
             <div class="tab active" onclick="setTab('login')">LOGIN</div>
             <div class="tab" onclick="setTab('cadastro')">CADASTRO</div>
         </div>
-
         <div id="viewLogin">
             <input type="text" id="loginUser" placeholder="CPF ou Username">
             <input type="password" id="loginPass" placeholder="Senha">
             <button class="btn-success" style="width: 100%; margin-top: 15px;" onclick="doLogin()">ENTRAR</button>
         </div>
-
         <div id="viewCadastro" class="hidden">
             <div style="text-align: right; margin-bottom: 5px;">
-                <button class="btn-sm" style="background:#636e72; color:white" onclick="fillMock()">🎲 Preencher Teste</button>
+                <button class="btn-sm" style="background:#636e72; color:white" onclick="fillMock()">🎲 Preencher</button>
             </div>
-
             <input type="text" id="cadNome" placeholder="Nome Completo">
-            <input type="text" id="cadCpf" placeholder="CPF (11 números)">
+            <input type="text" id="cadCpf" placeholder="CPF">
             <input type="email" id="cadEmail" placeholder="E-mail">
             <input type="text" id="cadTelefone" placeholder="Telefone">
             <input type="text" id="cadUser" placeholder="Username">
             <input type="password" id="cadPass" placeholder="Senha">
-
             <div id="fieldsCliente" class="hidden">
                 <hr style="border:0; border-top:1px solid #eee; margin:10px 0">
-                <small style="color:#666; font-weight:bold">Endereço:</small>
                 <input type="text" id="cadCep" placeholder="CEP">
                 <div class="row">
                     <input type="text" id="cadRua" placeholder="Rua" style="flex:2">
                     <input type="number" id="cadNumero" placeholder="Nº" style="flex:1">
                 </div>
-                <input type="text" id="cadComp" placeholder="Complemento (Opcional)">
+                <input type="text" id="cadComp" placeholder="Complemento">
                 <div class="row">
                     <input type="text" id="cadBairro" placeholder="Bairro">
                     <input type="text" id="cadCidade" placeholder="Cidade">
                     <input type="text" id="cadEstado" placeholder="UF" maxlength="2" style="width: 60px;">
                 </div>
             </div>
-
             <div id="fieldsOperador" class="hidden">
                 <hr style="border:0; border-top:1px solid #eee; margin:10px 0">
-                <input type="number" id="cadMatricula" placeholder="Matrícula (Números)">
+                <input type="number" id="cadMatricula" placeholder="Matrícula">
             </div>
-
             <button class="btn-primary" style="width: 100%; margin-top: 15px;" onclick="doRegister()">CADASTRAR</button>
         </div>
-
         <button onclick="closeModal()" style="width: 100%; margin-top: 10px; background: transparent; color: #555;">Cancelar</button>
         <p id="errorMsg" style="color: red; font-size: 11px; text-align: center; margin-top: 10px;"></p>
     </div>
@@ -154,10 +148,9 @@
 
 <header>
     <div class="logo">
-        <span>🍽️ V16 Smart Log</span>
+        <span>🍽️ V21 Day View</span>
         <span id="wsStatus" class="ws-badge">WS OFF</span>
     </div>
-
     <div class="auth-status-bar">
         <div id="statusClient" class="user-pill">
             <div class="indicator"></div> CLIENTE
@@ -166,7 +159,6 @@
             <div class="indicator"></div> ADMIN
         </div>
     </div>
-
     <button class="btn-sm" onclick="logoutAll()" style="background: #c0392b; color: white;">SAIR GERAL</button>
 </header>
 
@@ -177,9 +169,8 @@
             <h3>Área Restrita</h3>
             <button class="btn-login-zone" onclick="openModal('CLIENTE')">🔐 Entrar como Cliente</button>
         </div>
-
         <h2>📱 App do Cliente</h2>
-        <div class="card">
+        <div class="card" style="border-left: 4px solid var(--primary);">
             <b>Novo Pedido</b>
             <div class="row">
                 <input type="number" id="prodId" placeholder="ID Produto" value="1">
@@ -187,8 +178,13 @@
             </div>
             <button class="btn-success" style="width:100%; margin-top:5px" onclick="fazerPedido()">ENVIAR PEDIDO</button>
         </div>
-
-        <div id="listaPedidosCliente"></div>
+        <div class="section-header">🔥 Pedidos em Andamento</div>
+        <div id="listActive"></div>
+        <button class="btn-toggle" onclick="toggleHistory()">📜 Mostrar Histórico</button>
+        <div id="historyContainer" class="hidden" style="margin-top:10px; padding-top:10px; border-top:2px dashed #ccc;">
+            <div class="section-header">✅ Finalizados</div>
+            <div id="listHistory"></div>
+        </div>
     </div>
 
     <div class="pane-admin">
@@ -197,10 +193,16 @@
             <button class="btn-login-zone" onclick="openModal('OPERADOR')">👨‍🍳 Entrar como Operador</button>
         </div>
 
-        <h2>👨‍🍳 Painel da Cozinha</h2>
-        <div id="listaPedidosAdmin">
-            <small style="opacity: 0.5;">Aguardando pedidos...</small>
+        <div style="display:flex; justify-content:space-between; align-items:center">
+            <h2>👨‍🍳 Painel da Cozinha (Hoje)</h2>
+            <button class="btn-sm" style="background:#555" onclick="loadAdminOrders()">🔄 Sync</button>
         </div>
+
+        <div class="section-header admin-section">🔥 Fila de Preparo (Prioridade)</div>
+        <div id="adminQueue"></div>
+
+        <div class="section-header admin-section">✅ Entregues / Finalizados</div>
+        <div id="adminFinished"></div>
     </div>
 
 </div>
@@ -213,6 +215,8 @@
     let clientToken = localStorage.getItem('clientToken');
     let adminToken = localStorage.getItem('adminToken');
     let activeRole = null;
+
+    let subscribedOrders = new Set();
 
     window.onload = () => {
         refreshUI();
@@ -236,24 +240,14 @@
         }
     }
 
-    // === 🧠 INTELLIGENT ERROR PARSER ===
-
     function extractError(json) {
-        // Prioridade 1: Estrutura "erro" aninhada (Seu padrão ApiError)
-        if (json.erro && json.erro.message) {
-            return json.erro.message;
-        }
-        // Prioridade 2: Erros de Validação (Spring Boot Validation)
-        if (json.erro && json.erro.errors && Array.isArray(json.erro.errors)) {
-            return json.erro.errors[0].defaultMessage || "Erro de validação";
-        }
-        // Prioridade 3: Mensagem Wrapper
+        if (json.erro && json.erro.message) return json.erro.message;
+        if (json.erro && json.erro.errors && Array.isArray(json.erro.errors)) return json.erro.errors[0].defaultMessage;
         if (json.message) return json.message;
-
         return "Erro desconhecido";
     }
 
-    function log(msg) {
+    function log(msg, isError = false) {
         const div = document.getElementById('console');
         const time = new Date().toLocaleTimeString();
         div.innerHTML = `<div class="log-line"><span class="log-time">[${time}]</span>${msg}</div>` + div.innerHTML;
@@ -262,42 +256,44 @@
     function logError(json) {
         const div = document.getElementById('console');
         const time = new Date().toLocaleTimeString();
-
-        // Tenta extrair dados do ApiError
         const status = json.erro?.status || json.status || 500;
-        const errorType = json.erro?.error || json.error || "Erro";
         const message = extractError(json);
-
-        const html = `
-            <div class="log-line">
-                <span class="log-time">[${time}]</span>
-                <span class="tag-error">${status}</span>
-                <span class="error-type">${errorType}:</span>
-                <span class="error-msg">${message}</span>
-            </div>
-        `;
-        div.innerHTML = html + div.innerHTML;
+        div.innerHTML = `<div class="log-line"><span class="tag-error">${status}</span> ${message}</div>` + div.innerHTML;
     }
 
-    // === API CALLS ===
+    // === AUTH ===
+    function openModal(role) {
+        activeRole = role;
+        document.getElementById('authModal').classList.remove('hidden');
+        document.getElementById('modalTitle').innerText = role === 'CLIENTE' ? 'Login Cliente' : 'Login Operador';
+        if (role === 'CLIENTE') {
+            document.getElementById('fieldsCliente').classList.remove('hidden');
+            document.getElementById('fieldsOperador').classList.add('hidden');
+        } else {
+            document.getElementById('fieldsCliente').classList.add('hidden');
+            document.getElementById('fieldsOperador').classList.remove('hidden');
+        }
+        setTab('login');
+    }
+    function closeModal() { document.getElementById('authModal').classList.add('hidden'); }
+    function setTab(mode) {
+        document.getElementById('viewLogin').classList.toggle('hidden', mode !== 'login');
+        document.getElementById('viewCadastro').classList.toggle('hidden', mode !== 'cadastro');
+    }
 
     async function doLogin() {
         const user = document.getElementById('loginUser').value;
         const pass = document.getElementById('loginPass').value;
         const endpoint = activeRole === 'CLIENTE' ? '/api/auth/cliente-login' : '/api/auth/operador-login';
-
-        log(`🔑 Logando em ${endpoint}...`);
-
         try {
             const res = await fetch(API_URL + endpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ cpf: user, userName: user, senha: pass })
             });
-
             const text = await res.text();
             let json;
-            try { json = JSON.parse(text); } catch(e) { throw new Error(`Status ${res.status} - Resposta inválida.`); }
+            try { json = JSON.parse(text); } catch(e) { throw new Error(`Status ${res.status}`); }
 
             if (res.ok) {
                 const token = json.dados?.token || json.token;
@@ -308,7 +304,7 @@
                     adminToken = token;
                     localStorage.setItem('adminToken', token);
                 }
-                log(`<span style="color:#55efc4">✅ ${activeRole} Logado com sucesso!</span>`);
+                log(`<span style="color:#55efc4">✅ ${activeRole} Logado!</span>`);
                 closeModal();
                 refreshUI();
                 connectWebSocket();
@@ -316,18 +312,12 @@
                 document.getElementById('errorMsg').innerText = extractError(json);
                 logError(json);
             }
-        } catch (err) {
-            log(`❌ Erro Crítico: ${err.message}`);
-            document.getElementById('errorMsg').innerText = err.message;
-        }
+        } catch (err) { log(`❌ Erro Login: ${err.message}`); }
     }
 
     async function doRegister() {
         const endpoint = activeRole === 'CLIENTE' ? '/cliente/cadastro' : '/operador/cadastro';
         const body = getRegisterBody();
-
-        log(`📝 Cadastrando...`);
-
         try {
             const res = await fetch(API_URL + endpoint, {
                 method: 'POST',
@@ -335,9 +325,8 @@
                 body: JSON.stringify(body)
             });
             const json = await res.json();
-
             if (res.ok) {
-                alert("Cadastro realizado! Faça login.");
+                alert("Cadastro realizado!");
                 setTab('login');
                 document.getElementById('loginUser').value = body.userName;
                 document.getElementById('loginPass').value = body.senha;
@@ -345,117 +334,167 @@
                 alert("Erro: " + extractError(json));
                 logError(json);
             }
-        } catch (err) {
-            log(`❌ Erro Rede: ${err.message}`);
+        } catch (err) { log(`❌ Erro: ${err.message}`); }
+    }
+
+    // === SYNC CLIENTE ===
+    function isFinished(status) { return status === 'ENTREGUE' || status === 'CANCELADO'; }
+
+    async function autoLoadActiveOrders() {
+        if (!clientToken) return;
+        log("🔄 Sincronizando Cliente...");
+        try {
+            const res = await fetch(`${API_URL}/pedido/obter-pedidos-do-cliente?page=0&size=20&sort=id,desc`, {
+                headers: { 'Authorization': `Bearer ${clientToken}` }
+            });
+            const json = await res.json();
+            if (res.ok) {
+                const pedidos = json.dados.content || [];
+                document.getElementById('listActive').innerHTML = "";
+                pedidos.forEach(p => {
+                    if (!isFinished(p.statusPedido)) {
+                        renderPedidoCliente(p);
+                        subscribeToOrder(p.id);
+                    }
+                });
+            }
+        } catch (err) { log(`❌ Erro Load Cli: ${err.message}`); }
+    }
+
+    // === SYNC ADMIN (V21: PEDIDOS DO DIA) ===
+
+    // Peso para ordenação: Menor = Mais no topo
+    function getSortWeight(status) {
+        switch(status) {
+            case 'PENDENTE': return 1;
+            case 'EM_PREPARACAO': return 2;
+            case 'SAIU_PARA_ENTREGA': return 3;
+            case 'ENTREGUE': return 4;
+            case 'CANCELADO': return 5;
+            default: return 99;
         }
     }
 
+    async function loadAdminOrders() {
+        if (!adminToken) return;
+        log("👨‍🍳 Buscando pedidos do dia...");
+
+        try {
+            // Endpoint V21: obter-pedidos-do-dia
+            const res = await fetch(`${API_URL}/pedido/obter-pedidos-do-dia?page=0&size=100`, {
+                headers: { 'Authorization': `Bearer ${adminToken}` }
+            });
+            const json = await res.json();
+
+            if (res.ok) {
+                const pedidos = json.dados.content || [];
+
+                // Ordenação Customizada no Frontend (JS)
+                // 1. Pelo peso do status
+                // 2. Se status igual, pelo ID decrescente (mais novo primeiro)
+                pedidos.sort((a, b) => {
+                    const weightA = getSortWeight(a.statusPedido);
+                    const weightB = getSortWeight(b.statusPedido);
+                    if(weightA !== weightB) return weightA - weightB;
+                    return b.id - a.id;
+                });
+
+                // Limpa Listas
+                document.getElementById('adminQueue').innerHTML = "";
+                document.getElementById('adminFinished').innerHTML = "";
+
+                pedidos.forEach(p => renderPedidoAdmin(p));
+                log(`👨‍🍳 Painel atualizado com ${pedidos.length} pedidos do dia.`);
+            } else {
+                logError(json);
+            }
+        } catch (err) { log(`❌ Erro Admin: ${err.message}`); }
+    }
+
+    async function toggleHistory() {
+        const container = document.getElementById('historyContainer');
+        if (container.classList.contains('hidden')) {
+            container.classList.remove('hidden');
+            log("📜 Histórico...");
+            try {
+                const res = await fetch(`${API_URL}/pedido/obter-pedidos-do-cliente?page=0&size=20&sort=id,desc`, {
+                    headers: { 'Authorization': `Bearer ${clientToken}` }
+                });
+                const json = await res.json();
+                if (res.ok) {
+                    const pedidos = json.dados.content || [];
+                    const listHist = document.getElementById('listHistory');
+                    listHist.innerHTML = "";
+                    pedidos.forEach(p => {
+                        if (isFinished(p.statusPedido)) renderPedidoCliente(p, true);
+                    });
+                }
+            } catch (err) { log(`❌ Erro Hist: ${err.message}`); }
+        } else { container.classList.add('hidden'); }
+    }
+
+    // === ACTIONS ===
     async function fazerPedido() {
         if (!clientToken) return alert("Sessão expirada.");
         const prodId = document.getElementById('prodId').value;
         const qtd = document.getElementById('prodQtd').value;
-
         try {
             const res = await fetch(`${API_URL}/pedido/criar-pedido`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${clientToken}`
-                },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${clientToken}` },
                 body: JSON.stringify({ itens: [{ idProduto: parseInt(prodId), quantidade: parseInt(qtd) }] })
             });
-
             const json = await res.json();
-
             if (res.ok) {
                 log(`🛒 Pedido #${json.dados.id} criado!`);
-                renderPedidoCliente(json.dados);
+                renderPedidoCliente(json.dados, false);
                 subscribeToOrder(json.dados.id);
             } else {
                 alert("Erro: " + extractError(json));
                 logError(json);
             }
-        } catch (err) {
-            log(`❌ Erro Pedido: ${err.message}`);
-        }
+        } catch (err) { log(`❌ Erro: ${err.message}`); }
     }
 
     async function mudarStatus(id, novoStatus) {
         if (!adminToken) return alert("Apenas admin.");
-
         try {
             const res = await fetch(`${API_URL}/pedido/${id}/status`, {
                 method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${adminToken}`
-                },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
                 body: JSON.stringify({ statusPedido: novoStatus })
             });
-
             if (res.ok) {
                 log(`✅ Status alterado para ${novoStatus}`);
+                // Força reload para reordenar a lista conforme novos status
+                setTimeout(loadAdminOrders, 500);
             } else {
                 const json = await res.json();
                 alert("Erro: " + extractError(json));
-                logError(json);
             }
-        } catch (err) {
-            log(`❌ Erro Status: ${err.message}`);
+        } catch (err) { log(`❌ Erro Status: ${err.message}`); }
+    }
+
+    // === RENDER ===
+    function renderPedidoCliente(p, forceToHistory = false) {
+        const status = p.statusPedido;
+        const finished = isFinished(status);
+        let targetListId = 'listActive';
+        if (forceToHistory || finished) {
+            targetListId = 'listHistory';
+            const existingInActive = document.querySelector(`#listActive #cli-ped-${p.id}`);
+            if (existingInActive) existingInActive.remove();
         }
-    }
-
-    // === WEBSOCKET & RENDER ===
-
-    function connectWebSocket() {
-        if (stompClient && stompClient.connected) return;
-        if (!clientToken && !adminToken) return;
-
-        const socket = new SockJS(`${API_URL}/ws`);
-        stompClient = Stomp.over(socket);
-        stompClient.debug = null;
-
-        stompClient.connect({}, (frame) => {
-            log(`<span style="color:#0984e3">📡 WebSocket Conectado!</span>`);
-            document.getElementById('wsStatus').classList.add('on');
-            document.getElementById('wsStatus').innerText = "WS ON";
-
-            if (adminToken) {
-                stompClient.subscribe('/topico/admin-pedidos', (msg) => {
-                    log("🔔 [Admin] Novo pedido recebido");
-                    renderPedidoAdmin(JSON.parse(msg.body));
-                });
-            }
-        }, (err) => {
-            log("❌ WS Desconectado.");
-            document.getElementById('wsStatus').classList.remove('on');
-            document.getElementById('wsStatus').innerText = "WS OFF";
-            setTimeout(connectWebSocket, 5000);
-        });
-    }
-
-    function subscribeToOrder(orderId) {
-        if (!stompClient || !stompClient.connected) return;
-        stompClient.subscribe(`/topico/pedido/${orderId}`, (msg) => {
-            const p = JSON.parse(msg.body);
-            log(`🔔 Pedido #${p.id} atualizado: ${p.statusPedido}`);
-            renderPedidoCliente(p);
-            if (adminToken) renderPedidoAdmin(p);
-        });
-    }
-
-    function renderPedidoCliente(p) {
-        const list = document.getElementById('listaPedidosCliente');
+        const list = document.getElementById(targetListId);
+        if (targetListId === 'listHistory' && document.getElementById('historyContainer').classList.contains('hidden')) return;
         const existing = document.getElementById(`cli-ped-${p.id}`);
         if (existing) existing.remove();
-
         const itensTxt = p.itens.map(i => `${i.quantidade}x ${i.nomeProduto}`).join(', ');
-
         const html = `
             <div id="cli-ped-${p.id}" class="card">
                 <div class="card-header">
                     <span><b>#${p.id}</b></span>
-                    <span class="status-badge st-${p.statusPedido}">${p.statusPedido}</span>
+                    <span class="status-badge st-${status}">${status}</span>
                 </div>
                 <div class="item-list">${itensTxt}</div>
                 <div style="text-align:right; margin-top:5px; font-weight:bold">R$ ${p.valorTotal.toFixed(2)}</div>
@@ -465,59 +504,86 @@
     }
 
     function renderPedidoAdmin(p) {
-        const list = document.getElementById('listaPedidosAdmin');
-        const existing = document.getElementById(`adm-ped-${p.id}`);
-        if (existing) existing.remove();
+        const status = p.statusPedido;
+        const finished = isFinished(status);
 
-        const itensHtml = p.itens.map(i =>
-            `<div>${i.quantidade}x ${i.nomeProduto} <span style="float:right">R$ ${i.subTotal.toFixed(2)}</span></div>`
-        ).join('');
+        // Define em qual lista o pedido deve ir (Fila ou Finalizados)
+        const targetListId = finished ? 'adminFinished' : 'adminQueue';
+
+        // Remove de qualquer lista antiga para mover visualmente
+        const el1 = document.querySelector(`#adminQueue #adm-ped-${p.id}`);
+        if(el1) el1.remove();
+        const el2 = document.querySelector(`#adminFinished #adm-ped-${p.id}`);
+        if(el2) el2.remove();
+
+        const list = document.getElementById(targetListId);
+        const itensHtml = p.itens.map(i => `<div>${i.quantidade}x ${i.nomeProduto} <span style="float:right">R$ ${i.subTotal.toFixed(2)}</span></div>`).join('');
 
         const html = `
-            <div id="adm-ped-${p.id}" class="card card-admin">
+            <div id="adm-ped-${p.id}" class="card card-admin" style="border-left: 4px solid ${finished ? '#2ecc71' : '#f1c40f'}">
                 <div class="card-header">
                     <span><b>#${p.id}</b> - ${p.nomeUsuario}</span>
-                    <span class="status-badge st-${p.statusPedido}">${p.statusPedido}</span>
+                    <span class="status-badge st-${status}">${status}</span>
                 </div>
                 <div class="item-list">${itensHtml}</div>
-                <div style="text-align:right; margin-top:5px; border-top:1px solid #555; padding-top:5px">
-                    <span class="price-tag">Total: R$ ${p.valorTotal.toFixed(2)}</span>
-                </div>
                 <div class="actions-bar">
-                    <button style="background:#3498db" onclick="mudarStatus(${p.id}, 'EM_PREPARACAO')">PREPARAR</button>
-                    <button style="background:#9b59b6" onclick="mudarStatus(${p.id}, 'SAIU_PARA_ENTREGA')">ENVIAR</button>
-                    <button style="background:#2ecc71" onclick="mudarStatus(${p.id}, 'ENTREGUE')">ENTREGUE</button>
-                    <button style="background:#e74c3c" onclick="mudarStatus(${p.id}, 'CANCELADO')">CANCELAR</button>
+                    <button style="background:#3498db" onclick="mudarStatus(${p.id}, 'EM_PREPARACAO')">🔥</button>
+                    <button style="background:#9b59b6" onclick="mudarStatus(${p.id}, 'SAIU_PARA_ENTREGA')">🛵</button>
+                    <button style="background:#2ecc71" onclick="mudarStatus(${p.id}, 'ENTREGUE')">✅</button>
+                    <button style="background:#e74c3c" onclick="mudarStatus(${p.id}, 'CANCELADO')">❌</button>
                 </div>
             </div>
         `;
-        list.insertAdjacentHTML('afterbegin', html);
+        // Append para respeitar a ordem do array ordenado
+        list.insertAdjacentHTML('beforeend', html);
+    }
+
+    // === WEBSOCKET (V21) ===
+    function connectWebSocket() {
+        if (stompClient && stompClient.connected) return;
+        if (!clientToken && !adminToken) return;
+
+        const socket = new SockJS(`${API_URL}/ws`);
+        stompClient = Stomp.over(socket);
+        stompClient.debug = null;
+
+        stompClient.connect({}, (frame) => {
+            log(`<span style="color:#0984e3">📡 WS Conectado!</span>`);
+            document.getElementById('wsStatus').classList.add('on');
+            document.getElementById('wsStatus').innerText = "WS ON";
+
+            if (adminToken) {
+                stompClient.subscribe('/topico/admin-pedidos', (msg) => {
+                    // Quando recebe evento real-time, recarrega para manter a ordem correta
+                    loadAdminOrders();
+                });
+                loadAdminOrders();
+            }
+
+            if (clientToken) {
+                autoLoadActiveOrders();
+            }
+
+        }, (err) => {
+            document.getElementById('wsStatus').classList.remove('on');
+            document.getElementById('wsStatus').innerText = "WS OFF";
+            setTimeout(connectWebSocket, 5000);
+        });
+    }
+
+    function subscribeToOrder(orderId) {
+        if (!stompClient || !stompClient.connected) return;
+        if (subscribedOrders.has(orderId)) return;
+        stompClient.subscribe(`/topico/pedido/${orderId}`, (msg) => {
+            const p = JSON.parse(msg.body);
+            renderPedidoCliente(p);
+            // Admin já atualiza pelo tópico global
+        });
+        subscribedOrders.add(orderId);
     }
 
     // === UTILS ===
-    function openModal(role) {
-        activeRole = role;
-        document.getElementById('authModal').classList.remove('hidden');
-        document.getElementById('modalTitle').innerText = role === 'CLIENTE' ? 'Login Cliente' : 'Login Operador';
-
-        if (role === 'CLIENTE') {
-            document.getElementById('fieldsCliente').classList.remove('hidden');
-            document.getElementById('fieldsOperador').classList.add('hidden');
-        } else {
-            document.getElementById('fieldsCliente').classList.add('hidden');
-            document.getElementById('fieldsOperador').classList.remove('hidden');
-        }
-        setTab('login');
-        document.getElementById('errorMsg').innerText = '';
-    }
-
-    function closeModal() { document.getElementById('authModal').classList.add('hidden'); }
-    function setTab(mode) {
-        document.getElementById('viewLogin').classList.toggle('hidden', mode !== 'login');
-        document.getElementById('viewCadastro').classList.toggle('hidden', mode !== 'cadastro');
-    }
     function logoutAll() { localStorage.clear(); location.reload(); }
-
     function getRegisterBody() {
         const body = {
             nome: document.getElementById('cadNome').value,
@@ -540,7 +606,6 @@
         }
         return body;
     }
-
     function fillMock() {
         const r = Math.floor(Math.random() * 9000) + 1000;
         document.getElementById('cadNome').value = `User ${r}`;

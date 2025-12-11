@@ -16,6 +16,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +41,20 @@ public class PedidoController {
         messagingTemplate.convertAndSend("/topico/admin-pedidos", novoPedido);
         return ResponseEntity.ok(ApiResponse.success("Recurso Criado",novoPedido));
     }
+    @GetMapping("obter-pedidos-do-cliente")
+    @PreAuthorize("hasRole('USER')") // Mantém a segurança básica
+    public ResponseEntity<ApiResponse<Page<PedidoDTO>>> listarPedidosDoCliente(
+            @ParameterObject
+            @PageableDefault(size = 10, sort = "dataCriacao", direction = Sort.Direction.DESC)
+            Pageable pageable,
+            @AuthenticationPrincipal Usuario usuarioLogado)
+    {
+        if (usuarioLogado instanceof Cliente cliente) {
+            Page<PedidoDTO> paginaDePedidos = pedidoService.listarPedidosDoCliente(pageable, cliente);
+            return ResponseEntity.ok(ApiResponse.success("Recurso Obtido", paginaDePedidos));
+        }
+        throw new AccessDeniedException("Operadores não possuem histórico de pedidos pessoal.");
+    }
     @GetMapping("obter-todos-pedidos")
     public ResponseEntity<ApiResponse<Page<PedidoDTO>>> listarPedidosFeitos(
             @ParameterObject
@@ -48,13 +64,20 @@ public class PedidoController {
         Page<PedidoDTO> paginaDePedidos = pedidoService.listarPedidos(pageable);
         return ResponseEntity.ok(ApiResponse.success("Recurso obtido", paginaDePedidos));
     }
+    @GetMapping("obter-pedidos-do-dia")
+    public ResponseEntity<ApiResponse<Page<PedidoDTO>>> listarPedidosDoDiaAtual(
+            @ParameterObject
+            @PageableDefault(size = 10, sort = "dataCriacao", direction = Sort.Direction.DESC)
+            Pageable pageable)
+    {
+        Page<PedidoDTO> paginaDePedidos = pedidoService.listarPedidosDoDia(pageable);
+        return ResponseEntity.ok(ApiResponse.success("Recurso obtido", paginaDePedidos));
+    }
     @PatchMapping("/{id}/status")
     public ResponseEntity<ApiResponse<PedidoDTO>> atualizarStatusPedido(@PathVariable Long id, @RequestBody StatusPedidoDTO novoStatus){
         PedidoDTO pedidoAtualizado = pedidoService.atualizarStatusPedido(id, novoStatus);
-
         messagingTemplate.convertAndSend("/topico/pedido/" + id , pedidoAtualizado);
         messagingTemplate.convertAndSend("/topico/admin-pedidos", pedidoAtualizado);
         return ResponseEntity.ok(ApiResponse.success("Recurso Atualizado" , pedidoAtualizado));
     }
-
 }
