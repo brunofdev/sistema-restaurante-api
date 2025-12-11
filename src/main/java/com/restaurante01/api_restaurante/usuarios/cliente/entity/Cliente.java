@@ -1,63 +1,80 @@
 package com.restaurante01.api_restaurante.usuarios.cliente.entity;
 
 import com.restaurante01.api_restaurante.usuarios.usuario_super.Usuario;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 
 import java.math.BigDecimal;
 
-@EqualsAndHashCode(callSuper = true)
+@Entity
+@Table(name = "clientes")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "clientes")
-@Entity
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class Cliente extends Usuario {
-    @Column(name = "ponto_fidelidade", nullable = false)
-    private int pontuacaoFidelidade;
-    @Column(name = "telefone", nullable = false)
-    private String telefone;
-    @Column(name = "estado", nullable = false)
-    private String estado;
-    @Column(name = "bairro", nullable = false)
-    private  String bairro;
-    @Column(name = "cidade", nullable = false)
-    private  String cidade;
-    @Column(name = "cep", nullable = false)
-    private String cep;
-    @Column(name = "rua", nullable = false)
-    private String rua;
-    @Column(name = "numero_residencia", nullable = false)
-    private int numeroResidencia;
-    @Column(name = "complemento", nullable = false)
-    private String complemento;
-    @Column(name = "obs_endereco", nullable = true)
-    private String observacaoEndereco;
 
+    // --- REGRAS DE FIDELIDADE ---
     private static final BigDecimal LIMITE_FAIXA_BRONZE = BigDecimal.valueOf(50);
     private static final BigDecimal LIMITE_FAIXA_PRATA = BigDecimal.valueOf(90);
-
     private static final int PONTOS_BRONZE = 1;
     private static final int PONTOS_PRATA = 2;
     private static final int PONTOS_OURO = 3;
 
+    // --- DADOS DO CLIENTE ---
+    @Column(name = "ponto_fidelidade", nullable = false)
+    private int pontuacaoFidelidade = 0; // Inicializa com 0
 
-    //ajustar uma logica mais detalhada no futuro, mas é uma ideia legal
+    @Pattern(regexp = "\\d{10,11}", message = "Telefone deve ter 10 ou 11 dígitos numéricos")
+    @Column(nullable = false, length = 11)
+    private String telefone;
+
+    // --- ENDEREÇO ---
+
+    @NotBlank
+    @Size(max = 2)
+    @Column(name = "estado", nullable = false, length = 2)
+    private String estado;
+
+    @NotBlank
+    @Column(name = "cidade", nullable = false, length = 100)
+    private String cidade;
+
+    @NotBlank
+    @Column(name = "bairro", nullable = false, length = 100)
+    private String bairro;
+
+    @Pattern(regexp = "\\d{8}", message = "CEP deve conter exatamente 8 dígitos numéricos")
+    @Column(name = "cep", nullable = false, length = 8)
+    private String cep;
+
+    @NotBlank
+    @Column(name = "rua", nullable = false, length = 150)
+    private String rua;
+
+    @Column(name = "numero_residencia", nullable = false)
+    private Integer numeroResidencia;
+
+    @Column(name = "complemento", length = 100)
+    private String complemento;
+
+    @Column(name = "obs_endereco", nullable = true)
+    private String observacaoEndereco;
+
+
+    // --- LÓGICA DE NEGÓCIO ---
     public void acrescentarPontuacao(BigDecimal totalPedido){
-        setPontuacaoFidelidade(getPontuacaoFidelidade() + calcularPontuacao(totalPedido));
+        if (totalPedido == null) return;
+        this.pontuacaoFidelidade += calcularPontuacao(totalPedido);
     }
+
     private int calcularPontuacao(BigDecimal totalPedido) {
-        if (totalPedido == null) {
-            return 0;
-        }
         if (totalPedido.compareTo(LIMITE_FAIXA_BRONZE) <= 0) {
             return PONTOS_BRONZE;
-        }else if (totalPedido.compareTo(LIMITE_FAIXA_PRATA) <= 0) {
+        } else if (totalPedido.compareTo(LIMITE_FAIXA_PRATA) <= 0) {
             return PONTOS_PRATA;
         }
         return PONTOS_OURO;

@@ -3,302 +3,491 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Restaurante V9 (Full Status)</title>
+    <title>Sistema Restaurante V12 (Dual Token)</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
     <style>
-        :root { --bg: #f0f2f5; --white: #fff; --dark: #2c3e50; --green: #4CAF50; --red: #f44336; --blue: #2196F3; --orange: #ff9800; --purple: #9c27b0; }
-        body { margin: 0; font-family: monospace; background: var(--bg); height: 100vh; display: flex; flex-direction: column; }
+        :root {
+            --bg-client: #f8f9fa;
+            --bg-admin: #2c3e50;
+            --text-admin: #ecf0f1;
+            --green: #2ecc71;
+            --red: #e74c3c;
+            --blue: #3498db;
+            --orange: #f39c12;
+        }
 
-        header { background: #333; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .badge { font-size: 11px; padding: 4px 8px; border-radius: 4px; margin-left:10px;}
-        .on { background: var(--green); } .off { background: var(--red); }
+        body { margin: 0; font-family: 'Segoe UI', monospace; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        .container { display: flex; flex: 1; height: 100%; font-family: 'Segoe UI', sans-serif; }
-        .panel { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
-        .panel-left { background: var(--white); border-right: 2px solid #ddd; }
-        .panel-right { background: var(--dark); color: #ecf0f1; }
+        /* HEADER */
+        header { background: #1a1a1a; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; height: 50px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 10; }
 
-        .card { border: 1px solid #ddd; border-radius: 8px; padding: 15px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .card-dark { background: #34495e; border: none; border-left: 5px solid #f1c40f; color: white; }
+        .auth-status { display: flex; gap: 15px; font-size: 12px; }
+        .status-pill { padding: 4px 10px; border-radius: 20px; background: #333; display: flex; align-items: center; gap: 5px; border: 1px solid #555; }
+        .status-pill.active { border-color: var(--green); color: var(--green); }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); }
+        .active .dot { background: var(--green); box-shadow: 0 0 5px var(--green); }
 
-        #console-log { height: 150px; background: #000; color: #0f0; font-family: monospace; padding: 10px; overflow-y: scroll; font-size: 12px; border-top: 2px solid #555; }
+        /* LAYOUT SPLIT */
+        .main-container { display: flex; flex: 1; height: calc(100vh - 200px); }
+        .pane-client { flex: 1; background: var(--bg-client); border-right: 4px solid #ccc; display: flex; flex-direction: column; padding: 10px; overflow-y: auto; position: relative; }
+        .pane-admin { flex: 1; background: var(--bg-admin); color: var(--text-admin); display: flex; flex-direction: column; padding: 10px; overflow-y: auto; position: relative; }
 
-        .role-badge { background: #ff9800; color: black; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 11px; margin-left: 5px; }
+        /* BLOCKER (Quando não logado) */
+        .blocker { position: absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.1); backdrop-filter: blur(2px); z-index: 5; display: flex; justify-content: center; align-items: center; }
+        .btn-login-zone { padding: 10px 20px; font-size: 14px; cursor: pointer; background: #333; color: white; border: none; border-radius: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
 
-        /* Modal Login */
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 999; }
-        .box { background: white; padding: 30px; border-radius: 8px; width: 300px; text-align: center; font-family: 'Segoe UI', sans-serif; }
-        input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; }
-        button { padding: 10px 20px; cursor: pointer; border-radius: 4px; border: none; font-weight: bold; }
+        /* CARDS */
+        .card { background: white; border-radius: 6px; padding: 10px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); color: #333; }
+        .card-dark { background: #34495e; color: white; border-left: 4px solid var(--orange); }
+
+        /* INPUTS E BOTOES */
+        input, select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin: 5px 0; width: 95%; box-sizing: border-box; }
+        button { padding: 8px 15px; cursor: pointer; border-radius: 4px; border: none; font-weight: bold; transition: 0.2s; }
+        button:hover { opacity: 0.9; }
         .btn-green { background: var(--green); color: white; }
         .btn-blue { background: var(--blue); color: white; }
-        .hidden { display: none; }
 
-        .row { display: flex; gap: 10px; flex-wrap: wrap; }
-        .status-big { font-size: 24px; font-weight: bold; margin: 10px 0; }
-
-        /* Botões de Ação Admin */
-        .btn-action { padding: 6px; cursor: pointer; border: none; border-radius: 4px; font-size: 10px; font-weight: bold; color: white; flex: 1; }
+        /* ACTIONS ADMIN */
+        .admin-actions { display: flex; gap: 5px; margin-top: 8px; }
+        .btn-act { flex: 1; font-size: 10px; padding: 5px; color: white; border:none; border-radius:3px; cursor:pointer;}
         .act-prep { background: var(--blue); }
-        .act-saiu { background: var(--purple); }
+        .act-saiu { background: #9b59b6; }
         .act-fim { background: var(--green); }
         .act-cancel { background: var(--red); }
-        .act-reset { background: #7f8c8d; } /* Cinza para testar erros */
 
-        /* Cores Status */
-        .bg-PENDENTE { background: #fff3cd; }
-        .bg-EM_PREPARACAO { background: #cce5ff; }
-        .bg-SAIU_PARA_ENTREGA { background: #d1ecf1; }
-        .bg-ENTREGUE { background: #d1e7dd; }
-        .bg-CANCELADO { background: #f8d7da; }
+        /* CONSOLE */
+        #console-log { height: 160px; background: #000; color: #0f0; font-family: monospace; padding: 10px; overflow-y: scroll; font-size: 11px; border-top: 3px solid #444; }
+
+        /* MODAL */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 999; }
+        .box { background: white; padding: 25px; border-radius: 8px; width: 340px; font-family: 'Segoe UI', sans-serif; max-height: 90vh; overflow-y: auto; }
+        .hidden { display: none; }
+
+        .tab-bar { display: flex; margin-bottom: 15px; border-bottom: 1px solid #ddd; }
+        .tab { flex: 1; text-align: center; padding: 10px; cursor: pointer; font-weight: bold; color: #777; }
+        .tab.active { color: var(--blue); border-bottom: 2px solid var(--blue); }
+
+        .st-tag { font-size:10px; padding:2px 5px; border-radius:3px; color:black; font-weight:bold; }
     </style>
 </head>
 <body>
 
-<div id="loginModal" class="modal">
+<div id="authModal" class="modal hidden">
     <div class="box">
-        <h2>🔐 Login Admin</h2>
-        <input type="text" id="loginCpf" placeholder="CPF">
-        <input type="password" id="loginSenha" placeholder="Senha">
-        <button class="btn-green" style="width:100%" onclick="fazerLogin()">ENTRAR</button>
-        <p id="loginMsg" style="color:red; font-size:12px;"></p>
+        <h3 id="modalTitle" style="margin-top:0">🔐 Autenticação</h3>
+        <p id="modalDesc" style="font-size:12px; color:#666">Faça login para habilitar este painel.</p>
+
+        <div class="tab-bar">
+            <div class="tab active" onclick="switchTab('login')">LOGIN</div>
+            <div class="tab" onclick="switchTab('cadastro')">CADASTRO</div>
+        </div>
+
+        <div id="formLogin">
+            <input type="text" id="logLogin" placeholder="CPF ou Username">
+            <input type="password" id="logSenha" placeholder="Senha">
+            <button id="btnLoginAction" class="btn-green" style="width:100%; margin-top:10px">ENTRAR</button>
+        </div>
+
+        <div id="formCadastro" class="hidden">
+            <div style="display:flex; justify-content:flex-end; margin-bottom:5px">
+                <button style="padding:2px 8px; font-size:10px; background:#777; color:white" onclick="preencherMock()">🎲 Gerar Dados</button>
+            </div>
+
+            <input type="text" id="cadNome" placeholder="Nome Completo">
+            <input type="text" id="cadCpf" placeholder="CPF (11 dígitos)">
+            <input type="email" id="cadEmail" placeholder="E-mail">
+            <input type="text" id="cadTelefone" placeholder="Telefone (11) 9...">
+            <input type="text" id="cadUser" placeholder="Username (Login)">
+            <input type="password" id="cadSenha" placeholder="Senha">
+
+            <div id="extraOperador" class="hidden">
+                <input type="number" id="cadMatricula" placeholder="Matrícula (ex: 1234)">
+            </div>
+
+            <div id="extraCliente" class="hidden">
+                <input type="text" id="cadRua" placeholder="Rua">
+                <div style="display:flex; gap:5px">
+                    <input type="number" id="cadNumero" placeholder="Nº" style="width:30%">
+                    <input type="text" id="cadComp" placeholder="Complemento" style="width:70%">
+                </div>
+                <div style="display:flex; gap:5px">
+                    <input type="text" id="cadBairro" placeholder="Bairro">
+                    <input type="text" id="cadCidade" placeholder="Cidade">
+                </div>
+                <div style="display:flex; gap:5px">
+                    <input type="text" id="cadEstado" placeholder="UF" maxlength="2" style="width:30%">
+                    <input type="text" id="cadCep" placeholder="CEP" style="width:70%">
+                </div>
+            </div>
+
+            <button id="btnCadAction" class="btn-blue" style="width:100%; margin-top:10px">CADASTRAR</button>
+        </div>
+
+        <button onclick="closeModal()" style="width:100%; margin-top:10px; background:#ccc">Cancelar</button>
     </div>
 </div>
 
 <header>
-    <div>
-        <b>Dashboard V9</b>
-        <span id="wsStatus" class="badge off">WS: OFFLINE</span>
+    <div style="display:flex; align-items:center">
+        <span>🚀 <b>V12 Dual</b></span>
+        <span id="wsStatus" class="badge off">WS: OFF</span>
     </div>
-    <div>
-        <span id="userDisplay">--</span>
-        <span id="roleDisplay" class="role-badge" style="display:none">--</span>
-        <button onclick="resetarTudo()" style="font-size:10px; margin-left:10px; color:black">SAIR</button>
-        <button class="btn-blue" style="font-size:10px;" onclick="conectarSocket()">RECONECTAR</button>
+
+    <div class="auth-status">
+        <div id="stClient" class="status-pill">
+            <div class="dot"></div> 👤 Cliente
+        </div>
+        <div id="stAdmin" class="status-pill">
+            <div class="dot"></div> 👨‍🍳 Admin
+        </div>
     </div>
+
+    <button class="btn-outline" onclick="logoutAll()">SAIR GERAL</button>
 </header>
 
-<div class="container">
-    <div class="panel panel-left">
-        <h3>📱 Cliente</h3>
+<div class="main-container">
+
+    <div class="pane-client">
+        <div class="pane-title" style="color:#333">📱 Área do Cliente</div>
+
+        <div id="blockClient" class="blocker">
+            <button class="btn-login-zone" onclick="openAuth('CLIENTE')">🔐 Login Cliente</button>
+        </div>
+
         <div class="card">
-            <div class="row">
-                <input type="number" id="idProd" placeholder="ID Prod" value="1" style="width:50px">
-                <input type="number" id="qtdProd" placeholder="Qtd" value="1" style="width:50px">
+            <b>Novo Pedido</b>
+            <div style="display:flex; gap:5px; margin-top:5px;">
+                <input type="number" id="prodId" placeholder="ID Prod" value="1" style="flex:1">
+                <input type="number" id="prodQtd" placeholder="Qtd" value="1" style="flex:1">
                 <button class="btn-green" onclick="criarPedido()">Pedir</button>
             </div>
         </div>
-        <div id="monitorCliente" class="card" style="display:none; text-align: center;">
-            <small>Pedido #<span id="cliId">0</span></small>
-            <div id="cliStatus" class="status-big">--</div>
-            <div>R$ <span id="cliTotal">0.00</span></div>
-        </div>
+
+        <div id="listaMeusPedidos"></div>
     </div>
 
-    <div class="panel panel-right">
-        <h3>👨‍🍳 Cozinha</h3>
+    <div class="pane-admin">
+        <div class="pane-title">👨‍🍳 Cozinha</div>
+
+        <div id="blockAdmin" class="blocker">
+            <button class="btn-login-zone" onclick="openAuth('OPERADOR')">🔐 Login Cozinha</button>
+        </div>
+
         <div id="listaAdmin"></div>
     </div>
 </div>
 
-<div id="console-log">Logs de Depuração...</div>
+<div id="console-log">Logs de Sistema...</div>
 
 <script>
+    // CONFIG
     const API = 'http://localhost:8080';
     var stomp = null;
-    var token = localStorage.getItem('token');
 
-    function log(msg) {
-        const div = document.getElementById('console-log');
-        div.innerHTML += `<div>> ${msg}</div>`;
-        div.scrollTop = div.scrollHeight;
-        console.log(msg);
-    }
+    // ESTADO GLOBAL (DOIS TOKENS)
+    var clientToken = localStorage.getItem('clientToken');
+    var adminToken = localStorage.getItem('adminToken');
 
-    function parseJwt(token) {
-        try {
-            const base64Url = token.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            return JSON.parse(jsonPayload);
-        } catch (e) { return null; }
-    }
+    // VARIÁVEL DE CONTROLE DO MODAL
+    var currentAuthType = ''; // 'CLIENTE' ou 'OPERADOR'
 
-    function updateUserInfo() {
-        if(token) {
-            const payload = parseJwt(token);
-            if(payload) {
-                const user = payload.sub || "Usuario";
-                const role = payload.role || payload.roles || payload.authorities || "???";
-                document.getElementById('userDisplay').innerText = user;
-                document.getElementById('roleDisplay').innerText = role;
-                document.getElementById('roleDisplay').style.display = 'inline-block';
-                log(`🔍 TOKEN: User=${user} | Role=${role}`);
-            }
-        }
-    }
-
+    // --- INICIALIZAÇÃO ---
     window.onload = () => {
-        if(token) {
-            document.getElementById('loginModal').classList.add('hidden');
-            updateUserInfo();
-            setTimeout(conectarSocket, 500);
-        }
+        updateUI();
+        conectarSocket(); // Tenta conectar WS se tiver pelo menos um token
     };
 
-    function resetarTudo() { localStorage.clear(); location.reload(); }
+    function updateUI() {
+        // Atualiza UI Cliente
+        if(clientToken) {
+            document.getElementById('blockClient').classList.add('hidden');
+            document.getElementById('stClient').classList.add('active');
+        } else {
+            document.getElementById('blockClient').classList.remove('hidden');
+            document.getElementById('stClient').classList.remove('active');
+        }
 
-    // === 1. LOGIN ===
-    async function fazerLogin() {
-        const cpf = document.getElementById('loginCpf').value;
-        const senha = document.getElementById('loginSenha').value;
+        // Atualiza UI Admin
+        if(adminToken) {
+            document.getElementById('blockAdmin').classList.add('hidden');
+            document.getElementById('stAdmin').classList.add('active');
+        } else {
+            document.getElementById('blockAdmin').classList.remove('hidden');
+            document.getElementById('stAdmin').classList.remove('active');
+        }
+    }
+
+    // --- CONTROLE DO MODAL ---
+    function openAuth(type) {
+        currentAuthType = type;
+        document.getElementById('authModal').classList.remove('hidden');
+
+        // Configura textos e campos baseados no tipo
+        if(type === 'CLIENTE') {
+            document.getElementById('modalTitle').innerText = "🔐 Login Cliente";
+            document.getElementById('extraCliente').classList.remove('hidden');
+            document.getElementById('extraOperador').classList.add('hidden');
+        } else {
+            document.getElementById('modalTitle').innerText = "🔐 Login Cozinha";
+            document.getElementById('extraCliente').classList.add('hidden');
+            document.getElementById('extraOperador').classList.remove('hidden');
+        }
+
+        // Configura os botões para chamar a função com o tipo certo
+        document.getElementById('btnLoginAction').onclick = () => fazerLogin(type);
+        document.getElementById('btnCadAction').onclick = () => fazerCadastro(type);
+
+        switchTab('login'); // Sempre abre no login
+    }
+
+    function closeModal() {
+        document.getElementById('authModal').classList.add('hidden');
+    }
+
+    function switchTab(tab) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+        if(tab === 'login') {
+            document.getElementById('formLogin').classList.remove('hidden');
+            document.getElementById('formCadastro').classList.add('hidden');
+        } else {
+            document.getElementById('formLogin').classList.add('hidden');
+            document.getElementById('formCadastro').classList.remove('hidden');
+        }
+    }
+
+    // --- 1. LOGIN (DUAL) ---
+    async function fazerLogin(type) {
+        const login = document.getElementById('logLogin').value;
+        const senha = document.getElementById('logSenha').value;
 
         try {
-            const res = await fetch(`${API}/api/auth/cliente-login`, {
+            // Endpoint unificado
+            const res = await fetch(API + '/api/auth/login', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({cpf, senha})
+                body: JSON.stringify({cpf: login, senha: senha})
             });
-            const json = await res.json();
 
+            const json = await res.json();
             if(res.ok) {
-                token = json.dados.token;
-                localStorage.setItem('token', token);
-                document.getElementById('loginModal').classList.add('hidden');
-                updateUserInfo();
-                conectarSocket();
+                const token = json.dados.token;
+
+                if(type === 'CLIENTE') {
+                    clientToken = token;
+                    localStorage.setItem('clientToken', token);
+                    log("👤 Cliente logado com sucesso");
+                } else {
+                    adminToken = token;
+                    localStorage.setItem('adminToken', token);
+                    log("👨‍🍳 Admin logado com sucesso");
+                }
+
+                closeModal();
+                updateUI();
+                conectarSocket(); // Reconecta para garantir permissões
             } else {
-                document.getElementById('loginMsg').innerText = json.message;
+                alert("Erro: " + (json.message || "Login falhou"));
             }
         } catch(e) { log("Erro Login: " + e); }
     }
 
-    // === 2. WEBSOCKET ===
-    function conectarSocket() {
-        if(stomp && stomp.connected) return;
-        log("Conectando WS (Público)...");
-        var socket = new SockJS(`${API}/ws`);
-        stomp = Stomp.over(socket);
-        stomp.debug = () => {};
+    // --- 2. CADASTRO (DUAL) ---
+    async function fazerCadastro(type) {
+        const endpoint = type === 'CLIENTE' ? '/cliente/cadastro' : '/operador/cadastro';
 
-        stomp.connect({}, (frame) => {
-            log("✅ WebSocket Conectado!");
-            document.getElementById('wsStatus').innerText = "WS: ONLINE";
-            document.getElementById('wsStatus').className = "badge on";
+        // Base Comum
+        const body = {
+            nome: document.getElementById('cadNome').value,
+            cpf: document.getElementById('cadCpf').value,
+            email: document.getElementById('cadEmail').value,
+            telefone: document.getElementById('cadTelefone').value,
+            userName: document.getElementById('cadUser').value,
+            senha: document.getElementById('cadSenha').value
+        };
 
-            stomp.subscribe('/topico/admin-pedidos', (msg) => {
-                log("🔔 NOTIFICAÇÃO ADMIN RECEBIDA!");
-                renderAdmin(JSON.parse(msg.body));
+        // Específicos
+        if (type === 'CLIENTE') {
+            body.rua = document.getElementById('cadRua').value;
+            body.numero = parseInt(document.getElementById('cadNumero').value);
+            body.complemento = document.getElementById('cadComp').value;
+            body.bairro = document.getElementById('cadBairro').value;
+            body.cidade = document.getElementById('cadCidade').value;
+            body.estado = document.getElementById('cadEstado').value;
+            body.cep = document.getElementById('cadCep').value;
+        } else {
+            body.matricula = parseInt(document.getElementById('cadMatricula').value);
+        }
+
+        log(`📤 Cadastrando ${type}...`);
+
+        try {
+            const res = await fetch(API + endpoint, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(body)
             });
+            const json = await res.json();
 
-        }, (err) => {
-            log("❌ Erro WebSocket: " + err);
-            document.getElementById('wsStatus').innerText = "WS: ERRO";
-            document.getElementById('wsStatus').className = "badge off";
-        });
+            if(res.ok) {
+                alert("✅ Cadastro OK! Autenticando...");
+                // Auto-login após cadastro para facilitar
+                document.getElementById('logLogin').value = body.userName;
+                document.getElementById('logSenha').value = body.senha;
+                switchTab('login');
+            } else {
+                alert("Erro Cadastro:\n" + (json.dados?.message || json.message));
+            }
+        } catch(e) { log("Erro Fetch: " + e); }
     }
 
-    // === 3. CLIENTE ===
+    // --- 3. AÇÕES CLIENTE (Usa clientToken) ---
     async function criarPedido() {
-        const idProd = document.getElementById('idProd').value;
-        const qtd = document.getElementById('qtdProd').value;
+        if(!clientToken) return alert("Logue como cliente primeiro!");
+
+        const prod = document.getElementById('prodId').value;
+        const qtd = document.getElementById('prodQtd').value;
 
         try {
             const res = await fetch(`${API}/pedido/criar-pedido`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-                body: JSON.stringify({itens: [{ idProduto: idProd, quantidade: qtd }], observacao: "Teste V9"})
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + clientToken },
+                body: JSON.stringify({itens: [{ idProduto: prod, quantidade: qtd }], observacao: "Dual Test"})
             });
+
             const json = await res.json();
             if(res.ok) {
-                log("✅ Pedido Criado ID: " + json.dados.id);
-                acompanhar(json.dados);
+                log("👤 [CLIENTE] Pedido Criado #" + json.dados.id);
+                renderClienteItem(json.dados);
+                // Escuta atualizações deste pedido específico
+                stomp.subscribe('/topico/pedido/' + json.dados.id, (msg) => {
+                    const p = JSON.parse(msg.body);
+                    renderClienteItem(p);
+                    renderAdminItem(p);
+                });
             } else {
-                log("❌ Erro Criar: " + json.message);
                 alert("Erro ao criar: " + json.message);
             }
-        } catch(e) { log("Erro Fetch Criar: " + e); }
+        } catch(e) { log("Erro criarPedido: " + e); }
     }
 
-    function acompanhar(pedido) {
-        updateClientUI(pedido);
-        document.getElementById('monitorCliente').style.display = 'block';
-        stomp.subscribe('/topico/pedido/' + pedido.id, (msg) => {
-            log("🔔 CLIENTE: Atualização recebida!");
-            updateClientUI(JSON.parse(msg.body));
-        });
+    // --- 4. AÇÕES ADMIN (Usa adminToken) ---
+    async function mudarStatus(id, status) {
+        if(!adminToken) return alert("Logue como Cozinha primeiro!");
+
+        try {
+            const res = await fetch(`${API}/pedido/${id}/status`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + adminToken },
+                body: JSON.stringify({ statusPedido: status })
+            });
+
+            if(res.ok) {
+                log(`👮 [ADMIN] Status #${id} -> ${status}`);
+            } else {
+                const json = await res.json();
+                alert("Erro Admin: " + json.message);
+            }
+        } catch(e) { log("Erro Status: " + e); }
     }
 
-    function updateClientUI(p) {
+    // --- 5. WEBSOCKET (Usa Token Admin preferencialmente) ---
+    function conectarSocket() {
+        if(stomp && stomp.connected) return;
+
+        // Tenta usar token de admin para conectar, senão usa de cliente, senão sem token
+        // Nota: Se seu WS exigir autenticação, passe o token no connect headers
+        var socket = new SockJS(`${API}/ws`);
+        stomp = Stomp.over(socket);
+        stomp.debug = () => {};
+
+        stomp.connect({}, () => {
+            log("📡 WS Conectado");
+            document.getElementById('wsStatus').innerText = "ON";
+            document.getElementById('wsStatus').className = "badge on";
+
+            // Se tiver token de admin, inscreve no tópico geral
+            if(adminToken) {
+                stomp.subscribe('/topico/admin-pedidos', (msg) => {
+                    log("🔔 [WS-Admin] Novo Pedido!");
+                    renderAdminItem(JSON.parse(msg.body));
+                });
+            }
+
+        }, (err) => log("❌ WS Off: " + err));
+    }
+
+    // --- RENDERS E UTILS ---
+    function renderClienteItem(p) {
+        const container = document.getElementById('listaMeusPedidos');
+        let el = document.getElementById('cli-' + p.id);
+        if(!el) {
+            el = document.createElement('div');
+            el.id = 'cli-' + p.id;
+            el.className = 'card';
+            container.prepend(el);
+        }
         const st = p.status || p.statusPedido;
-        document.getElementById('cliId').innerText = p.id;
-        document.getElementById('cliStatus').innerText = st;
-        const total = typeof p.valorTotal === 'number' ? p.valorTotal.toFixed(2) : p.valorTotal;
-        document.getElementById('cliTotal').innerText = total;
-
-        const box = document.getElementById('monitorCliente');
-        box.className = "card " + "bg-" + st;
+        el.innerHTML = `
+            <div style="display:flex; justify-content:space-between"><b>#${p.id}</b> <span class="st-tag" style="background:#eee">${st}</span></div>
+            <div style="font-size:12px">Total: R$ ${p.valorTotal}</div>
+        `;
+        if(st === 'ENTREGUE') el.style.borderLeft = '4px solid green';
     }
 
-    // === 4. ADMIN ===
-    function renderAdmin(p) {
-        const lista = document.getElementById('listaAdmin');
-        const existe = document.getElementById('adm-' + p.id);
-        if(existe) existe.remove();
-
+    function renderAdminItem(p) {
+        if(!adminToken) return; // Só renderiza se for admin
+        const container = document.getElementById('listaAdmin');
+        let el = document.getElementById('adm-' + p.id);
+        if(!el) {
+            el = document.createElement('div');
+            el.id = 'adm-' + p.id;
+            el.className = 'card card-dark';
+            container.prepend(el);
+        }
         const st = p.status || p.statusPedido;
-        const div = document.createElement('div');
-        div.id = 'adm-' + p.id;
-        div.className = "card card-dark";
-
-        // LISTA COMPLETA DE BOTÕES PARA TODOS OS STATUS
-        div.innerHTML = `
-            <div style="display:flex; justify-content:space-between">
-                <b>#${p.id} - ${p.nomeUsuario || 'Cliente'}</b>
-                <span style="color:#f1c40f">${st}</span>
-            </div>
-            <div style="margin:10px 0; font-size:12px">
-                ${p.itens ? p.itens.map(i => i.quantidade + 'x ' + i.nomeProduto).join(', ') : ''}
-            </div>
-
-            <div class="row" style="margin-top:10px">
-                <button class="btn-action act-reset" onclick="mudarStatus(${p.id}, 'PENDENTE')">↩️ Reset</button>
-                <button class="btn-action act-prep" onclick="mudarStatus(${p.id}, 'EM_PREPARACAO')">🔥 Preparar</button>
-                <button class="btn-action act-saiu" onclick="mudarStatus(${p.id}, 'SAIU_PARA_ENTREGA')">🛵 Enviar</button>
-            </div>
-            <div class="row" style="margin-top:5px">
-                <button class="btn-action act-fim" onclick="mudarStatus(${p.id}, 'ENTREGUE')">✅ Entregue</button>
-                <button class="btn-action act-cancel" onclick="mudarStatus(${p.id}, 'CANCELADO')">❌ Cancelar</button>
+        el.innerHTML = `
+            <div style="display:flex; justify-content:space-between"><b>#${p.id}</b> <span style="color:#f39c12">${st}</span></div>
+            <div style="font-size:11px; margin:5px 0">${p.itens ? p.itens.map(i => i.quantidade + 'x ' + i.nomeProduto).join(', ') : '...'}</div>
+            <div class="admin-actions">
+                <button class="btn-act act-prep" onclick="mudarStatus(${p.id}, 'EM_PREPARACAO')">🔥</button>
+                <button class="btn-act act-saiu" onclick="mudarStatus(${p.id}, 'SAIU_PARA_ENTREGA')">🛵</button>
+                <button class="btn-act act-fim" onclick="mudarStatus(${p.id}, 'ENTREGUE')">✅</button>
+                <button class="btn-act act-cancel" onclick="mudarStatus(${p.id}, 'CANCELADO')">❌</button>
             </div>
         `;
-        lista.prepend(div);
     }
 
-    async function mudarStatus(id, status) {
-        log(`🛠️ ADMIN: Mudando #${id} para ${status}...`);-=´
+    function logoutAll() { localStorage.clear(); location.reload(); }
 
-        const res = await fetch(`${API}/pedido/${id}/status`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-            body: JSON.stringify({ statusPedido: status })
-        });
+    function preencherMock() {
+        const r = Math.floor(Math.random() * 9000);
+        document.getElementById('cadNome').value = `User ${r}`;
+        document.getElementById('cadCpf').value = gerarCpf();
+        document.getElementById('cadEmail').value = `u${r}@test.com`;
+        document.getElementById('cadTelefone').value = `119${r}1234`;
+        document.getElementById('cadUser').value = `user${r}`;
+        document.getElementById('cadSenha').value = "Senha@123";
 
-        if(!res.ok) {
-            // Tenta pegar a mensagem de erro do Spring
-            const json = await res.json();
-            const erroMsg = json.message || json.error || res.statusText;
-
-            log(`❌ ERRO (Status ${res.status}): ${erroMsg}`);
-            alert("⛔ ERRO DE REGRA DE NEGÓCIO:\n\n" + erroMsg);
+        if(currentAuthType === 'CLIENTE') {
+            document.getElementById('cadRua').value = "Rua Teste";
+            document.getElementById('cadNumero').value = "100";
+            document.getElementById('cadComp').value = "Ap 1";
+            document.getElementById('cadBairro').value = "Centro";
+            document.getElementById('cadCidade').value = "SP";
+            document.getElementById('cadEstado').value = "SP";
+            document.getElementById('cadCep').value = "01000-000";
         } else {
-            log("✅ PATCH enviado com sucesso!");
+            document.getElementById('cadMatricula').value = r;
         }
     }
+
+    function gerarCpf() { let c = ""; for(let i=0; i<11; i++) c+=Math.floor(Math.random()*9); return c; }
+    function log(msg) { const d = document.getElementById('console-log'); d.innerHTML += `<div>> ${msg}</div>`; d.scrollTop = d.scrollHeight; }
+
 </script>
 </body>
 </html>

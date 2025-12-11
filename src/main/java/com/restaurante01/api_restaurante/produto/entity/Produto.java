@@ -3,92 +3,44 @@ package com.restaurante01.api_restaurante.produto.entity;
 import com.restaurante01.api_restaurante.security.auditoria.Auditable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "produto")
-@EqualsAndHashCode(callSuper = true)
+@Table(name = "produtos") // Plural é convenção (opcional, mas recomendado)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public class Produto extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
-    @NotBlank(message = "Nome não pode ser vazio")
+    @NotBlank(message = "O nome do produto é obrigatório")
+    @Column(name = "nome", nullable = false, length = 100)
     private String nome;
 
-    @NotBlank(message = "Descrição não pode ser vazia")
+    @NotBlank(message = "A descrição é obrigatória")
+    @Column(name = "descricao", columnDefinition = "TEXT", nullable = false)
     private String descricao;
 
-    @NotNull(message = "Quantidade deve ser zero ou positivo")
-    @PositiveOrZero(message = "preço deve ser positivo")
+    @NotNull(message = "O preço é obrigatório")
+    @PositiveOrZero(message = "O preço deve ser zero ou positivo")
+    @Column(name = "preco", nullable = false, precision = 10, scale = 2)
     private BigDecimal preco;
 
+    @NotNull(message = "A quantidade inicial é obrigatória")
+    @Min(value = 0, message = "A quantidade não pode ser negativa")
+    @Column(name = "qtd_atual", nullable = false)
+    private Long quantidadeAtual = 0L;
 
-    @Min(value = 0, message = "Quantidade minima deve ser zero")
-    private Long quantidadeAtual;
+    @NotNull
+    @Column(nullable = false)
+    private Boolean disponibilidade = true;
 
-    private Boolean disponibilidade;
-
-    public Produto(){
-
-    }
-    public Produto(Long id,String nome, String descricao, BigDecimal preco, Long quantidadeAtual, Boolean disponibilidade) {
-        this.id = id;
-        this.nome = nome;
-        this.descricao = descricao;
-        this.preco = preco;
-        this.quantidadeAtual = quantidadeAtual;
-        this.disponibilidade = disponibilidade;
-
-    }
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public BigDecimal getPreco() {
-        return preco;
-    }
-
-    public void setPreco(BigDecimal preco) {
-        this.preco = preco;
-    }
-
-
-    public void setDisponibilidade(Boolean disponibilidade) {
-        this.disponibilidade = disponibilidade;
-    }
-
-    public Boolean getDisponibilidade() {
-        return disponibilidade;
-    }
-
-    public Long getQuantidadeAtual() {
-        return quantidadeAtual;
-    }
-
-    public void setQuantidadeAtual(Long quantidadeAtual) {
-        this.quantidadeAtual = quantidadeAtual;
-    }
 }

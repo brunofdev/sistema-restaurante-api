@@ -6,7 +6,6 @@ import com.restaurante01.api_restaurante.pedido.exception.StatusPedidoInvalidoEx
 import com.restaurante01.api_restaurante.pedido.exception.StatusPedidoNaoPodeMaisSerAlteradoException;
 import com.restaurante01.api_restaurante.security.auditoria.Auditable;
 import com.restaurante01.api_restaurante.usuarios.cliente.entity.Cliente;
-import com.restaurante01.api_restaurante.usuarios.usuario_super.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,8 +15,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "pedidos")
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
@@ -25,21 +23,16 @@ public class Pedido extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @ManyToOne
-    @JoinColumn(name = "usuario_id", nullable = false)
+    @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
-
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "status_pedido", nullable = false)
     private StatusPedido statusPedido = StatusPedido.PENDENTE;
-
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPedido> itens = new ArrayList<>();
-
     @Column(nullable = false)
     private BigDecimal valorTotal = BigDecimal.ZERO;
-
     @Column(nullable = true)
     private String enderecoEntrega;
 

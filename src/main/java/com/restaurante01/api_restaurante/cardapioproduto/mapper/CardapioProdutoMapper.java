@@ -49,9 +49,10 @@ public class CardapioProdutoMapper extends AbstractMapper<CardapioProduto, Carda
                 produtoMapper.mapearUmaDtoParaEntidade(cardapioProdutoDTO.getProduto()),
                 cardapioProdutoDTO.getPrecoCustomizado(),
                 cardapioProdutoDTO.getQuantidadeCustomizada(),
+                cardapioProdutoDTO.getDescricaoCustomizada(),
                 cardapioProdutoDTO.getDisponibilidadeCustomizada(),
-                cardapioProdutoDTO.getObservacao(),
-                cardapioProdutoDTO.getDescricaoCustomizada()
+                cardapioProdutoDTO.getObservacao()
+
         );
     }
     public CardapioProdutoAssociacaoRespostaDTO mapearCardapioProdutoAssociacaoDTO(CardapioProduto cardapioProduto){
@@ -87,9 +88,9 @@ public class CardapioProdutoMapper extends AbstractMapper<CardapioProduto, Carda
                 produto,
                 cardapioProdutoAssociacaoEntradaDTO.getPrecoCustomizado(),
                 cardapioProdutoAssociacaoEntradaDTO.getQuantidadeCustomizada(),
+                cardapioProdutoAssociacaoEntradaDTO.getDescricaoCustomizada(),
                 cardapioProdutoAssociacaoEntradaDTO.getDisponibilidadeCustomizada(),
-                cardapioProdutoAssociacaoEntradaDTO.getObservacao(),
-                cardapioProdutoAssociacaoEntradaDTO.getDescricaoCustomizada()
+                cardapioProdutoAssociacaoEntradaDTO.getObservacao()
         );
     }
     public CardapioComListaProdutoDTO mapearCardapioProdutoDTO(Cardapio cardapio) {
