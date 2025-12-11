@@ -17,6 +17,7 @@ public class OperadorMapper {
         operador.setNome(dto.nome());
         operador.setSenha(dto.senha());
         operador.setCpf(dto.cpf());
+        operador.setEmail(dto.email());
         operador.setUserName(dto.userName());
         operador.setRole(Role.USER);
         operador.setContaAtiva(true);
