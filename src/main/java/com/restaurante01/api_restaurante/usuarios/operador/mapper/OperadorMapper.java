@@ -19,6 +19,7 @@ public class OperadorMapper {
         operador.setCpf(dto.cpf());
         operador.setUserName(dto.userName());
         operador.setRole(Role.USER);
+        operador.setContaAtiva(true);
         return operador;
     }
     public OperadorDTO mapearOperadorParaOperadorDTO(Operador novoOperador) {

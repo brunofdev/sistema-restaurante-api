@@ -15,6 +15,7 @@ import com.restaurante01.api_restaurante.produto.entity.Produto;
 import com.restaurante01.api_restaurante.produto.service.ProdutoService;
 import com.restaurante01.api_restaurante.usuarios.cliente.entity.Cliente;
 import com.restaurante01.api_restaurante.usuarios.cliente.service.ClienteService;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class PedidoService {
         this.produtoService = produtoService;
         this.clienteService = clienteService;
     }
+    @Transactional
     public PedidoDTO criarNovoPedido(PedidoCriacaoDTO pedidoCriacaoDTO, Cliente cliente){
         Pedido pedido = new Pedido();
         vincularItemAoPedido(pedido, pedidoCriacaoDTO.itens());

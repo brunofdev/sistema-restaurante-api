@@ -18,24 +18,26 @@ import java.math.BigDecimal;
 @Table(name = "clientes")
 @Entity
 public class Cliente extends Usuario {
-    @Column(nullable = false)
+    @Column(name = "ponto_fidelidade", nullable = false)
     private int pontuacaoFidelidade;
-    @Column(name = "telefone", nullable = true, unique = true)
+    @Column(name = "telefone", nullable = false)
     private String telefone;
-    @Column(name = "estado", nullable = true)
+    @Column(name = "estado", nullable = false)
     private String estado;
-    @Column(name = "bairro", nullable = true)
+    @Column(name = "bairro", nullable = false)
     private  String bairro;
-    @Column(name = "cidade", nullable = true)
+    @Column(name = "cidade", nullable = false)
     private  String cidade;
-    @Column(name = "cep", nullable = true)
+    @Column(name = "cep", nullable = false)
     private String cep;
-    @Column(name = "rua", nullable = true)
+    @Column(name = "rua", nullable = false)
     private String rua;
-    @Column(name = "numero_residencia", nullable = true)
+    @Column(name = "numero_residencia", nullable = false)
     private int numeroResidencia;
     @Column(name = "complemento", nullable = false)
     private String complemento;
+    @Column(name = "obs_endereco", nullable = true)
+    private String observacaoEndereco;
 
     private static final BigDecimal LIMITE_FAIXA_BRONZE = BigDecimal.valueOf(50);
     private static final BigDecimal LIMITE_FAIXA_PRATA = BigDecimal.valueOf(90);

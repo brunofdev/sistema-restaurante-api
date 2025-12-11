@@ -26,12 +26,14 @@ public class Usuario implements UserDetails {
     private String userName;
     @Column(name="senha", nullable = false)
     private String senha;
-    @Column(name="email", nullable = true, unique = true)
+    @Column(name="email", nullable = false, unique = true)
     private String email;
-    @Column(name="cpf", nullable = true, unique = true)
+    @Column(name="cpf", nullable = false, unique = true)
     private String cpf;
     @Enumerated(EnumType.STRING)
     private Role role;
+    @Column(name = "conta_ativa", nullable = false)
+    private boolean contaAtiva;
 
     public Role getRole(){
         return (this.role == null) ? Role.USER : this.role;
