@@ -1,15 +1,23 @@
 package com.restaurante01.api_restaurante.cardapio.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.restaurante01.api_restaurante.security.auditoria.Auditable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
-
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
+@Getter
 @Entity
 @Table(name = "cardapio")
-public class Cardapio {
+public class Cardapio extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,67 +35,6 @@ public class Cardapio {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dataFim;
 
-
-    public Cardapio(){
-
-    }
-
-    public Cardapio(Long id,String nome, String descricao, Boolean disponibilidade, LocalDate dataInicio, LocalDate dataFim) {
-        this.id = id;
-        this.nome = nome;
-        this.descricao = descricao;
-        this.disponibilidade = disponibilidade;
-        this.dataInicio = dataInicio;
-        this.dataFim = dataFim;
-    }
-
-    public LocalDate getDataFim() {
-        return dataFim;
-    }
-
-    public void setDataFim(LocalDate dataFim) {
-        this.dataFim = dataFim;
-    }
-
-    public LocalDate getDataInicio() {
-        return dataInicio;
-    }
-
-    public void setDataInicio(LocalDate dataInicio) {
-        this.dataInicio = dataInicio;
-    }
-
-    public Boolean getDisponibilidade() {
-        return disponibilidade;
-    }
-
-    public void setDisponibilidade(Boolean disponibilidade) {
-        this.disponibilidade = disponibilidade;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     @Override
     public boolean equals(Object o) {
