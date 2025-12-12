@@ -7,6 +7,8 @@ import com.restaurante01.api_restaurante.core.utils.retorno_padrao_api.ApiError;
 import com.restaurante01.api_restaurante.core.utils.retorno_padrao_api.ApiResponse;
 import com.restaurante01.api_restaurante.core.utils.validadorcpf.CpfComTamanhoInvalidoException;
 import com.restaurante01.api_restaurante.core.utils.validadorcpf.NumeroCpfInvalidoException;
+import com.restaurante01.api_restaurante.pedido.exception.StatusPedidoInvalidoException;
+import com.restaurante01.api_restaurante.pedido.exception.StatusPedidoNaoPodeMaisSerAlteradoException;
 import com.restaurante01.api_restaurante.produto.exceptions.*;
 import com.restaurante01.api_restaurante.usuarios.exceptions.*;
 import jakarta.validation.ConstraintViolationException;
@@ -143,7 +145,11 @@ public class GlobalExceptionHandler {
 
             // CARDÁPIO PRODUTO
             AssociacaoExistenteCardapioProdutoException.class,
-            AssociacaoNaoExisteException.class
+            AssociacaoNaoExisteException.class,
+
+            //Pedido
+            StatusPedidoNaoPodeMaisSerAlteradoException.class,
+            StatusPedidoInvalidoException.class
     })
     public ResponseEntity<ApiResponse<Object>> handleCustom(RuntimeException ex) {
 
