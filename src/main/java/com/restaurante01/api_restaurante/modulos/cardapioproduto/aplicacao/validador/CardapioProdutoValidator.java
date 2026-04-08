@@ -2,11 +2,10 @@ package com.restaurante01.api_restaurante.modulos.cardapioproduto.aplicacao.vali
 
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.api.dto.entrada.CardapioProdutoAssociacaoEntradaDTO;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.excecao.AssociacaoExistenteCardapioProdutoException;
-import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.repositorio.CardapioProdutoRepositorio;
+import com.restaurante01.api_restaurante.modulos.cardapioproduto.infraestrutura.persistencia.CardapioProdutoJPA;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.PrecoProdutoNegativoException;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.ProdutoDescricaoInvalidaExcpetion;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.ProdutoQntdNegativa;
-import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,10 +15,10 @@ import java.math.BigDecimal;
 public class CardapioProdutoValidator {
 
     @Autowired
-    private CardapioProdutoRepositorio cardapioProdutoRepositorio;
+    private CardapioProdutoJPA cardapioProdutoJPA;
 
-    public CardapioProdutoValidator(CardapioProdutoRepositorio cardapioProdutoRepositorio){
-        this.cardapioProdutoRepositorio = cardapioProdutoRepositorio;
+    public CardapioProdutoValidator(CardapioProdutoJPA cardapioProdutoJPA){
+        this.cardapioProdutoJPA = cardapioProdutoJPA;
     }
 
     public void validarCardapioProdutoAssociacaoEntradaDTO(CardapioProdutoAssociacaoEntradaDTO dto,  boolean existeAssociacao, boolean estaAtualizandoApenas){
