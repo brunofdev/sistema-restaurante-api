@@ -52,31 +52,9 @@ public class Pedido extends Auditable {
                .reduce(BigDecimal.ZERO, BigDecimal::add);
         }
     public void mudarStatus(StatusPedido novoStatus){
-        if (this.statusPedido == StatusPedido.ENTREGUE || this.statusPedido == StatusPedido.CANCELADO) {
-            throw new StatusPedidoNaoPodeMaisSerAlteradoException("Pedido finalizado não pode ser alterado.");
+        if(!this.statusPedido.podeTransicionarPara(novoStatus)){
+            throw  new StatusPedidoInvalidoException("Status do pedido não pode retroceder ou ser alterado caso este esteja cancelado");
         }
-        boolean transicaoValida = false;
-        if (novoStatus == StatusPedido.CANCELADO) {
-            transicaoValida = true;
-        } else {
-            switch (this.statusPedido) {
-                case PENDENTE:
-                    transicaoValida = (novoStatus == StatusPedido.EM_PREPARACAO);
-                    break;
-                case EM_PREPARACAO:
-                    transicaoValida = (novoStatus == StatusPedido.SAIU_PARA_ENTREGA);
-                    break;
-                case SAIU_PARA_ENTREGA:
-                    transicaoValida = (novoStatus == StatusPedido.ENTREGUE);
-                    break;
-            }
-        }
-        if (!transicaoValida) {
-            throw new StatusPedidoInvalidoException(
-                    "Não é possível mudar o status de " + this.statusPedido + " para " + novoStatus
-            );
-        }
-        this.statusPedido = novoStatus;
     }
 }
 
