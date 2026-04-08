@@ -1,12 +1,12 @@
-package com.restaurante01.api_restaurante.modulos.operador.validator;
+package com.restaurante01.api_restaurante.modulos.operador.aplicacao.validador;
 
 import com.restaurante01.api_restaurante.compartilhado.validadorcpf.ValidadorCpf;
-import com.restaurante01.api_restaurante.modulos.cliente.dominio.repositorio.ClienteRepository;
+import com.restaurante01.api_restaurante.modulos.cliente.infraestrutura.persistencia.ClienteJPA;
 import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.exceptions.CpfAlreadyExistsException;
 import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.exceptions.EmailAlreadyExistsException;
 import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.exceptions.UsernameAlreadyExistsException;
-import com.restaurante01.api_restaurante.modulos.operador.dto.entrada.CadastrarOperadorDTO;
-import com.restaurante01.api_restaurante.modulos.operador.repository.OperadorRepository;
+import com.restaurante01.api_restaurante.modulos.operador.api.dto.entrada.CadastrarOperadorDTO;
+import com.restaurante01.api_restaurante.modulos.operador.infraestrutura.persistencia.OperadorJPA;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,9 +14,9 @@ import org.springframework.stereotype.Component;
 public class OperadorValidator {
 
     @Autowired
-    private OperadorRepository operadorRepository;
+    private OperadorJPA operadorJPA;
     @Autowired
-    private ClienteRepository clienteRepository;
+    private ClienteJPA clienteJPA;
 
     public void validarNovoOperador(CadastrarOperadorDTO dto, Boolean isUpdate) {
         ValidadorCpf.validarCpf(dto.cpf());
@@ -30,22 +30,22 @@ public class OperadorValidator {
         //adicionar regra caso necessario
     }
     private void checaEmailExiste(String email){
-        if(operadorRepository.existsByEmail(email)){
+        if(operadorJPA.existsByEmail(email)){
             throw new EmailAlreadyExistsException("Email ja cadastrado no sistema");
         }
     }
     private void checaUserNameExisteEmCliente(String userName){
-        if(clienteRepository.existsByUserName(userName)){
+        if(clienteJPA.existsByUserName(userName)){
             throw new UsernameAlreadyExistsException("Já existe Operador com userName cadastrado");
         }
     }
     private void checaCpfExiste(String cpf){
-        if(operadorRepository.existsByCpf(cpf)){
+        if(operadorJPA.existsByCpf(cpf)){
             throw new CpfAlreadyExistsException("Cpf já cadastrado no sistema");
         }
     }
     private void checaUserNameExiste(String userName){
-        if(operadorRepository.existsByUserName(userName)){
+        if(operadorJPA.existsByUserName(userName)){
             throw new UsernameAlreadyExistsException(
                     "Já existe um userName com este Nome cadastrado no sistema");
         }

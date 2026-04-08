@@ -1,9 +1,9 @@
-package com.restaurante01.api_restaurante.modulos.operador.controller;
+package com.restaurante01.api_restaurante.modulos.operador.api.controller;
 
 import com.restaurante01.api_restaurante.compartilhado.retorno_padrao_api.ApiResponse;
-import com.restaurante01.api_restaurante.modulos.operador.dto.entrada.CadastrarOperadorDTO;
-import com.restaurante01.api_restaurante.modulos.operador.dto.saida.OperadorDTO;
-import com.restaurante01.api_restaurante.modulos.operador.service.OperadorService;
+import com.restaurante01.api_restaurante.modulos.operador.api.dto.entrada.CadastrarOperadorDTO;
+import com.restaurante01.api_restaurante.modulos.operador.api.dto.saida.OperadorDTO;
+import com.restaurante01.api_restaurante.modulos.operador.aplicacao.service.OperadorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

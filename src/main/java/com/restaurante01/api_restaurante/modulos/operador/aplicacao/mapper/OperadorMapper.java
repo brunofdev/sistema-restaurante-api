@@ -1,9 +1,9 @@
-package com.restaurante01.api_restaurante.modulos.operador.mapper;
+package com.restaurante01.api_restaurante.modulos.operador.aplicacao.mapper;
 
 
-import com.restaurante01.api_restaurante.modulos.operador.dto.entrada.CadastrarOperadorDTO;
-import com.restaurante01.api_restaurante.modulos.operador.dto.saida.OperadorDTO;
-import com.restaurante01.api_restaurante.modulos.operador.entity.Operador;
+import com.restaurante01.api_restaurante.modulos.operador.api.dto.entrada.CadastrarOperadorDTO;
+import com.restaurante01.api_restaurante.modulos.operador.api.dto.saida.OperadorDTO;
+import com.restaurante01.api_restaurante.modulos.operador.dominio.entidade.Operador;
 import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.role.Role;
 import org.springframework.stereotype.Component;
 

@@ -5,7 +5,7 @@ import com.restaurante01.api_restaurante.modulos.cliente.api.dto.entrada.Cadastr
 import com.restaurante01.api_restaurante.modulos.cliente.api.dto.saida.ClienteDTO;
 import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;
 import com.restaurante01.api_restaurante.modulos.cliente.aplicacao.mappeador.ClienteMapper;
-import com.restaurante01.api_restaurante.modulos.cliente.dominio.repositorio.ClienteRepository;
+import com.restaurante01.api_restaurante.modulos.cliente.infraestrutura.persistencia.ClienteJPA;
 import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.exceptions.InvalidCredentialsException;
 import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.exceptions.UserDontFoundException;
 import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.role.Role;
@@ -17,13 +17,13 @@ import java.util.List;
 
 @Service
 public class ClienteService {
-    private final ClienteRepository repository;
+    private final ClienteJPA repository;
     private final ClienteValidator validator;
     private final ClienteMapper mapper;
     private final PasswordEncoder passwordEncoder;
     private final CalculadoraDeFidelidade calculadoraDeFidelidade;
 
-    public  ClienteService(ClienteRepository repository, ClienteValidator validator, ClienteMapper mapper, PasswordEncoder passwordEncoder, CalculadoraDeFidelidade calculadoraDeFidelidade){
+    public  ClienteService(ClienteJPA repository, ClienteValidator validator, ClienteMapper mapper, PasswordEncoder passwordEncoder, CalculadoraDeFidelidade calculadoraDeFidelidade){
         this.passwordEncoder = passwordEncoder;
         this.repository = repository;
         this.validator = validator;

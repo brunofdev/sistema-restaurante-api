@@ -43,4 +43,12 @@ public class ClienteMapper {
         return clientes.stream()
                 .map(cliente -> mapearClienteParaClienteDTO(cliente)).toList();
     }
+    public void atualizarEntidade(Cliente clienteExistente, ClienteDTO dto) {
+        if (dto.nome() != null) {
+            clienteExistente.setNome(dto.nome());
+        }
+        if (dto.userName() != null) {
+            clienteExistente.setUserName(dto.userName());
+        }
+    }
 }

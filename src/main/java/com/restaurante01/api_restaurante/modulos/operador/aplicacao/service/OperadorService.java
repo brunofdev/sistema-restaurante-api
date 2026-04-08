@@ -1,13 +1,13 @@
-package com.restaurante01.api_restaurante.modulos.operador.service;
+package com.restaurante01.api_restaurante.modulos.operador.aplicacao.service;
 
 import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.exceptions.InvalidCredentialsException;
 import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.exceptions.UserDontFoundException;
-import com.restaurante01.api_restaurante.modulos.operador.dto.entrada.CadastrarOperadorDTO;
-import com.restaurante01.api_restaurante.modulos.operador.dto.saida.OperadorDTO;
-import com.restaurante01.api_restaurante.modulos.operador.entity.Operador;
-import com.restaurante01.api_restaurante.modulos.operador.mapper.OperadorMapper;
-import com.restaurante01.api_restaurante.modulos.operador.repository.OperadorRepository;
-import com.restaurante01.api_restaurante.modulos.operador.validator.OperadorValidator;
+import com.restaurante01.api_restaurante.modulos.operador.api.dto.entrada.CadastrarOperadorDTO;
+import com.restaurante01.api_restaurante.modulos.operador.api.dto.saida.OperadorDTO;
+import com.restaurante01.api_restaurante.modulos.operador.dominio.entidade.Operador;
+import com.restaurante01.api_restaurante.modulos.operador.aplicacao.mapper.OperadorMapper;
+import com.restaurante01.api_restaurante.modulos.operador.infraestrutura.persistencia.OperadorJPA;
+import com.restaurante01.api_restaurante.modulos.operador.aplicacao.validador.OperadorValidator;
 import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.role.Role;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,12 +17,12 @@ import java.util.List;
 @Service
 public class OperadorService {
 
-    private final OperadorRepository repository;
+    private final OperadorJPA repository;
     private final OperadorValidator validator;
     private final OperadorMapper mapper;
     private final PasswordEncoder passwordEncoder;
 
-    public OperadorService(OperadorRepository repository, OperadorValidator validator, OperadorMapper mapper, PasswordEncoder passwordEncoder) {
+    public OperadorService(OperadorJPA repository, OperadorValidator validator, OperadorMapper mapper, PasswordEncoder passwordEncoder) {
         this.repository = repository;
         this.validator = validator;
         this.mapper = mapper;

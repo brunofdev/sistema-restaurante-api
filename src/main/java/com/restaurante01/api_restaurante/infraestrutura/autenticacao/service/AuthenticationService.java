@@ -7,8 +7,8 @@ import com.restaurante01.api_restaurante.infraestrutura.autenticacao.dto.Operado
 import com.restaurante01.api_restaurante.infraestrutura.autenticacao.jwt.JwtProvider;
 import com.restaurante01.api_restaurante.modulos.cliente.api.dto.saida.ClienteDTO;
 import com.restaurante01.api_restaurante.modulos.cliente.aplicacao.servico.ClienteService;
-import com.restaurante01.api_restaurante.modulos.operador.dto.saida.OperadorDTO;
-import com.restaurante01.api_restaurante.modulos.operador.service.OperadorService;
+import com.restaurante01.api_restaurante.modulos.operador.api.dto.saida.OperadorDTO;
+import com.restaurante01.api_restaurante.modulos.operador.aplicacao.service.OperadorService;
 import org.springframework.stereotype.Service;
 
 @Service

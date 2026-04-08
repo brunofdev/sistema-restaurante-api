@@ -1,11 +1,11 @@
-package com.restaurante01.api_restaurante.modulos.operador.repository;
+package com.restaurante01.api_restaurante.modulos.operador.infraestrutura.persistencia;
 
-import com.restaurante01.api_restaurante.modulos.operador.entity.Operador;
+import com.restaurante01.api_restaurante.modulos.operador.dominio.entidade.Operador;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface OperadorRepository extends JpaRepository<Operador, Long> {
+public interface OperadorJPA extends JpaRepository<Operador, Long> {
     boolean existsByCpf(String cpf);
     boolean existsByEmail(String email);
     boolean existsByUserName(String userName);

@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.modulos.operador.entity;
+package com.restaurante01.api_restaurante.modulos.operador.dominio.entidade;
 
 import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.entidade.Usuario;
 import jakarta.persistence.Column;

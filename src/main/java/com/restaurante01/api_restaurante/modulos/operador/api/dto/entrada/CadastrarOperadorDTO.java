@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.modulos.operador.dto.entrada;
+package com.restaurante01.api_restaurante.modulos.operador.api.dto.entrada;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
