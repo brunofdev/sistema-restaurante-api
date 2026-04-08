@@ -1,6 +1,6 @@
-package com.restaurante01.api_restaurante.modulos.cliente.dominio.repository;
+package com.restaurante01.api_restaurante.modulos.cliente.dominio.repositorio;
 
-import com.restaurante01.api_restaurante.modulos.cliente.dominio.entity.Cliente;
+import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

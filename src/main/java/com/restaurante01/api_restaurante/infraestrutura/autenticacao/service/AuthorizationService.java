@@ -1,6 +1,6 @@
 package com.restaurante01.api_restaurante.infraestrutura.autenticacao.service;
 
-import com.restaurante01.api_restaurante.modulos.cliente.dominio.repository.ClienteRepository;
+import com.restaurante01.api_restaurante.modulos.cliente.dominio.repositorio.ClienteRepository;
 import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.exceptions.UserNotFoundException;
 import com.restaurante01.api_restaurante.modulos.operador.repository.OperadorRepository;
 import org.springframework.beans.factory.annotation.Autowired;

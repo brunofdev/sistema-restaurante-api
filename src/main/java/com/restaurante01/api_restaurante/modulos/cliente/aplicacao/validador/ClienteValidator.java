@@ -1,8 +1,8 @@
-package com.restaurante01.api_restaurante.modulos.cliente.validator;
+package com.restaurante01.api_restaurante.modulos.cliente.aplicacao.validador;
 
 import com.restaurante01.api_restaurante.compartilhado.validadorcpf.ValidadorCpf;
 import com.restaurante01.api_restaurante.modulos.cliente.api.dto.entrada.CadastrarClienteDTO;
-import com.restaurante01.api_restaurante.modulos.cliente.dominio.repository.ClienteRepository;
+import com.restaurante01.api_restaurante.modulos.cliente.dominio.repositorio.ClienteRepository;
 import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.exceptions.CpfAlreadyExistsException;
 import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.exceptions.EmailAlreadyExistsException;
 import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.exceptions.UsernameAlreadyExistsException;

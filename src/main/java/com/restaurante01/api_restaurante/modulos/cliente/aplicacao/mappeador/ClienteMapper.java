@@ -1,9 +1,9 @@
-package com.restaurante01.api_restaurante.modulos.cliente.mapper;
+package com.restaurante01.api_restaurante.modulos.cliente.aplicacao.mappeador;
 
 
 import com.restaurante01.api_restaurante.modulos.cliente.api.dto.entrada.CadastrarClienteDTO;
 import com.restaurante01.api_restaurante.modulos.cliente.api.dto.saida.ClienteDTO;
-import com.restaurante01.api_restaurante.modulos.cliente.dominio.entity.Cliente;
+import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;
 import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.role.Role;
 import org.springframework.stereotype.Component;
 

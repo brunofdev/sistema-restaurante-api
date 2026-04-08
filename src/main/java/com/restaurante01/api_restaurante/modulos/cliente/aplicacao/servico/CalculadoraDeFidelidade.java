@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.service;
+package com.restaurante01.api_restaurante.modulos.cliente.aplicacao.servico;
 
 
 import org.springframework.stereotype.Component;

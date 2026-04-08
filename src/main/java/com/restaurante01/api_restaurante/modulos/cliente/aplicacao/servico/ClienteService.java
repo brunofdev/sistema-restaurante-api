@@ -1,12 +1,11 @@
-package com.restaurante01.api_restaurante.modulos.cliente.service;
+package com.restaurante01.api_restaurante.modulos.cliente.aplicacao.servico;
 
-import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.service.CalculadoraDeFidelidade;
-import com.restaurante01.api_restaurante.modulos.cliente.validator.ClienteValidator;
+import com.restaurante01.api_restaurante.modulos.cliente.aplicacao.validador.ClienteValidator;
 import com.restaurante01.api_restaurante.modulos.cliente.api.dto.entrada.CadastrarClienteDTO;
 import com.restaurante01.api_restaurante.modulos.cliente.api.dto.saida.ClienteDTO;
-import com.restaurante01.api_restaurante.modulos.cliente.dominio.entity.Cliente;
-import com.restaurante01.api_restaurante.modulos.cliente.mapper.ClienteMapper;
-import com.restaurante01.api_restaurante.modulos.cliente.dominio.repository.ClienteRepository;
+import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;
+import com.restaurante01.api_restaurante.modulos.cliente.aplicacao.mappeador.ClienteMapper;
+import com.restaurante01.api_restaurante.modulos.cliente.dominio.repositorio.ClienteRepository;
 import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.exceptions.InvalidCredentialsException;
 import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.exceptions.UserDontFoundException;
 import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.role.Role;
