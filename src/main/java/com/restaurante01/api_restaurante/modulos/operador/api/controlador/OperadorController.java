@@ -68,7 +68,7 @@ public class OperadorController {
     }
 
     @Operation(summary = "Deletar operador", description = "Remove um operador permanentemente do sistema. Requer ROLE_ADMIN3.")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deletar/{id}")
     public ResponseEntity<ApiResponse<Void>> deletar(@PathVariable Long id) {
         deletarOperador.executar(id);
         return ResponseEntity.ok(ApiResponse.success("Recurso deletado", null));

@@ -40,19 +40,19 @@ public class CardapioController {
     }
 
     @Operation(summary = "Lista todos os cardápios", description = "Retorna uma lista de todos os cardápios cadastrados. Requer ROLE_ADMIN3.")
-    @GetMapping("/listar-todos")
+    @GetMapping("/todos")
     public ResponseEntity<ApiResponse<List<CardapioDTO>>> solicitarCardapios(){
         return ResponseEntity.ok(ApiResponse.success("Recurso encontrado" , obterTodosCardapiosCasoDeUso.executar()));
     }
 
     @Operation(summary = "Cria um novo cardápio", description = "Cadastra um novo cardápio no sistema. Requer ROLE_ADMIN3.")
-    @PostMapping("/adicionar-novo")
+    @PostMapping("/criar")
     public ResponseEntity<ApiResponse<CardapioDTO>> adicionarNovoCardapio(@Valid @RequestBody CardapioCreateDTO cardapioDTO){
         return ResponseEntity.ok(ApiResponse.success("Recurso criado" , criarCardapioCasoDeUso.executar(cardapioDTO)));
     }
 
     @Operation(summary = "Atualiza um cardápio existente", description = "Altera os dados de um cardápio já cadastrado. Requer ROLE_ADMIN3.")
-    @PutMapping("/atualizar-um")
+    @PutMapping("/atualizar")
     public ResponseEntity<ApiResponse<CardapioDTO>> atualizarCardapio(@Valid @RequestBody CardapioDTO cardapioDTO){
         return ResponseEntity.ok(ApiResponse.success("Recurso atualizado", atualizarUmCardapioCasoDeUso.executar(cardapioDTO)));
     }
