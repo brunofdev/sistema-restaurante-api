@@ -5,15 +5,15 @@
 
 ---
 
-## 🎯 Sobre o Projeto
+##  Sobre o Projeto
 
 Este projeto simula o backend completo de um sistema de restaurante, cobrindo desde a vitrine pública de cardápios até o painel operacional da cozinha. Foi construído com atenção especial a princípios de design como SOLID, coesão de classes, separação entre domínio e infraestrutura, e segurança por níveis de acesso.
 
 ---
 
-## ✨ Funcionalidades
+##  Funcionalidades
 
-### 🛎️ Salão — Área do Cliente
+### Salão — Área do Cliente
 
 **Acesso público (sem login)**
 - Visualização de cardápios ativos e produtos com preços
@@ -25,7 +25,7 @@ Este projeto simula o backend completo de um sistema de restaurante, cobrindo de
 
 ---
 
-### 👨‍🍳 Cozinha e Escritório — Área Operacional
+### Cozinha e Escritório — Área Operacional
 
 **Gestão de pedidos (`ADMIN1`, `ADMIN2`, `ADMIN3`)**
 - Painel do dia com filtro automático por data
