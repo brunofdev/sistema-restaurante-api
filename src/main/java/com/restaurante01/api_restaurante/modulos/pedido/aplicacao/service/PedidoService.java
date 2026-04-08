@@ -11,8 +11,8 @@ import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.repositorio.PedidoRepository;
+import com.restaurante01.api_restaurante.modulos.produto.aplicacao.casodeuso.ObterProdutoPorIdCasoDeUso;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
-import com.restaurante01.api_restaurante.modulos.produto.aplicacao.servico.ProdutoService;
 import com.restaurante01.api_restaurante.modulos.cliente.dominio.entity.Cliente;
 import com.restaurante01.api_restaurante.modulos.cliente.service.ClienteService;
 import jakarta.transaction.Transactional;
@@ -28,12 +28,12 @@ import java.util.List;
 public class PedidoService {
     private final PedidoRepository pedidoRepository;
     private final PedidoMapper pedidoMapper;
-    private final ProdutoService produtoService;
+    private final ObterProdutoPorIdCasoDeUso obterProdutoPorIdCasoDeUso;
     private final ClienteService clienteService;
-    public PedidoService (PedidoRepository pedidoRepository, PedidoMapper pedidoMapper, ProdutoService produtoService, ClienteService clienteService){
+    public PedidoService (PedidoRepository pedidoRepository, PedidoMapper pedidoMapper, ObterProdutoPorIdCasoDeUso obterProdutoPorIdCasoDeUso, ClienteService clienteService){
         this.pedidoRepository = pedidoRepository;
         this.pedidoMapper = pedidoMapper;
-        this.produtoService = produtoService;
+        this.obterProdutoPorIdCasoDeUso = obterProdutoPorIdCasoDeUso;
         this.clienteService = clienteService;
     }
     @Transactional
@@ -63,7 +63,7 @@ public class PedidoService {
     }
     private void vincularItemAoPedido(Pedido pedido, List<ItemPedidoSolicitadoDTO> itens){
         itens.forEach(item -> {
-            Produto produto = produtoService.encontrarProdutoPorId(item.idProduto());
+            Produto produto = obterProdutoPorIdCasoDeUso.retornarEntidade(item.idProduto());
             ItemPedido itemPedido = pedidoMapper.mapearItemPedido(item.quantidade(), produto);
             pedido.adicionarItem(itemPedido);
         });

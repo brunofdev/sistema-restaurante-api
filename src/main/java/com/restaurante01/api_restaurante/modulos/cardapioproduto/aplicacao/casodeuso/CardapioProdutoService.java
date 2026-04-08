@@ -10,8 +10,8 @@ import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.excecao
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.aplicacao.mapeador.CardapioProdutoMapper;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.repositorio.CardapioProdutoRepositorio;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.aplicacao.validador.CardapioProdutoValidator;
+import com.restaurante01.api_restaurante.modulos.produto.aplicacao.casodeuso.ObterProdutoPorIdCasoDeUso;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
-import com.restaurante01.api_restaurante.modulos.produto.aplicacao.servico.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,21 +21,20 @@ import java.util.List;
 public class CardapioProdutoService {
     private final CardapioProdutoRepositorio cardapioProdutoRepositorio;
     private final CardapioProdutoMapper cardapioProdutoMapper;
-    private final ProdutoService produtoService;
     private final CardapioProdutoValidator cardapioProdutoValidator;
     private final BuscarCardapioPorIdCasoDeUso buscarCardapioPorId;
-
+    private final ObterProdutoPorIdCasoDeUso obterProdutoPorIdCasoDeUso;
 
     @Autowired
     public CardapioProdutoService(CardapioProdutoRepositorio cardapioProdutoRepositorio,
                                   CardapioProdutoMapper cardapioProdutoMapper,
-                                  ProdutoService produtoService,
+                                  ObterProdutoPorIdCasoDeUso obterProdutoPorIdCasoDeUso,
                                   CardapioProdutoValidator cardapioProdutoValidator,
                                   BuscarCardapioPorIdCasoDeUso buscarCardapioPorId){
         this.cardapioProdutoRepositorio = cardapioProdutoRepositorio;
         this.cardapioProdutoMapper = cardapioProdutoMapper;
         this.cardapioProdutoValidator = cardapioProdutoValidator;
-        this.produtoService = produtoService;
+        this.obterProdutoPorIdCasoDeUso = obterProdutoPorIdCasoDeUso;
         this.buscarCardapioPorId = buscarCardapioPorId;
     }
 
@@ -57,7 +56,7 @@ public class CardapioProdutoService {
     }
     public CardapioProdutoAssociacaoRespostaDTO criarAssociacaoProdutoCardapio(CardapioProdutoAssociacaoEntradaDTO dto) {
         cardapioProdutoValidator.validarCardapioProdutoAssociacaoEntradaDTO(dto, verificarAssociacaoEntreProdutoCardapio(dto.getIdCardapio(), dto.getIdProduto()), false);
-        Produto produto = produtoService.buscarProdutoPorId(dto.getIdProduto());
+        Produto produto = obterProdutoPorIdCasoDeUso.retornarEntidade(dto.getIdProduto());
         Cardapio cardapio = buscarCardapioPorId.executar(dto.getIdCardapio());
         CardapioProduto cardapioProduto = cardapioProdutoMapper.mapearCardapioProduto(produto, cardapio, dto);
         cardapioProdutoRepositorio.save(cardapioProduto);

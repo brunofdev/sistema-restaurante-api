@@ -5,7 +5,7 @@ import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produt
 import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.ProdutoMesmoNomeExistenteException;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.ProdutoNomeInvalidoException;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.ProdutoQntdNegativa;
-import com.restaurante01.api_restaurante.modulos.produto.dominio.repositorio.ProdutoRepository;
+import com.restaurante01.api_restaurante.modulos.produto.infraestrutura.ProdutoJPA;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,9 +15,9 @@ import java.util.List;
 @Component
 public class ProdutoValidator {
     @Autowired
-    private final ProdutoRepository produtoRepository ;
+    private final ProdutoJPA produtoRepository ;
 
-    public ProdutoValidator(ProdutoRepository produtoRepository){
+    public ProdutoValidator(ProdutoJPA produtoRepository){
         this.produtoRepository = produtoRepository;
     }
 
