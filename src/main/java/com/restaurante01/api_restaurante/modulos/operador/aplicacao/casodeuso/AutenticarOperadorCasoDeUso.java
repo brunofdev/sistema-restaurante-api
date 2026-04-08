@@ -2,7 +2,7 @@ package com.restaurante01.api_restaurante.modulos.operador.aplicacao.casodeuso;
 
 import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.exceptions.InvalidCredentialsException;
 import com.restaurante01.api_restaurante.modulos.operador.api.dto.saida.OperadorDTO;
-import com.restaurante01.api_restaurante.modulos.operador.aplicacao.mapper.OperadorMapper;
+import com.restaurante01.api_restaurante.modulos.operador.aplicacao.mappeador.OperadorMapper;
 import com.restaurante01.api_restaurante.modulos.operador.dominio.entidade.Operador;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

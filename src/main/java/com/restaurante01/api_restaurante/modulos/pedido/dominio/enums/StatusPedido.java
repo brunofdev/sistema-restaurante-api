@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.modulos.pedido.dominio.Enum;
+package com.restaurante01.api_restaurante.modulos.pedido.dominio.enums;
 
 public enum StatusPedido {
     PENDENTE {

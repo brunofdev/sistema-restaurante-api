@@ -18,6 +18,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import static java.util.Map.entry;
 
 @Configuration
 @EnableWebSecurity
@@ -36,7 +37,7 @@ public class SecurityConfigurations {
             "/swagger-ui.html",
             "/produtos/todos-produtos",
             "/cardapioproduto/obter-todas-associacoes",
-            "/cardapioproduto//cardapio/{idCardapio}",
+            "/cardapioproduto/cardapio/{idCardapio}",
             //>>>>>>>>>>>>>LIBERADO PUBLICAMENTE PARA TESTES APENAS<<<<<<<<<<<
             "/cliente/cadastro",
             "/cliente/obter-todos",
@@ -45,19 +46,22 @@ public class SecurityConfigurations {
             "/ws/**" //libera conexão web socket para facilitar os testes de tubulacao
     };
     //ROTAS PROTEGIDAS
-    private static final Map<String, Role> PROTECTED_ROUTES = Map.of(
-            //Apenas USER+
-                 "/pedido/criar-pedido", Role.USER
-            ,"/pedido/obter-todos-pedidos", Role.USER
-            ,"/pedido/obter-pedidos-do-cliente", Role.USER
-            //Apenas ADMIN1+
-            ,"/produtos/adicionar-produto", Role.ADMIN1
-            ,"/pedido/*/status", Role.ADMIN1
-            ,"/pedido/obter-pedidos-do-dia", Role.ADMIN1
-            ,"/cardapioproduto/associar-cardapioproduto", Role.ADMIN1
-            ,"/cardapioproduto/atualizar-campos-custom", Role.ADMIN1
-            //Apenas ADMIN2+
-            ,"/cardapioproduto/cardapio{idCardapio}/produto{idProduto}", Role.ADMIN2
+    private static final Map<String, Role> PROTECTED_ROUTES = Map.ofEntries(
+            // Apenas USER+
+            entry("/pedido/criar-pedido", Role.USER),
+            entry("/pedido/obter-pedidos-do-cliente", Role.USER),
+            // Apenas ADMIN1+
+            entry("/produtos/adicionar-produto", Role.ADMIN1),
+            entry("/pedido/*/status", Role.ADMIN1),
+            entry("/pedido/obter-pedidos-do-dia", Role.ADMIN1),
+            entry("/cardapioproduto/associar-cardapioproduto", Role.ADMIN1),
+            entry("/cardapioproduto/atualizar-campos-custom", Role.ADMIN1),
+            // Apenas ADMIN2+
+            // (Aproveitei para corrigir as barras das variáveis de path que estavam faltando)
+            entry("/cardapioproduto/cardapio/{idCardapio}/produto/{idProduto}", Role.ADMIN2),
+            entry("/pedido/obter-todos-pedidos", Role.ADMIN2),
+            // Exemplo da sua 11ª rota em diante:
+            entry("/nova-rota-ilimitada", Role.ADMIN3)
     );
 
     @Bean

@@ -16,7 +16,7 @@ public interface CardapioProdutoJPA extends JpaRepository<CardapioProduto, Long>
     Optional <CardapioProduto> findByCardapioId(long id);
     Optional<CardapioProduto> findByCardapioIdAndProdutoId(long cardapioId, long produtoId);
     @Query(value = "SELECT EXISTS (SELECT 1 FROM cardapio_produto cp WHERE cp.cardapio_id = :idCardapio AND cp.produto_id = :idProduto)", nativeQuery = true)
-    int encontrarProdutoCardapio(@Param("idCardapio") long idCardapio, @Param("idProduto") long idProduto);
+    boolean encontrarProdutoCardapio(@Param("idCardapio") long idCardapio, @Param("idProduto") long idProduto);
     @Modifying
     @Transactional
     @Query(value = "DELETE FROM cardapio_produto cp WHERE cp.cardapio_id = :idCardapio AND cp.produto_id = :idProduto", nativeQuery = true)

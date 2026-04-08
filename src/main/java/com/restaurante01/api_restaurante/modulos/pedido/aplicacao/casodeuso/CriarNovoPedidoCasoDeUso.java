@@ -4,8 +4,8 @@ import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Client
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.ItemPedidoSolicitadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.PedidoCriacaoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDTO;
-import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mapper.PedidoMapper;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.Enum.StatusPedido;
+import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mappeador.PedidoMapper;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.enums.StatusPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.repositorio.PedidoRepositorio;

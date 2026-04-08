@@ -1,11 +1,10 @@
-package com.restaurante01.api_restaurante.modulos.operador.api.controller;
+package com.restaurante01.api_restaurante.modulos.operador.api.controlador;
 
 import com.restaurante01.api_restaurante.compartilhado.retorno_padrao_api.ApiResponse;
 import com.restaurante01.api_restaurante.modulos.operador.api.dto.entrada.CadastrarOperadorDTO;
 import com.restaurante01.api_restaurante.modulos.operador.api.dto.saida.OperadorDTO;
 import com.restaurante01.api_restaurante.modulos.operador.aplicacao.casodeuso.*;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
@@ -22,8 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/operador")
 @CrossOrigin("*")
 @Validated
-@Tag(name = "Operadores", description = "Gerenciamento de usuários administrativos e funcionários")
-@SecurityRequirement(name = "bearerAuth")
+@Tag(name = "9. Operadores", description = "Gerenciamento de usuários administrativos e funcionários")
 public class OperadorController {
 
     private final CadastrarOperadorCasoDeUso cadastrarOperador;

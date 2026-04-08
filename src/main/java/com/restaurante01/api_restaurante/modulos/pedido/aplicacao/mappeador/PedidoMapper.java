@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mapper;
+package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mappeador;
 
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.ItemPedidoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDTO;

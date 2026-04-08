@@ -28,8 +28,7 @@ public class CardapioProdutoAdaptador implements CardapioProdutoRepositorio {
 
     @Override
     public boolean existeAssociacao(long idCardapio, long idProduto) {
-        // Converte o retorno '1' ou '0' do banco para boolean
-        return jpa.encontrarProdutoCardapio(idCardapio, idProduto) >= 1;
+        return jpa.encontrarProdutoCardapio(idCardapio, idProduto);
     }
 
     @Override

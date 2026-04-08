@@ -1,7 +1,7 @@
 package com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade;
 
 
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.Enum.StatusPedido;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.enums.StatusPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.StatusPedidoInvalidoException;
 import com.restaurante01.api_restaurante.infraestrutura.security.auditoria.Auditable;
 import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;

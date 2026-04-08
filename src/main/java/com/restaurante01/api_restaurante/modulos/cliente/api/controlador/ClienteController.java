@@ -1,11 +1,10 @@
-package com.restaurante01.api_restaurante.modulos.cliente.api.controller;
+package com.restaurante01.api_restaurante.modulos.cliente.api.controlador;
 
 import com.restaurante01.api_restaurante.compartilhado.retorno_padrao_api.ApiResponse;
 import com.restaurante01.api_restaurante.modulos.cliente.api.dto.entrada.CadastrarClienteDTO;
 import com.restaurante01.api_restaurante.modulos.cliente.api.dto.saida.ClienteDTO;
 import com.restaurante01.api_restaurante.modulos.cliente.aplicacao.casodeuso.*;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
@@ -21,8 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/cliente")
 @Validated
-@Tag(name = "Clientes", description = "Gerenciamento de usuários do tipo Cliente e fidelidade")
-@SecurityRequirement(name = "bearerAuth")
+@Tag(name = "8. Clientes", description = "Gerenciamento de usuários do tipo Cliente e fidelidade")
 public class ClienteController {
 
     private final CadastrarClienteCasoDeUso cadastrarCliente;
