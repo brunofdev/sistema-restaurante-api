@@ -1,52 +1,140 @@
-# 📦 API REST com Spring Boot
+# 🍽️ Sistema Restaurante — API REST
 
-Este projeto é uma API RESTful desenvolvida em **Java 17** com **Spring Boot**, voltada para fins educacionais, com foco em aplicar boas práticas de desenvolvimento backend moderno.
+> API RESTful completa para gestão de restaurantes, desenvolvida com **Java 17** e **Spring Boot**.  
+> Projeto educacional com foco em boas práticas de engenharia de software, arquitetura limpa e segurança.
 
-## 🎯 Objetivos
+---
 
-- Aplicar princípios SOLID e Clean Code.
-- Utilizar arquitetura MVC com foco em coesão e separação de responsabilidades.
-- Implementar organização baseada em funcionalidades (_Feature-Based Structure_).
-- Realizar persistência de dados com Spring Data JPA e Hibernate.
-- Integrar com banco de dados relacional (MySQL).
-- Criar testes automatizados com JUnit 5 e Mockito.
-- Documentar a API com Swagger (OpenAPI).
-- Em breve: autenticação com JWT.
+## 🎯 Sobre o Projeto
 
-## 🧱 Estrutura do Projeto
+Este projeto simula o backend completo de um sistema de restaurante, cobrindo desde a vitrine pública de cardápios até o painel operacional da cozinha. Foi construído com atenção especial a princípios de design como SOLID, coesão de classes, separação entre domínio e infraestrutura, e segurança por níveis de acesso.
 
-- **Organização por Funcionalidades**: cada funcionalidade da aplicação possui sua própria estrutura interna (controller, service, repository, etc.).
-- **Padrão MVC**: separação clara entre as camadas de Model, View (API/DTOs), e Controller.
-- **Princípios de Design**:
-    - SRP (Single Responsibility Principle)
-    - SOLID
-    - Clean Architecture (de forma simplificada)
+---
 
-## ⚙️ Tecnologias Utilizadas
+## ✨ Funcionalidades
 
-- **Java 17+**
-- **Spring Boot**
-- **Spring Data JPA**
-- **Spring Security**
-- **Hibernate**
-- **Swagger/OpenAPI**
-- **Postgree**
-- **JUnit 5**
-- **Mockito**
-- **Maven**
-- **JWT**
-- **Docker**
+### 🛎️ Salão — Área do Cliente
 
-## Funcionalidades principais (Já implementadas):  
+**Acesso público (sem login)**
+- Visualização de cardápios ativos e produtos com preços
 
-- **Crud de Produtos,**
-- **Crud de Cardapios,**
-- **Associa produtos a Cardapios,**
-- **Cria e atualiza pedidos dinamicamente com WebSocket,**
-- **Todas as Rotas protegidas por Regras.**
-- **Autenticação via JWT.**
-    
+**Área do cliente autenticado (`ROLE_USER`)**
+- Login exclusivo via CPF com geração de token JWT
+- Abertura de pedidos com seleção de itens
+- Comanda digital — histórico pessoal de pedidos com status em tempo real
 
+---
 
+### 👨‍🍳 Cozinha e Escritório — Área Operacional
 
+**Gestão de pedidos (`ADMIN1`, `ADMIN2`, `ADMIN3`)**
+- Painel do dia com filtro automático por data
+- Controle do fluxo de status: `PENDENTE → EM_PREPARAÇÃO → SAIU_PARA_ENTREGA → ENTREGUE`
+- Histórico completo de vendas para auditoria
 
+**Engenharia de cardápio**
+- Criação e gerenciamento de cardápios temáticos (ex: Cardápio de Verão, Promoção de Terça)
+- Associação de produtos a cardápios específicos
+- Customização de preço e descrição por cardápio sem alterar o cadastro original do produto
+
+**Administração de usuários**
+- Controle de acesso por níveis hierárquicos de operadores
+- Gerenciamento da base de clientes
+
+---
+
+### 🏗️ Infraestrutura
+
+| Recurso | Descrição |
+|---|---|
+| 🔐 Segurança por papéis | Clientes não alteram status de pedidos; operadores não criam pedidos como clientes |
+| ⚡ WebSocket | Painel da gerência recebe alertas em tempo real ao chegar novos pedidos |
+| 🌱 Database Seeder | Sistema inicializa com dados de teste prontos — clientes, produtos e pedidos |
+| 📖 Swagger / OpenAPI | Documentação interativa de todas as rotas em `/swagger-ui.html` |
+| 🛡️ Tratamento de erros | Respostas padronizadas com mensagens claras em vez de stack traces |
+
+---
+
+## 🗺️ Rotas Principais
+
+| Módulo | Acesso | Ações |
+|---|---|---|
+| Autenticação | Público | Login de cliente e operador via JWT |
+| Produtos | Público / Admin | Ver vitrine · Gerenciar produtos |
+| Cardápios | Público / Admin | Ver opções · Montar e editar cardápios |
+| Pedidos | Cliente / Admin | Fazer pedido · Controlar status · Listar por dia |
+| Usuários | Admin | Gerenciar equipe e base de clientes |
+
+---
+
+## ⚙️ Tecnologias
+
+- **Java 17** · **Spring Boot** · **Spring Security** · **Spring Data JPA**
+- **Hibernate** · **H2** (testes) · **PostgreSQL** (produção)
+- **JWT** · **WebSocket (STOMP)**
+- **Swagger / OpenAPI**
+- **JUnit 5** · **Mockito**
+- **Docker** · **Maven**
+
+---
+
+## 🏛️ Arquitetura
+
+O projeto segue uma **arquitetura modular por funcionalidade**, onde cada módulo possui suas próprias camadas internas:
+
+```
+módulo/
+├── api/              → controllers e DTOs
+├── aplicacao/        → use cases, mappers e validadores
+├── dominio/          → entidades, repositórios (interfaces) e exceções
+└── infraestrutura/   → adapters e persistência JPA
+```
+
+Princípios aplicados:
+- **SOLID** — especialmente SRP e DIP, com separação clara entre domínio e infraestrutura
+- **Programação para interfaces** — serviços dependem de contratos, não de implementações concretas
+- **Padrão Repository + Adapter** — o domínio não conhece JPA; a infraestrutura não conhece as regras de negócio
+- **Enums com comportamento** — regras de transição de status encapsuladas no próprio enum `StatusPedido`
+
+---
+
+## 🚀 Como Rodar
+
+```bash
+# 1. Clone o repositório
+git clone https://github.com/brunofdev/sistema-restaurante-api
+
+# 2. Entre na pasta
+cd sistema-restaurante-api
+
+# 3. Sincronize as dependências Maven e rode
+./mvnw spring-boot:run
+```
+
+> A API sobe com banco **H2 em memória** e dados de teste já carregados automaticamente.  
+> Não é necessário configurar nenhum banco de dados externo para testar.
+
+Acesse a documentação interativa em:
+```
+http://localhost:8080/swagger-ui.html
+```
+
+---
+
+## 🧪 Testando o WebSocket
+
+Na raiz do projeto existe um arquivo `TestadorWebSocket.html` — abra-o no navegador para simular alertas em tempo real ao criar pedidos.
+
+---
+
+## 📐 Diagramas
+
+- `Modelagem do Banco Sistema.drawio` — modelagem do banco de dados
+- `DIAGRAMA UML - ESTRUTURA CARDAPIO, PRODUTO E CARDAPIOPRODUTO.pdf` — relacionamento entre cardápios e produtos
+- `UML-PLANT-API.puml` — diagrama de classes no formato PlantUML
+
+---
+
+## 📬 Contato
+
+Desenvolvido por **Bruno Fraga** · [github.com/brunofdev](https://github.com/brunofdev)
