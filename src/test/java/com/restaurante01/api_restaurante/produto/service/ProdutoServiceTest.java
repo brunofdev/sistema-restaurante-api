@@ -1,13 +1,14 @@
 package com.restaurante01.api_restaurante.produto.service;
 
-import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoCreateDTO;
-import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoDTO;
-import com.restaurante01.api_restaurante.produto.entity.Produto;
-import com.restaurante01.api_restaurante.produto.exceptions.ProdutoNomeInvalidoException;
-import com.restaurante01.api_restaurante.produto.exceptions.ProdutoQntdNegativa;
-import com.restaurante01.api_restaurante.produto.mapper.ProdutoMapper;
-import com.restaurante01.api_restaurante.produto.repository.ProdutoRepository;
-import com.restaurante01.api_restaurante.produto.validator.ProdutoValidator;
+import com.restaurante01.api_restaurante.modulos.produto.api.dto.entrada.ProdutoCreateDTO;
+import com.restaurante01.api_restaurante.modulos.produto.api.dto.entrada.ProdutoDTO;
+import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
+import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.ProdutoNomeInvalidoException;
+import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.ProdutoQntdNegativa;
+import com.restaurante01.api_restaurante.modulos.produto.aplicacao.mapeador.ProdutoMapper;
+import com.restaurante01.api_restaurante.modulos.produto.dominio.repositorio.ProdutoRepository;
+import com.restaurante01.api_restaurante.modulos.produto.aplicacao.servico.ProdutoService;
+import com.restaurante01.api_restaurante.modulos.produto.aplicacao.validador.ProdutoValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
