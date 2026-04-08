@@ -2,12 +2,11 @@ package com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.validador;
 
 import com.restaurante01.api_restaurante.modulos.cardapio.api.dto.saida.CardapioDTO;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Cardapio;
-import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.*;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.CardapioDataIniMaiorQueDataFimException;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.CardapioMesmoNomeExcepetion;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.CardapioNomeInvalidoException;
 import com.restaurante01.api_restaurante.modulos.cardapio.infraestrutura.persistencia.CardapioRepositorioJpa;
-import com.restaurante01.api_restaurante.compartilhado.formatadores.FormatarString;
+import com.restaurante01.api_restaurante.compartilhado.utils.formatadorstring.FormatarString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -1,6 +1,6 @@
 package com.restaurante01.api_restaurante.infraestrutura.security.springsecurity;
 
-import com.restaurante01.api_restaurante.infraestrutura.autenticacao.jwt.JwtProvider;
+import com.restaurante01.api_restaurante.infraestrutura.jwt.JwtProvider;
 import com.restaurante01.api_restaurante.infraestrutura.autenticacao.service.AuthorizationService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

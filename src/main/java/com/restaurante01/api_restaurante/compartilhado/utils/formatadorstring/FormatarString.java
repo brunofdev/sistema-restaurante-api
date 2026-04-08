@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.compartilhado.formatadores;
+package com.restaurante01.api_restaurante.compartilhado.utils.formatadorstring;
 
 public class FormatarString {
     private FormatarString() {

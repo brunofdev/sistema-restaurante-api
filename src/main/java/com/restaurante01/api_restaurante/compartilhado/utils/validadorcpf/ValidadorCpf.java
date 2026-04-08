@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.compartilhado.validadorcpf;
+package com.restaurante01.api_restaurante.compartilhado.utils.validadorcpf;
 
 import java.util.ArrayList;
 

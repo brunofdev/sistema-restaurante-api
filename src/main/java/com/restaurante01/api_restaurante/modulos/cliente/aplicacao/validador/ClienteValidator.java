@@ -1,6 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.cliente.aplicacao.validador;
 
-import com.restaurante01.api_restaurante.compartilhado.validadorcpf.ValidadorCpf;
+import com.restaurante01.api_restaurante.compartilhado.utils.validadorcpf.ValidadorCpf;
 import com.restaurante01.api_restaurante.modulos.cliente.api.dto.entrada.CadastrarClienteDTO;
 import com.restaurante01.api_restaurante.modulos.cliente.api.dto.saida.ClienteDTO;
 import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;

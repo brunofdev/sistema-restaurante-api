@@ -4,7 +4,7 @@ import com.restaurante01.api_restaurante.modulos.cardapio.api.dto.entrada.Cardap
 import com.restaurante01.api_restaurante.modulos.cardapio.api.dto.saida.CardapioDTO;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Cardapio;
 import com.restaurante01.api_restaurante.compartilhado.mapper_padrao_abstract.AbstractMapper;
-import com.restaurante01.api_restaurante.compartilhado.formatadores.FormatarString;
+import com.restaurante01.api_restaurante.compartilhado.utils.formatadorstring.FormatarString;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,6 +1,5 @@
 package com.restaurante01.api_restaurante.modulos.operador.aplicacao.mapper;
 
-
 import com.restaurante01.api_restaurante.modulos.operador.api.dto.entrada.CadastrarOperadorDTO;
 import com.restaurante01.api_restaurante.modulos.operador.api.dto.saida.OperadorDTO;
 import com.restaurante01.api_restaurante.modulos.operador.dominio.entidade.Operador;
@@ -11,6 +10,7 @@ import java.util.List;
 
 @Component
 public class OperadorMapper {
+
     public Operador mappearNovoOperador(CadastrarOperadorDTO dto) {
         Operador operador = new Operador();
         operador.setMatricula(dto.matricula());
@@ -19,19 +19,30 @@ public class OperadorMapper {
         operador.setCpf(dto.cpf());
         operador.setEmail(dto.email());
         operador.setUserName(dto.userName());
-        operador.setRole(Role.USER);
+        operador.setRole(Role.ADMIN1);
         operador.setContaAtiva(true);
         return operador;
     }
-    public OperadorDTO mapearOperadorParaOperadorDTO(Operador novoOperador) {
+
+    public OperadorDTO mapearOperadorParaOperadorDTO(Operador operador) {
         return new OperadorDTO(
-                novoOperador.getId(),
-                novoOperador.getNome(),
-                novoOperador.getUsername(),
-                novoOperador.getRole());
+                operador.getId(),
+                operador.getNome(),
+                operador.getUsername(),
+                operador.getRole());
     }
-    public List<OperadorDTO> mapearListaClienteParaClienteDTO(List<Operador> clientes){
-        return clientes.stream()
+
+    public List<OperadorDTO> mapearListaOperadorParaOperadorDTO(List<Operador> operadores) {
+        return operadores.stream()
                 .map(this::mapearOperadorParaOperadorDTO).toList();
+    }
+
+    public void atualizarEntidade(Operador operadorExistente, OperadorDTO dto) {
+        if (dto.nome() != null) {
+            operadorExistente.setNome(dto.nome());
+        }
+        if (dto.userName() != null) {
+            operadorExistente.setUserName(dto.userName());
+        }
     }
 }

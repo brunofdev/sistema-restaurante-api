@@ -1,7 +1,7 @@
 package com.restaurante01.api_restaurante.modulos.produto.aplicacao.mapeador;
 
 import com.restaurante01.api_restaurante.compartilhado.mapper_padrao_abstract.AbstractMapper;
-import com.restaurante01.api_restaurante.compartilhado.formatadores.FormatarString;
+import com.restaurante01.api_restaurante.compartilhado.utils.formatadorstring.FormatarString;
 import com.restaurante01.api_restaurante.modulos.produto.api.dto.entrada.ProdutoCreateDTO;
 import com.restaurante01.api_restaurante.modulos.produto.api.dto.entrada.ProdutoDTO;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;

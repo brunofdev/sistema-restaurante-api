@@ -1,5 +1,5 @@
 package com.restaurante01.api_restaurante.modulos.produto.aplicacao.validador;
-import com.restaurante01.api_restaurante.compartilhado.formatadores.FormatarString;
+import com.restaurante01.api_restaurante.compartilhado.utils.formatadorstring.FormatarString;
 import com.restaurante01.api_restaurante.modulos.produto.api.dto.entrada.ProdutoDTO;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.ProdutoMesmoNomeExistenteException;

@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.infraestrutura.autenticacao.jwt;
+package com.restaurante01.api_restaurante.infraestrutura.jwt;
 
 import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.role.Role;
 import io.jsonwebtoken.Claims;

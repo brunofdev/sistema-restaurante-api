@@ -1,30 +1,35 @@
 package com.restaurante01.api_restaurante.infraestrutura.autenticacao.service;
 
-import com.restaurante01.api_restaurante.modulos.cliente.infraestrutura.persistencia.ClienteJPA;
-import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.exceptions.UserNotFoundException;
-import com.restaurante01.api_restaurante.modulos.operador.infraestrutura.persistencia.OperadorJPA;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.restaurante01.api_restaurante.modulos.cliente.dominio.repositorio.ClienteRepositorio;
+import com.restaurante01.api_restaurante.modulos.operador.dominio.repositorio.OperadorRepositorio;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthorizationService implements UserDetailsService {
-    @Autowired
-    private OperadorJPA operadorJPA;
-    @Autowired
-    private ClienteJPA clienteJPA;
+
+    private final OperadorRepositorio operadorRepositorio;
+    private final ClienteRepositorio clienteRepositorio;
+
+    public AuthorizationService(OperadorRepositorio operadorRepositorio, ClienteRepositorio clienteRepositorio) {
+        this.operadorRepositorio = operadorRepositorio;
+        this.clienteRepositorio = clienteRepositorio;
+    }
 
     @Override
-    public UserDetails loadUserByUsername(String userName) throws UserNotFoundException {
-        var operador = operadorJPA.findByUserName(userName);
+    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+        var operador = operadorRepositorio.buscarPorUserName(userName);
         if (operador.isPresent()){
-            return operador.get();
+            return (UserDetails) operador.get();
         }
-        var cliente = clienteJPA.findByUserName(userName);
+
+        var cliente = clienteRepositorio.buscarPorUserName(userName);
         if(cliente.isPresent()){
-            return cliente.get();
+            return (UserDetails) cliente.get();
         }
-        throw new UserNotFoundException("Nenhum usuario enviado no token foi localizado");
+
+        throw new UsernameNotFoundException("Nenhum usuário com o userName enviado foi localizado");
     }
 }

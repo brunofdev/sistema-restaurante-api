@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.infraestrutura.autenticacao.dto;
+package com.restaurante01.api_restaurante.infraestrutura.autenticacao.api.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
