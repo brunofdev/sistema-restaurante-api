@@ -1,9 +1,10 @@
 package com.restaurante01.api_restaurante.produto.validator;
 
-import com.restaurante01.api_restaurante.produto.dto.entrada.ProdutoDTO;
-import com.restaurante01.api_restaurante.produto.entity.Produto;
-import com.restaurante01.api_restaurante.produto.exceptions.ProdutoMesmoNomeExistenteException;
-import com.restaurante01.api_restaurante.produto.repository.ProdutoRepository;
+import com.restaurante01.api_restaurante.modulos.produto.api.dto.entrada.ProdutoDTO;
+import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
+import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.ProdutoMesmoNomeExistenteException;
+import com.restaurante01.api_restaurante.modulos.produto.infraestrutura.ProdutoJPA;
+import com.restaurante01.api_restaurante.modulos.produto.aplicacao.validador.ProdutoValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,7 +21,7 @@ import static org.mockito.Mockito.*;
 class ProdutoValidatorTest {
 
     @Mock
-    private ProdutoRepository produtoRepository;
+    private ProdutoJPA produtoRepository;
 
     @InjectMocks
     private ProdutoValidator produtoValidator;
