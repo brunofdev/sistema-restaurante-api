@@ -2,6 +2,7 @@ package com.restaurante01.api_restaurante.modulos.cardapioproduto.aplicacao.vali
 
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.api.dto.entrada.CardapioProdutoAssociacaoEntradaDTO;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.excecao.AssociacaoExistenteCardapioProdutoException;
+import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.repositorio.CardapioProdutoRepositorio;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.infraestrutura.persistencia.CardapioProdutoJPA;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.PrecoProdutoNegativoException;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.ProdutoDescricaoInvalidaExcpetion;
@@ -15,10 +16,10 @@ import java.math.BigDecimal;
 public class CardapioProdutoValidator {
 
     @Autowired
-    private CardapioProdutoJPA cardapioProdutoJPA;
+    private CardapioProdutoRepositorio CardapioProdutoRepositorio;
 
-    public CardapioProdutoValidator(CardapioProdutoJPA cardapioProdutoJPA){
-        this.cardapioProdutoJPA = cardapioProdutoJPA;
+    public CardapioProdutoValidator(CardapioProdutoRepositorio CardapioProdutoRepositorio){
+        this.CardapioProdutoRepositorio = CardapioProdutoRepositorio;
     }
 
     public void validarCardapioProdutoAssociacaoEntradaDTO(CardapioProdutoAssociacaoEntradaDTO dto,  boolean existeAssociacao, boolean estaAtualizandoApenas){
@@ -35,5 +36,6 @@ public class CardapioProdutoValidator {
         if(existeAssociacao && !estaAtualizandoApenas){
             throw new AssociacaoExistenteCardapioProdutoException("Já existe associação presente");
         }
+
     }
 }

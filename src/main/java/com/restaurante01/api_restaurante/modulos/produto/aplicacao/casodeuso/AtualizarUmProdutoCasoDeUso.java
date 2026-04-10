@@ -6,6 +6,8 @@ import com.restaurante01.api_restaurante.modulos.produto.aplicacao.validador.Pro
 import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
 import com.restaurante01.api_restaurante.modulos.produto.infraestrutura.ProdutoRepositorioAdapter;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AtualizarUmProdutoCasoDeUso {
@@ -30,5 +32,11 @@ public class AtualizarUmProdutoCasoDeUso {
         Produto produtoExistente = obterProdutoPorIdCasoDeUso.retornarEntidade(produtoAtualizado.getId());
         mapeador.atualizarProduto(produtoExistente, produtoAtualizado);
         return mapeador.mapearUmaEntidadeParaDTO(repositorio.save(produtoExistente));
+    }
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void executar2(Long id, int quantidadeParaBaixar ) {
+        Produto produtoParaBaixarQuantidade = obterProdutoPorIdCasoDeUso.retornarEntidade(id);
+        produtoParaBaixarQuantidade.setQuantidadeAtual(produtoParaBaixarQuantidade.getQuantidadeAtual() - quantidadeParaBaixar);
+        repositorio.save(produtoParaBaixarQuantidade);
     }
 }

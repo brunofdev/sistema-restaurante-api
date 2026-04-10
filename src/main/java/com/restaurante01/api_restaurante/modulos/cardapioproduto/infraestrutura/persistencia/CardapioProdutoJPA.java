@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -21,6 +22,16 @@ public interface CardapioProdutoJPA extends JpaRepository<CardapioProduto, Long>
     @Transactional
     @Query(value = "DELETE FROM cardapio_produto cp WHERE cp.cardapio_id = :idCardapio AND cp.produto_id = :idProduto", nativeQuery = true)
     void deleteProdutoFromCardapio(@Param("idCardapio") long idCardapio, @Param("idProduto") long idProduto);
-
+    @Query("""
+        SELECT cp FROM CardapioProduto cp 
+        JOIN FETCH cp.cardapio c 
+        JOIN FETCH cp.produto p 
+        WHERE c.id = :idCardapio 
+        AND p.id IN :idsProdutos
+    """)
+    List<CardapioProduto> buscarItensDoPedido(
+            @Param("idCardapio") Long idCardapio,
+            @Param("idsProdutos") List<Long> idsProdutos
+    );
 
 }
