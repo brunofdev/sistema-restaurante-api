@@ -28,7 +28,7 @@ public class BaixarQuantidadeProdutoCasoDeUso {
     public void executar(List<ItemPedido> itensPedido) {
         for (ItemPedido item : itensPedido) {
             Produto produtoParaBaixarQuantidade = obterProdutoPorIdCasoDeUso.retornarEntidade(item.getProduto().getId());
-            produtoParaBaixarQuantidade.setQuantidadeAtual(produtoParaBaixarQuantidade.getQuantidadeAtual() - item.getQuantidade());
+            produtoParaBaixarQuantidade.diminuirQuantidade(item.getQuantidade());
             repositorio.save(produtoParaBaixarQuantidade);
         }
     }
