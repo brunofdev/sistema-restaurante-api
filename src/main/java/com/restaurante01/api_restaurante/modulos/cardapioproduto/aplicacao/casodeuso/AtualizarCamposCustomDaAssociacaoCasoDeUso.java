@@ -7,9 +7,7 @@ import com.restaurante01.api_restaurante.modulos.cardapioproduto.aplicacao.valid
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.entidade.CardapioProduto;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.excecao.AssociacaoNaoExisteException;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.repositorio.CardapioProdutoRepositorio;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPedido;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -26,7 +24,7 @@ public class AtualizarCamposCustomDaAssociacaoCasoDeUso {
     }
 
     @Transactional
-    public CardapioProdutoAssociacaoRespostaDTO executar1(CardapioProdutoAssociacaoEntradaDTO dto) {
+    public CardapioProdutoAssociacaoRespostaDTO executar(CardapioProdutoAssociacaoEntradaDTO dto) {
         CardapioProduto associacaoExistente = encontrarCardapioProduto(dto.getIdCardapio(), dto.getIdProduto());
         boolean existe = true;
         validator.validarCardapioProdutoAssociacaoEntradaDTO(dto, existe, true);
@@ -35,12 +33,6 @@ public class AtualizarCamposCustomDaAssociacaoCasoDeUso {
         return mapper.mapearCardapioProdutoAssociacaoDTO(atualizada);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void executar2(Long idCardapio, ItemPedido item) {
-        CardapioProduto produtoParaAtualizar = encontrarCardapioProduto(idCardapio, item.getProduto().getId());
-        produtoParaAtualizar.diminuirQuantidade(item.getQuantidade());
-        repository.save(produtoParaAtualizar);
-    }
 
     private CardapioProduto encontrarCardapioProduto (Long idCardapio, Long idProduto){
         return repository.findByCardapioIdAndProdutoId(idCardapio, idProduto)

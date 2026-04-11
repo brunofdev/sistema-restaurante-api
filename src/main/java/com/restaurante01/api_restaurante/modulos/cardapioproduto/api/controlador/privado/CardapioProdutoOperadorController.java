@@ -49,7 +49,7 @@ public class CardapioProdutoOperadorController {
     @Operation(summary = "Atualizar campos customizados", description = "Permite editar informações específicas da ligação.")
     @PutMapping("/atualizar")
     public ResponseEntity<ApiResponse<CardapioProdutoAssociacaoRespostaDTO>> atualizarCamposCustomDaAssociacao(@RequestBody @Valid CardapioProdutoAssociacaoEntradaDTO dto){
-        return ResponseEntity.ok(ApiResponse.success("Recurso atualizado", atualizarCamposCustom.executar1(dto)));
+        return ResponseEntity.ok(ApiResponse.success("Recurso atualizado", atualizarCamposCustom.executar(dto)));
     }
 
     @Operation(summary = "Desassociar produto do cardápio", description = "Remove um produto de um cardápio específico.")

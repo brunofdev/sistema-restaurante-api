@@ -33,10 +33,4 @@ public class AtualizarUmProdutoCasoDeUso {
         mapeador.atualizarProduto(produtoExistente, produtoAtualizado);
         return mapeador.mapearUmaEntidadeParaDTO(repositorio.save(produtoExistente));
     }
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void executar2(Long id, int quantidadeParaBaixar ) {
-        Produto produtoParaBaixarQuantidade = obterProdutoPorIdCasoDeUso.retornarEntidade(id);
-        produtoParaBaixarQuantidade.setQuantidadeAtual(produtoParaBaixarQuantidade.getQuantidadeAtual() - quantidadeParaBaixar);
-        repositorio.save(produtoParaBaixarQuantidade);
-    }
 }
