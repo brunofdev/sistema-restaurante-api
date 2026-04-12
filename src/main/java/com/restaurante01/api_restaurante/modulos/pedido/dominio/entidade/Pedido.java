@@ -54,6 +54,7 @@ public class Pedido extends Auditable {
         if(!this.statusPedido.podeTransicionarPara(novoStatus)){
             throw  new StatusPedidoInvalidoException("Status do pedido não pode retroceder ou ser alterado caso este esteja cancelado");
         }
+        this.statusPedido = novoStatus;
     }
 }
 
