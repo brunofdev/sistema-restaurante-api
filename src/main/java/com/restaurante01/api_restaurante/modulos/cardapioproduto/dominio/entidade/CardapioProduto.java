@@ -52,21 +52,15 @@ public class CardapioProduto {
         }
     }
     public boolean verificaDisponibilidadeProduto(Integer quantidadeSolicitada){
-        // 1. A Trava Mestre (Visibilidade)
         if (Boolean.FALSE.equals(this.disponibilidadeCustomizada)) {
             return false;
         }
-        // 2. Regra do Estoque Customizado
-        // ele só ignora se for NULO. Se for ZERO, ele entra aqui e recusa a venda (0 >= 1 é falso)
         if (this.quantidadeCustomizada != null) {
             return this.quantidadeCustomizada >= quantidadeSolicitada;
         }
-
-        // 3. Fallback (Se a customizada não foi configurada [NULA], usa o estoque original)
         if (this.produto.getQuantidadeAtual() != null) {
             return this.produto.getQuantidadeAtual() >= quantidadeSolicitada;
         }
-
         return false;
     }
 
