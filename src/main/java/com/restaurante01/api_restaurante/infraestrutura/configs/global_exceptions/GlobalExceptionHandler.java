@@ -1,5 +1,6 @@
 package com.restaurante01.api_restaurante.infraestrutura.configs.global_exceptions;
 
+import com.restaurante01.api_restaurante.compartilhado.dominio.excecao.BusinessException;
 import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.exceptions.*;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.*;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.excecao.AssociacaoExistenteCardapioProdutoException;
@@ -110,7 +111,8 @@ public class GlobalExceptionHandler {
             AssociacaoExistenteCardapioProdutoException.class,
             AssociacaoNaoExisteException.class,
             StatusPedidoNaoPodeMaisSerAlteradoException.class,
-            StatusPedidoInvalidoException.class
+            StatusPedidoInvalidoException.class,
+            BusinessException.class //ajustar completamente o handler
     })
     public ResponseEntity<ApiResponse<Object>> handleCustom(RuntimeException ex) {
         HttpStatus status = HttpStatus.BAD_REQUEST;

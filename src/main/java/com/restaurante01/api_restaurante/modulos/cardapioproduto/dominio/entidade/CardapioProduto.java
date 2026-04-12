@@ -43,6 +43,26 @@ public class CardapioProduto {
     @Column(name = "obs")
     private String observacao;
 
+    public void diminuirQuantidade(int quantidadeParaDiminuir){
+        if (this.quantidadeCustomizada != null) {
+            this.quantidadeCustomizada -= quantidadeParaDiminuir;
+            if (this.quantidadeCustomizada < 0) {
+                this.quantidadeCustomizada = 0;
+            }
+        }
+    }
+    public boolean verificaDisponibilidadeProduto(Integer quantidadeSolicitada){
+        if (Boolean.FALSE.equals(this.disponibilidadeCustomizada)) {
+            return false;
+        }
+        if (this.quantidadeCustomizada != null) {
+            return this.quantidadeCustomizada >= quantidadeSolicitada;
+        }
+        if (this.produto.getQuantidadeAtual() != null) {
+            return this.produto.getQuantidadeAtual() >= quantidadeSolicitada;
+        }
+        return false;
+    }
 
 
 }

@@ -25,15 +25,17 @@ public class AtualizarCamposCustomDaAssociacaoCasoDeUso {
 
     @Transactional
     public CardapioProdutoAssociacaoRespostaDTO executar(CardapioProdutoAssociacaoEntradaDTO dto) {
-        CardapioProduto associacaoExistente = repository.findByCardapioIdAndProdutoId(dto.getIdCardapio(), dto.getIdProduto())
-                .orElseThrow(() -> new AssociacaoNaoExisteException("Não existe associação entre o cardápio e o produto enviado"));
-
-        boolean existe = true; // Se chegou aqui, a associação existe
+        CardapioProduto associacaoExistente = encontrarCardapioProduto(dto.getIdCardapio(), dto.getIdProduto());
+        boolean existe = true;
         validator.validarCardapioProdutoAssociacaoEntradaDTO(dto, existe, true);
-
         CardapioProduto atualizada = mapper.mapearCamposCustom(associacaoExistente, dto);
         repository.save(atualizada);
-
         return mapper.mapearCardapioProdutoAssociacaoDTO(atualizada);
+    }
+
+
+    private CardapioProduto encontrarCardapioProduto (Long idCardapio, Long idProduto){
+        return repository.findByCardapioIdAndProdutoId(idCardapio, idProduto)
+                .orElseThrow(() -> new AssociacaoNaoExisteException("Não existe associação entre o cardápio e o produto enviado"));
     }
 }

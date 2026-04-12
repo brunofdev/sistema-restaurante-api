@@ -1,7 +1,9 @@
 package com.restaurante01.api_restaurante.modulos.cardapioproduto.infraestrutura.persistencia;
 
+import com.restaurante01.api_restaurante.modulos.cardapioproduto.api.dto.saida.CardapioComListaProdutoDTO;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.entidade.CardapioProduto;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.repositorio.CardapioProdutoRepositorio;
+import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.PedidoCriacaoDTO;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +34,7 @@ public class CardapioProdutoAdaptador implements CardapioProdutoRepositorio {
     }
 
     @Override
-    @Transactional // A transação deve ficar no adaptador ou caso de uso para operações de escrita
+    @Transactional
     public void deletarAssociacao(long idCardapio, long idProduto) {
         jpa.deleteProdutoFromCardapio(idCardapio, idProduto);
     }
@@ -45,5 +47,10 @@ public class CardapioProdutoAdaptador implements CardapioProdutoRepositorio {
     @Override
     public List<CardapioProduto> findAll() {
         return jpa.findAll();
+    }
+
+    @Override
+    public List<CardapioProduto> buscarItensDoPedido(Long idCardapio, List<Long> idsProdutos){
+        return jpa.buscarItensDoPedido(idCardapio, idsProdutos);
     }
 }
