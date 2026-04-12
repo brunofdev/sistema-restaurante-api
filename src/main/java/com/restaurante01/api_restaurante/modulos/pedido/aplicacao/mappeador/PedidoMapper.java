@@ -1,22 +1,26 @@
 package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mappeador;
 
+import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.entidade.CardapioProduto;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.ItemPedidoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
-import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class PedidoMapper {
-    public ItemPedido mapearItemPedido (Integer quantidade, Produto produto){
+    //regra para priorizar preço custumozidado
+    public ItemPedido mapearItemPedido (Integer quantidade, CardapioProduto produto, String observacao){
+        BigDecimal preco = (produto.getPrecoCustomizado() == null || produto.getPrecoCustomizado().compareTo(BigDecimal.ZERO) <= 0) ? produto.getProduto().getPreco() : produto.getPrecoCustomizado();
         return new ItemPedido(
-                produto,
+                produto.getProduto(),
                 quantidade,
-                produto.getPreco()
+                preco,
+                observacao
                 );
     }
     public ItemPedidoDTO mapearItemPedidoDto (ItemPedido item){
@@ -24,6 +28,7 @@ public class PedidoMapper {
                 item.getProduto().getNome(),
                 item.getQuantidade(),
                 item.getPrecoUnitario(),
+                item.getObservacao(),
                 item.calcularSubTotal()
         );
     }

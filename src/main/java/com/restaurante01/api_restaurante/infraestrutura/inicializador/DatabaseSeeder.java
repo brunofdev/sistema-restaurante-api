@@ -114,8 +114,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         pedido.setEnderecoEntrega(cliente.getRua() + ", " + cliente.getNumeroResidencia());
 
         // Adicionando Itens (a lógica de calcularTotal e linkar o Pedido já está no metodo adicionarItem)
-        ItemPedido item1 = new ItemPedido(hamburguer, 2, new BigDecimal("35.00"));
-        ItemPedido item2 = new ItemPedido(refrigerante, 2, new BigDecimal("8.00"));
+        ItemPedido item1 = new ItemPedido(hamburguer, 2, new BigDecimal("35.00"), "Carne mal passada");
+        ItemPedido item2 = new ItemPedido(refrigerante, 2, new BigDecimal("8.00"), null);
 
         pedido.adicionarItem(item1);
         pedido.adicionarItem(item2);

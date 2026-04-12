@@ -1,5 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso;
 
+import com.restaurante01.api_restaurante.modulos.cardapioproduto.aplicacao.casodeuso.ObterProdutoValorCostumizadoCasoDeUso;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.aplicacao.casodeuso.ValidarEstoquePedidoUseCase;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.entidade.CardapioProduto;
 import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;
@@ -12,8 +13,6 @@ import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPed
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.evento.PedidoCriadoEvento;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.repositorio.PedidoRepositorio;
-import com.restaurante01.api_restaurante.modulos.produto.aplicacao.casodeuso.ObterProdutoPorIdCasoDeUso;
-import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,28 +24,28 @@ public class CriarNovoPedidoCasoDeUso {
 
     private final PedidoRepositorio pedidoRepository;
     private final PedidoMapper pedidoMapper;
-    private final ObterProdutoPorIdCasoDeUso obterProdutoPorId;
+    private final ObterProdutoValorCostumizadoCasoDeUso obterProdutoValorCostumizadoCasoDeUso;
     private final ValidarEstoquePedidoUseCase validarEstoquePedidoUseCase;
     private final ApplicationEventPublisher eventPublisher;
 
 
     public CriarNovoPedidoCasoDeUso(PedidoRepositorio pedidoRepository,
                                     PedidoMapper pedidoMapper,
-                                    ObterProdutoPorIdCasoDeUso obterProdutoPorId,
                                     ValidarEstoquePedidoUseCase validarEstoquePedidoUseCase,
-                                    ApplicationEventPublisher eventPublisher) {
+                                    ApplicationEventPublisher eventPublisher,
+                                    ObterProdutoValorCostumizadoCasoDeUso obterProdutoValorCostumizadoCasoDeUso) {
         this.pedidoRepository = pedidoRepository;
         this.pedidoMapper = pedidoMapper;
-        this.obterProdutoPorId = obterProdutoPorId;
         this.validarEstoquePedidoUseCase = validarEstoquePedidoUseCase;
         this.eventPublisher = eventPublisher;
+        this.obterProdutoValorCostumizadoCasoDeUso = obterProdutoValorCostumizadoCasoDeUso;
     }
 
     @Transactional
     public PedidoDTO executar(PedidoCriacaoDTO dto, Cliente cliente) {
         List<CardapioProduto> estoqueValidado = validarEstoquePedidoUseCase.executar(dto);
         Pedido pedido = new Pedido();
-        vincularItens(pedido, dto.itens());
+        vincularItensAoPedido(pedido, dto.itens(), dto.idCardapio());
         pedido.setCliente(cliente);
         pedido.setEnderecoEntrega("Endereço de teste"); // Futuramente vindo do DTO
         pedido.setStatusPedido(StatusPedido.PENDENTE);
@@ -55,10 +54,10 @@ public class CriarNovoPedidoCasoDeUso {
         return pedidoMapper.mapearPedidoDto(pedidoSalvo);
     }
 
-    private void vincularItens(Pedido pedido, List<ItemPedidoSolicitadoDTO> itensDto) {
+    private void vincularItensAoPedido(Pedido pedido, List<ItemPedidoSolicitadoDTO> itensDto, Long idCardapio) {
         itensDto.forEach(item -> {
-            Produto produto = obterProdutoPorId.retornarEntidade(item.idProduto());
-            ItemPedido itemPedido = pedidoMapper.mapearItemPedido(item.quantidade(), produto);
+            CardapioProduto cardapioProduto = obterProdutoValorCostumizadoCasoDeUso.executar(idCardapio, item.idProduto());
+            ItemPedido itemPedido = pedidoMapper.mapearItemPedido(item.quantidade(), cardapioProduto, item.observacao());
             pedido.adicionarItem(itemPedido);
         });
     }

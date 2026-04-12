@@ -8,6 +8,8 @@ public record ItemPedidoSolicitadoDTO(
         Long idProduto,
 
         @NotNull(message = "A quantidade não pode ser vazia")
-        Integer quantidade
+        Integer quantidade,
+
+        String observacao
 ) {
 }

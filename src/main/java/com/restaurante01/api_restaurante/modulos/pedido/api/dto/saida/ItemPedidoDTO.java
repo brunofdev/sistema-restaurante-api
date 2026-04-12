@@ -6,6 +6,7 @@ public record ItemPedidoDTO(
         String nomeProduto,
         Integer quantidade,
         BigDecimal precoUnitario,
+        String observacao,
         BigDecimal subTotal
 ) {
 }
