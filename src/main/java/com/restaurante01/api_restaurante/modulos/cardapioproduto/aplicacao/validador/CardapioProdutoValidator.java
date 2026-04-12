@@ -23,7 +23,7 @@ public class CardapioProdutoValidator {
     }
 
     public void validarCardapioProdutoAssociacaoEntradaDTO(CardapioProdutoAssociacaoEntradaDTO dto,  boolean existeAssociacao, boolean estaAtualizandoApenas){
-        if(dto.getPrecoCustomizado().compareTo(BigDecimal.ZERO) < 0){
+        if(dto.getPrecoCustomizado() != null && dto.getPrecoCustomizado().compareTo(BigDecimal.ZERO) < 0){
             throw new PrecoProdutoNegativoException("O preço customizado não pode ser negativo");
         }
         if(dto.getQuantidadeCustomizada() < 0){

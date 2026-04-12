@@ -33,10 +33,14 @@ public class ItemPedido {
     @Column(name = "preco_unitario", nullable = false)
     private BigDecimal precoUnitario;
 
-    public ItemPedido(Produto produto, Integer quantidade, BigDecimal precoUnitario){
+    @Column(name = "observacao, nullable = true")
+    private String observacao;
+
+    public ItemPedido(Produto produto, Integer quantidade, BigDecimal precoUnitario, String observacao){
         this.produto = produto;
         this.quantidade = quantidade;
         this.precoUnitario = precoUnitario;
+        this.observacao = observacao;
     }
 
 

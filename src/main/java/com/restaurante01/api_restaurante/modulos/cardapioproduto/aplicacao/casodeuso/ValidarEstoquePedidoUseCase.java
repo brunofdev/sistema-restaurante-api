@@ -35,7 +35,7 @@ public class ValidarEstoquePedidoUseCase {
                         Collectors.summingInt(ItemPedidoSolicitadoDTO::quantidade)
                 ))
                 .entrySet().stream()
-                .map(entry -> new ItemPedidoSolicitadoDTO(entry.getKey(), entry.getValue()))
+                .map(entry -> new ItemPedidoSolicitadoDTO(entry.getKey(), entry.getValue(), null))
                 .toList();
     }
 
