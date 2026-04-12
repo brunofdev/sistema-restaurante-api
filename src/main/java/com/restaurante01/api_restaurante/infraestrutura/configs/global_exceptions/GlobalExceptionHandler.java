@@ -9,6 +9,7 @@ import com.restaurante01.api_restaurante.compartilhado.retorno_padrao_api.ApiErr
 import com.restaurante01.api_restaurante.compartilhado.retorno_padrao_api.ApiResponse;
 import com.restaurante01.api_restaurante.compartilhado.utils.validadorcpf.CpfComTamanhoInvalidoException;
 import com.restaurante01.api_restaurante.compartilhado.utils.validadorcpf.NumeroCpfInvalidoException;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.PedidoNaoEncontradoException;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.StatusPedidoInvalidoException;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.StatusPedidoNaoPodeMaisSerAlteradoException;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.*;
@@ -112,7 +113,8 @@ public class GlobalExceptionHandler {
             AssociacaoNaoExisteException.class,
             StatusPedidoNaoPodeMaisSerAlteradoException.class,
             StatusPedidoInvalidoException.class,
-            BusinessException.class //ajustar completamente o handler
+            BusinessException.class, //ajustar completamente o handler
+            PedidoNaoEncontradoException.class
     })
     public ResponseEntity<ApiResponse<Object>> handleCustom(RuntimeException ex) {
         HttpStatus status = HttpStatus.BAD_REQUEST;

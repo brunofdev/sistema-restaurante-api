@@ -4,6 +4,7 @@ import com.restaurante01.api_restaurante.modulos.cliente.aplicacao.servico.Calcu
 import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;
 import com.restaurante01.api_restaurante.modulos.cliente.dominio.repositorio.ClienteRepositorio;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -19,7 +20,7 @@ public class AtualizarFidelidadeClienteCasoDeUso {
         this.calculadoraDeFidelidade = calculadoraDeFidelidade;
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void executar(Cliente cliente, BigDecimal totalPedido) {
         int pontuacaoGanha = calculadoraDeFidelidade.calcular(totalPedido);
         cliente.acrescentarPontuacao(pontuacaoGanha);
