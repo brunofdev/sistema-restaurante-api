@@ -43,11 +43,19 @@ public class CardapioProduto {
     @Column(name = "obs")
     private String observacao;
 
-    public void diminuirQuantidade(int quantidadeParaDiminuir){
+    public void diminuirQuantidade(int quantidadeParaDiminuir) {
         if (this.quantidadeCustomizada != null) {
             this.quantidadeCustomizada -= quantidadeParaDiminuir;
             if (this.quantidadeCustomizada < 0) {
                 this.quantidadeCustomizada = 0;
+            }
+        }
+    }
+    public void aumentarQuantidade(int quantidadeParaAumentar){
+        if (this.quantidadeCustomizada != null) {
+            this.quantidadeCustomizada += quantidadeParaAumentar;
+            if (this.quantidadeCustomizada < 0) {
+                    this.quantidadeCustomizada = 0;
             }
         }
     }

@@ -50,5 +50,11 @@ public class Produto extends Auditable {
         }
         this.quantidadeAtual -= quantidade;
     }
+    public void aumentarQuantidade(int quantidade) {
+        if (quantidade <= 0) {
+            throw new BusinessException("Quantidade informada corretamente ->  " + quantidade);
+        }
+        this.quantidadeAtual -= quantidade;
+    }
 
 }

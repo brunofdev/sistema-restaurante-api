@@ -6,6 +6,7 @@ import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mappeador.PedidoMapper;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.enums.StatusPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.evento.PedidoCanceladoEvento;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.evento.PedidoEntregueEvento;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.PedidoNaoEncontradoException;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.repositorio.PedidoRepositorio;
@@ -35,6 +36,9 @@ public class AtualizarStatusPedidoCasoDeUso {
         pedidoRepository.salvar(pedido);
         if (pedido.getStatusPedido() == StatusPedido.ENTREGUE) {
             eventPublisher.publishEvent(new PedidoEntregueEvento(pedido));
+        }
+        if(pedido.getStatusPedido() == StatusPedido.CANCELADO){
+            eventPublisher.publishEvent(new PedidoCanceladoEvento(pedido));
         }
         return pedidoMapper.mapearPedidoDto(pedido);
     }

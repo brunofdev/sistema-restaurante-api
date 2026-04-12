@@ -1,6 +1,7 @@
 package com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade;
 
 
+import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.CardapioNaoEncontradoException;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.enums.StatusPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.StatusPedidoInvalidoException;
 import com.restaurante01.api_restaurante.infraestrutura.security.auditoria.Auditable;
@@ -34,6 +35,8 @@ public class Pedido extends Auditable {
     private BigDecimal valorTotal = BigDecimal.ZERO;
     @Column(nullable = true)
     private String enderecoEntrega;
+    @Column(name = "cardapio_de_referencia", nullable = false)
+    private Long idCardapio;
 
     public void adicionarItem(ItemPedido item){
         itens.add(item);
@@ -55,6 +58,12 @@ public class Pedido extends Auditable {
             throw  new StatusPedidoInvalidoException("Status do pedido não pode retroceder ou ser alterado caso este esteja cancelado");
         }
         this.statusPedido = novoStatus;
+    }
+    public void vincularCardapioPedido(Long idCardapio){
+        if(idCardapio == null || idCardapio <= 0){
+            throw new CardapioNaoEncontradoException("Id de cardapio nao pode ser vazio ou zero ou menor que zero, valor recebido = " + idCardapio);
+        }
+        this.idCardapio = idCardapio;
     }
 }
 
