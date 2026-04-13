@@ -1,6 +1,6 @@
 # 🍽️ Sistema Restaurante — API REST
 
-> API RESTful completa para gestão de restaurantes, desenvolvida com **Java 17** e **Spring Boot**.  
+> API REST completa para gestão de restaurantes, desenvolvida com **Java 17** e **Spring Boot**.  
 > Projeto educacional com foco em boas práticas de engenharia de software, arquitetura limpa e segurança.
 
 ---
@@ -31,8 +31,8 @@ Este projeto simula o backend completo de um sistema de restaurante, cobrindo de
 - Painel do dia com filtro automático por data
 - Controle do fluxo de status: `PENDENTE → EM_PREPARAÇÃO → SAIU_PARA_ENTREGA → ENTREGUE | CANCELADO (SE ENTREGUE, NÃO CANCELA MAIS, SE CANCELADO, NÃO PODE MAIS SER REABERTO)`
 - Histórico completo de vendas para auditoria
-- Pedidos feitos baixam quantidade dos produtos
-- Pedidos com status cancelado retornam saldos dos produtos vendidos
+- Saldo de produtos baixam automaticamente pós pedido feito
+- Saldo de produtos retornam automaticamente quando um StatusPedido = CANCELADO
   
 
 **Engenharia de cardápio**
