@@ -18,7 +18,7 @@ public class EstornarQtdPedidoCanceladoCasoDeUso {
         this.obterProdutoPorIdCasoDeUso = obterProdutoPorIdCasoDeUso;
         this.repositorio = repositorio;
     }
-
+//Precisa melhorar para fazer apenas uma consulta no banco
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void executar (List<ItemPedido> itens){
         for(ItemPedido item : itens){
