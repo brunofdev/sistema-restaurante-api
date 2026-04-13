@@ -29,17 +29,21 @@ Este projeto simula o backend completo de um sistema de restaurante, cobrindo de
 
 **Gestão de pedidos (`ADMIN1`, `ADMIN2`, `ADMIN3`)**
 - Painel do dia com filtro automático por data
-- Controle do fluxo de status: `PENDENTE → EM_PREPARAÇÃO → SAIU_PARA_ENTREGA → ENTREGUE`
+- Controle do fluxo de status: `PENDENTE → EM_PREPARAÇÃO → SAIU_PARA_ENTREGA → ENTREGUE | CANCELADO (SE ENTREGUE, NÃO CANCELA MAIS, SE CANCELADO, NÃO PODE MAIS SER REABERTO)`
 - Histórico completo de vendas para auditoria
+- Pedidos feitos baixam quantidade dos produtos
+- Pedidos com status cancelado retornam saldos dos produtos vendidos
+  
 
 **Engenharia de cardápio**
 - Criação e gerenciamento de cardápios temáticos (ex: Cardápio de Verão, Promoção de Terça)
 - Associação de produtos a cardápios específicos
-- Customização de preço e descrição por cardápio sem alterar o cadastro original do produto
+- Customização de preço, quantidade e descrição por cardápio sem alterar o cadastro original do produto
 
 **Administração de usuários**
 - Controle de acesso por níveis hierárquicos de operadores
 - Gerenciamento da base de clientes
+- Pontuação de fidelidade para clientes conforme valor total de pedidos realizados com status ENTREGUE.
 
 ---
 
@@ -95,6 +99,7 @@ Princípios aplicados:
 - **Programação para interfaces** — serviços dependem de contratos, não de implementações concretas
 - **Padrão Repository + Adapter** — o domínio não conhece JPA; a infraestrutura não conhece as regras de negócio
 - **Enums com comportamento** — regras de transição de status encapsuladas no próprio enum `StatusPedido`
+- **Padrão observer** — modulos que se comunicam através de eventos 
 
 ---
 
