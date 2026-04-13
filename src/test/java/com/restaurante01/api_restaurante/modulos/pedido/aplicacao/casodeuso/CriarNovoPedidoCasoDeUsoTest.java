@@ -133,12 +133,10 @@ class CriarNovoPedidoCasoDeUsoTest {
                 "Observacao de Teste"
         );
 
-
         when(validarEstoquePedidoUseCase.executar(dto)).thenReturn(estoqueValidado);
         when(obterProdutoValorCostumizadoCasoDeUso.executar(dto.idCardapio(), produto.getId())).thenReturn(cardapioProduto);
         when(pedidoMapper.mapearItemPedido(2, cardapioProduto, "Sem maionese")).thenReturn(itemPedido);
         when(pedidoMapper.mapearPedidoDto(any())).thenReturn(pedidoDTO);
-
 
         PedidoDTO resultado = casoDeUso.executar(dto, cliente);
 
