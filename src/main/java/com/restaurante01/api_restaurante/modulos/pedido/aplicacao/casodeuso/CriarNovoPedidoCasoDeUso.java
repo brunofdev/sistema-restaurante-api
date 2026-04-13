@@ -45,18 +45,19 @@ public class CriarNovoPedidoCasoDeUso {
     public PedidoDTO executar(PedidoCriacaoDTO dto, Cliente cliente) {
         List<CardapioProduto> estoqueValidado = validarEstoquePedidoUseCase.executar(dto);
         Pedido pedido = new Pedido();
-        vincularItensAoPedido(pedido, dto.itens(), dto.idCardapio());
+        pedido.vincularCardapioPedido(dto.idCardapio());
+        vincularItensAoPedido(pedido, dto.itens());
         pedido.setCliente(cliente);
         pedido.setEnderecoEntrega("Endereço de teste"); // Futuramente vindo do DTO
         pedido.setStatusPedido(StatusPedido.PENDENTE);
         Pedido pedidoSalvo = pedidoRepository.salvar(pedido);
-        eventPublisher.publishEvent(new PedidoCriadoEvento(pedido, estoqueValidado, dto.idCardapio()));
+        eventPublisher.publishEvent(new PedidoCriadoEvento(pedido, estoqueValidado));
         return pedidoMapper.mapearPedidoDto(pedidoSalvo);
     }
 
-    private void vincularItensAoPedido(Pedido pedido, List<ItemPedidoSolicitadoDTO> itensDto, Long idCardapio) {
+    private void vincularItensAoPedido(Pedido pedido, List<ItemPedidoSolicitadoDTO> itensDto) {
         itensDto.forEach(item -> {
-            CardapioProduto cardapioProduto = obterProdutoValorCostumizadoCasoDeUso.executar(idCardapio, item.idProduto());
+            CardapioProduto cardapioProduto = obterProdutoValorCostumizadoCasoDeUso.executar(pedido.getIdCardapio(), item.idProduto());
             ItemPedido itemPedido = pedidoMapper.mapearItemPedido(item.quantidade(), cardapioProduto, item.observacao());
             pedido.adicionarItem(itemPedido);
         });

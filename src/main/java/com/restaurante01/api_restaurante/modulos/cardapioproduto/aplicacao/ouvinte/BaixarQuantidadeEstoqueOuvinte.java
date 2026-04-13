@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.modulos.cardapioproduto.ouvinte;
+package com.restaurante01.api_restaurante.modulos.cardapioproduto.aplicacao.ouvinte;
 
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.aplicacao.casodeuso.BaixarQtdCustomizadaCasoDeUso;
 
@@ -20,6 +20,6 @@ public class BaixarQuantidadeEstoqueOuvinte {
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void quandoPedidoForCriado(PedidoCriadoEvento evento){
-        baixarQtdCustomizadaCasoDeUso.executar(evento.idCardapio(), evento.pedido().getItens());
+        baixarQtdCustomizadaCasoDeUso.executar(evento.pedido().getIdCardapio(), evento.pedido().getItens());
     }
 }
