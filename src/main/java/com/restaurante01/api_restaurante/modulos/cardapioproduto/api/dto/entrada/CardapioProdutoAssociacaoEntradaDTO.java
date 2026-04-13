@@ -20,8 +20,7 @@ public class CardapioProdutoAssociacaoEntradaDTO {
     private String descricaoCustomizada;
     private Boolean disponibilidadeCustomizada;
     private String observacao;
-
-    public CardapioProdutoAssociacaoEntradaDTO(){}
+    
 
     public CardapioProdutoAssociacaoEntradaDTO(Long idCardapio, Long idProduto,BigDecimal precoCustomizado, Integer quantidadeCustomizada, String descricaoCustomizada, Boolean disponibilidadeCustomizada, String observacao) {
         this.idCardapio = idCardapio;
