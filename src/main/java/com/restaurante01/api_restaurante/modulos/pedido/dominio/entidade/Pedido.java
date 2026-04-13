@@ -56,6 +56,12 @@ public class Pedido extends Auditable {
         }
         this.statusPedido = novoStatus;
     }
+    public void vincularCliente (Cliente cliente){
+        if(cliente == null){
+            throw new StatusPedidoInvalidoException("Erro ao vincular cliente, cliente invalido");
+        }
+        this.cliente = cliente;
+    }
 }
 
 

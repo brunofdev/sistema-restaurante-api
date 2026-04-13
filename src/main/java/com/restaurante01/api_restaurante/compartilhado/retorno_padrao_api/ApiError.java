@@ -3,18 +3,11 @@ package com.restaurante01.api_restaurante.compartilhado.retorno_padrao_api;
 import java.time.LocalDateTime;
 
 public class ApiError {
-    private int status;
     private String error;
     private String message;
     private LocalDateTime timestamp;
 
-    public int getStatus() {
-        return status;
-    }
 
-    public void setStatus(int status) {
-        this.status = status;
-    }
 
     public String getError() {
         return error;

@@ -27,7 +27,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -113,8 +112,6 @@ class AssociarProdutoAoCardapioCasoDeUsoTest {
 
 
     }
-
-
 @Test
 @DisplayName("Deve lançar exceção quando já existe associação entre produto e cardápio")
 void deveLancarExcecao_quandoAssociacaoExiste() {
