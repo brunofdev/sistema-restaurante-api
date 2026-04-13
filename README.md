@@ -64,10 +64,11 @@ Este projeto simula o backend completo de um sistema de restaurante, cobrindo de
 | Módulo | Acesso | Ações |
 |---|---|---|
 | Autenticação | Público | Login de cliente e operador via JWT |
-| Produtos | Público / Admin | Ver vitrine · Gerenciar produtos |
-| Cardápios | Público / Admin | Ver opções · Montar e editar cardápios |
+| Produtos |  Admin | Ver vitrine · Gerenciar produtos |
+| Cardápios | Admin | Ver opções · Montar e editar cardápios |
 | Pedidos | Cliente / Admin | Fazer pedido · Controlar status · Listar por dia |
 | Usuários | Admin | Gerenciar equipe e base de clientes |
+| CardapioProduto | Publico / Admin | Tabela associativa entre Card. e Prod. |
 
 ---
 
