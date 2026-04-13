@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
+//Necessario implementar solução para realizar apenas uma consulta ao banco, nao em cada volta da iteração.
 @Service
 public class EstornarProdutoVendidoCasoDeUso {
 
