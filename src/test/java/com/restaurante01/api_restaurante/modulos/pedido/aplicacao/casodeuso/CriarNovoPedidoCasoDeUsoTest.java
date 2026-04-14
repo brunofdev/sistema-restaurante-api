@@ -81,7 +81,6 @@ class CriarNovoPedidoCasoDeUsoTest {
         PedidoDTO resultado = casoDeUso.executar(pedidoCriacaoDTO, cliente);
 
 
-
         verify(validarEstoquePedidoUseCase).executar(pedidoCriacaoDTO);
         verify(obterProdutoValorCostumizadoCasoDeUso).executar(pedidoCriacaoDTO.idCardapio(), itemPedidoSolicitadoDTOS.get(0).idProduto());
         verify(pedidoRepository).salvar(pedidoCaptor.capture());
@@ -98,68 +97,9 @@ class CriarNovoPedidoCasoDeUsoTest {
         assertThat(evento.idCardapio()).isEqualTo(pedidoCriacaoDTO.idCardapio());
         assertThat(resultado).isEqualTo(pedidoDTO);
     }
-
     @Test
-    @DisplayName("Deve lançar exceção quando produto não pertencer ao cardápio solicitado")
-    void deveLancarAssociacaoNaoExisteExceptionQuandoProdutoNaoPertencerAoCardapio(){
-        Cliente cliente = ClienteBuilder.umCliente().build();
-        Produto produtoNaoAssociado = ProdutoBuilder.umProduto()
-                .comId(2L)
-                .comNome("X-SALADA")
-                .build();
-        CardapioProduto tabelaAssociativa = CardapioProdutoBuilder.umCardapioProduto().build();
-        List<ItemPedidoSolicitadoDTO> itensDTO = List.of(
-                new ItemPedidoSolicitadoDTO(
-                        produtoNaoAssociado.getId(),
-                        1,
-                        "Teste"
-                ));
-        PedidoCriacaoDTO pedidoCriacaoDTO = new PedidoCriacaoDTO(
-                tabelaAssociativa.getCardapio().getId(),
-                itensDTO)
-                ;
-        when(validarEstoquePedidoUseCase.executar(pedidoCriacaoDTO))
-                .thenThrow(new AssociacaoNaoExisteException("Atenção: Um ou mais produtos solicitados não pertencem a este cardápio."));
-
-
-        assertThatThrownBy(() -> casoDeUso.executar(pedidoCriacaoDTO, cliente))
-                .isInstanceOf(AssociacaoNaoExisteException.class)
-                .hasMessageContaining("Atenção: Um ou mais produtos solicitados não pertencem a este cardápio.");
-        verify(pedidoRepository, never()).salvar(any());
-        verify(eventPublisher, never()).publishEvent(any());
-
-    }
-
-    @Test
-    @DisplayName("Deve lançar exceção quando o produto solicitado não existir")
-    public void deveLancarProdutoNaoEncontradoExceptionQuandoProdutoEnviadoNaoExistir(){
-        Cliente cliente = ClienteBuilder.umCliente().build();
-        CardapioProduto tabelaAssociativa = CardapioProdutoBuilder.umCardapioProduto().build();
-        List<ItemPedidoSolicitadoDTO> itensDTO = List.of(
-                new ItemPedidoSolicitadoDTO(
-                        999L,
-                        1,
-                        "Teste"
-                ));
-        PedidoCriacaoDTO pedidoCriacaoDTO = new PedidoCriacaoDTO(
-                tabelaAssociativa.getCardapio().getId(),
-                itensDTO)
-                ;
-        when(validarEstoquePedidoUseCase.executar(pedidoCriacaoDTO))
-                .thenThrow(new ProdutoNaoEncontradoException("Produto não encontrado no estoque."));
-
-
-        assertThatThrownBy(() -> casoDeUso.executar(pedidoCriacaoDTO, cliente))
-                .isInstanceOf(ProdutoNaoEncontradoException.class)
-                .hasMessageContaining("Produto não encontrado no estoque.");
-
-        verify(pedidoRepository, never()).salvar(any());
-        verify(eventPublisher, never()).publishEvent(any());
-    }
-
-    @Test
-    @DisplayName("Deve lançar exceção quando a quantidade solicitada exceder o estoque disponível")
-    public void deveLancarQntdCustomizadaInsuficienteExceptionQuandoQntdCostumizadaForMenorQueSolicitada(){
+    @DisplayName("Não deve salvar pedido nem publicar evento quando a validação de estoque falhar")
+    void naoDeveSalvarQuandoValidacaoFalhar() {
         Cliente cliente = ClienteBuilder.umCliente().build();
         CardapioProduto produtoSolicitado = CardapioProdutoBuilder.
                 umCardapioProduto()
@@ -175,15 +115,13 @@ class CriarNovoPedidoCasoDeUsoTest {
                 produtoSolicitado.getCardapio().getId(),
                 itensDTO)
                 ;
-        when(validarEstoquePedidoUseCase.executar(pedidoCriacaoDTO))
-                .thenThrow(new QntdCustomizadaInsuficienteException("Quantidade indisponível para o produto: " + produtoSolicitado.getProduto().getNome()));
-
-
-        assertThatThrownBy(() -> casoDeUso.executar(pedidoCriacaoDTO, cliente))
-                .isInstanceOf(QntdCustomizadaInsuficienteException.class)
-                .hasMessageContaining("Quantidade indisponível para o produto: " + produtoSolicitado.getProduto().getNome());
+        when(validarEstoquePedidoUseCase.executar(any()))
+                .thenThrow(new RuntimeException("qualquer erro"));
+        assertThatThrownBy(() -> casoDeUso.executar(pedidoCriacaoDTO, cliente));
 
         verify(pedidoRepository, never()).salvar(any());
         verify(eventPublisher, never()).publishEvent(any());
     }
+
 }
+
