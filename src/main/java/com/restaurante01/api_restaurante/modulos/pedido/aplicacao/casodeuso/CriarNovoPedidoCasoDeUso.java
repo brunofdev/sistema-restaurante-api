@@ -54,9 +54,9 @@ public class CriarNovoPedidoCasoDeUso {
         return pedidoMapper.mapearPedidoDto(pedido);
     }
 
-    private void vincularItensAoPedido(Pedido pedido, List<ItemPedidoSolicitadoDTO> itensDto, Long idCardapio) {
+    private void vincularItensAoPedido(Pedido pedido, List<ItemPedidoSolicitadoDTO> itensDto) {
         itensDto.forEach(item -> {
-            CardapioProduto cardapioProduto = obterProdutoValorCostumizadoCasoDeUso.executar(idCardapio, item.idProduto());
+            CardapioProduto cardapioProduto = obterProdutoValorCostumizadoCasoDeUso.executar(pedido.getIdCardapio(), item.idProduto());
             ItemPedido itemPedido = pedidoMapper.mapearItemPedido(item.quantidade(), cardapioProduto, item.observacao());
             pedido.adicionarItem(itemPedido);
         });

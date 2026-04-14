@@ -7,7 +7,6 @@ import java.util.List;
 
 public record PedidoCriadoEvento(
         Pedido pedido,
-        List<CardapioProduto> estoqueValidado,
-        Long idCardapio
+        List<CardapioProduto> estoqueValidado
 ) {
 }

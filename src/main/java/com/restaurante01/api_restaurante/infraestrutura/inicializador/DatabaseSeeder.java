@@ -109,6 +109,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
         // --- 6. CRIANDO PEDIDO ---
         Pedido pedido = new Pedido();
+        pedido.vincularCardapioPedido(1L);
         pedido.setCliente(cliente);
         pedido.setStatusPedido(StatusPedido.PENDENTE);
         pedido.setEnderecoEntrega(cliente.getRua() + ", " + cliente.getNumeroResidencia());
