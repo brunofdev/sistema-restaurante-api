@@ -45,7 +45,7 @@ public class CriarNovoPedidoCasoDeUso {
     public PedidoDTO executar(PedidoCriacaoDTO dto, Cliente cliente) {
         List<CardapioProduto> estoqueValidado = validarEstoquePedidoUseCase.executar(dto);
         Pedido pedido = new Pedido();
-        pedido.setIdCardapio(dto.idCardapio());
+        pedido.vincularCardapioPedido(dto.idCardapio());
         vincularItensAoPedido(pedido, dto.itens());
         pedido.vincularCliente(cliente);
         pedido.setEnderecoEntrega("Endereço de teste");
