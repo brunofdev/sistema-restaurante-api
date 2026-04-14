@@ -45,12 +45,13 @@ public class CriarNovoPedidoCasoDeUso {
     public PedidoDTO executar(PedidoCriacaoDTO dto, Cliente cliente) {
         List<CardapioProduto> estoqueValidado = validarEstoquePedidoUseCase.executar(dto);
         Pedido pedido = new Pedido();
-        vincularItensAoPedido(pedido, dto.itens(), dto.idCardapio());
+        pedido.setIdCardapio(dto.idCardapio());
+        vincularItensAoPedido(pedido, dto.itens());
         pedido.vincularCliente(cliente);
         pedido.setEnderecoEntrega("Endereço de teste");
         pedido.setStatusPedido(StatusPedido.PENDENTE);
         pedidoRepository.salvar(pedido);
-        eventPublisher.publishEvent(new PedidoCriadoEvento(pedido, estoqueValidado, dto.idCardapio()));
+        eventPublisher.publishEvent(new PedidoCriadoEvento(pedido, estoqueValidado));
         return pedidoMapper.mapearPedidoDto(pedido);
     }
 

@@ -94,9 +94,10 @@ class CriarNovoPedidoCasoDeUsoTest {
         assertThat(pedidoSalvo.getItens()).contains(itemPedido);
         assertThat(pedidoSalvo.getItens()).hasSize(1);
         assertThat(evento.pedido()).isEqualTo(pedidoSalvo);
-        assertThat(evento.idCardapio()).isEqualTo(pedidoCriacaoDTO.idCardapio());
+        assertThat(evento.pedido().getIdCardapio()).isEqualTo(pedidoCriacaoDTO.idCardapio());
         assertThat(resultado).isEqualTo(pedidoDTO);
     }
+
     @Test
     @DisplayName("Não deve salvar pedido nem publicar evento quando a validação de estoque falhar")
     void naoDeveSalvarQuandoValidacaoFalhar() {
@@ -124,4 +125,3 @@ class CriarNovoPedidoCasoDeUsoTest {
     }
 
 }
-

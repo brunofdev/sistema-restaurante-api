@@ -59,6 +59,12 @@ public class Pedido extends Auditable {
         }
         this.statusPedido = novoStatus;
     }
+    public void vincularCardapioPedido(Long idCardapio){
+        if(idCardapio == null || idCardapio <= 0){
+            throw new CardapioNaoEncontradoException("Id de cardapio nao pode ser vazio ou zero ou menor que zero, valor recebido = " + idCardapio);
+        }
+        this.idCardapio = idCardapio;
+    }
     public void vincularCliente (Cliente cliente){
         if(cliente == null){
             throw new StatusPedidoInvalidoException("Erro ao vincular cliente, cliente invalido");
