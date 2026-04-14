@@ -107,6 +107,8 @@ class AssociarProdutoAoCardapioCasoDeUsoTest {
         CardapioProdutoAssociacaoRespostaDTO resultado = casoDeUso.executar(dto);
 
         assertThat(resultado).isEqualTo(cardapioProdutoAssociacaoRespostaDTO);
+
+
         verify(cardapioProdutoRepositorio).save(novaAssociacao);
         verify(cardapioProdutoValidator).validarCardapioProdutoAssociacaoEntradaDTO(dto);
 

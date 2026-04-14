@@ -47,7 +47,7 @@ public class CriarNovoPedidoCasoDeUso {
         Pedido pedido = new Pedido();
         vincularItensAoPedido(pedido, dto.itens(), dto.idCardapio());
         pedido.vincularCliente(cliente);
-        pedido.setEnderecoEntrega("Endereço de teste"); // Futuramente vindo do DTO
+        pedido.setEnderecoEntrega("Endereço de teste");
         pedido.setStatusPedido(StatusPedido.PENDENTE);
         pedidoRepository.salvar(pedido);
         eventPublisher.publishEvent(new PedidoCriadoEvento(pedido, estoqueValidado, dto.idCardapio()));
