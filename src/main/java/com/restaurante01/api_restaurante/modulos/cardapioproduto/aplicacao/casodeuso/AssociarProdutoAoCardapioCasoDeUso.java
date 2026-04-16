@@ -7,6 +7,7 @@ import com.restaurante01.api_restaurante.modulos.cardapioproduto.api.dto.saida.C
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.aplicacao.mapeador.CardapioProdutoMapper;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.aplicacao.validador.CardapioProdutoValidator;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.entidade.CardapioProduto;
+import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.excecao.AssociacaoExistenteCardapioProdutoException;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.repositorio.CardapioProdutoRepositorio;
 import com.restaurante01.api_restaurante.modulos.produto.aplicacao.casodeuso.ObterProdutoPorIdCasoDeUso;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
@@ -36,15 +37,14 @@ public class AssociarProdutoAoCardapioCasoDeUso {
 
     @Transactional
     public CardapioProdutoAssociacaoRespostaDTO executar(CardapioProdutoAssociacaoEntradaDTO dto) {
-        boolean existe = repository.existeAssociacao(dto.getIdCardapio(), dto.getIdProduto());
-        validator.validarCardapioProdutoAssociacaoEntradaDTO(dto, existe, false);
-
+        if(repository.existeAssociacao(dto.getIdCardapio(), dto.getIdProduto())){
+            throw new AssociacaoExistenteCardapioProdutoException("Associação já existe");
+        };
+        validator.validarCardapioProdutoAssociacaoEntradaDTO(dto);
         Produto produto = obterProdutoPorId.retornarEntidade(dto.getIdProduto());
         Cardapio cardapio = buscarCardapioPorId.executar(dto.getIdCardapio());
-
         CardapioProduto novaAssociacao = mapper.mapearCardapioProduto(produto, cardapio, dto);
         repository.save(novaAssociacao);
-
         return mapper.mapearCardapioProdutoAssociacaoDTO(novaAssociacao);
     }
 }

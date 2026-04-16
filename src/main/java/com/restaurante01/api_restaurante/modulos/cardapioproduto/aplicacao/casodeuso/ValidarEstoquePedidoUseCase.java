@@ -2,9 +2,12 @@ package com.restaurante01.api_restaurante.modulos.cardapioproduto.aplicacao.caso
 
 import com.restaurante01.api_restaurante.compartilhado.dominio.excecao.BusinessException;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.entidade.CardapioProduto;
+import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.excecao.AssociacaoNaoExisteException;
+import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.excecao.QntdCustomizadaInsuficienteException;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.repositorio.CardapioProdutoRepositorio;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.ItemPedidoSolicitadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.PedidoCriacaoDTO;
+import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.ProdutoNaoEncontradoException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,20 +52,18 @@ public class ValidarEstoquePedidoUseCase {
 
     private void validarPertencimentoAoCardapio(List<CardapioProduto> estoque, List<ItemPedidoSolicitadoDTO> itensLimpos) {
         if (estoque.size() != itensLimpos.size()) {
-            throw new BusinessException("Atenção: Um ou mais produtos solicitados não pertencem a este cardápio.");
+            throw new AssociacaoNaoExisteException("Atenção: Um ou mais produtos solicitados não pertencem a este cardápio.");
         }
     }
 
     private void validarDisponibilidade(List<CardapioProduto> estoque, List<ItemPedidoSolicitadoDTO> itensLimpos) {
         for (ItemPedidoSolicitadoDTO itemDesejado : itensLimpos) {
-
             CardapioProduto itemNoBanco = estoque.stream()
                     .filter(cp -> cp.getProduto().getId().equals(itemDesejado.idProduto()))
                     .findFirst()
-                    .orElseThrow(() -> new BusinessException("Produto não encontrado no estoque."));
-
+                    .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto não encontrado no estoque."));
             if (!itemNoBanco.verificaDisponibilidadeProduto(itemDesejado.quantidade())) {
-                throw new BusinessException("Quantidade indisponível para o produto: " + itemNoBanco.getProduto().getNome());
+                throw new QntdCustomizadaInsuficienteException("Quantidade indisponível para o produto: " + itemNoBanco.getProduto().getNome());
             }
         }
     }

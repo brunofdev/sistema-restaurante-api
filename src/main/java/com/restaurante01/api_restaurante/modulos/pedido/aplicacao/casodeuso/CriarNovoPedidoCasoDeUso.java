@@ -47,12 +47,12 @@ public class CriarNovoPedidoCasoDeUso {
         Pedido pedido = new Pedido();
         pedido.vincularCardapioPedido(dto.idCardapio());
         vincularItensAoPedido(pedido, dto.itens());
-        pedido.setCliente(cliente);
-        pedido.setEnderecoEntrega("Endereço de teste"); // Futuramente vindo do DTO
+        pedido.vincularCliente(cliente);
+        pedido.setEnderecoEntrega("Endereço de teste");
         pedido.setStatusPedido(StatusPedido.PENDENTE);
-        Pedido pedidoSalvo = pedidoRepository.salvar(pedido);
+        pedidoRepository.salvar(pedido);
         eventPublisher.publishEvent(new PedidoCriadoEvento(pedido, estoqueValidado));
-        return pedidoMapper.mapearPedidoDto(pedidoSalvo);
+        return pedidoMapper.mapearPedidoDto(pedido);
     }
 
     private void vincularItensAoPedido(Pedido pedido, List<ItemPedidoSolicitadoDTO> itensDto) {

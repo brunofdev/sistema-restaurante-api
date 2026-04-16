@@ -35,7 +35,6 @@ public class GlobalExceptionHandler {
     // Padronização do corpo da resposta de erro
     private ResponseEntity<ApiResponse<Object>> buildError(HttpStatus status, String error, String message, String responseMessage) {
         ApiError apiError = new ApiError();
-        apiError.setStatus(status.value());
         apiError.setError(error);
         apiError.setMessage(message);
         apiError.setTimestamp(LocalDateTime.now());

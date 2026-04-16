@@ -15,14 +15,8 @@ import java.math.BigDecimal;
 @Component
 public class CardapioProdutoValidator {
 
-    @Autowired
-    private CardapioProdutoRepositorio CardapioProdutoRepositorio;
 
-    public CardapioProdutoValidator(CardapioProdutoRepositorio CardapioProdutoRepositorio){
-        this.CardapioProdutoRepositorio = CardapioProdutoRepositorio;
-    }
-
-    public void validarCardapioProdutoAssociacaoEntradaDTO(CardapioProdutoAssociacaoEntradaDTO dto,  boolean existeAssociacao, boolean estaAtualizandoApenas){
+    public void validarCardapioProdutoAssociacaoEntradaDTO(CardapioProdutoAssociacaoEntradaDTO dto){
         if(dto.getPrecoCustomizado() != null && dto.getPrecoCustomizado().compareTo(BigDecimal.ZERO) < 0){
             throw new PrecoProdutoNegativoException("O preço customizado não pode ser negativo");
         }
@@ -32,10 +26,5 @@ public class CardapioProdutoValidator {
         if(dto.getDescricaoCustomizada() != null && dto.getDescricaoCustomizada().length() < 10){
             throw new ProdutoDescricaoInvalidaExcpetion("Descrição deve conter mais de 10 caracteres");
         }
-        //Aqui, garantimos idepotencia no verbo PUT do controlador
-        if(existeAssociacao && !estaAtualizandoApenas){
-            throw new AssociacaoExistenteCardapioProdutoException("Já existe associação presente");
-        }
-
     }
 }
