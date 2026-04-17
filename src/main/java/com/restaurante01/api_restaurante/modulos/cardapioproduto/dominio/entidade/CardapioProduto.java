@@ -71,6 +71,12 @@ public class CardapioProduto {
         }
         return false;
     }
+    public BigDecimal resolverPrecoDeVenda() {
+        if (precoCustomizado == null || precoCustomizado.compareTo(BigDecimal.ZERO) <= 0) {
+            return produto.getPreco();
+        }
+        return precoCustomizado;
+    }
 
 
 }

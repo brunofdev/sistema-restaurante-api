@@ -17,7 +17,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "pedidos")
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class Pedido extends Auditable {
@@ -56,13 +55,11 @@ public class Pedido extends Auditable {
 
     public void adicionarItem(ItemPedido item) {
         itens.add(item);
-        item.setPedido(this);
         calcularTotal();
     }
 
     public void removerItem(ItemPedido item) {
         itens.remove(item);
-        item.setPedido(null);
         calcularTotal();
     }
 

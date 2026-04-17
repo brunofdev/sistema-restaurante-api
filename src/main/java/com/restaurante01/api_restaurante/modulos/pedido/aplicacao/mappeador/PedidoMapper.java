@@ -15,15 +15,6 @@ import java.util.List;
 
 @Component
 public class PedidoMapper {
-    public ItemPedido mapearItemPedido (Integer quantidade, CardapioProduto produto, String observacao){
-        BigDecimal preco = (produto.getPrecoCustomizado() == null || produto.getPrecoCustomizado().compareTo(BigDecimal.ZERO) <= 0) ? produto.getProduto().getPreco() : produto.getPrecoCustomizado();
-        return new ItemPedido(
-                produto.getProduto(),
-                quantidade,
-                preco,
-                observacao
-                );
-    }
     public ItemPedidoDTO mapearItemPedidoDto (ItemPedido item){
         return new ItemPedidoDTO (
                 item.getProduto().getNome(),

@@ -1,5 +1,5 @@
 package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso;
-import com.restaurante01.api_restaurante.ItemPedidoBuilder;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPedidoBuilder;
 import com.restaurante01.api_restaurante.builders.CardapioProdutoBuilder;
 import com.restaurante01.api_restaurante.builders.ClienteBuilder;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.aplicacao.casodeuso.ObterProdutoValorCostumizadoCasoDeUso;
@@ -55,11 +55,6 @@ class CriarNovoPedidoCasoDeUsoTest {
     void deveCriarPedidoComStatusPendenteESalvarQuandoDadosValidos() {
         CardapioProduto cardapioProduto = CardapioProdutoBuilder.umCardapioProduto().build();
         Cliente cliente = ClienteBuilder.umCliente().build();
-        ItemPedido itemPedido = ItemPedidoBuilder.umItemPedido()
-                .comProduto(cardapioProduto.getProduto())
-                .comQuantidade(2)
-                .comObservacao("Teste de observação")
-                .build();
         List<ItemPedidoSolicitadoDTO> itemPedidoSolicitadoDTOS = List.of(
                 new ItemPedidoSolicitadoDTO(
                         cardapioProduto.getProduto().getId(),
@@ -69,10 +64,10 @@ class CriarNovoPedidoCasoDeUsoTest {
         PedidoCriacaoDTO pedidoCriacaoDTO = new PedidoCriacaoDTO(cardapioProduto.getCardapio().getId(), itemPedidoSolicitadoDTOS, null);
         PedidoDTO pedidoDTO = Instancio.create(PedidoDTO.class);
 
+
         when(enderecoMapper.paraEndereco(null)).thenReturn(null);
         when(validarEstoquePedidoUseCase.executar(pedidoCriacaoDTO)).thenReturn(List.of(cardapioProduto));
         when(obterProdutoValorCostumizadoCasoDeUso.executar(pedidoCriacaoDTO.idCardapio(), pedidoCriacaoDTO.itens().get(0).idProduto())).thenReturn(cardapioProduto);
-        when(pedidoMapper.mapearItemPedido(itemPedido.getQuantidade(), cardapioProduto, itemPedido.getObservacao())).thenReturn(itemPedido);
         when(pedidoMapper.mapearPedidoDto(any(Pedido.class))).thenReturn(pedidoDTO);
 
         ArgumentCaptor<Pedido> pedidoCaptor = ArgumentCaptor.forClass(Pedido.class);
@@ -91,8 +86,14 @@ class CriarNovoPedidoCasoDeUsoTest {
 
         assertThat(pedidoSalvo.getCliente()).isEqualTo(cliente);
         assertThat(pedidoSalvo.getStatusPedido()).isEqualTo(StatusPedido.PENDENTE);
-        assertThat(pedidoSalvo.getItens()).contains(itemPedido);
+
         assertThat(pedidoSalvo.getItens()).hasSize(1);
+
+        ItemPedido itemSalvo = pedidoSalvo.getItens().get(0);
+        assertThat(itemSalvo.getProduto()).isEqualTo(cardapioProduto.getProduto());
+        assertThat(itemSalvo.getQuantidade()).isEqualTo(2);
+        assertThat(itemSalvo.getPrecoUnitario()).isEqualByComparingTo(cardapioProduto.resolverPrecoDeVenda());
+        assertThat(itemSalvo.getObservacao()).isEqualTo("Teste de observação");
         assertThat(evento.pedido()).isEqualTo(pedidoSalvo);
         assertThat(evento.pedido().getIdCardapio()).isEqualTo(pedidoCriacaoDTO.idCardapio());
         assertThat(resultado).isEqualTo(pedidoDTO);
@@ -124,5 +125,4 @@ class CriarNovoPedidoCasoDeUsoTest {
         verify(pedidoRepository, never()).salvar(any());
         verify(eventPublisher, never()).publishEvent(any());
     }
-
 }

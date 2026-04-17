@@ -18,6 +18,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -59,7 +60,7 @@ public class CriarNovoPedidoCasoDeUso {
     private void vincularItensAoPedido(Pedido pedido, List<ItemPedidoSolicitadoDTO> itensDto) {
         itensDto.forEach(item -> {
             CardapioProduto cardapioProduto = obterProdutoValorCostumizadoCasoDeUso.executar(pedido.getIdCardapio(), item.idProduto());
-            ItemPedido itemPedido = pedidoMapper.mapearItemPedido(item.quantidade(), cardapioProduto, item.observacao());
+            ItemPedido itemPedido = ItemPedido.criar(pedido, item.quantidade(), cardapioProduto.getProduto(), cardapioProduto.resolverPrecoDeVenda(), item.observacao());
             pedido.adicionarItem(itemPedido);
         });
     }

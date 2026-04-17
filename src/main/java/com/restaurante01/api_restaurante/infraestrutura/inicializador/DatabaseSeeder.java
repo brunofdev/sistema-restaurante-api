@@ -5,8 +5,6 @@ import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Carda
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.entidade.CardapioProduto;
 import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;
 import com.restaurante01.api_restaurante.modulos.operador.dominio.entidade.Operador;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Endereco;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.enums.StatusPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
@@ -100,19 +98,26 @@ public class DatabaseSeeder implements CommandLineRunner {
         entityManager.persist(cardapioInverno);
 
         // --- 5. VINCULANDO PRODUTO AO CARDÁPIO (CardapioProduto) ---
-        CardapioProduto comboBurger = new CardapioProduto();
-        comboBurger.setCardapio(cardapioInverno);
-        comboBurger.setProduto(hamburguer);
-        comboBurger.setPrecoCustomizado(new BigDecimal("30.00")); // Preço promocional no cardápio
-        comboBurger.setQuantidadeCustomizada(10);
-        comboBurger.setDisponibilidadeCustomizada(true);
-        entityManager.persist(comboBurger);
+        CardapioProduto associacao1 = new CardapioProduto();
+        associacao1.setCardapio(cardapioInverno);
+        associacao1.setProduto(hamburguer);
+        associacao1.setPrecoCustomizado(new BigDecimal("30.00")); // Preço promocional no cardápio
+        associacao1.setQuantidadeCustomizada(10);
+        associacao1.setDisponibilidadeCustomizada(true);
+        entityManager.persist(associacao1);
+
+        CardapioProduto associacao2 = new CardapioProduto();
+        associacao2.setCardapio(cardapioInverno);
+        associacao2.setProduto(refrigerante);
+        associacao2.setPrecoCustomizado(new BigDecimal("6.00")); // Preço promocional no cardápio
+        associacao2.setQuantidadeCustomizada(10);
+        associacao2.setDisponibilidadeCustomizada(true);
+        entityManager.persist(associacao2);
 
         // --- 6. CRIANDO PEDIDO ---
         Pedido pedido = Pedido.criar(1L, cliente, null);
-        // Adicionando Itens (a lógica de calcularTotal e linkar o Pedido já está no metodo adicionarItem)
-        ItemPedido item1 = new ItemPedido(hamburguer, 2, new BigDecimal("35.00"), "Carne mal passada");
-        ItemPedido item2 = new ItemPedido(refrigerante, 2, new BigDecimal("8.00"), null);
+        ItemPedido item1 =  ItemPedido.criar(pedido, 2, hamburguer,associacao1.resolverPrecoDeVenda(),"");
+        ItemPedido item2 = ItemPedido.criar(pedido, 2, refrigerante,associacao2.resolverPrecoDeVenda(),"");
 
         pedido.adicionarItem(item1);
         pedido.adicionarItem(item2);

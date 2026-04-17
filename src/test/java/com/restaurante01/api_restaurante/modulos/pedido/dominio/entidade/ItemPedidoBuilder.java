@@ -1,8 +1,6 @@
-package com.restaurante01.api_restaurante;
+package com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade;
 
 import com.restaurante01.api_restaurante.builders.ProdutoBuilder;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPedido;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
 
 import java.math.BigDecimal;
@@ -61,15 +59,6 @@ public class ItemPedidoBuilder {
 
     // --- BUILD ---
     public ItemPedido build() {
-        ItemPedido item = new ItemPedido();
-
-        item.setId(id);
-        item.setPedido(pedido);
-        item.setProduto(produto);
-        item.setQuantidade(quantidade);
-        item.setPrecoUnitario(precoUnitario);
-        item.setObservacao(observacao);
-
-        return item;
+        return new ItemPedido(id, pedido, produto, quantidade, precoUnitario, observacao);
     }
 }
