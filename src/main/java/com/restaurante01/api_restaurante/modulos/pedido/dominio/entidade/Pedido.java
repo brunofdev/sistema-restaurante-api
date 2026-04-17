@@ -3,6 +3,7 @@ package com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade;
 
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.CardapioNaoEncontradoException;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.enums.StatusPedido;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.EnderecoDoPedidoInvalidoExcecao;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.StatusPedidoInvalidoException;
 import com.restaurante01.api_restaurante.infraestrutura.security.auditoria.Auditable;
 import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;
@@ -91,14 +92,10 @@ public class Pedido extends Auditable {
     }
 
     public void adicionarEndereco(Endereco endereco) {
-        this.enderecoEntrega = Objects.requireNonNullElseGet(endereco, () -> new Endereco(
-                cliente.getRua(),
-                cliente.getNumeroResidencia(),
-                cliente.getBairro(),
-                cliente.getCidade(),
-                cliente.getEstado(),
-                cliente.getCep(),
-                cliente.getObservacaoEndereco()));
+        if(endereco == null){
+            throw new EnderecoDoPedidoInvalidoExcecao("Endereço adicionado no pedido está vazio");
+        }
+        this.enderecoEntrega = endereco;
     }
 }
 

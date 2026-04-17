@@ -12,6 +12,7 @@ import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPed
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.evento.PedidoCriadoEvento;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.ConsultaCardapioProdutoPorta;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.EnderecoClientePorta;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.repositorio.PedidoRepositorio;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -27,26 +28,28 @@ public class CriarNovoPedidoCasoDeUso {
     private final ApplicationEventPublisher eventPublisher;
     private final EnderecoMapper enderecoMapper;
     private final ConsultaCardapioProdutoPorta produto;
+    private final EnderecoClientePorta enderecoClientePorta;
 
 
     public CriarNovoPedidoCasoDeUso(PedidoRepositorio pedidoRepository,
                                     PedidoMapper pedidoMapper,
                                     ApplicationEventPublisher eventPublisher,
                                     EnderecoMapper enderecoMapper,
-                                    ConsultaCardapioProdutoPorta produto
+                                    ConsultaCardapioProdutoPorta produto,
+                                    EnderecoClientePorta enderecoClientePorta
                                         ) {
         this.pedidoRepository = pedidoRepository;
         this.pedidoMapper = pedidoMapper;
         this.eventPublisher = eventPublisher;
         this.enderecoMapper = enderecoMapper;
         this.produto = produto;
+        this.enderecoClientePorta = enderecoClientePorta;
     }
 
     @Transactional
     public PedidoDTO executar(PedidoCriacaoDTO dto, Cliente cliente) {
         List<CardapioProduto> estoqueValidado = produto.validarEstoque(dto.idCardapio(), pedidoMapper.mapearParaValidacaoDeEstoque(dto.itens()));
-        Endereco enderecoParaEntrega = enderecoMapper.paraEndereco(dto.enderecoAlternativo());
-        Pedido pedido = Pedido.criar(dto.idCardapio(), cliente, enderecoParaEntrega);
+        Pedido pedido = Pedido.criar(dto.idCardapio(), cliente, selecionaEndereco(dto, cliente));
         vincularItensAoPedido(pedido, dto.itens());
         pedidoRepository.salvar(pedido);
         eventPublisher.publishEvent(new PedidoCriadoEvento(pedido, estoqueValidado));
@@ -59,5 +62,12 @@ public class CriarNovoPedidoCasoDeUso {
             ItemPedido itemPedido = ItemPedido.criar(pedido, item.quantidade(), cardapioProduto.getProduto(), cardapioProduto.resolverPrecoDeVenda(), item.observacao());
             pedido.adicionarItem(itemPedido);
         });
+    }
+    private Endereco selecionaEndereco(PedidoCriacaoDTO dto, Cliente cliente){
+        if(dto.enderecoAlternativo() == null){
+            return enderecoClientePorta.obterEndereco(cliente);
+        }
+        return enderecoMapper.paraEndereco(dto.enderecoAlternativo());
+
     }
 }

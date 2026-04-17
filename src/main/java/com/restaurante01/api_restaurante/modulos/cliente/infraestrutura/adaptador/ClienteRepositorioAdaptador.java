@@ -1,7 +1,8 @@
-package com.restaurante01.api_restaurante.modulos.cliente.infraestrutura.persistencia;
+package com.restaurante01.api_restaurante.modulos.cliente.infraestrutura.adaptador;
 
 import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;
 import com.restaurante01.api_restaurante.modulos.cliente.dominio.repositorio.ClienteRepositorio;
+import com.restaurante01.api_restaurante.modulos.cliente.infraestrutura.persistencia.ClienteJPA;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -9,11 +10,11 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-public class ClienteRepositorioAdapter implements ClienteRepositorio {
+public class ClienteRepositorioAdaptador implements ClienteRepositorio {
 
     private final ClienteJPA jpa;
 
-    public ClienteRepositorioAdapter(ClienteJPA jpa) {
+    public ClienteRepositorioAdaptador(ClienteJPA jpa) {
         this.jpa = jpa;
     }
 
