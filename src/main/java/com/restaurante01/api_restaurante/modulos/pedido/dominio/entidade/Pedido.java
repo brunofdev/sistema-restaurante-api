@@ -96,8 +96,8 @@ public class Pedido extends Auditable {
                 cliente.getNumeroResidencia(),
                 cliente.getBairro(),
                 cliente.getCidade(),
+                cliente.getEstado(),
                 cliente.getCep(),
-                cliente.getComplemento(),
                 cliente.getObservacaoEndereco()));
     }
 }

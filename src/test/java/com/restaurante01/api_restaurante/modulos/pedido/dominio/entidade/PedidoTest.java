@@ -1,0 +1,161 @@
+package com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade;
+
+import com.restaurante01.api_restaurante.builders.ClienteBuilder;
+import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.CardapioNaoEncontradoException;
+import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.enums.StatusPedido;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.StatusPedidoInvalidoException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
+
+import static org.assertj.core.api.Assertions.*;
+
+class PedidoTest {
+
+    private Cliente cliente;
+
+    @BeforeEach
+    void setUp() {
+        cliente = ClienteBuilder.umCliente().build();
+    }
+
+    @Nested
+    @DisplayName("criar()")
+    class Criar {
+
+        @Test
+        @DisplayName("Deve criar pedido com status PENDENTE e valor total zero")
+        void deveCriarPedidoComEstadoInicial() {
+            Pedido pedido = Pedido.criar(1L, cliente, null);
+
+            assertThat(pedido.getStatusPedido()).isEqualTo(StatusPedido.PENDENTE);
+            assertThat(pedido.getValorTotal()).isEqualByComparingTo(BigDecimal.ZERO);
+            assertThat(pedido.getItens()).isEmpty();
+            assertThat(pedido.getCliente()).isEqualTo(cliente);
+        }
+
+        @Test
+        @DisplayName("Deve usar endereço do cliente quando endereço alternativo for nulo")
+        void deveUsarEnderecoDoClienteQuandoEnderecoAlternativoForNulo() {
+            Pedido pedido = Pedido.criar(1L, cliente, null);
+
+            assertThat(pedido.getEnderecoEntrega().cep())
+                    .isEqualTo(cliente.getCep());
+        }
+
+        @Test
+        @DisplayName("Deve usar endereço alternativo quando informado")
+        void deveUsarEnderecoAlternativoQuandoInformado() {
+            Endereco enderecoAlternativo = new Endereco("Rua B", 100, "Centro",
+                    "Florianópolis", "Rio grande do sul", "88058208", null);
+
+            Pedido pedido = Pedido.criar(1L, cliente, enderecoAlternativo);
+
+            assertThat(pedido.getEnderecoEntrega().cep()).isEqualTo("88058208");
+        }
+
+        @Test
+        @DisplayName("Deve lançar exceção quando idCardapio for nulo")
+        void deveLancarExcecaoQuandoIdCardapioForNulo() {
+            assertThatThrownBy(() -> Pedido.criar(null, cliente, null))
+                    .isInstanceOf(CardapioNaoEncontradoException.class);
+        }
+
+        @Test
+        @DisplayName("Deve lançar exceção quando idCardapio for zero ou negativo")
+        void deveLancarExcecaoQuandoIdCardapioForZeroOuNegativo() {
+            assertThatThrownBy(() -> Pedido.criar(0L, cliente, null))
+                    .isInstanceOf(CardapioNaoEncontradoException.class);
+
+            assertThatThrownBy(() -> Pedido.criar(-1L, cliente, null))
+                    .isInstanceOf(CardapioNaoEncontradoException.class);
+        }
+
+        @Test
+        @DisplayName("Deve lançar exceção quando cliente for nulo")
+        void deveLancarExcecaoQuandoClienteForNulo() {
+            assertThatThrownBy(() -> Pedido.criar(1L, null, null))
+                    .isInstanceOf(StatusPedidoInvalidoException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("adicionarItem() e calcularTotal()")
+    class AdicionarItemECalcularTotal {
+
+        @Test
+        @DisplayName("Deve calcular valor total ao adicionar itens")
+        void deveCalcularTotalAoAdicionarItens() {
+            Pedido pedido = Pedido.criar(1L, cliente, null);
+            ItemPedido item1 = ItemPedidoBuilder.umItemPedido()
+                    .comPrecoUnitario(BigDecimal.valueOf(20.00))
+                    .comQuantidade(2)
+                    .build(); // subtotal = 40
+            ItemPedido item2 = ItemPedidoBuilder.umItemPedido()
+                    .comPrecoUnitario(BigDecimal.valueOf(10.00))
+                    .comQuantidade(1)
+                    .build(); // subtotal = 10
+
+            pedido.adicionarItem(item1);
+            pedido.adicionarItem(item2);
+
+            assertThat(pedido.getValorTotal()).isEqualByComparingTo(BigDecimal.valueOf(50.00));
+            assertThat(pedido.getItens()).hasSize(2);
+        }
+
+        @Test
+        @DisplayName("Deve recalcular total ao remover item")
+        void deveRecalcularTotalAoRemoverItem() {
+            Pedido pedido = Pedido.criar(1L, cliente, null);
+            ItemPedido item = ItemPedidoBuilder.umItemPedido()
+                    .comPrecoUnitario(BigDecimal.valueOf(30.00))
+                    .comQuantidade(1)
+                    .build();
+
+            pedido.adicionarItem(item);
+            pedido.removerItem(item);
+
+            assertThat(pedido.getValorTotal()).isEqualByComparingTo(BigDecimal.ZERO);
+            assertThat(pedido.getItens()).isEmpty();
+        }
+    }
+
+    @Nested
+    @DisplayName("mudarStatus()")
+    class MudarStatus {
+
+        @Test
+        @DisplayName("Deve mudar status quando transição for válida")
+        void deveMudarStatusQuandoTransicaoForValida() {
+            Pedido pedido = Pedido.criar(1L, cliente, null);
+
+            pedido.mudarStatus(StatusPedido.EM_PREPARACAO);
+
+            assertThat(pedido.getStatusPedido()).isEqualTo(StatusPedido.EM_PREPARACAO);
+        }
+
+        @Test
+        @DisplayName("Deve lançar exceção quando transição for inválida")
+        void deveLancarExcecaoQuandoTransicaoForInvalida() {
+            Pedido pedido = Pedido.criar(1L, cliente, null);
+            pedido.mudarStatus(StatusPedido.EM_PREPARACAO);
+
+            assertThatThrownBy(() -> pedido.mudarStatus(StatusPedido.PENDENTE))
+                    .isInstanceOf(StatusPedidoInvalidoException.class);
+        }
+
+        @Test
+        @DisplayName("Não deve permitir alterar status de pedido cancelado")
+        void naoDevePermitirAlterarStatusDePedidoCancelado() {
+            Pedido pedido = Pedido.criar(1L, cliente, null);
+            pedido.mudarStatus(StatusPedido.CANCELADO);
+
+            assertThatThrownBy(() -> pedido.mudarStatus(StatusPedido.EM_PREPARACAO))
+                    .isInstanceOf(StatusPedidoInvalidoException.class);
+        }
+    }
+}
