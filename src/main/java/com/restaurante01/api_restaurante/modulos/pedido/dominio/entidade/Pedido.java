@@ -12,10 +12,11 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "pedidos")
-@Data
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
@@ -34,42 +35,73 @@ public class Pedido extends Auditable {
     @Column(nullable = false)
     private BigDecimal valorTotal = BigDecimal.ZERO;
     @Column(nullable = true)
-    private String enderecoEntrega;
+    @Embedded
+    private Endereco enderecoEntrega;
     @Column(name = "cardapio_de_referencia", nullable = false)
     private Long idCardapio;
 
-    public void adicionarItem(ItemPedido item){
+    public static Pedido criar(Long idCardapio, Cliente cliente, Endereco endereco) {
+        Pedido pedido = new Pedido();
+        pedido.vincularCardapioPedido(idCardapio);
+        pedido.vincularCliente(cliente);
+        pedido.adicionarEndereco(endereco);
+        return pedido;
+    }
+
+    protected Pedido(Long idCardapio, Cliente cliente) {
+        this.idCardapio = idCardapio;
+        this.cliente = cliente;
+        this.statusPedido = StatusPedido.PENDENTE;
+    }
+
+    public void adicionarItem(ItemPedido item) {
         itens.add(item);
         item.setPedido(this);
         calcularTotal();
     }
-    public void removerItem(ItemPedido item){
+
+    public void removerItem(ItemPedido item) {
         itens.remove(item);
         item.setPedido(null);
         calcularTotal();
     }
-    public void calcularTotal(){
-       this.valorTotal = itens.stream()
-               .map(ItemPedido::calcularSubTotal)
-               .reduce(BigDecimal.ZERO, BigDecimal::add);
-        }
-    public void mudarStatus(StatusPedido novoStatus){
-        if(!this.statusPedido.podeTransicionarPara(novoStatus)){
-            throw  new StatusPedidoInvalidoException("Status do pedido não pode retroceder ou ser alterado caso este esteja cancelado");
+
+    public void calcularTotal() {
+        this.valorTotal = itens.stream()
+                .map(ItemPedido::calcularSubTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public void mudarStatus(StatusPedido novoStatus) {
+        if (!this.statusPedido.podeTransicionarPara(novoStatus)) {
+            throw new StatusPedidoInvalidoException("Status do pedido não pode retroceder ou ser alterado caso este esteja cancelado");
         }
         this.statusPedido = novoStatus;
     }
-    public void vincularCardapioPedido(Long idCardapio){
-        if(idCardapio == null || idCardapio <= 0){
+
+    public void vincularCardapioPedido(Long idCardapio) {
+        if (idCardapio == null || idCardapio <= 0) {
             throw new CardapioNaoEncontradoException("Id de cardapio nao pode ser vazio ou zero ou menor que zero, valor recebido = " + idCardapio);
         }
         this.idCardapio = idCardapio;
     }
-    public void vincularCliente (Cliente cliente){
-        if(cliente == null){
+
+    public void vincularCliente(Cliente cliente) {
+        if (cliente == null) {
             throw new StatusPedidoInvalidoException("Erro ao vincular cliente, cliente invalido");
         }
         this.cliente = cliente;
+    }
+
+    public void adicionarEndereco(Endereco endereco) {
+        this.enderecoEntrega = Objects.requireNonNullElseGet(endereco, () -> new Endereco(
+                cliente.getRua(),
+                cliente.getNumeroResidencia(),
+                cliente.getBairro(),
+                cliente.getCidade(),
+                cliente.getCep(),
+                cliente.getComplemento(),
+                cliente.getObservacaoEndereco()));
     }
 }
 

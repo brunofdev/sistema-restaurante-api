@@ -5,6 +5,7 @@ import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Carda
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.entidade.CardapioProduto;
 import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;
 import com.restaurante01.api_restaurante.modulos.operador.dominio.entidade.Operador;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Endereco;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.enums.StatusPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
@@ -108,12 +109,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         entityManager.persist(comboBurger);
 
         // --- 6. CRIANDO PEDIDO ---
-        Pedido pedido = new Pedido();
-        pedido.vincularCardapioPedido(1L);
-        pedido.setCliente(cliente);
-        pedido.setStatusPedido(StatusPedido.PENDENTE);
-        pedido.setEnderecoEntrega(cliente.getRua() + ", " + cliente.getNumeroResidencia());
-
+        Pedido pedido = Pedido.criar(1L, cliente, null);
         // Adicionando Itens (a lógica de calcularTotal e linkar o Pedido já está no metodo adicionarItem)
         ItemPedido item1 = new ItemPedido(hamburguer, 2, new BigDecimal("35.00"), "Carne mal passada");
         ItemPedido item2 = new ItemPedido(refrigerante, 2, new BigDecimal("8.00"), null);

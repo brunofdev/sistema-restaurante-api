@@ -7,8 +7,9 @@ import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Client
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.ItemPedidoSolicitadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.PedidoCriacaoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDTO;
+import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mappeador.EnderecoMapper;
 import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mappeador.PedidoMapper;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.enums.StatusPedido;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Endereco;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.evento.PedidoCriadoEvento;
@@ -27,29 +28,29 @@ public class CriarNovoPedidoCasoDeUso {
     private final ObterProdutoValorCostumizadoCasoDeUso obterProdutoValorCostumizadoCasoDeUso;
     private final ValidarEstoquePedidoUseCase validarEstoquePedidoUseCase;
     private final ApplicationEventPublisher eventPublisher;
+    private final EnderecoMapper enderecoMapper;
 
 
     public CriarNovoPedidoCasoDeUso(PedidoRepositorio pedidoRepository,
                                     PedidoMapper pedidoMapper,
                                     ValidarEstoquePedidoUseCase validarEstoquePedidoUseCase,
                                     ApplicationEventPublisher eventPublisher,
-                                    ObterProdutoValorCostumizadoCasoDeUso obterProdutoValorCostumizadoCasoDeUso) {
+                                    ObterProdutoValorCostumizadoCasoDeUso obterProdutoValorCostumizadoCasoDeUso,
+                                    EnderecoMapper enderecoMapper) {
         this.pedidoRepository = pedidoRepository;
         this.pedidoMapper = pedidoMapper;
         this.validarEstoquePedidoUseCase = validarEstoquePedidoUseCase;
         this.eventPublisher = eventPublisher;
         this.obterProdutoValorCostumizadoCasoDeUso = obterProdutoValorCostumizadoCasoDeUso;
+        this.enderecoMapper = enderecoMapper;
     }
 
     @Transactional
     public PedidoDTO executar(PedidoCriacaoDTO dto, Cliente cliente) {
         List<CardapioProduto> estoqueValidado = validarEstoquePedidoUseCase.executar(dto);
-        Pedido pedido = new Pedido();
-        pedido.vincularCardapioPedido(dto.idCardapio());
+        Endereco enderecoParaEntrega = enderecoMapper.paraEndereco(dto.enderecoAlternativo());
+        Pedido pedido = Pedido.criar(dto.idCardapio(), cliente, enderecoParaEntrega);
         vincularItensAoPedido(pedido, dto.itens());
-        pedido.vincularCliente(cliente);
-        pedido.setEnderecoEntrega("Endereço de teste");
-        pedido.setStatusPedido(StatusPedido.PENDENTE);
         pedidoRepository.salvar(pedido);
         eventPublisher.publishEvent(new PedidoCriadoEvento(pedido, estoqueValidado));
         return pedidoMapper.mapearPedidoDto(pedido);
