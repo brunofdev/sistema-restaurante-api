@@ -9,7 +9,7 @@ import lombok.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "cardapios") // Plural é boa prática no banco (opcional)
+@Table(name = "cardapios")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,7 +18,7 @@ public class Cardapio extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Include // Apenas o ID define a igualdade
+    @EqualsAndHashCode.Include
     private Long id;
 
     @NotBlank(message = "O nome do cardápio é obrigatório")

@@ -1,9 +1,8 @@
-package com.restaurante01.api_restaurante.modulos.cardapioproduto.infraestrutura.persistencia;
+package com.restaurante01.api_restaurante.modulos.cardapioproduto.infraestrutura.adaptador;
 
-import com.restaurante01.api_restaurante.modulos.cardapioproduto.api.dto.saida.CardapioComListaProdutoDTO;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.entidade.CardapioProduto;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.repositorio.CardapioProdutoRepositorio;
-import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.PedidoCriacaoDTO;
+import com.restaurante01.api_restaurante.modulos.cardapioproduto.infraestrutura.persistencia.CardapioProdutoJPA;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 

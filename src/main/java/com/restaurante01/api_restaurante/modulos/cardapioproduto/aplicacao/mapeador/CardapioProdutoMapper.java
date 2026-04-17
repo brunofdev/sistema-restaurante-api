@@ -1,7 +1,7 @@
 package com.restaurante01.api_restaurante.modulos.cardapioproduto.aplicacao.mapeador;
 
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Cardapio;
-import com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.mapeamento.CardapioMapper;
+import com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.mapeador.CardapioMapper;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.api.dto.entrada.CardapioProdutoAssociacaoEntradaDTO;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.api.dto.saida.CardapioComListaProdutoDTO;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.api.dto.saida.CardapioProdutoAssociacaoRespostaDTO;

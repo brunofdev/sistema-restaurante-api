@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.mapeamento;
+package com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.mapeador;
 
 import com.restaurante01.api_restaurante.modulos.cardapio.api.dto.entrada.CardapioCreateDTO;
 import com.restaurante01.api_restaurante.modulos.cardapio.api.dto.saida.CardapioDTO;

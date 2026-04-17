@@ -6,6 +6,7 @@ import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.excecao
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.repositorio.CardapioProdutoRepositorio;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.ItemPedidoSolicitadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.PedidoCriacaoDTO;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemValidacaoEstoque;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.ProdutoNaoEncontradoException;
 import org.springframework.stereotype.Service;
 
@@ -21,42 +22,42 @@ public class ValidarEstoquePedidoUseCase {
         this.repositorio = repositorio;
     }
 
-    public List<CardapioProduto> executar(PedidoCriacaoDTO pedido) {
-        List<ItemPedidoSolicitadoDTO> itensLimpos = agruparItensRepetidos(pedido.itens());
-        List<CardapioProduto> estoque = buscarEstoqueNoBanco(pedido.idCardapio(), itensLimpos);
+    public List<CardapioProduto> executar(Long idCardapio, List<ItemValidacaoEstoque> itens) {
+        List<ItemValidacaoEstoque> itensLimpos = agruparItensRepetidos(itens);
+        List<CardapioProduto> estoque = buscarEstoqueNoBanco(idCardapio,  itensLimpos);
         validarPertencimentoAoCardapio(estoque, itensLimpos);
         validarDisponibilidade(estoque, itensLimpos);
         return estoque;
     }
 
 
-    private List<ItemPedidoSolicitadoDTO> agruparItensRepetidos(List<ItemPedidoSolicitadoDTO> itensSujos) {
+    private List<ItemValidacaoEstoque> agruparItensRepetidos(List<ItemValidacaoEstoque> itensSujos) {
         return itensSujos.stream()
                 .collect(Collectors.groupingBy(
-                        ItemPedidoSolicitadoDTO::idProduto,
-                        Collectors.summingInt(ItemPedidoSolicitadoDTO::quantidade)
+                        ItemValidacaoEstoque::idProduto,
+                        Collectors.summingInt(ItemValidacaoEstoque::quantidade)
                 ))
                 .entrySet().stream()
-                .map(entry -> new ItemPedidoSolicitadoDTO(entry.getKey(), entry.getValue(), null))
+                .map(entry -> new ItemValidacaoEstoque(entry.getKey(), entry.getValue()))
                 .toList();
     }
 
-    private List<CardapioProduto> buscarEstoqueNoBanco(Long idCardapio, List<ItemPedidoSolicitadoDTO> itensLimpos) {
+    private List<CardapioProduto> buscarEstoqueNoBanco(Long idCardapio, List<ItemValidacaoEstoque> itensLimpos) {
         List<Long> idsProdutos = itensLimpos.stream()
-                .map(ItemPedidoSolicitadoDTO::idProduto)
+                .map(ItemValidacaoEstoque::idProduto)
                 .toList();
 
         return repositorio.buscarItensDoPedido(idCardapio, idsProdutos);
     }
 
-    private void validarPertencimentoAoCardapio(List<CardapioProduto> estoque, List<ItemPedidoSolicitadoDTO> itensLimpos) {
+    private void validarPertencimentoAoCardapio(List<CardapioProduto> estoque, List<ItemValidacaoEstoque> itensLimpos) {
         if (estoque.size() != itensLimpos.size()) {
             throw new AssociacaoNaoExisteException("Atenção: Um ou mais produtos solicitados não pertencem a este cardápio.");
         }
     }
 
-    private void validarDisponibilidade(List<CardapioProduto> estoque, List<ItemPedidoSolicitadoDTO> itensLimpos) {
-        for (ItemPedidoSolicitadoDTO itemDesejado : itensLimpos) {
+    private void validarDisponibilidade(List<CardapioProduto> estoque, List<ItemValidacaoEstoque> itensLimpos) {
+        for (ItemValidacaoEstoque itemDesejado : itensLimpos) {
             CardapioProduto itemNoBanco = estoque.stream()
                     .filter(cp -> cp.getProduto().getId().equals(itemDesejado.idProduto()))
                     .findFirst()

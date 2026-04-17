@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.modulos.cliente.aplicacao.mappeador;
+package com.restaurante01.api_restaurante.modulos.cliente.aplicacao.mapeador;
 
 
 import com.restaurante01.api_restaurante.modulos.cliente.api.dto.entrada.CadastrarClienteDTO;

@@ -2,7 +2,7 @@ package com.restaurante01.api_restaurante.modulos.operador.aplicacao.casodeuso;
 
 import com.restaurante01.api_restaurante.modulos.operador.api.dto.entrada.CadastrarOperadorDTO;
 import com.restaurante01.api_restaurante.modulos.operador.api.dto.saida.OperadorDTO;
-import com.restaurante01.api_restaurante.modulos.operador.aplicacao.mappeador.OperadorMapper;
+import com.restaurante01.api_restaurante.modulos.operador.aplicacao.mapeador.OperadorMapper;
 import com.restaurante01.api_restaurante.modulos.operador.aplicacao.validador.OperadorValidator;
 import com.restaurante01.api_restaurante.modulos.operador.dominio.entidade.Operador;
 import com.restaurante01.api_restaurante.modulos.operador.dominio.repositorio.OperadorRepositorio;

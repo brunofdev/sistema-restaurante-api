@@ -4,7 +4,7 @@ import com.restaurante01.api_restaurante.modulos.cliente.aplicacao.validador.Cli
 import com.restaurante01.api_restaurante.modulos.cliente.api.dto.entrada.CadastrarClienteDTO;
 import com.restaurante01.api_restaurante.modulos.cliente.api.dto.saida.ClienteDTO;
 import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;
-import com.restaurante01.api_restaurante.modulos.cliente.aplicacao.mappeador.ClienteMapper;
+import com.restaurante01.api_restaurante.modulos.cliente.aplicacao.mapeador.ClienteMapper;
 import com.restaurante01.api_restaurante.modulos.cliente.infraestrutura.persistencia.ClienteJPA;
 import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.exceptions.InvalidCredentialsException;
 import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.exceptions.UserDontFoundException;

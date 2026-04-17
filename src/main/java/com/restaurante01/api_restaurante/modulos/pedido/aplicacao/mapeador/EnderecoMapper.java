@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mappeador;
+package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mapeador;
 
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.EnderecoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Endereco;

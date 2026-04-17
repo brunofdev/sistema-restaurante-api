@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.modulos.operador.aplicacao.mappeador;
+package com.restaurante01.api_restaurante.modulos.operador.aplicacao.mapeador;
 
 import com.restaurante01.api_restaurante.modulos.operador.api.dto.entrada.CadastrarOperadorDTO;
 import com.restaurante01.api_restaurante.modulos.operador.api.dto.saida.OperadorDTO;

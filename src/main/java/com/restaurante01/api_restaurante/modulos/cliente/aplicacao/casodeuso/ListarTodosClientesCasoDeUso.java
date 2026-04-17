@@ -1,7 +1,7 @@
 package com.restaurante01.api_restaurante.modulos.cliente.aplicacao.casodeuso;
 
 import com.restaurante01.api_restaurante.modulos.cliente.api.dto.saida.ClienteDTO;
-import com.restaurante01.api_restaurante.modulos.cliente.aplicacao.mappeador.ClienteMapper;
+import com.restaurante01.api_restaurante.modulos.cliente.aplicacao.mapeador.ClienteMapper;
 import com.restaurante01.api_restaurante.modulos.cliente.dominio.repositorio.ClienteRepositorio;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

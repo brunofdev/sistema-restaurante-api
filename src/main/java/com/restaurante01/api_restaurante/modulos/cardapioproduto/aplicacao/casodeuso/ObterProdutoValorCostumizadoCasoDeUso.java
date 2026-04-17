@@ -2,6 +2,7 @@ package com.restaurante01.api_restaurante.modulos.cardapioproduto.aplicacao.caso
 
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.entidade.CardapioProduto;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.repositorio.CardapioProdutoRepositorio;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.ConsultaCardapioProdutoPorta;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.ProdutoNaoEncontradoException;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,7 @@
 package com.restaurante01.api_restaurante.modulos.operador.aplicacao.casodeuso;
 
 import com.restaurante01.api_restaurante.modulos.operador.api.dto.saida.OperadorDTO;
-import com.restaurante01.api_restaurante.modulos.operador.aplicacao.mappeador.OperadorMapper;
+import com.restaurante01.api_restaurante.modulos.operador.aplicacao.mapeador.OperadorMapper;
 import com.restaurante01.api_restaurante.modulos.operador.dominio.repositorio.OperadorRepositorio;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
