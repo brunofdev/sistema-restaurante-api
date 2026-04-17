@@ -9,6 +9,7 @@ import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Client
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.ItemPedidoSolicitadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.PedidoCriacaoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDTO;
+import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mappeador.EnderecoMapper;
 import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mappeador.PedidoMapper;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
@@ -43,6 +44,8 @@ class CriarNovoPedidoCasoDeUsoTest {
     private ValidarEstoquePedidoUseCase validarEstoquePedidoUseCase;
     @Mock
     private ApplicationEventPublisher eventPublisher;
+    @Mock
+    private EnderecoMapper enderecoMapper;
 
     @InjectMocks
     private CriarNovoPedidoCasoDeUso casoDeUso;
@@ -63,9 +66,10 @@ class CriarNovoPedidoCasoDeUsoTest {
                         2,
                         "Teste de observação"
                 ));
-        PedidoCriacaoDTO pedidoCriacaoDTO = new PedidoCriacaoDTO(cardapioProduto.getCardapio().getId(), itemPedidoSolicitadoDTOS);
+        PedidoCriacaoDTO pedidoCriacaoDTO = new PedidoCriacaoDTO(cardapioProduto.getCardapio().getId(), itemPedidoSolicitadoDTOS, null);
         PedidoDTO pedidoDTO = Instancio.create(PedidoDTO.class);
 
+        when(enderecoMapper.paraEndereco(null)).thenReturn(null);
         when(validarEstoquePedidoUseCase.executar(pedidoCriacaoDTO)).thenReturn(List.of(cardapioProduto));
         when(obterProdutoValorCostumizadoCasoDeUso.executar(pedidoCriacaoDTO.idCardapio(), pedidoCriacaoDTO.itens().get(0).idProduto())).thenReturn(cardapioProduto);
         when(pedidoMapper.mapearItemPedido(itemPedido.getQuantidade(), cardapioProduto, itemPedido.getObservacao())).thenReturn(itemPedido);
@@ -110,7 +114,8 @@ class CriarNovoPedidoCasoDeUsoTest {
                 ));
         PedidoCriacaoDTO pedidoCriacaoDTO = new PedidoCriacaoDTO(
                 produtoSolicitado.getCardapio().getId(),
-                itensDTO)
+                itensDTO,
+                null)
                 ;
         when(validarEstoquePedidoUseCase.executar(any()))
                 .thenThrow(new RuntimeException("qualquer erro"));

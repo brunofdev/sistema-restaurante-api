@@ -1,6 +1,5 @@
 package com.restaurante01.api_restaurante.modulos.cardapioproduto.aplicacao.casodeuso;
 
-import com.restaurante01.api_restaurante.compartilhado.dominio.excecao.BusinessException;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.entidade.CardapioProduto;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.excecao.AssociacaoNaoExisteException;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.excecao.QntdCustomizadaInsuficienteException;
