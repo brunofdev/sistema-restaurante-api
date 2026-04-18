@@ -1,6 +1,8 @@
 package com.restaurante01.api_restaurante.modulos.produto.dominio.excecao;
 
-public class ProdutoMesmoNomeExistenteException extends RuntimeException{
+import com.restaurante01.api_restaurante.compartilhado.dominio.excecao.RegraDeNegocioExcecao;
+
+public class ProdutoMesmoNomeExistenteException extends RegraDeNegocioExcecao {
     public ProdutoMesmoNomeExistenteException (String message) {
         super(message);
     }

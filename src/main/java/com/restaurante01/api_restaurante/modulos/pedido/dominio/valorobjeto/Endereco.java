@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade;
+package com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

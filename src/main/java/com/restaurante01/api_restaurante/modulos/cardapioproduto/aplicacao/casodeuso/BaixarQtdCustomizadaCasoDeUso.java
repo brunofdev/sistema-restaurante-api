@@ -23,7 +23,7 @@ public class BaixarQtdCustomizadaCasoDeUso {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void executar(Long idCardapio, List<ItemPedido> itensPedido) {
         for (ItemPedido item : itensPedido) {
-            CardapioProduto produtoParaAtualizar = encontrarCardapioProduto(idCardapio, item.getProduto().getId());
+            CardapioProduto produtoParaAtualizar = encontrarCardapioProduto(idCardapio, item.getProduto().idProduto());
             produtoParaAtualizar.diminuirQuantidade(item.getQuantidade());
             repository.save(produtoParaAtualizar);
         }

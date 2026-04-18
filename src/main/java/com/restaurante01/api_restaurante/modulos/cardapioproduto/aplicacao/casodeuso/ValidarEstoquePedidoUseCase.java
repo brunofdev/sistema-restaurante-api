@@ -4,9 +4,7 @@ import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.entidad
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.excecao.AssociacaoNaoExisteException;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.excecao.QntdCustomizadaInsuficienteException;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.repositorio.CardapioProdutoRepositorio;
-import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.ItemPedidoSolicitadoDTO;
-import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.PedidoCriacaoDTO;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemValidacaoEstoque;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.ItemValidacaoEstoque;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.ProdutoNaoEncontradoException;
 import org.springframework.stereotype.Service;
 
@@ -22,12 +20,11 @@ public class ValidarEstoquePedidoUseCase {
         this.repositorio = repositorio;
     }
 
-    public List<CardapioProduto> executar(Long idCardapio, List<ItemValidacaoEstoque> itens) {
+    public void executar(Long idCardapio, List<ItemValidacaoEstoque> itens) {
         List<ItemValidacaoEstoque> itensLimpos = agruparItensRepetidos(itens);
         List<CardapioProduto> estoque = buscarEstoqueNoBanco(idCardapio,  itensLimpos);
         validarPertencimentoAoCardapio(estoque, itensLimpos);
         validarDisponibilidade(estoque, itensLimpos);
-        return estoque;
     }
 
 

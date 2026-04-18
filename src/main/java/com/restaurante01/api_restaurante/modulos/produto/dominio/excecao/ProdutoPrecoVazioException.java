@@ -1,6 +1,8 @@
 package com.restaurante01.api_restaurante.modulos.produto.dominio.excecao;
 
-public class ProdutoPrecoVazioException extends RuntimeException{
+import com.restaurante01.api_restaurante.compartilhado.dominio.excecao.RegraDeNegocioExcecao;
+
+public class ProdutoPrecoVazioException extends RegraDeNegocioExcecao {
     public ProdutoPrecoVazioException(String message){
         super(message);
     }

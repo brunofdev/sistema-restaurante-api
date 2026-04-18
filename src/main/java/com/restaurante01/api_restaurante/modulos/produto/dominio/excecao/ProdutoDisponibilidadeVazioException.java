@@ -1,6 +1,8 @@
 package com.restaurante01.api_restaurante.modulos.produto.dominio.excecao;
 
-public class ProdutoDisponibilidadeVazioException extends RuntimeException{
+import com.restaurante01.api_restaurante.compartilhado.dominio.excecao.RegraDeNegocioExcecao;
+
+public class ProdutoDisponibilidadeVazioException extends RegraDeNegocioExcecao {
     public ProdutoDisponibilidadeVazioException(String message){
         super(message);
     }

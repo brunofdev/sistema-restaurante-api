@@ -4,9 +4,9 @@ import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.Endereco
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.ItemPedidoSolicitadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.ItemPedidoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDTO;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Endereco;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.Endereco;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPedido;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemValidacaoEstoque;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.ItemValidacaoEstoque;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +23,7 @@ public class PedidoMapper {
 
     public ItemPedidoDTO mapearItemPedidoDto (ItemPedido item){
         return new ItemPedidoDTO (
-                item.getProduto().getNome(),
+                item.getProduto().nome(),
                 item.getQuantidade(),
                 item.getPrecoUnitario(),
                 item.getObservacao(),

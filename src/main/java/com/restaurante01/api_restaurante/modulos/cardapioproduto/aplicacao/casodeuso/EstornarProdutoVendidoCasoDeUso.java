@@ -23,8 +23,8 @@ public class EstornarProdutoVendidoCasoDeUso {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void executar(List<ItemPedido> itens, Long idCardapio){
         for (ItemPedido itemPedido : itens){
-            CardapioProduto produto = repositorio.findByCardapioIdAndProdutoId(idCardapio, itemPedido.getProduto().getId())
-                    .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto id: " + itemPedido.getProduto().getId() + " não encontrado no cardapio com id " + idCardapio));
+            CardapioProduto produto = repositorio.findByCardapioIdAndProdutoId(idCardapio, itemPedido.getProduto().idProduto())
+                    .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto id: " + itemPedido.getProduto().idProduto() + " não encontrado no cardapio com id " + idCardapio));
             produto.aumentarQuantidade(itemPedido.getQuantidade());
         }
     }

@@ -27,7 +27,7 @@ public class BaixarQuantidadeProdutoCasoDeUso {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void executar(List<ItemPedido> itensPedido) {
         for (ItemPedido item : itensPedido) {
-            Produto produtoParaBaixarQuantidade = obterProdutoPorIdCasoDeUso.retornarEntidade(item.getProduto().getId());
+            Produto produtoParaBaixarQuantidade = obterProdutoPorIdCasoDeUso.retornarEntidade(item.getProduto().idProduto());
             produtoParaBaixarQuantidade.diminuirQuantidade(item.getQuantidade());
             repositorio.save(produtoParaBaixarQuantidade);
         }

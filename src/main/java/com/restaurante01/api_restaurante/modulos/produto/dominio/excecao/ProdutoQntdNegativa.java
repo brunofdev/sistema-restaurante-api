@@ -1,6 +1,8 @@
 package com.restaurante01.api_restaurante.modulos.produto.dominio.excecao;
 
-public class ProdutoQntdNegativa extends RuntimeException{
+import com.restaurante01.api_restaurante.compartilhado.dominio.excecao.RegraDeNegocioExcecao;
+
+public class ProdutoQntdNegativa extends RegraDeNegocioExcecao {
     public ProdutoQntdNegativa(String message){
         super(message);
     }

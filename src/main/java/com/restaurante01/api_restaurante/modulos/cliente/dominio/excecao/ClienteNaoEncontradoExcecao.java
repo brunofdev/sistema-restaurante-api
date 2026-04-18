@@ -1,6 +1,8 @@
 package com.restaurante01.api_restaurante.modulos.cliente.dominio.excecao;
 
-public class ClienteNaoEncontradoExcecao extends RuntimeException{
+import com.restaurante01.api_restaurante.compartilhado.dominio.excecao.RegraDeNegocioExcecao;
+
+public class ClienteNaoEncontradoExcecao extends RegraDeNegocioExcecao {
     public ClienteNaoEncontradoExcecao(String message){
         super(message);
     }

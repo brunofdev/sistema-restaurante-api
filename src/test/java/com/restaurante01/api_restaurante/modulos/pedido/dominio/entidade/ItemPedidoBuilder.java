@@ -1,6 +1,7 @@
 package com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade;
 
 import com.restaurante01.api_restaurante.builders.ProdutoBuilder;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.RepresentacaoProdutoItemPedido;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
 
 import java.math.BigDecimal;
@@ -57,8 +58,7 @@ public class ItemPedidoBuilder {
         return this;
     }
 
-    // --- BUILD ---
     public ItemPedido build() {
-        return new ItemPedido(id, pedido, produto, quantidade, precoUnitario, observacao);
+        return new ItemPedido(id, pedido, new RepresentacaoProdutoItemPedido(produto.getId(), produto.getNome()), quantidade, precoUnitario, observacao);
     }
 }

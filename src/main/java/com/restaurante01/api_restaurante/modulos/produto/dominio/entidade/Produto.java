@@ -1,6 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.produto.dominio.entidade;
 
-import com.restaurante01.api_restaurante.compartilhado.dominio.excecao.BusinessException;
+import com.restaurante01.api_restaurante.compartilhado.dominio.excecao.RegraDeNegocioExcecao;
 import com.restaurante01.api_restaurante.infraestrutura.security.auditoria.Auditable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -46,13 +46,13 @@ public class Produto extends Auditable {
 
     public void diminuirQuantidade(int quantidade) {
         if (quantidade > this.quantidadeAtual) {
-            throw new BusinessException("Estoque insuficiente para: " + this.nome);
+            throw new RegraDeNegocioExcecao("Estoque insuficiente para: " + this.nome);
         }
         this.quantidadeAtual -= quantidade;
     }
     public void aumentarQuantidade(int quantidade) {
         if (quantidade <= 0) {
-            throw new BusinessException("Quantidade informada corretamente ->  " + quantidade);
+            throw new RegraDeNegocioExcecao("Quantidade informada corretamente ->  " + quantidade);
         }
         this.quantidadeAtual += quantidade;
     }

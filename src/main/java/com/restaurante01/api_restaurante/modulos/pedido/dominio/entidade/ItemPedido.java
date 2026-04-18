@@ -1,9 +1,9 @@
 package com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade;
 
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.PedidoNaoEncontradoException;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.RepresentacaoProdutoExcecao;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.ValorItemPedidoIncorretoExcecao;
-import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
-import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.ProdutoNaoEncontradoException;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.RepresentacaoProdutoItemPedido;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.ProdutoQntdNegativa;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,9 +25,8 @@ public class ItemPedido {
     @JoinColumn(name = "pedido_id", nullable = false)
     private Pedido pedido;
 
-    @ManyToOne
-    @JoinColumn(name = "produto_id", nullable = false)
-    private Produto produto;
+    @Embedded
+    private RepresentacaoProdutoItemPedido produto;
 
     @Column(name = "quantidade", nullable = false)
     private Integer quantidade;
@@ -39,7 +38,7 @@ public class ItemPedido {
     private String observacao;
 
     //package protected para facilitar o builder nos testes
-    ItemPedido(Long id, Pedido pedido, Produto produto,
+    ItemPedido(Long id, Pedido pedido, RepresentacaoProdutoItemPedido produto,
                Integer quantidade, BigDecimal precoUnitario, String observacao) {
         this.id = id;
         this.pedido = pedido;
@@ -49,7 +48,7 @@ public class ItemPedido {
         this.observacao = observacao;
     }
 
-    public static ItemPedido criar(Pedido pedido, Integer quantidade, Produto produto, BigDecimal precoDeVenda, String observacao){
+    public static ItemPedido criar(Pedido pedido, Integer quantidade, RepresentacaoProdutoItemPedido produto, BigDecimal precoDeVenda, String observacao){
         ItemPedido itemPedido = new ItemPedido();
         itemPedido.vincularPedido(pedido);
         itemPedido.vincularProduto(produto);
@@ -72,9 +71,9 @@ public class ItemPedido {
         }
         this.pedido = pedido;
     }
-    public void vincularProduto(Produto produto){
+    public void vincularProduto(RepresentacaoProdutoItemPedido produto){
         if(produto == null){
-            throw new ProdutoNaoEncontradoException("Pedido informado inexistes");
+            throw new RepresentacaoProdutoExcecao("Produto informado não existe");
         }
         this.produto = produto;
     }
@@ -86,7 +85,7 @@ public class ItemPedido {
     }
     public void adicionaPrecoDeVenda(BigDecimal precoDeVenda){
         if(precoDeVenda == null || precoDeVenda.compareTo(BigDecimal.ZERO) <= 0){
-            throw new ValorItemPedidoIncorretoExcecao("Valor do item pedido não pode ser 0 ou nulo. Produto: " + this.getProduto().getNome());
+            throw new ValorItemPedidoIncorretoExcecao("Valor do item pedido não pode ser 0 ou nulo. Produto: " + this.getProduto().nome());
         }
         this.precoUnitario = precoDeVenda;
     }

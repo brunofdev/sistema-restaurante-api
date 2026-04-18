@@ -6,6 +6,8 @@ import com.restaurante01.api_restaurante.modulos.pedido.dominio.enums.StatusPedi
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.EnderecoDoPedidoInvalidoExcecao;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.StatusPedidoInvalidoException;
 import com.restaurante01.api_restaurante.infraestrutura.security.auditoria.Auditable;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.Endereco;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.InformacoesClienteParaPedido;
 import jakarta.persistence.*;
 import lombok.*;
 

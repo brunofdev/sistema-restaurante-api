@@ -1,6 +1,8 @@
 package com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao;
 
-public class CardapioMesmoNomeExcepetion extends RuntimeException{
+import com.restaurante01.api_restaurante.compartilhado.dominio.excecao.RegraDeNegocioExcecao;
+
+public class CardapioMesmoNomeExcepetion extends RegraDeNegocioExcecao {
     public CardapioMesmoNomeExcepetion (String message){
         super(message);
     }

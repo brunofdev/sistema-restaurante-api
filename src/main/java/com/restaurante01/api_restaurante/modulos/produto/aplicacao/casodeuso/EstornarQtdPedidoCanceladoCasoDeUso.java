@@ -22,7 +22,7 @@ public class EstornarQtdPedidoCanceladoCasoDeUso {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void executar (List<ItemPedido> itens){
         for(ItemPedido item : itens){
-            Produto produto = obterProdutoPorIdCasoDeUso.retornarEntidade(item.getProduto().getId());
+            Produto produto = obterProdutoPorIdCasoDeUso.retornarEntidade(item.getProduto().idProduto());
             produto.aumentarQuantidade(item.getQuantidade());
             repositorio.save(produto);
         }

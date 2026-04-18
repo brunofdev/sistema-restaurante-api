@@ -8,13 +8,13 @@ import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.PedidoCr
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mapeador.EnderecoMapper;
 import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mapeador.PedidoMapper;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPedido;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemValidacaoEstoque;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.*;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.enums.StatusPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.evento.PedidoCriadoEvento;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.ConsultaCardapioProdutoPorta;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoCardapioProdutoPorta;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoClientePorta;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.repositorio.PedidoRepositorio;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.*;
 import org.instancio
         .Instancio;
 import org.junit.jupiter.api.DisplayName;
@@ -33,47 +33,48 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class CriarNovoPedidoCasoDeUsoTest {
 
-    @Mock
-    private PedidoRepositorio pedidoRepository;
-    @Mock
-    private PedidoMapper pedidoMapper;
-    @Mock
-    private ConsultaCardapioProdutoPorta consultaCardapioProdutoPorta;
-    @Mock
-    private ApplicationEventPublisher eventPublisher;
-    @Mock
-    private EnderecoMapper enderecoMapper;
+    @Mock private PedidoRepositorio pedidoRepository;
+    @Mock private PedidoMapper pedidoMapper;
+    @Mock private PedidoCardapioProdutoPorta pedidoCardapioProdutoPorta;
+    @Mock private PedidoClientePorta pedidoClientePorta;
+    @Mock private ApplicationEventPublisher eventPublisher;
+    @Mock private EnderecoMapper enderecoMapper;
 
     @InjectMocks
     private CriarNovoPedidoCasoDeUso casoDeUso;
 
+    @Test
     @DisplayName("Deve criar um pedido com sucesso quando os dados forem válidos")
     void deveCriarPedidoComStatusPendenteESalvarQuandoDadosValidos() {
         CardapioProduto cardapioProduto = CardapioProdutoBuilder.umCardapioProduto().build();
         Cliente cliente = ClienteBuilder.umCliente().build();
-        List<ItemPedidoSolicitadoDTO> itemPedidoSolicitadoDTOS = List.of(
-                new ItemPedidoSolicitadoDTO(
-                        cardapioProduto.getProduto().getId(),
-                        2,
-                        "Teste de observação"
-                ));
+
+        RepresentacaoProdutoItemPedido representacaoProduto = new RepresentacaoProdutoItemPedido(
+                cardapioProduto.getProduto().getId(),
+                cardapioProduto.getProduto().getNome());
+        ProdutoVendido produtoVendido = new ProdutoVendido(
+                representacaoProduto,
+                cardapioProduto.resolverPrecoDeVenda());
+        InformacoesClienteParaPedido infoCliente = new InformacoesClienteParaPedido(
+                cliente.getId(), cliente.getNome(), cliente.getCpf(), cliente.getTelefone());
+        Endereco enderecoCliente = new Endereco(
+                cliente.getRua(), cliente.getNumeroResidencia(), cliente.getBairro(),
+                cliente.getCidade(), cliente.getEstado(), cliente.getCep(), cliente.getObservacaoEndereco());
+
+        List<ItemPedidoSolicitadoDTO> itensDTO = List.of(
+                new ItemPedidoSolicitadoDTO(cardapioProduto.getProduto().getId(), 2, "Teste de observação"));
         PedidoCriacaoDTO pedidoCriacaoDTO = new PedidoCriacaoDTO(
-                cardapioProduto.getCardapio().getId(),
-                itemPedidoSolicitadoDTOS,
-                null);
+                cardapioProduto.getCardapio().getId(), itensDTO, null);
         PedidoDTO pedidoDTO = Instancio.create(PedidoDTO.class);
 
-        when(enderecoMapper.paraEndereco(null)).thenReturn(null);
-        when(pedidoMapper.mapearParaValidacaoDeEstoque(itemPedidoSolicitadoDTOS))
-                .thenReturn(List.of(new ItemValidacaoEstoque(
-                        cardapioProduto.getProduto().getId(), 2)));
-        when(consultaCardapioProdutoPorta.validarEstoque(
-                eq(pedidoCriacaoDTO.idCardapio()), anyList()))
-                .thenReturn(List.of(cardapioProduto));
-        when(consultaCardapioProdutoPorta.produtoComCamposCustom(
+        when(pedidoMapper.mapearParaValidacaoDeEstoque(itensDTO))
+                .thenReturn(List.of(new ItemValidacaoEstoque(cardapioProduto.getProduto().getId(), 2)));
+        when(pedidoClientePorta.obterDetalhesClienteParaPedido(cliente)).thenReturn(infoCliente);
+        when(pedidoClientePorta.obterEndereco(cliente)).thenReturn(enderecoCliente);
+        when(pedidoCardapioProdutoPorta.obterProdutoVendido(
                 pedidoCriacaoDTO.idCardapio(),
-                pedidoCriacaoDTO.itens().get(0).idProduto()))
-                .thenReturn(cardapioProduto);
+                itensDTO.get(0).idProduto()))
+                .thenReturn(produtoVendido);
         when(pedidoMapper.mapearPedidoDto(any(Pedido.class))).thenReturn(pedidoDTO);
 
         ArgumentCaptor<Pedido> pedidoCaptor = ArgumentCaptor.forClass(Pedido.class);
@@ -81,24 +82,23 @@ class CriarNovoPedidoCasoDeUsoTest {
 
         PedidoDTO resultado = casoDeUso.executar(pedidoCriacaoDTO, cliente);
 
-        // sintaxe correta do verify — o mock vai dentro, os argumentos depois
-        verify(consultaCardapioProdutoPorta).validarEstoque(
-                eq(pedidoCriacaoDTO.idCardapio()), anyList());
-        verify(consultaCardapioProdutoPorta).produtoComCamposCustom(
-                pedidoCriacaoDTO.idCardapio(),
-                itemPedidoSolicitadoDTOS.get(0).idProduto());
+        verify(pedidoCardapioProdutoPorta).validarEstoque(eq(pedidoCriacaoDTO.idCardapio()), anyList());
+        verify(pedidoCardapioProdutoPorta).obterProdutoVendido(
+                pedidoCriacaoDTO.idCardapio(), itensDTO.get(0).idProduto());
+        verify(pedidoClientePorta).obterDetalhesClienteParaPedido(cliente);
+        verify(pedidoClientePorta).obterEndereco(cliente);
         verify(pedidoRepository).salvar(pedidoCaptor.capture());
         verify(eventPublisher).publishEvent(eventoCaptor.capture());
 
         Pedido pedidoSalvo = pedidoCaptor.getValue();
         PedidoCriadoEvento evento = eventoCaptor.getValue();
 
-        assertThat(pedidoSalvo.getCliente()).isEqualTo(cliente);
+        assertThat(pedidoSalvo.getCliente()).isEqualTo(infoCliente);
         assertThat(pedidoSalvo.getStatusPedido()).isEqualTo(StatusPedido.PENDENTE);
         assertThat(pedidoSalvo.getItens()).hasSize(1);
 
         ItemPedido itemSalvo = pedidoSalvo.getItens().get(0);
-        assertThat(itemSalvo.getProduto()).isEqualTo(cardapioProduto.getProduto());
+        assertThat(itemSalvo.getProduto()).isEqualTo(representacaoProduto);
         assertThat(itemSalvo.getQuantidade()).isEqualTo(2);
         assertThat(itemSalvo.getPrecoUnitario()).isEqualByComparingTo(cardapioProduto.resolverPrecoDeVenda());
         assertThat(itemSalvo.getObservacao()).isEqualTo("Teste de observação");
@@ -115,21 +115,15 @@ class CriarNovoPedidoCasoDeUsoTest {
                 .comQuantidadeCustomizada(3)
                 .build();
         List<ItemPedidoSolicitadoDTO> itensDTO = List.of(
-                new ItemPedidoSolicitadoDTO(
-                        produtoSolicitado.getProduto().getId(),
-                        10,
-                        "Teste"
-                ));
+                new ItemPedidoSolicitadoDTO(produtoSolicitado.getProduto().getId(), 10, "Teste"));
         PedidoCriacaoDTO pedidoCriacaoDTO = new PedidoCriacaoDTO(
-                produtoSolicitado.getCardapio().getId(),
-                itensDTO,
-                null);
+                produtoSolicitado.getCardapio().getId(), itensDTO, null);
 
         when(pedidoMapper.mapearParaValidacaoDeEstoque(itensDTO))
                 .thenReturn(List.of(new ItemValidacaoEstoque(
                         produtoSolicitado.getProduto().getId(), 10)));
-        when(consultaCardapioProdutoPorta.validarEstoque(anyLong(), anyList()))
-                .thenThrow(new RuntimeException("qualquer erro"));
+        doThrow(new RuntimeException("qualquer erro"))
+                .when(pedidoCardapioProdutoPorta).validarEstoque(anyLong(), anyList());
 
         assertThatThrownBy(() -> casoDeUso.executar(pedidoCriacaoDTO, cliente))
                 .isInstanceOf(RuntimeException.class)

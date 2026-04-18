@@ -2,13 +2,13 @@ package com.restaurante01.api_restaurante.modulos.cliente.infraestrutura.adaptad
 
 
 import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Endereco;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.InformacoesClienteParaPedido;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.ClientePorta;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.Endereco;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.InformacoesClienteParaPedido;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoClientePorta;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ClientePedidoAdaptador implements ClientePorta {
+public class PedidoClientePedidoAdaptador implements PedidoClientePorta {
 
     @Override
     public Endereco obterEndereco(Cliente cliente){
