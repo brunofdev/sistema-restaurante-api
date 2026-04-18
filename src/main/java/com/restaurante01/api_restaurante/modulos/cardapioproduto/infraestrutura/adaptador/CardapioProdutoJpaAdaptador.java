@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class CardapioProdutoAdaptador implements CardapioProdutoRepositorio {
+public class CardapioProdutoJpaAdaptador implements CardapioProdutoRepositorio {
     private final CardapioProdutoJPA jpa;
 
-    public CardapioProdutoAdaptador(CardapioProdutoJPA jpa) {
+    public CardapioProdutoJpaAdaptador(CardapioProdutoJPA jpa) {
         this.jpa = jpa;
     }
 

@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class ContratoPedidoAdaptador implements ConsultaCardapioProdutoPorta {
+public class CardapioProdutoPedidoAdaptador implements ConsultaCardapioProdutoPorta {
 
     private final ObterProdutoValorCostumizadoCasoDeUso obterProdutoValorCostumizadoCasoDeUso;
     private final ValidarEstoquePedidoUseCase validarEstoquePedidoUseCase;
 
-    public ContratoPedidoAdaptador(ObterProdutoValorCostumizadoCasoDeUso obterProdutoValorCostumizadoCasoDeUso, ValidarEstoquePedidoUseCase validarEstoquePedidoUseCase) {
+    public CardapioProdutoPedidoAdaptador(ObterProdutoValorCostumizadoCasoDeUso obterProdutoValorCostumizadoCasoDeUso, ValidarEstoquePedidoUseCase validarEstoquePedidoUseCase) {
         this.obterProdutoValorCostumizadoCasoDeUso = obterProdutoValorCostumizadoCasoDeUso;
         this.validarEstoquePedidoUseCase = validarEstoquePedidoUseCase;
     }

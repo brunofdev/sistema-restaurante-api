@@ -2,7 +2,7 @@ package com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.casodeuso;
 
 import com.restaurante01.api_restaurante.modulos.cardapio.api.dto.saida.CardapioDTO;
 import com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.mapeador.CardapioMapper;
-import com.restaurante01.api_restaurante.modulos.cardapio.infraestrutura.persistencia.CardapioRepositorioAdaptador;
+import com.restaurante01.api_restaurante.modulos.cardapio.infraestrutura.adaptador.CardapioRepositorioAdaptador;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -20,6 +20,6 @@ public class AtualizaFidelidadeOuvinte {
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void quandoPedidoStatusEntregue (PedidoEntregueEvento evento){
-        atualizarFidelidadeClienteCasoDeUso.executar(evento.pedido().getCliente(), evento.pedido().getValorTotal());
+        atualizarFidelidadeClienteCasoDeUso.executar(evento.pedido().getCliente().clienteId(), evento.pedido().getValorTotal());
     }
 }

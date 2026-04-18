@@ -4,6 +4,7 @@ import com.restaurante01.api_restaurante.builders.ClienteBuilder;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.CardapioNaoEncontradoException;
 import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.enums.StatusPedido;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.EnderecoDoPedidoInvalidoExcecao;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.StatusPedidoInvalidoException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,11 +17,14 @@ import static org.assertj.core.api.Assertions.*;
 
 class PedidoTest {
 
-    private Cliente cliente;
+    private InformacoesClienteParaPedido cliente;
+    private Endereco enderecoValido;
 
     @BeforeEach
     void setUp() {
-        cliente = ClienteBuilder.umCliente().build();
+        cliente = new InformacoesClienteParaPedido(1L, "Roberto", "12312312332", "51515151");
+        enderecoValido = new Endereco("Rua A", 100, "Centro",
+                "Florianópolis", "Santa Catarina", "88000-000", null);
     }
 
     @Nested
@@ -30,28 +34,20 @@ class PedidoTest {
         @Test
         @DisplayName("Deve criar pedido com status PENDENTE e valor total zero")
         void deveCriarPedidoComEstadoInicial() {
-            Pedido pedido = Pedido.criar(1L, cliente, null);
+            Pedido pedido = Pedido.criar(1L, cliente, enderecoValido);
 
             assertThat(pedido.getStatusPedido()).isEqualTo(StatusPedido.PENDENTE);
             assertThat(pedido.getValorTotal()).isEqualByComparingTo(BigDecimal.ZERO);
             assertThat(pedido.getItens()).isEmpty();
             assertThat(pedido.getCliente()).isEqualTo(cliente);
+            assertThat(pedido.getEnderecoEntrega()).isEqualTo(enderecoValido);
         }
 
         @Test
-        @DisplayName("Deve usar endereço do cliente quando endereço alternativo for nulo")
-        void deveUsarEnderecoDoClienteQuandoEnderecoAlternativoForNulo() {
-            Pedido pedido = Pedido.criar(1L, cliente, null);
-
-            assertThat(pedido.getEnderecoEntrega().cep())
-                    .isEqualTo(cliente.getCep());
-        }
-
-        @Test
-        @DisplayName("Deve usar endereço alternativo quando informado")
-        void deveUsarEnderecoAlternativoQuandoInformado() {
-            Endereco enderecoAlternativo = new Endereco("Rua B", 100, "Centro",
-                    "Florianópolis", "Rio grande do sul", "88058208", null);
+        @DisplayName("Deve usar endereço informado ao criar pedido")
+        void deveUsarEnderecoInformado() {
+            Endereco enderecoAlternativo = new Endereco("Rua B", 200, "Centro",
+                    "Florianópolis", "Santa Catarina", "88058208", null);
 
             Pedido pedido = Pedido.criar(1L, cliente, enderecoAlternativo);
 
@@ -59,26 +55,33 @@ class PedidoTest {
         }
 
         @Test
+        @DisplayName("Deve lançar exceção quando endereço for nulo")
+        void deveLancarExcecaoQuandoEnderecoForNulo() {
+            assertThatThrownBy(() -> Pedido.criar(1L, cliente, null))
+                    .isInstanceOf(EnderecoDoPedidoInvalidoExcecao.class);
+        }
+
+        @Test
         @DisplayName("Deve lançar exceção quando idCardapio for nulo")
         void deveLancarExcecaoQuandoIdCardapioForNulo() {
-            assertThatThrownBy(() -> Pedido.criar(null, cliente, null))
+            assertThatThrownBy(() -> Pedido.criar(null, cliente, enderecoValido))
                     .isInstanceOf(CardapioNaoEncontradoException.class);
         }
 
         @Test
         @DisplayName("Deve lançar exceção quando idCardapio for zero ou negativo")
         void deveLancarExcecaoQuandoIdCardapioForZeroOuNegativo() {
-            assertThatThrownBy(() -> Pedido.criar(0L, cliente, null))
+            assertThatThrownBy(() -> Pedido.criar(0L, cliente, enderecoValido))
                     .isInstanceOf(CardapioNaoEncontradoException.class);
 
-            assertThatThrownBy(() -> Pedido.criar(-1L, cliente, null))
+            assertThatThrownBy(() -> Pedido.criar(-1L, cliente, enderecoValido))
                     .isInstanceOf(CardapioNaoEncontradoException.class);
         }
 
         @Test
         @DisplayName("Deve lançar exceção quando cliente for nulo")
         void deveLancarExcecaoQuandoClienteForNulo() {
-            assertThatThrownBy(() -> Pedido.criar(1L, null, null))
+            assertThatThrownBy(() -> Pedido.criar(1L, null, enderecoValido))
                     .isInstanceOf(StatusPedidoInvalidoException.class);
         }
     }
@@ -90,15 +93,15 @@ class PedidoTest {
         @Test
         @DisplayName("Deve calcular valor total ao adicionar itens")
         void deveCalcularTotalAoAdicionarItens() {
-            Pedido pedido = Pedido.criar(1L, cliente, null);
+            Pedido pedido = Pedido.criar(1L, cliente, enderecoValido);
             ItemPedido item1 = ItemPedidoBuilder.umItemPedido()
                     .comPrecoUnitario(BigDecimal.valueOf(20.00))
                     .comQuantidade(2)
-                    .build(); // subtotal = 40
+                    .build();
             ItemPedido item2 = ItemPedidoBuilder.umItemPedido()
                     .comPrecoUnitario(BigDecimal.valueOf(10.00))
                     .comQuantidade(1)
-                    .build(); // subtotal = 10
+                    .build();
 
             pedido.adicionarItem(item1);
             pedido.adicionarItem(item2);
@@ -110,7 +113,7 @@ class PedidoTest {
         @Test
         @DisplayName("Deve recalcular total ao remover item")
         void deveRecalcularTotalAoRemoverItem() {
-            Pedido pedido = Pedido.criar(1L, cliente, null);
+            Pedido pedido = Pedido.criar(1L, cliente, enderecoValido);
             ItemPedido item = ItemPedidoBuilder.umItemPedido()
                     .comPrecoUnitario(BigDecimal.valueOf(30.00))
                     .comQuantidade(1)
@@ -131,7 +134,7 @@ class PedidoTest {
         @Test
         @DisplayName("Deve mudar status quando transição for válida")
         void deveMudarStatusQuandoTransicaoForValida() {
-            Pedido pedido = Pedido.criar(1L, cliente, null);
+            Pedido pedido = Pedido.criar(1L, cliente, enderecoValido);
 
             pedido.mudarStatus(StatusPedido.EM_PREPARACAO);
 
@@ -141,7 +144,7 @@ class PedidoTest {
         @Test
         @DisplayName("Deve lançar exceção quando transição for inválida")
         void deveLancarExcecaoQuandoTransicaoForInvalida() {
-            Pedido pedido = Pedido.criar(1L, cliente, null);
+            Pedido pedido = Pedido.criar(1L, cliente, enderecoValido);
             pedido.mudarStatus(StatusPedido.EM_PREPARACAO);
 
             assertThatThrownBy(() -> pedido.mudarStatus(StatusPedido.PENDENTE))
@@ -151,7 +154,7 @@ class PedidoTest {
         @Test
         @DisplayName("Não deve permitir alterar status de pedido cancelado")
         void naoDevePermitirAlterarStatusDePedidoCancelado() {
-            Pedido pedido = Pedido.criar(1L, cliente, null);
+            Pedido pedido = Pedido.criar(1L, cliente, enderecoValido);
             pedido.mudarStatus(StatusPedido.CANCELADO);
 
             assertThatThrownBy(() -> pedido.mudarStatus(StatusPedido.EM_PREPARACAO))

@@ -5,6 +5,8 @@ import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Carda
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.entidade.CardapioProduto;
 import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;
 import com.restaurante01.api_restaurante.modulos.operador.dominio.entidade.Operador;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Endereco;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.InformacoesClienteParaPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
@@ -115,7 +117,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         entityManager.persist(associacao2);
 
         // --- 6. CRIANDO PEDIDO ---
-        Pedido pedido = Pedido.criar(1L, cliente, null);
+        Pedido pedido = Pedido.criar(1L, new InformacoesClienteParaPedido(cliente.getId(),cliente.getNome(), cliente.getCpf(), cliente.getTelefone()), new Endereco("Tres pinheiros um", 27, "Mato grande", "Canoas", "RS", "88058028", ""));
         ItemPedido item1 =  ItemPedido.criar(pedido, 2, hamburguer,associacao1.resolverPrecoDeVenda(),"");
         ItemPedido item2 = ItemPedido.criar(pedido, 2, refrigerante,associacao2.resolverPrecoDeVenda(),"");
 

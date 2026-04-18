@@ -13,15 +13,18 @@ import java.math.BigDecimal;
 public class AtualizarFidelidadeClienteCasoDeUso {
 
     private final ClienteRepositorio repository;
+    private final BuscarClientePorIdCasoDeUso buscarClientePorIdCasoDeUso;
     private final CalculadoraDeFidelidade calculadoraDeFidelidade;
 
-    public AtualizarFidelidadeClienteCasoDeUso(ClienteRepositorio repository, CalculadoraDeFidelidade calculadoraDeFidelidade) {
+    public AtualizarFidelidadeClienteCasoDeUso(ClienteRepositorio repository, BuscarClientePorIdCasoDeUso buscarClientePorIdCasoDeUso, CalculadoraDeFidelidade calculadoraDeFidelidade) {
         this.repository = repository;
+        this.buscarClientePorIdCasoDeUso = buscarClientePorIdCasoDeUso;
         this.calculadoraDeFidelidade = calculadoraDeFidelidade;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void executar(Cliente cliente, BigDecimal totalPedido) {
+    public void executar(Long idCliente, BigDecimal totalPedido) {
+        Cliente cliente = buscarClientePorIdCasoDeUso.executar(idCliente);
         int pontuacaoGanha = calculadoraDeFidelidade.calcular(totalPedido);
         cliente.acrescentarPontuacao(pontuacaoGanha);
         repository.salvar(cliente);

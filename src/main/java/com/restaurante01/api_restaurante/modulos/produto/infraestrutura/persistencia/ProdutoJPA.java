@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.modulos.produto.infraestrutura;
+package com.restaurante01.api_restaurante.modulos.produto.infraestrutura.persistencia;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

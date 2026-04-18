@@ -6,14 +6,12 @@ import com.restaurante01.api_restaurante.modulos.pedido.dominio.enums.StatusPedi
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.EnderecoDoPedidoInvalidoExcecao;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.StatusPedidoInvalidoException;
 import com.restaurante01.api_restaurante.infraestrutura.security.auditoria.Auditable;
-import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "pedidos")
@@ -24,9 +22,8 @@ public class Pedido extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "cliente_id", nullable = false)
-    private Cliente cliente;
+    @Embedded
+    private InformacoesClienteParaPedido cliente;
     @Enumerated(EnumType.STRING)
     @Column(name = "status_pedido", nullable = false)
     private StatusPedido statusPedido = StatusPedido.PENDENTE;
@@ -40,7 +37,7 @@ public class Pedido extends Auditable {
     @Column(name = "cardapio_de_referencia", nullable = false)
     private Long idCardapio;
 
-    public static Pedido criar(Long idCardapio, Cliente cliente, Endereco endereco) {
+    public static Pedido criar(Long idCardapio, InformacoesClienteParaPedido cliente, Endereco endereco) {
         Pedido pedido = new Pedido();
         pedido.vincularCardapioPedido(idCardapio);
         pedido.vincularCliente(cliente);
@@ -48,7 +45,7 @@ public class Pedido extends Auditable {
         return pedido;
     }
 
-    protected Pedido(Long idCardapio, Cliente cliente) {
+    protected Pedido(Long idCardapio, InformacoesClienteParaPedido cliente) {
         this.idCardapio = idCardapio;
         this.cliente = cliente;
         this.statusPedido = StatusPedido.PENDENTE;
@@ -84,7 +81,7 @@ public class Pedido extends Auditable {
         this.idCardapio = idCardapio;
     }
 
-    public void vincularCliente(Cliente cliente) {
+    public void vincularCliente(InformacoesClienteParaPedido cliente) {
         if (cliente == null) {
             throw new StatusPedidoInvalidoException("Erro ao vincular cliente, cliente invalido");
         }

@@ -1,7 +1,8 @@
-package com.restaurante01.api_restaurante.modulos.cardapio.infraestrutura.persistencia;
+package com.restaurante01.api_restaurante.modulos.cardapio.infraestrutura.adaptador;
 
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Cardapio;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.repositorio.CardapioRepositorio;
+import com.restaurante01.api_restaurante.modulos.cardapio.infraestrutura.persistencia.CardapioRepositorioJpa;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

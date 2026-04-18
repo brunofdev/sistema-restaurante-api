@@ -2,7 +2,7 @@ package com.restaurante01.api_restaurante.modulos.produto.aplicacao.casodeuso;
 
 
 import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
-import com.restaurante01.api_restaurante.modulos.produto.infraestrutura.ProdutoRepositorioAdapter;
+import com.restaurante01.api_restaurante.modulos.produto.infraestrutura.adaptador.ProdutoRepositorioAdapter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

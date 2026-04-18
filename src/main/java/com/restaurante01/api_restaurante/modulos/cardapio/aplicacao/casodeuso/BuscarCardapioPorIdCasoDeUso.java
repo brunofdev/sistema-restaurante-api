@@ -3,7 +3,7 @@ package com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.casodeuso;
 
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Cardapio;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.CardapioNaoEncontradoException;
-import com.restaurante01.api_restaurante.modulos.cardapio.infraestrutura.persistencia.CardapioRepositorioAdaptador;
+import com.restaurante01.api_restaurante.modulos.cardapio.infraestrutura.adaptador.CardapioRepositorioAdaptador;
 import org.springframework.stereotype.Service;
 
 @Service
