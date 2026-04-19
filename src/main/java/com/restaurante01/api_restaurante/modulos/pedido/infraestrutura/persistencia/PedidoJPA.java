@@ -1,7 +1,7 @@
 package com.restaurante01.api_restaurante.modulos.pedido.infraestrutura.persistencia;
 
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
-import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;
+import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.Cliente;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

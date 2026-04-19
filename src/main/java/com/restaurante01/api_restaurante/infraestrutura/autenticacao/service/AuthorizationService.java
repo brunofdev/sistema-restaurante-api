@@ -1,7 +1,7 @@
 package com.restaurante01.api_restaurante.infraestrutura.autenticacao.service;
 
-import com.restaurante01.api_restaurante.modulos.cliente.dominio.repositorio.ClienteRepositorio;
-import com.restaurante01.api_restaurante.modulos.operador.dominio.repositorio.OperadorRepositorio;
+import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.repositorio.ClienteRepositorio;
+import com.restaurante01.api_restaurante.modulos.usuario.operador.dominio.repositorio.OperadorRepositorio;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

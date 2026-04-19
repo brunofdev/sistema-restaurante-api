@@ -1,7 +1,7 @@
 package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso;
 
 
-import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;
+import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.Cliente;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.ItemPedidoSolicitadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.PedidoCriacaoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDTO;
@@ -12,7 +12,7 @@ import com.restaurante01.api_restaurante.modulos.pedido.dominio.evento.PedidoCri
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoCardapioProdutoPorta;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoClientePorta;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.repositorio.PedidoRepositorio;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.Endereco;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.EnderecoPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.ProdutoVendido;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -63,7 +63,7 @@ public class CriarNovoPedidoCasoDeUso {
             pedido.adicionarItem(itemPedido);
         });
     }
-    private Endereco selecionaEndereco(PedidoCriacaoDTO dto, Cliente cliente){
+    private EnderecoPedido selecionaEndereco(PedidoCriacaoDTO dto, Cliente cliente){
         if(dto.enderecoAlternativo() == null){
             return pedidoClientePorta.obterEndereco(cliente);
         }

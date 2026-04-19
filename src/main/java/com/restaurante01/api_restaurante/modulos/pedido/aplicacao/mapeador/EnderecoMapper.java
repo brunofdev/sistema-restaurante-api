@@ -1,14 +1,14 @@
 package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mapeador;
 
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.EnderecoDTO;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.Endereco;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.EnderecoPedido;
 import org.springframework.stereotype.Component;
 
 @Component
 public class EnderecoMapper {
-    public Endereco paraEndereco (EnderecoDTO dto){
+    public EnderecoPedido paraEndereco (EnderecoDTO dto){
         if(dto != null) {
-            return new Endereco(
+            return new EnderecoPedido(
                     dto.rua(),
                     dto.numero(),
                     dto.bairro(),

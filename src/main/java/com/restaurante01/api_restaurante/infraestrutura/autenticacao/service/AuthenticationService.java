@@ -4,10 +4,10 @@ import com.restaurante01.api_restaurante.infraestrutura.autenticacao.api.dto.Cre
 import com.restaurante01.api_restaurante.infraestrutura.autenticacao.api.dto.ClienteLoginResponseDTO;
 import com.restaurante01.api_restaurante.infraestrutura.autenticacao.api.dto.OperadorLoginResponseDTO;
 import com.restaurante01.api_restaurante.infraestrutura.jwt.JwtProvider;
-import com.restaurante01.api_restaurante.modulos.cliente.api.dto.saida.ClienteDTO;
-import com.restaurante01.api_restaurante.modulos.cliente.aplicacao.casodeuso.AutenticarClienteCasoDeUso;
-import com.restaurante01.api_restaurante.modulos.operador.api.dto.saida.OperadorDTO;
-import com.restaurante01.api_restaurante.modulos.operador.aplicacao.casodeuso.AutenticarOperadorCasoDeUso;
+import com.restaurante01.api_restaurante.modulos.usuario.cliente.api.dto.saida.ClienteDTO;
+import com.restaurante01.api_restaurante.modulos.usuario.cliente.aplicacao.casodeuso.AutenticarClienteCasoDeUso;
+import com.restaurante01.api_restaurante.modulos.usuario.operador.api.dto.saida.OperadorDTO;
+import com.restaurante01.api_restaurante.modulos.usuario.operador.aplicacao.casodeuso.AutenticarOperadorCasoDeUso;
 import org.springframework.stereotype.Service;
 
 @Service

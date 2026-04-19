@@ -1,12 +1,12 @@
 package com.restaurante01.api_restaurante.infraestrutura.inicializador;
 
-import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.role.Role;
+import com.restaurante01.api_restaurante.modulos.usuario.dominio.role.Role;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Cardapio;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.entidade.CardapioProduto;
-import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;
-import com.restaurante01.api_restaurante.modulos.operador.dominio.entidade.Operador;
+import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.*;
+import com.restaurante01.api_restaurante.modulos.usuario.operador.dominio.entidade.Operador;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.*;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.Endereco;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.EnderecoPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.InformacoesClienteParaPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.RepresentacaoProdutoItemPedido;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
@@ -15,6 +15,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -62,15 +63,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         cliente.setCpf("11111111111");
         cliente.setRole(Role.USER);
         cliente.setContaAtiva(true);
-        cliente.setPontuacaoFidelidade(0);
         cliente.setTelefone("11999999999");
-        cliente.setEstado("SP");
-        cliente.setCidade("São Paulo");
-        cliente.setBairro("Centro");
-        cliente.setCep("01001000");
-        cliente.setRua("Avenida Paulista");
-        cliente.setNumeroResidencia(1000);
-        cliente.setComplemento("Apto 12");
+        cliente.setEnderecoCliente(new EnderecoCliente("Tres pinheiros um", 27, "Mato grande", "Canoas", "RS", "88058208","Casa", "Perto do thomé"));
         entityManager.persist(cliente);
 
         // --- 3. CRIANDO PRODUTOS ---
@@ -117,7 +111,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         entityManager.persist(associacao2);
 
         // --- 6. CRIANDO PEDIDO ---
-        Pedido pedido = Pedido.criar(1L, new InformacoesClienteParaPedido(cliente.getId(),cliente.getNome(), cliente.getCpf(), cliente.getTelefone()), new Endereco("Tres pinheiros um", 27, "Mato grande", "Canoas", "RS", "88058028", ""));
+        Pedido pedido = Pedido.criar(1L, new InformacoesClienteParaPedido(cliente.getId(),cliente.getNome(), cliente.getCpf(), cliente.getTelefone()), new EnderecoPedido("Tres pinheiros um", 27, "Mato grande", "Canoas", "RS", "88058028", ""));
         ItemPedido item1 =  ItemPedido.criar(pedido, 2, new RepresentacaoProdutoItemPedido(hamburguer.getId(), hamburguer.getNome()),associacao1.resolverPrecoDeVenda(), "");
         ItemPedido item2 = ItemPedido.criar(pedido, 2, new RepresentacaoProdutoItemPedido(refrigerante.getId(), refrigerante.getNome()),associacao2.resolverPrecoDeVenda(),"");
 

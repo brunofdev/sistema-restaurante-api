@@ -2,7 +2,7 @@ package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso;
 import com.restaurante01.api_restaurante.builders.CardapioProdutoBuilder;
 import com.restaurante01.api_restaurante.builders.ClienteBuilder;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.entidade.CardapioProduto;
-import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;
+import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.Cliente;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.ItemPedidoSolicitadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.PedidoCriacaoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDTO;
@@ -57,7 +57,7 @@ class CriarNovoPedidoCasoDeUsoTest {
                 cardapioProduto.resolverPrecoDeVenda());
         InformacoesClienteParaPedido infoCliente = new InformacoesClienteParaPedido(
                 cliente.getId(), cliente.getNome(), cliente.getCpf(), cliente.getTelefone());
-        Endereco enderecoCliente = new Endereco(
+        EnderecoPedido enderecoPedidoCliente = new EnderecoPedido(
                 cliente.getRua(), cliente.getNumeroResidencia(), cliente.getBairro(),
                 cliente.getCidade(), cliente.getEstado(), cliente.getCep(), cliente.getObservacaoEndereco());
 
@@ -70,7 +70,7 @@ class CriarNovoPedidoCasoDeUsoTest {
         when(pedidoMapper.mapearParaValidacaoDeEstoque(itensDTO))
                 .thenReturn(List.of(new ItemValidacaoEstoque(cardapioProduto.getProduto().getId(), 2)));
         when(pedidoClientePorta.obterDetalhesClienteParaPedido(cliente)).thenReturn(infoCliente);
-        when(pedidoClientePorta.obterEndereco(cliente)).thenReturn(enderecoCliente);
+        when(pedidoClientePorta.obterEndereco(cliente)).thenReturn(enderecoPedidoCliente);
         when(pedidoCardapioProdutoPorta.obterProdutoVendido(
                 pedidoCriacaoDTO.idCardapio(),
                 itensDTO.get(0).idProduto()))

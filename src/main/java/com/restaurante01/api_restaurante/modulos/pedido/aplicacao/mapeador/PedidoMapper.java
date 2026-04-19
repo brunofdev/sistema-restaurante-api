@@ -4,7 +4,7 @@ import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.Endereco
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.ItemPedidoSolicitadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.ItemPedidoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDTO;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.Endereco;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.EnderecoPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.ItemValidacaoEstoque;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
@@ -41,18 +41,18 @@ public class PedidoMapper {
                 itens,
                 pedido.getValorTotal(),
                 pedido.getStatusPedido(),
-                mapearEndereco(pedido.getEnderecoEntrega())
+                mapearEndereco(pedido.getEnderecoPedidoEntrega())
         );
     }
-    private EnderecoDTO mapearEndereco (Endereco endereco){
+    private EnderecoDTO mapearEndereco (EnderecoPedido enderecoPedido){
         return new EnderecoDTO(
-                endereco.rua(),
-                endereco.numero(),
-                endereco.bairro(),
-                endereco.cidade(),
-                endereco.estado(),
-                endereco.cep(),
-                endereco.referencia()
+                enderecoPedido.rua(),
+                enderecoPedido.numero(),
+                enderecoPedido.bairro(),
+                enderecoPedido.cidade(),
+                enderecoPedido.estado(),
+                enderecoPedido.cep(),
+                enderecoPedido.referencia()
         );
     }
 }

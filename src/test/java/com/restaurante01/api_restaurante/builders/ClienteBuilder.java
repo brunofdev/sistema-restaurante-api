@@ -1,7 +1,7 @@
 package com.restaurante01.api_restaurante.builders;
 
-import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;
-import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.role.Role;
+import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.Cliente;
+import com.restaurante01.api_restaurante.modulos.usuario.dominio.role.Role;
 
 public class ClienteBuilder {
 
