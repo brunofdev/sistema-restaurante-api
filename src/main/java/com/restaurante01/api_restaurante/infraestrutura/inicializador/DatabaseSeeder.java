@@ -1,6 +1,7 @@
 package com.restaurante01.api_restaurante.infraestrutura.inicializador;
 
-import com.restaurante01.api_restaurante.modulos.usuario.dominio.role.Role;
+import com.restaurante01.api_restaurante.modulos.usuario.dominio.entidade.Cpf;
+import com.restaurante01.api_restaurante.modulos.usuario.dominio.entidade.Email;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Cardapio;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.entidade.CardapioProduto;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.*;
@@ -12,15 +13,16 @@ import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.Repr
 import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
 import jakarta.persistence.EntityManager;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Configuration;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Configuration
+@Component
 public class DatabaseSeeder implements CommandLineRunner {
 
     private final EntityManager entityManager;
@@ -43,28 +45,23 @@ public class DatabaseSeeder implements CommandLineRunner {
         String senhaPadrao = passwordEncoder.encode("123456");
 
         // --- 1. CRIANDO OPERADOR ---
-        Operador admin = new Operador();
-        admin.setNome("Carlos Gerente");
-        admin.setUserName("carlos_admin");
-        admin.setSenha(senhaPadrao);
-        admin.setEmail("gerencia@restaurante.com");
-        admin.setCpf("00000000000");
-        admin.setRole(Role.ADMIN3); // Acesso total
-        admin.setContaAtiva(true);
-        admin.setMatricula(1001L);
+        Operador admin = Operador.criar(
+        "Bruno",
+                senhaPadrao,
+                new Email("joao@pessoa.com"),
+                new Cpf("00000000000")
+                );
         entityManager.persist(admin);
 
         // --- 2. CRIANDO CLIENTE ---
-        Cliente cliente = new Cliente();
-        cliente.setNome("Maria Cliente");
-        cliente.setUserName("maria_cli");
-        cliente.setSenha(senhaPadrao);
-        cliente.setEmail("maria@email.com");
-        cliente.setCpf("11111111111");
-        cliente.setRole(Role.USER);
-        cliente.setContaAtiva(true);
-        cliente.setTelefone("11999999999");
-        cliente.setEnderecoCliente(new EnderecoCliente("Tres pinheiros um", 27, "Mato grande", "Canoas", "RS", "88058208","Casa", "Perto do thomé"));
+        Cliente cliente = Cliente.criar(
+                "Maria Cliente",
+                senhaPadrao,
+                new Email("maria@email.com"),
+                new Cpf("00000000000"),
+                new EnderecoCliente("Tres pinheiros um", 27, "Mato grande", "Canoas", "RS", "88058208","Casa", "Perto do thomé"),
+                "11999999999"
+        );
         entityManager.persist(cliente);
 
         // --- 3. CRIANDO PRODUTOS ---
@@ -111,7 +108,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         entityManager.persist(associacao2);
 
         // --- 6. CRIANDO PEDIDO ---
-        Pedido pedido = Pedido.criar(1L, new InformacoesClienteParaPedido(cliente.getId(),cliente.getNome(), cliente.getCpf(), cliente.getTelefone()), new EnderecoPedido("Tres pinheiros um", 27, "Mato grande", "Canoas", "RS", "88058028", ""));
+        Pedido pedido = Pedido.criar(1L, new InformacoesClienteParaPedido(cliente.getId(),cliente.getNome(), cliente.getCpf().cpf(), cliente.getTelefone()), new EnderecoPedido("Tres pinheiros um", 27, "Mato grande", "Canoas", "RS", "88058028", ""));
         ItemPedido item1 =  ItemPedido.criar(pedido, 2, new RepresentacaoProdutoItemPedido(hamburguer.getId(), hamburguer.getNome()),associacao1.resolverPrecoDeVenda(), "");
         ItemPedido item2 = ItemPedido.criar(pedido, 2, new RepresentacaoProdutoItemPedido(refrigerante.getId(), refrigerante.getNome()),associacao2.resolverPrecoDeVenda(),"");
 

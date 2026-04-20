@@ -5,6 +5,8 @@ import com.restaurante01.api_restaurante.modulos.usuario.cliente.api.dto.entrada
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.api.dto.saida.ClienteDTO;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.Cliente;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.EnderecoCliente;
+import com.restaurante01.api_restaurante.modulos.usuario.dominio.entidade.Cpf;
+import com.restaurante01.api_restaurante.modulos.usuario.dominio.entidade.Email;
 import com.restaurante01.api_restaurante.modulos.usuario.dominio.role.Role;
 import org.springframework.stereotype.Component;
 
@@ -17,19 +19,22 @@ public class ClienteMapper {
     public EnderecoCliente mapearEnderecoCliente(CadastrarClienteDTO dto){
         return new EnderecoCliente(dto.rua(), dto.numero(), dto.bairro(), dto.cidade(), dto.estado(), dto.cep(), dto.complemento(), dto.referencia());
     }
+    public Email mapearEmail (String email){
+        return new Email(email);
+    }
+    public Cpf mapearCpf (String cpf){
+        return new Cpf(cpf);
+    }
 
     public Cliente mappearNovoCliente(CadastrarClienteDTO dto) {
-        Cliente cliente = new Cliente();
-        cliente.setNome(dto.nome());
-        cliente.setSenha(dto.senha());
-        cliente.setCpf(dto.cpf());
-        cliente.setTelefone(dto.telefone());
-        cliente.setEmail(dto.email());
-        cliente.setEnderecoCliente(mapearEnderecoCliente(dto));
-        cliente.setUserName(dto.userName());
-        cliente.setRole(Role.USER);
-        cliente.setContaAtiva(true);
-        return cliente;
+       return  Cliente.criar(
+                dto.nome(),
+                dto.senha(),
+                mapearEmail(dto.email()),
+                mapearCpf(dto.cpf()),
+                mapearEnderecoCliente(dto),
+                dto.telefone()
+        );
     }
     public ClienteDTO mapearClienteParaClienteDTO(Cliente novoCliente) {
         return new ClienteDTO(
@@ -41,14 +46,11 @@ public class ClienteMapper {
     }
     public List<ClienteDTO> mapearListaClienteParaClienteDTO(List<Cliente> clientes){
         return clientes.stream()
-                .map(cliente -> mapearClienteParaClienteDTO(cliente)).toList();
+                .map(this::mapearClienteParaClienteDTO).toList();
     }
     public void atualizarEntidade(Cliente clienteExistente, ClienteDTO dto) {
         if (dto.nome() != null) {
             clienteExistente.setNome(dto.nome());
-        }
-        if (dto.userName() != null) {
-            clienteExistente.setUserName(dto.userName());
         }
     }
 }

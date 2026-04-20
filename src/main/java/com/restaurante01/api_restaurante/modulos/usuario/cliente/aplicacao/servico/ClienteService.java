@@ -6,6 +6,7 @@ import com.restaurante01.api_restaurante.modulos.usuario.cliente.api.dto.saida.C
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.Cliente;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.aplicacao.mapeador.ClienteMapper;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.infraestrutura.persistencia.ClienteJPA;
+import com.restaurante01.api_restaurante.modulos.usuario.dominio.entidade.Cpf;
 import com.restaurante01.api_restaurante.modulos.usuario.dominio.exceptions.InvalidCredentialsException;
 import com.restaurante01.api_restaurante.modulos.usuario.dominio.exceptions.UserDontFoundException;
 import com.restaurante01.api_restaurante.modulos.usuario.dominio.role.Role;
@@ -34,21 +35,17 @@ public class ClienteService {
     public ClienteDTO cadastrarNovoCliente(CadastrarClienteDTO dtoComSenhaEncoded) {
         validator.validarNovoCliente(dtoComSenhaEncoded, false);
         Cliente cliente = mapper.mappearNovoCliente(dtoComSenhaEncoded);
-        cliente.setRole(Role.USER);
         repository.save(cliente);
         return mapper.mapearClienteParaClienteDTO(cliente);
     }
     public Cliente encontrarClientePorCpf(String cpf){
-        return repository.findByCpf(cpf).orElseThrow(
+        return repository.findByCpf(new Cpf(cpf)).orElseThrow(
                 () -> new UserDontFoundException("Cliente não encontrado"));
     }
     public void atualizaPontuacaoFidelidadeCliente(Cliente cliente, BigDecimal totalPedido){
         int pontuacao = calculadoraDeFidelidade.calcular(totalPedido);
         cliente.acrescentarPontuacao(pontuacao);
         repository.save(cliente);
-    }
-    public boolean encontrarClientePorUserName(String userName){
-        return repository.existsByUserName(userName);
     }
     public List<ClienteDTO> listarClientes() {
         return mapper.mapearListaClienteParaClienteDTO(repository.findAll());

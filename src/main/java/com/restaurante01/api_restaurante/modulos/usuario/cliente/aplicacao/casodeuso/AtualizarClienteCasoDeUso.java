@@ -14,17 +14,17 @@ public class AtualizarClienteCasoDeUso {
 
     private final ClienteRepositorio repository;
     private final ClienteMapper mapper;
-    private final ClienteValidator validator; // Validador injetado
+    private final ClienteValidator validator; 
 
     public AtualizarClienteCasoDeUso(ClienteRepositorio repository, ClienteMapper mapper, ClienteValidator validator) {
         this.repository = repository;
         this.mapper = mapper;
         this.validator = validator;
     }
-
+      //atualizar precisa de ajuste, nao esta funcionando
     @Transactional
     public ClienteDTO executar(Long id, ClienteDTO dto) {
-        Cliente clienteExistente = repository.buscarPorId(id)
+       Cliente clienteExistente = repository.buscarPorId(id)
                 .orElseThrow(() -> new UserDontFoundException("Cliente não encontrado"));
         validator.validarAtualizacao(dto, clienteExistente);
         mapper.atualizarEntidade(clienteExistente, dto);

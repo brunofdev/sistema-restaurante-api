@@ -26,12 +26,6 @@ public record CadastrarClienteDTO(
         @Pattern(regexp = "^\\(?\\d{2}\\)?[\\s-]?\\d{4,5}-?\\d{4}$", message = "O telefone deve estar no formato (XX) 9XXXX-XXXX ou apenas números.")
         String telefone,
 
-        @Schema(description = "Nome de usuário para login", example = "brunodev")
-        @NotBlank(message = "O nome de usuário não pode estar em branco.")
-        @Size(min = 5, max = 20, message = "O nome de usuário deve ter entre 5 e 20 caracteres.")
-        @Pattern(regexp = "\\S+", message = "O nome de usuário não pode conter espaços em branco.")
-        String userName,
-
         @Schema(description = "Senha forte (min 8 chars, 1 maiúscula, 1 minúscula, 1 número, 1 especial)", example = "Senha@123")
         @NotBlank(message = "A senha não pode estar em branco.")
         @Size(min = 8, message = "A senha deve ter no mínimo 8 caracteres.")
@@ -87,7 +81,6 @@ public record CadastrarClienteDTO(
 
                 this.telefone(),
 
-                this.userName().toUpperCase(),
 
                 senhaCriptografada,
 

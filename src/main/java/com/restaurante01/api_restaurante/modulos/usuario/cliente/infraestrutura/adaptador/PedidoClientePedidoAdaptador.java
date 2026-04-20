@@ -27,7 +27,7 @@ public class PedidoClientePedidoAdaptador implements PedidoClientePorta {
         return new InformacoesClienteParaPedido(
                 cliente.getId(),
                 cliente.getNome(),
-                cliente.getCpf(),
+                cliente.getCpf().cpf(),
                 cliente.getTelefone()
         );
     }

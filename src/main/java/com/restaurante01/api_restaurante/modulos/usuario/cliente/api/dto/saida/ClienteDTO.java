@@ -5,7 +5,7 @@ import com.restaurante01.api_restaurante.modulos.usuario.dominio.role.Role;
 public record ClienteDTO(
         Long id,
         String nome,
-        String userName,
+        String cpf,
         Role role,
         int pontuacaoFidelidade
 ) {

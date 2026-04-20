@@ -1,14 +1,17 @@
 package com.restaurante01.api_restaurante.modulos.usuario.cliente.infraestrutura.persistencia;
 
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.Cliente;
+import com.restaurante01.api_restaurante.modulos.usuario.dominio.entidade.Cpf;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 import java.util.Optional;
 
 public interface ClienteJPA extends JpaRepository<Cliente, Long> {
-    boolean existsByCpf(String cpf);
+    boolean existsByCpf(Cpf cpf);
     boolean existsByEmail(String email);
-    boolean existsByUserName(String userName);
-    Optional<Cliente> findByCpf(String cpf);
-    Optional<Cliente> findByUserName(String userName);
+    Optional<Cliente> findByCpf(Cpf cpf);
     Optional<Cliente> findByEmail(String email);
+
+    List<Cliente> Cpf(Cpf cpf);
 }

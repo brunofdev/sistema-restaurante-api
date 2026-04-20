@@ -26,10 +26,7 @@ public class CadastrarOperadorCasoDeUso {
     @Transactional
     public OperadorDTO executar(CadastrarOperadorDTO dtoComSenhaEncoded) {
         validator.validarNovoOperador(dtoComSenhaEncoded, false);
-
         Operador operador = mapper.mappearNovoOperador(dtoComSenhaEncoded);
-        operador.setRole(Role.ADMIN1); // Define o nível de acesso
-
         Operador operadorSalvo = repository.salvar(operador);
         return mapper.mapearOperadorParaOperadorDTO(operadorSalvo);
     }

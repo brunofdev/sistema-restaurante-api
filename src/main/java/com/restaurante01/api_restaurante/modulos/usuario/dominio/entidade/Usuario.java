@@ -1,10 +1,10 @@
 package com.restaurante01.api_restaurante.modulos.usuario.dominio.entidade;
 
+import com.restaurante01.api_restaurante.modulos.usuario.dominio.exceptions.NomeInvalidoExcecao;
+import com.restaurante01.api_restaurante.modulos.usuario.dominio.exceptions.SenhaInvalidaExcecao;
 import com.restaurante01.api_restaurante.modulos.usuario.dominio.role.Role;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,8 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+@Getter
 @MappedSuperclass
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Usuario implements UserDetails {
@@ -22,27 +22,28 @@ public class Usuario implements UserDetails {
     private Long id;
     @Column(name="name", nullable = false)
     private String nome;
-    @Column(name="user_name", nullable = false, unique = true)
-    private String userName;
     @Column(name="senha", nullable = false)
     private String senha;
-    @Column(name="email", nullable = false, unique = true)
-    private String email;
-    @Column(name="cpf", nullable = false, unique = true)
-    private String cpf;
+    @Embedded
+    private Email email;
+    @Embedded
+    private Cpf cpf;
     @Enumerated(EnumType.STRING)
     private Role role;
+
     @Column(name = "conta_ativa", nullable = false)
     private boolean contaAtiva;
 
-    public Role getRole(){
-        return (this.role == null) ? Role.USER : this.role;
+    public Usuario(String nome, String senha, Email email, Cpf cpf, Role role, boolean contaAtiva) {
+        this.nome = nome;
+        this.senha = senha;
+        this.email = email;
+        this.cpf = cpf;
+        this.role = role;
+        this.contaAtiva = contaAtiva;
     }
 
     // --- MÉTODOS OBRIGATÓRIOS DO SPRING SECURITY (UserDetails) ---
-
-    // CORREÇÃO 2: Este é o método que faltava!
-    // Ele traduz o seu Enum "UserRole" para o que o Spring entende ("GrantedAuthority")
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // Se a role for nula, assume o mínimo possível (USER)
@@ -78,20 +79,14 @@ public class Usuario implements UserDetails {
         }
     }
 
-    // O Spring Security chama getPassword(), mas sua variável chama "senha".
-    // Precisamos apontar um para o outro.
     @Override
     public String getPassword() {
         return senha;
     }
 
-    // O Spring chama getUsername(), mas sua variável chama "userName".
     @Override
-    public String getUsername() {
-        return userName;
-    }
+    public String getUsername(){return cpf.cpf();};
 
-    // Configurações de validade da conta (Retornar true = conta sempre ativa)
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -111,5 +106,25 @@ public class Usuario implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public void setNome(String nome) {
+        if (nome == null || nome.isBlank()) {
+            throw new NomeInvalidoExcecao("Nome não pode ser vazio");
+        }
+        if (!nome.matches("[a-zA-ZÀ-ÿ\\s]+"))
+            throw new NomeInvalidoExcecao("Nome não pode conter números ou caracteres especiais");
+        if (nome.trim().length() > 50){
+            throw new NomeInvalidoExcecao("Nome não pode ter mais de que 50 caracteres");
+        }
+        this.nome = nome.trim();
+    }
+
+    public void setSenha(String senha) {
+        if(senha == null || senha.isBlank()){
+            throw new SenhaInvalidaExcecao("Senha não pode ser vazia");
+        }
+        this.senha = senha;
+    }
+
 }
 

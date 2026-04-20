@@ -22,6 +22,7 @@ public class AtualizarOperadorCasoDeUso {
         this.validator = validator;
     }
 
+    //atualizar precisa de ajuste, nao esta funcionando
     @Transactional
     public OperadorDTO executar(Long id, OperadorDTO dto) {
         Operador operadorExistente = repository.buscarPorId(id)

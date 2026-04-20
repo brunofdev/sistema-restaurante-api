@@ -1,5 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.usuario.operador.infraestrutura.persistencia;
 
+import com.restaurante01.api_restaurante.modulos.usuario.dominio.entidade.Cpf;
 import com.restaurante01.api_restaurante.modulos.usuario.operador.dominio.entidade.Operador;
 import com.restaurante01.api_restaurante.modulos.usuario.operador.dominio.repositorio.OperadorRepositorio;
 import org.springframework.data.domain.Page;
@@ -28,13 +29,9 @@ public class OperadorRepositorioAdapter implements OperadorRepositorio {
 
     @Override
     public Optional<Operador> buscarPorCpf(String cpf) {
-        return jpa.findByCpf(cpf);
+        return jpa.findByCpf(new Cpf(cpf));
     }
 
-    @Override
-    public Optional<Operador> buscarPorUserName(String userName) {
-        return jpa.findByUserName(userName);
-    }
 
     @Override
     public Page<Operador> buscarTodos(Pageable pageable) {
@@ -43,7 +40,7 @@ public class OperadorRepositorioAdapter implements OperadorRepositorio {
 
     @Override
     public boolean existePorCpf(String cpf) {
-        return jpa.existsByCpf(cpf);
+        return jpa.existsByCpf(new Cpf(cpf));
     }
 
     @Override
@@ -51,10 +48,6 @@ public class OperadorRepositorioAdapter implements OperadorRepositorio {
         return jpa.existsByEmail(email);
     }
 
-    @Override
-    public boolean existePorUserName(String userName) {
-        return jpa.existsByUserName(userName);
-    }
 
     @Override
     public void deletar(Operador operador) {

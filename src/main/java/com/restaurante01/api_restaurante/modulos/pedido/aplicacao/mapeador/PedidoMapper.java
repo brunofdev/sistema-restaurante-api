@@ -52,7 +52,18 @@ public class PedidoMapper {
                 enderecoPedido.cidade(),
                 enderecoPedido.estado(),
                 enderecoPedido.cep(),
-                enderecoPedido.referencia()
+                (enderecoPedido.referencia() == null || enderecoPedido.referencia().isBlank() ? "Cliente não informou uma referencia" : enderecoPedido.referencia())
         );
     }
+    public EnderecoPedido mapearEndereco (EnderecoDTO dto){
+            return new EnderecoPedido(
+                    dto.rua(),
+                    dto.numero(),
+                    dto.bairro(),
+                    dto.cidade(),
+                    dto.estado(),
+                    dto.cep(),
+                    dto.referencia()
+            );
+        }
 }

@@ -15,11 +15,9 @@ import org.springframework.stereotype.Component;
 public class OperadorValidator {
 
     private final OperadorRepositorio operadorRepositorio;
-    private final ClienteRepositorio clienteRepositorio;
 
-    public OperadorValidator(OperadorRepositorio operadorRepositorio, ClienteRepositorio clienteRepositorio) {
+    public OperadorValidator(OperadorRepositorio operadorRepositorio) {
         this.operadorRepositorio = operadorRepositorio;
-        this.clienteRepositorio = clienteRepositorio;
     }
 
     public void validarNovoOperador(CadastrarOperadorDTO dto, Boolean isUpdate) {
@@ -28,31 +26,19 @@ public class OperadorValidator {
         if (!isUpdate) {
             checaEmailExiste(dto.email());
             checaCpfExiste(dto.cpf());
-            checaUserNameExiste(dto.userName());
-            checaUserNameExisteEmCliente(dto.userName());
-            checaMatricula(dto.matricula());
         }
     }
 
     public void validarAtualizacao(OperadorDTO dto, Operador operadorExistente) {
-        if (dto.userName() != null && !dto.userName().equals(operadorExistente.getUsername())) {
-            checaUserNameExiste(dto.userName());
-            checaUserNameExisteEmCliente(dto.userName());
+        if (dto.cpf() != null && !dto.cpf().equals(operadorExistente.getUsername())) {
+            checaCpfExiste(dto.cpf());
+            checaCpfExiste(dto.cpf());
         }
-    }
-
-    private void checaMatricula(Long matricula){
     }
 
     private void checaEmailExiste(String email){
         if (operadorRepositorio.existePorEmail(email)) {
             throw new EmailAlreadyExistsException("Email já cadastrado no sistema");
-        }
-    }
-
-    private void checaUserNameExisteEmCliente(String userName){
-        if (clienteRepositorio.existePorUserName(userName)) {
-            throw new UsernameAlreadyExistsException("Já existe um Cliente com este userName cadastrado");
         }
     }
 
@@ -62,9 +48,4 @@ public class OperadorValidator {
         }
     }
 
-    private void checaUserNameExiste(String userName){
-        if (operadorRepositorio.existePorUserName(userName)) {
-            throw new UsernameAlreadyExistsException("Já existe um Operador com este userName cadastrado no sistema");
-        }
-    }
 }

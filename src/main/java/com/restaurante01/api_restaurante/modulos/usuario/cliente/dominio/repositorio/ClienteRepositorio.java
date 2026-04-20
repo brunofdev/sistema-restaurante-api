@@ -10,11 +10,9 @@ public interface ClienteRepositorio {
     Cliente salvar(Cliente cliente);
     Optional<Cliente> buscarPorId(Long id);
     Optional<Cliente> buscarPorEmail(String email);
-    Optional<Cliente> buscarPorCpf(String cpf); // Adicionado
-    Optional<Cliente> buscarPorUserName(String userName); // Adicionado
+    Optional<Cliente> buscarPorCpf(String cpf);
     Page<Cliente> buscarTodos(Pageable pageable);
     boolean existePorEmail(String email);
-    boolean existePorCpf(String cpf); // Adicionado
-    boolean existePorUserName(String userName); // Adicionado
+    boolean existePorCpf(String cpf);
     void deletar(Cliente cliente);
 }

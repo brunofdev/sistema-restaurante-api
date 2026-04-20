@@ -5,7 +5,7 @@ import com.restaurante01.api_restaurante.modulos.usuario.dominio.role.Role;
 public record OperadorDTO(
         Long id,
         String nome,
-        String userName,
+        String cpf,
         Role role
 ) {
 }

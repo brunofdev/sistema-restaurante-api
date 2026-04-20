@@ -26,10 +26,7 @@ public class CadastrarClienteCasoDeUso {
     @Transactional
     public ClienteDTO executar(CadastrarClienteDTO dto) {
         validator.validarNovoCliente(dto, false);
-
         Cliente cliente = mapper.mappearNovoCliente(dto);
-        cliente.setRole(Role.USER);
-
         Cliente clienteSalvo = repository.salvar(cliente);
         return mapper.mapearClienteParaClienteDTO(clienteSalvo);
     }

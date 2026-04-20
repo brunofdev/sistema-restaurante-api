@@ -5,7 +5,6 @@ import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidad
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.ItemPedidoSolicitadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.PedidoCriacaoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDTO;
-import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mapeador.EnderecoMapper;
 import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mapeador.PedidoMapper;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.*;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.evento.PedidoCriadoEvento;
@@ -26,7 +25,6 @@ public class CriarNovoPedidoCasoDeUso {
     private final PedidoRepositorio pedidoRepository;
     private final PedidoMapper pedidoMapper;
     private final ApplicationEventPublisher eventPublisher;
-    private final EnderecoMapper enderecoMapper;
     private final PedidoCardapioProdutoPorta produto;
     private final PedidoClientePorta pedidoClientePorta;
 
@@ -34,14 +32,12 @@ public class CriarNovoPedidoCasoDeUso {
     public CriarNovoPedidoCasoDeUso(PedidoRepositorio pedidoRepository,
                                     PedidoMapper pedidoMapper,
                                     ApplicationEventPublisher eventPublisher,
-                                    EnderecoMapper enderecoMapper,
                                     PedidoCardapioProdutoPorta produto,
                                     PedidoClientePorta pedidoClientePorta
                                         ) {
         this.pedidoRepository = pedidoRepository;
         this.pedidoMapper = pedidoMapper;
         this.eventPublisher = eventPublisher;
-        this.enderecoMapper = enderecoMapper;
         this.produto = produto;
         this.pedidoClientePorta = pedidoClientePorta;
     }
@@ -67,6 +63,6 @@ public class CriarNovoPedidoCasoDeUso {
         if(dto.enderecoAlternativo() == null){
             return pedidoClientePorta.obterEndereco(cliente);
         }
-        return enderecoMapper.paraEndereco(dto.enderecoAlternativo());
+        return pedidoMapper.mapearEndereco(dto.enderecoAlternativo());
     }
 }

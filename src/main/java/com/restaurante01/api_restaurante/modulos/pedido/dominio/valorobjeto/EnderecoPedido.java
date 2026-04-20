@@ -16,14 +16,14 @@ public record EnderecoPedido(
 ) {
     @Override
     public String toString() {
-        return String.format("%s, nº %s%s - %s, %s/%s, CEP: %s, Referencia: %s",
+        return String.format("%s, %s, nº %s%s - %s, %s/%s, CEP: %s, Referencia: %s",
+                estado,
                 rua,
                 numero,
-                (referencia != null && !referencia.isBlank() ? " (" + referencia + ")" : ""),
                 bairro,
                 cidade,
                 cep,
-                referencia);
+                (referencia == null || referencia.isBlank() ? "Cliente não adicionou referencia" : "(" + referencia + ")"));
     }
 }
 

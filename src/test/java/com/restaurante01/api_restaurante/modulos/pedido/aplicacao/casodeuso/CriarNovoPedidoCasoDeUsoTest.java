@@ -1,12 +1,11 @@
 package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso;
 import com.restaurante01.api_restaurante.builders.CardapioProdutoBuilder;
-import com.restaurante01.api_restaurante.builders.ClienteBuilder;
+import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.ClienteBuilder;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.entidade.CardapioProduto;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.Cliente;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.ItemPedidoSolicitadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.PedidoCriacaoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDTO;
-import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mapeador.EnderecoMapper;
 import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mapeador.PedidoMapper;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.*;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.enums.StatusPedido;
@@ -38,7 +37,6 @@ class CriarNovoPedidoCasoDeUsoTest {
     @Mock private PedidoCardapioProdutoPorta pedidoCardapioProdutoPorta;
     @Mock private PedidoClientePorta pedidoClientePorta;
     @Mock private ApplicationEventPublisher eventPublisher;
-    @Mock private EnderecoMapper enderecoMapper;
 
     @InjectMocks
     private CriarNovoPedidoCasoDeUso casoDeUso;
@@ -56,10 +54,10 @@ class CriarNovoPedidoCasoDeUsoTest {
                 representacaoProduto,
                 cardapioProduto.resolverPrecoDeVenda());
         InformacoesClienteParaPedido infoCliente = new InformacoesClienteParaPedido(
-                cliente.getId(), cliente.getNome(), cliente.getCpf(), cliente.getTelefone());
+                cliente.getId(), cliente.getNome(), cliente.getCpf().cpf(), cliente.getTelefone());
         EnderecoPedido enderecoPedidoCliente = new EnderecoPedido(
-                cliente.getRua(), cliente.getNumeroResidencia(), cliente.getBairro(),
-                cliente.getCidade(), cliente.getEstado(), cliente.getCep(), cliente.getObservacaoEndereco());
+                cliente.getEnderecoCliente().rua(), cliente.getEnderecoCliente().numero(), cliente.getEnderecoCliente().bairro(),
+                cliente.getEnderecoCliente().cidade(), cliente.getEnderecoCliente().estado(), cliente.getEnderecoCliente().cep(), cliente.getEnderecoCliente().referencia());
 
         List<ItemPedidoSolicitadoDTO> itensDTO = List.of(
                 new ItemPedidoSolicitadoDTO(cardapioProduto.getProduto().getId(), 2, "Teste de observação"));

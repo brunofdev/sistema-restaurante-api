@@ -15,29 +15,21 @@ import org.springframework.stereotype.Component;
 public class ClienteValidator {
 
     private final ClienteRepositorio clienteRepositorio;
-    private final OperadorRepositorio operadorRepository;
 
     public ClienteValidator(ClienteRepositorio clienteRepositorio, OperadorRepositorio operadorRepository) {
         this.clienteRepositorio = clienteRepositorio;
-        this.operadorRepository = operadorRepository;
     }
 
     public void validarNovoCliente(CadastrarClienteDTO dto, Boolean isUpdate) {
 
         ValidadorCpf.validarCpf(dto.cpf());
-
-
         if (!isUpdate) {
             checaEmailExiste(dto.email());
             checaCpfExiste(dto.cpf());
-            checaUserNameExiste(dto.userName());
-            checaSeUsernameExisteEmOperadores(dto.userName());
         }
     }
     public void validarAtualizacao(ClienteDTO dto, Cliente clienteExistente) {
-        if (dto.userName() != null && !dto.userName().equals(clienteExistente.getUsername())) {
-            checaUserNameExiste(dto.userName());
-            checaSeUsernameExisteEmOperadores(dto.userName());
+        if (dto.cpf() != null && !dto.cpf().equals(clienteExistente.getUsername())) {
         }
     }
 
@@ -47,22 +39,10 @@ public class ClienteValidator {
         }
     }
 
-    private void checaSeUsernameExisteEmOperadores(String userName) {
-        if (operadorRepository.existePorUserName(userName)) {
-            throw new UsernameAlreadyExistsException("Username já cadastrado por um operador");
-        }
-    }
 
     private void checaCpfExiste(String cpf) {
         if (clienteRepositorio.existePorCpf(cpf)) {
             throw new CpfAlreadyExistsException("CPF já cadastrado no sistema");
-        }
-    }
-
-    private void checaUserNameExiste(String userName) {
-        if (clienteRepositorio.existePorUserName(userName)) {
-            throw new UsernameAlreadyExistsException(
-                    "Já existe um userName com este nome cadastrado no sistema");
         }
     }
 }
