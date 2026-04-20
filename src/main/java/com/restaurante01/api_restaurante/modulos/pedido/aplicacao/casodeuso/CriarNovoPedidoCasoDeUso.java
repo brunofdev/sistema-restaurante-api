@@ -1,18 +1,17 @@
 package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso;
 
 
-import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;
+import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.Cliente;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.ItemPedidoSolicitadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.PedidoCriacaoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDTO;
-import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mapeador.EnderecoMapper;
 import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mapeador.PedidoMapper;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.*;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.evento.PedidoCriadoEvento;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoCardapioProdutoPorta;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoClientePorta;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.repositorio.PedidoRepositorio;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.Endereco;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.EnderecoPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.ProdutoVendido;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,6 @@ public class CriarNovoPedidoCasoDeUso {
     private final PedidoRepositorio pedidoRepository;
     private final PedidoMapper pedidoMapper;
     private final ApplicationEventPublisher eventPublisher;
-    private final EnderecoMapper enderecoMapper;
     private final PedidoCardapioProdutoPorta produto;
     private final PedidoClientePorta pedidoClientePorta;
 
@@ -34,14 +32,12 @@ public class CriarNovoPedidoCasoDeUso {
     public CriarNovoPedidoCasoDeUso(PedidoRepositorio pedidoRepository,
                                     PedidoMapper pedidoMapper,
                                     ApplicationEventPublisher eventPublisher,
-                                    EnderecoMapper enderecoMapper,
                                     PedidoCardapioProdutoPorta produto,
                                     PedidoClientePorta pedidoClientePorta
                                         ) {
         this.pedidoRepository = pedidoRepository;
         this.pedidoMapper = pedidoMapper;
         this.eventPublisher = eventPublisher;
-        this.enderecoMapper = enderecoMapper;
         this.produto = produto;
         this.pedidoClientePorta = pedidoClientePorta;
     }
@@ -63,10 +59,10 @@ public class CriarNovoPedidoCasoDeUso {
             pedido.adicionarItem(itemPedido);
         });
     }
-    private Endereco selecionaEndereco(PedidoCriacaoDTO dto, Cliente cliente){
+    private EnderecoPedido selecionaEndereco(PedidoCriacaoDTO dto, Cliente cliente){
         if(dto.enderecoAlternativo() == null){
             return pedidoClientePorta.obterEndereco(cliente);
         }
-        return enderecoMapper.paraEndereco(dto.enderecoAlternativo());
+        return pedidoMapper.mapearEndereco(dto.enderecoAlternativo());
     }
 }

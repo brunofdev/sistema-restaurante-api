@@ -1,8 +1,8 @@
 package com.restaurante01.api_restaurante.modulos.pedido.api.controlador.cliente;
 
 import com.restaurante01.api_restaurante.compartilhado.retorno_padrao_api.ApiResponse;
-import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.entidade.Usuario;
-import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;
+import com.restaurante01.api_restaurante.modulos.usuario.dominio.entidade.Usuario;
+import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.Cliente;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.PedidoCriacaoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso.CriarNovoPedidoCasoDeUso;

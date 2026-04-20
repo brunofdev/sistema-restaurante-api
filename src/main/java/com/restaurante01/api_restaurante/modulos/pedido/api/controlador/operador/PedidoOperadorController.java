@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.modulos.pedido.api.controlador;
+package com.restaurante01.api_restaurante.modulos.pedido.api.controlador.operador;
 
 import com.restaurante01.api_restaurante.compartilhado.retorno_padrao_api.ApiResponse;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.StatusPedidoDTO;

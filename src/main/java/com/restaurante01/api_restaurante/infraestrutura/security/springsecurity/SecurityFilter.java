@@ -1,12 +1,11 @@
 package com.restaurante01.api_restaurante.infraestrutura.security.springsecurity;
 
+import com.restaurante01.api_restaurante.infraestrutura.autenticacao.service.ServicoAutorizacao;
 import com.restaurante01.api_restaurante.infraestrutura.jwt.JwtProvider;
-import com.restaurante01.api_restaurante.infraestrutura.autenticacao.service.AuthorizationService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,39 +17,42 @@ import java.io.IOException;
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
 
-    @Autowired
-    JwtProvider jwtProvider;
-    @Autowired
-    AuthorizationService authorizationService;
+    private final JwtProvider jwtProvider;
+    private final ServicoAutorizacao servicoAutorizacao;
 
+    public SecurityFilter(JwtProvider jwtProvider, ServicoAutorizacao servicoAutorizacao) {
+        this.jwtProvider = jwtProvider;
+        this.servicoAutorizacao = servicoAutorizacao;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
-                                    FilterChain filterChain)
-            throws ServletException, IOException{
-        var token = this.recoverToken(request);
+                                    FilterChain filterChain) throws ServletException, IOException {
 
-        if(token != null){
-            var login = jwtProvider.validateToken(token);
+        String token = this.recoverToken(request);
 
-            if(login != null){
-                UserDetails usuario = authorizationService.loadUserByUsername(login);
+        if (token != null) {
+            String cpf = jwtProvider.extrairCpf(token);
+            String role = jwtProvider.extrairRole(token);
+
+            if (cpf != null && role != null) {
+                UserDetails usuario = servicoAutorizacao.carregarUsuarioPorCpfERole(cpf, role);
                 var autenticacao = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(autenticacao);
             }
         }
+
         filterChain.doFilter(request, response);
     }
 
     private String recoverToken(HttpServletRequest request) {
-        // 1. Pega o cabeçalho "Authorization" da requisição
-        var authHeader = request.getHeader("Authorization");
+        String authHeader = request.getHeader("Authorization");
 
-        // 2. Se não tiver cabeçalho, retorna nulo (não tem token)
-        if (authHeader == null) return null;
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return null;
+        }
 
-        // 3. Substitui "Bearer " por nada (vazio), sobrando só o token
-        return authHeader.replace("Bearer ", "");
+        return authHeader.substring(7).trim();
     }
 }

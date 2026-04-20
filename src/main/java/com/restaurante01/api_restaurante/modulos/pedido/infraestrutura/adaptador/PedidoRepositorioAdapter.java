@@ -1,6 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.pedido.infraestrutura.adaptador;
 
-import com.restaurante01.api_restaurante.modulos.cliente.dominio.entidade.Cliente;
+import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.Cliente;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.repositorio.PedidoRepositorio;
 import com.restaurante01.api_restaurante.modulos.pedido.infraestrutura.persistencia.PedidoJPA;

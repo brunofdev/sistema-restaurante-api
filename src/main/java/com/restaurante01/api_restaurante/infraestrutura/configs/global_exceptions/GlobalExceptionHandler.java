@@ -1,17 +1,14 @@
 package com.restaurante01.api_restaurante.infraestrutura.configs.global_exceptions;
 
 import com.restaurante01.api_restaurante.compartilhado.dominio.excecao.RegraDeNegocioExcecao;
-import com.restaurante01.api_restaurante.compartilhado.usuario_super.dominio.exceptions.*;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.*;
-import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.excecao.AssociacaoExistenteCardapioProdutoException;
 import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.excecao.AssociacaoNaoExisteException;
 import com.restaurante01.api_restaurante.compartilhado.retorno_padrao_api.ApiError;
 import com.restaurante01.api_restaurante.compartilhado.retorno_padrao_api.ApiResponse;
-import com.restaurante01.api_restaurante.compartilhado.utils.validadorcpf.CpfComTamanhoInvalidoException;
-import com.restaurante01.api_restaurante.compartilhado.utils.validadorcpf.NumeroCpfInvalidoException;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.StatusPedidoInvalidoException;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.StatusPedidoNaoPodeMaisSerAlteradoException;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.*;
+import com.restaurante01.api_restaurante.modulos.usuario.dominio.exceptions.InvalidCredentialsException;
+import com.restaurante01.api_restaurante.modulos.usuario.dominio.exceptions.UserDontFoundException;
+import com.restaurante01.api_restaurante.modulos.usuario.dominio.exceptions.UserNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,36 +81,7 @@ public class GlobalExceptionHandler {
     // --- Exceções Customizadas de Regra de Negócio ---
 
     @ExceptionHandler({
-            InvalidCredentialsException.class,
-            UserDontHaveEmailRegistered.class,
-            EmailAlreadyExistsException.class,
-            UsernameAlreadyExistsException.class,
-            UserNotFoundException.class,
-            UserDontFoundException.class,
-            CpfComTamanhoInvalidoException.class,
-            NumeroCpfInvalidoException.class,
-            CpfAlreadyExistsException.class,
-            ProdutoNaoEncontradoException.class,
-            ProdutoNomeInvalidoException.class,
-            ProdutoMesmoNomeExistenteException.class,
-            ProdutoDescricaoInvalidaExcpetion.class,
-            ProdutoIdNegativoException.class,
-            ProdutoIdVazioException.class,
-            PrecoProdutoNegativoException.class,
-            ProdutoQntdNegativa.class,
-            CardapioNomeInvalidoException.class,
-            CardapioDataIniMaiorQueDataFimException.class,
-            CardapioMesmoNomeExcepetion.class,
-            CardapioNaoEncontradoException.class,
-            CardapioIdNegativoException.class,
-            CardapioIdVazioException.class,
-            AssociacaoExistenteCardapioProdutoException.class,
-            AssociacaoNaoExisteException.class,
-            StatusPedidoNaoPodeMaisSerAlteradoException.class,
-            StatusPedidoInvalidoException.class,
-            RegraDeNegocioExcecao.class, //ajustar completamente o handler
-
-
+            RegraDeNegocioExcecao.class
     })
     public ResponseEntity<ApiResponse<Object>> handleCustom(RuntimeException ex) {
         HttpStatus status = HttpStatus.BAD_REQUEST;

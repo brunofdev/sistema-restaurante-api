@@ -6,7 +6,7 @@ import com.restaurante01.api_restaurante.modulos.pedido.dominio.enums.StatusPedi
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.EnderecoDoPedidoInvalidoExcecao;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.StatusPedidoInvalidoException;
 import com.restaurante01.api_restaurante.infraestrutura.security.auditoria.Auditable;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.Endereco;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.EnderecoPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.InformacoesClienteParaPedido;
 import jakarta.persistence.*;
 import lombok.*;
@@ -35,15 +35,15 @@ public class Pedido extends Auditable {
     private BigDecimal valorTotal = BigDecimal.ZERO;
     @Column(nullable = true)
     @Embedded
-    private Endereco enderecoEntrega;
+    private EnderecoPedido enderecoPedidoEntrega;
     @Column(name = "cardapio_de_referencia", nullable = false)
     private Long idCardapio;
 
-    public static Pedido criar(Long idCardapio, InformacoesClienteParaPedido cliente, Endereco endereco) {
+    public static Pedido criar(Long idCardapio, InformacoesClienteParaPedido cliente, EnderecoPedido enderecoPedido) {
         Pedido pedido = new Pedido();
         pedido.vincularCardapioPedido(idCardapio);
         pedido.vincularCliente(cliente);
-        pedido.adicionarEndereco(endereco);
+        pedido.adicionarEndereco(enderecoPedido);
         return pedido;
     }
 
@@ -90,11 +90,11 @@ public class Pedido extends Auditable {
         this.cliente = cliente;
     }
 
-    public void adicionarEndereco(Endereco endereco) {
-        if(endereco == null){
+    public void adicionarEndereco(EnderecoPedido enderecoPedido) {
+        if(enderecoPedido == null){
             throw new EnderecoDoPedidoInvalidoExcecao("Endereço adicionado no pedido está vazio");
         }
-        this.enderecoEntrega = endereco;
+        this.enderecoPedidoEntrega = enderecoPedido;
     }
 }
 
