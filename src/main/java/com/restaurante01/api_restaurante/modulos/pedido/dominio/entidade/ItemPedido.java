@@ -1,6 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade;
 
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.PedidoNaoEncontradoException;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.PedidoNaoEncontradoExcecao;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.RepresentacaoProdutoExcecao;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.ValorItemPedidoIncorretoExcecao;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.RepresentacaoProdutoItemPedido;
@@ -67,7 +67,7 @@ public class ItemPedido {
 
     public void vincularPedido(Pedido pedido){
         if(pedido == null){
-            throw new PedidoNaoEncontradoException("Pedido informado inexistes");
+            throw new PedidoNaoEncontradoExcecao("Pedido informado inexistes");
         }
         this.pedido = pedido;
     }

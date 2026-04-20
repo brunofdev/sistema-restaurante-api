@@ -1,10 +1,10 @@
 package com.restaurante01.api_restaurante.modulos.produto.aplicacao.casodeuso;
 
 import com.restaurante01.api_restaurante.modulos.produto.api.dto.entrada.ProdutoDTO;
-import com.restaurante01.api_restaurante.modulos.produto.aplicacao.mapeador.ProdutoMapper;
-import com.restaurante01.api_restaurante.modulos.produto.aplicacao.validador.ProdutoValidator;
+import com.restaurante01.api_restaurante.modulos.produto.aplicacao.mapeador.ProdutoMapeador;
+import com.restaurante01.api_restaurante.modulos.produto.aplicacao.validador.ProdutoValidador;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
-import com.restaurante01.api_restaurante.modulos.produto.infraestrutura.adaptador.ProdutoRepositorioAdapter;
+import com.restaurante01.api_restaurante.modulos.produto.infraestrutura.adaptador.ProdutoJpaAdaptador;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,14 +13,14 @@ import java.util.Map;
 @Service
 public class AtualizarProdutosEmLoteCasoDeUso {
 
-    private final ProdutoMapper mapper;
-    private final ProdutoRepositorioAdapter repositorio;
-    private final ProdutoValidator validador;
+    private final ProdutoMapeador mapper;
+    private final ProdutoJpaAdaptador repositorio;
+    private final ProdutoValidador validador;
     private final ObterLoteDeProdutosPorIds obterLoteDeProdutosPorIds;
 
-    public AtualizarProdutosEmLoteCasoDeUso(ProdutoMapper mapper,
-                                            ProdutoRepositorioAdapter repositorio,
-                                            ProdutoValidator validator,
+    public AtualizarProdutosEmLoteCasoDeUso(ProdutoMapeador mapper,
+                                            ProdutoJpaAdaptador repositorio,
+                                            ProdutoValidador validator,
                                             ObterLoteDeProdutosPorIds obterLoteDeProdutosPorIds) {
         this.mapper = mapper;
         this.repositorio = repositorio;

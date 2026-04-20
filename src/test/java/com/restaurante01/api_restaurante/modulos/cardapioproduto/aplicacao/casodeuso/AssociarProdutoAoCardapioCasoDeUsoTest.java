@@ -1,19 +1,16 @@
 package com.restaurante01.api_restaurante.modulos.cardapioproduto.aplicacao.casodeuso;
 
-import com.restaurante01.api_restaurante.builders.CardapioProdutoBuilder;
 import com.restaurante01.api_restaurante.modulos.cardapio.api.dto.saida.CardapioDTO;
 import com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.casodeuso.BuscarCardapioPorIdCasoDeUso;
+import com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.casodeuso.associacao.casodeuso.AssociarProdutoAoCardapioCasoDeUso;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Cardapio;
-import com.restaurante01.api_restaurante.modulos.cardapioproduto.api.dto.entrada.CardapioProdutoAssociacaoEntradaDTO;
-import com.restaurante01.api_restaurante.modulos.cardapioproduto.api.dto.saida.CardapioProdutoAssociacaoRespostaDTO;
-import com.restaurante01.api_restaurante.modulos.cardapioproduto.aplicacao.mapeador.CardapioProdutoMapper;
-import com.restaurante01.api_restaurante.modulos.cardapioproduto.aplicacao.validador.CardapioProdutoValidator;
-import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.entidade.CardapioProduto;
-import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.excecao.AssociacaoExistenteCardapioProdutoException;
-import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.repositorio.CardapioProdutoRepositorio;
-import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.ItemPedidoSolicitadoDTO;
-import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.PedidoCriacaoDTO;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.StatusPedidoInvalidoException;
+import com.restaurante01.api_restaurante.modulos.cardapio.api.dto.entrada.AssociacaoEntradaDTO;
+import com.restaurante01.api_restaurante.modulos.cardapio.api.dto.saida.AssociacaoFeitaRespostaDTO;
+import com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.mapeador.associacao.mapeador.CardapioProdutoMapeador;
+import com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.validador.associacao.validador.CardapioProdutoValidador;
+import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Associacao;
+import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.AssociacaoExistenteCardapioProdutoExcecao;
+import com.restaurante01.api_restaurante.modulos.cardapio.dominio.repositorio.CardapioProdutoRepositorio;
 import com.restaurante01.api_restaurante.modulos.produto.api.dto.entrada.ProdutoDTO;
 import com.restaurante01.api_restaurante.modulos.produto.aplicacao.casodeuso.ObterProdutoPorIdCasoDeUso;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
@@ -29,7 +26,6 @@ import static org.assertj.core.api.Assertions.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -41,10 +37,10 @@ class AssociarProdutoAoCardapioCasoDeUsoTest {
     private CardapioProdutoRepositorio cardapioProdutoRepositorio;
 
     @Mock
-    private CardapioProdutoMapper cardapioProdutoMapper;
+    private CardapioProdutoMapeador cardapioProdutoMapeador;
 
     @Mock
-    private CardapioProdutoValidator cardapioProdutoValidator;
+    private CardapioProdutoValidador cardapioProdutoValidador;
 
     @Mock
     private BuscarCardapioPorIdCasoDeUso buscarCardapioPorIdCasoDeUso;
@@ -58,7 +54,7 @@ class AssociarProdutoAoCardapioCasoDeUsoTest {
     @Test
     @DisplayName("Deve associar produto ao cardápio com sucesso quando associação não existe")
     void deveRetornarDTO_quandoAssociacaoNaoExiste() {
-        CardapioProdutoAssociacaoEntradaDTO dto = new CardapioProdutoAssociacaoEntradaDTO(
+        AssociacaoEntradaDTO dto = new AssociacaoEntradaDTO(
                 1L,
                 1L, BigDecimal.valueOf(20.8),
                 10,
@@ -81,7 +77,7 @@ class AssociarProdutoAoCardapioCasoDeUsoTest {
                 LocalDate.now(),
                 LocalDate.of(2026, 12, 28)
         );
-        CardapioProduto novaAssociacao = new CardapioProduto(
+        Associacao novaAssociacao = new Associacao(
                 1L,
                 cardapio,
                 produto,
@@ -91,7 +87,7 @@ class AssociarProdutoAoCardapioCasoDeUsoTest {
                 true,
                 "Observacao de teste"
         );
-        CardapioProdutoAssociacaoRespostaDTO cardapioProdutoAssociacaoRespostaDTO = new CardapioProdutoAssociacaoRespostaDTO(
+        AssociacaoFeitaRespostaDTO associacaoFeitaRespostaDTO = new AssociacaoFeitaRespostaDTO(
                 "Associação realizada",
                 new CardapioDTO(1L, "Cardapioo de verão", "Promoção de verão muito divertidas", true, LocalDate.now(), LocalDate.of(2026, 12, 28)),
                 new ProdutoDTO(1L, "X-SALADA", "XIS COMPLETA SALADA COM MAIONESE", BigDecimal.valueOf(28.80), 10L, true, LocalDateTime.now(), LocalDateTime.now(), "BRUNO", "BRUNO"),
@@ -105,17 +101,17 @@ class AssociarProdutoAoCardapioCasoDeUsoTest {
         when(cardapioProdutoRepositorio.existeAssociacao(dto.getIdCardapio(), dto.getIdProduto())).thenReturn(false);
         when(obterProdutoPorIdCasoDeUso.retornarEntidade(dto.getIdProduto())).thenReturn(produto);
         when(buscarCardapioPorIdCasoDeUso.executar(dto.getIdCardapio())).thenReturn(cardapio);
-        when(cardapioProdutoMapper.mapearCardapioProduto(produto, cardapio, dto)).thenReturn(novaAssociacao);
-        when(cardapioProdutoMapper.mapearCardapioProdutoAssociacaoDTO(novaAssociacao)).thenReturn(cardapioProdutoAssociacaoRespostaDTO);
+        when(cardapioProdutoMapeador.mapearCardapioProduto(produto, cardapio, dto)).thenReturn(novaAssociacao);
+        when(cardapioProdutoMapeador.mapearCardapioProdutoAssociacaoDTO(novaAssociacao)).thenReturn(associacaoFeitaRespostaDTO);
 
 
-        CardapioProdutoAssociacaoRespostaDTO resultado = casoDeUso.executar(dto);
+        AssociacaoFeitaRespostaDTO resultado = casoDeUso.executar(dto);
 
-        assertThat(resultado).isEqualTo(cardapioProdutoAssociacaoRespostaDTO);
+        assertThat(resultado).isEqualTo(associacaoFeitaRespostaDTO);
 
 
         verify(cardapioProdutoRepositorio).save(novaAssociacao);
-        verify(cardapioProdutoValidator).validarCardapioProdutoAssociacaoEntradaDTO(dto);
+        verify(cardapioProdutoValidador).validarCardapioProdutoAssociacaoEntradaDTO(dto);
 
 
     }
@@ -123,7 +119,7 @@ class AssociarProdutoAoCardapioCasoDeUsoTest {
     @Test
     @DisplayName("Deve lançar exceção quando já existe associação entre produto e cardápio")
     void deveLancarExcecao_quandoAssociacaoExiste() {
-        CardapioProdutoAssociacaoEntradaDTO dto = new CardapioProdutoAssociacaoEntradaDTO(
+        AssociacaoEntradaDTO dto = new AssociacaoEntradaDTO(
                 1L,
                 1L, BigDecimal.valueOf(20.8),
                 10,
@@ -134,7 +130,7 @@ class AssociarProdutoAoCardapioCasoDeUsoTest {
 
 
         assertThatThrownBy(() -> casoDeUso.executar(dto))
-                .isInstanceOf(AssociacaoExistenteCardapioProdutoException.class)
+                .isInstanceOf(AssociacaoExistenteCardapioProdutoExcecao.class)
                 .hasMessage("Associação já existe");
 
         verifyNoInteractions(obterProdutoPorIdCasoDeUso);

@@ -1,10 +1,10 @@
 package com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade;
 
 
-import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.CardapioNaoEncontradoException;
+import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.CardapioNaoEncontradoExcecao;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.enums.StatusPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.EnderecoDoPedidoInvalidoExcecao;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.StatusPedidoInvalidoException;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.StatusPedidoInvalidoExcecao;
 import com.restaurante01.api_restaurante.infraestrutura.security.auditoria.Auditable;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.EnderecoPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.InformacoesClienteParaPedido;
@@ -71,21 +71,21 @@ public class Pedido extends Auditable {
 
     public void mudarStatus(StatusPedido novoStatus) {
         if (!this.statusPedido.podeTransicionarPara(novoStatus)) {
-            throw new StatusPedidoInvalidoException("Status do pedido não pode retroceder ou ser alterado caso este esteja cancelado");
+            throw new StatusPedidoInvalidoExcecao("Status do pedido não pode retroceder ou ser alterado caso este esteja cancelado");
         }
         this.statusPedido = novoStatus;
     }
 
     public void vincularCardapioPedido(Long idCardapio) {
         if (idCardapio == null || idCardapio <= 0) {
-            throw new CardapioNaoEncontradoException("Id de cardapio nao pode ser vazio ou zero ou menor que zero, valor recebido = " + idCardapio);
+            throw new CardapioNaoEncontradoExcecao("Id de cardapio nao pode ser vazio ou zero ou menor que zero, valor recebido = " + idCardapio);
         }
         this.idCardapio = idCardapio;
     }
 
     public void vincularCliente(InformacoesClienteParaPedido cliente) {
         if (cliente == null) {
-            throw new StatusPedidoInvalidoException("Erro ao vincular cliente, cliente invalido");
+            throw new StatusPedidoInvalidoExcecao("Erro ao vincular cliente, cliente invalido");
         }
         this.cliente = cliente;
     }

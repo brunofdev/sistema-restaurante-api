@@ -1,0 +1,97 @@
+package com.restaurante01.api_restaurante.modulos.cardapio.api.dto.entrada;
+
+import com.restaurante01.api_restaurante.modulos.cardapio.api.dto.saida.CardapioDTO;
+import com.restaurante01.api_restaurante.modulos.produto.api.dto.entrada.ProdutoDTO;
+
+import java.math.BigDecimal;
+
+public class AssociacaoDTO {
+    private Long id;
+    private CardapioDTO cardapio;
+    private ProdutoDTO produto;
+    private BigDecimal precoCustomizado;
+    private Integer quantidadeCustomizada;
+    private String descricaoCustomizada;
+    private Boolean disponibilidadeCustomizada;
+    private String observacao;
+
+    public AssociacaoDTO() {
+    }
+
+    public AssociacaoDTO(Long id, CardapioDTO cardapio, ProdutoDTO produto, BigDecimal precoCustomizado,
+                         Integer quantidadeCustomizada, String descricaoCustomizada,
+                         Boolean disponibilidadeCustomizada, String observacao) {
+        this.id = id;
+        this.cardapio = cardapio;
+        this.produto = produto;
+        this.precoCustomizado = precoCustomizado;
+        this.quantidadeCustomizada = quantidadeCustomizada;
+        this.descricaoCustomizada = descricaoCustomizada;
+        this.disponibilidadeCustomizada = disponibilidadeCustomizada;
+        this.observacao = observacao;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public CardapioDTO getCardapio() {
+        return cardapio;
+    }
+
+    public void setCardapio(CardapioDTO cardapio) {
+        this.cardapio = cardapio;
+    }
+
+    public ProdutoDTO getProduto() {
+        return produto;
+    }
+
+    public void setProduto(ProdutoDTO produto) {
+        this.produto = produto;
+    }
+
+    public BigDecimal getPrecoCustomizado() {
+        return precoCustomizado;
+    }
+
+    public void setPrecoCustomizado(BigDecimal precoCustomizado) {
+        this.precoCustomizado = precoCustomizado;
+    }
+
+    public Integer getQuantidadeCustomizada() {
+        return quantidadeCustomizada;
+    }
+
+    public void setQuantidadeCustomizada(Integer quantidadeCustomizada) {
+        this.quantidadeCustomizada = quantidadeCustomizada;
+    }
+
+    public String getDescricaoCustomizada() {
+        return descricaoCustomizada;
+    }
+
+    public void setDescricaoCustomizada(String descricaoCustomizada) {
+        this.descricaoCustomizada = descricaoCustomizada;
+    }
+
+    public Boolean getDisponibilidadeCustomizada() {
+        return disponibilidadeCustomizada;
+    }
+
+    public void setDisponibilidadeCustomizada(Boolean disponibilidadeCustomizada) {
+        this.disponibilidadeCustomizada = disponibilidadeCustomizada;
+    }
+
+    public String getObservacao() {
+        return observacao;
+    }
+
+    public void setObservacao(String observacao) {
+        this.observacao = observacao;
+    }
+}

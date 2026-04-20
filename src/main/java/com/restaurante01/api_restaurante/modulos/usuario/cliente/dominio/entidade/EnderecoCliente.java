@@ -1,9 +1,7 @@
 package com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade;
 
-import com.restaurante01.api_restaurante.modulos.usuario.dominio.exceptions.*;
+import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.exceptions.*;
 import jakarta.persistence.Embeddable;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 @Embeddable
 public record EnderecoCliente(

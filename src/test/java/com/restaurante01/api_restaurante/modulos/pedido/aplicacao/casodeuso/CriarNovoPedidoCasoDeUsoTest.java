@@ -1,16 +1,16 @@
 package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso;
 import com.restaurante01.api_restaurante.builders.CardapioProdutoBuilder;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.ClienteBuilder;
-import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.entidade.CardapioProduto;
+import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Associacao;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.Cliente;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.ItemPedidoSolicitadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.PedidoCriacaoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDTO;
-import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mapeador.PedidoMapper;
+import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mapeador.PedidoMapeador;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.*;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.enums.StatusPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.evento.PedidoCriadoEvento;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoCardapioProdutoPorta;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoAssociacaoPorta;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoClientePorta;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.repositorio.PedidoRepositorio;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.*;
@@ -33,8 +33,8 @@ import static org.mockito.Mockito.*;
 class CriarNovoPedidoCasoDeUsoTest {
 
     @Mock private PedidoRepositorio pedidoRepository;
-    @Mock private PedidoMapper pedidoMapper;
-    @Mock private PedidoCardapioProdutoPorta pedidoCardapioProdutoPorta;
+    @Mock private PedidoMapeador pedidoMapeador;
+    @Mock private PedidoAssociacaoPorta pedidoAssociacaoPorta;
     @Mock private PedidoClientePorta pedidoClientePorta;
     @Mock private ApplicationEventPublisher eventPublisher;
 
@@ -44,15 +44,15 @@ class CriarNovoPedidoCasoDeUsoTest {
     @Test
     @DisplayName("Deve criar um pedido com sucesso quando os dados forem válidos")
     void deveCriarPedidoComStatusPendenteESalvarQuandoDadosValidos() {
-        CardapioProduto cardapioProduto = CardapioProdutoBuilder.umCardapioProduto().build();
+        Associacao associacao = CardapioProdutoBuilder.umCardapioProduto().build();
         Cliente cliente = ClienteBuilder.umCliente().build();
 
         RepresentacaoProdutoItemPedido representacaoProduto = new RepresentacaoProdutoItemPedido(
-                cardapioProduto.getProduto().getId(),
-                cardapioProduto.getProduto().getNome());
+                associacao.getProduto().getId(),
+                associacao.getProduto().getNome());
         ProdutoVendido produtoVendido = new ProdutoVendido(
                 representacaoProduto,
-                cardapioProduto.resolverPrecoDeVenda());
+                associacao.resolverPrecoDeVenda());
         InformacoesClienteParaPedido infoCliente = new InformacoesClienteParaPedido(
                 cliente.getId(), cliente.getNome(), cliente.getCpf().cpf(), cliente.getTelefone());
         EnderecoPedido enderecoPedidoCliente = new EnderecoPedido(
@@ -60,28 +60,28 @@ class CriarNovoPedidoCasoDeUsoTest {
                 cliente.getEnderecoCliente().cidade(), cliente.getEnderecoCliente().estado(), cliente.getEnderecoCliente().cep(), cliente.getEnderecoCliente().referencia());
 
         List<ItemPedidoSolicitadoDTO> itensDTO = List.of(
-                new ItemPedidoSolicitadoDTO(cardapioProduto.getProduto().getId(), 2, "Teste de observação"));
+                new ItemPedidoSolicitadoDTO(associacao.getProduto().getId(), 2, "Teste de observação"));
         PedidoCriacaoDTO pedidoCriacaoDTO = new PedidoCriacaoDTO(
-                cardapioProduto.getCardapio().getId(), itensDTO, null);
+                associacao.getCardapio().getId(), itensDTO, null);
         PedidoDTO pedidoDTO = Instancio.create(PedidoDTO.class);
 
-        when(pedidoMapper.mapearParaValidacaoDeEstoque(itensDTO))
-                .thenReturn(List.of(new ItemValidacaoEstoque(cardapioProduto.getProduto().getId(), 2)));
+        when(pedidoMapeador.mapearParaValidacaoDeEstoque(itensDTO))
+                .thenReturn(List.of(new ItemValidacaoEstoque(associacao.getProduto().getId(), 2)));
         when(pedidoClientePorta.obterDetalhesClienteParaPedido(cliente)).thenReturn(infoCliente);
         when(pedidoClientePorta.obterEndereco(cliente)).thenReturn(enderecoPedidoCliente);
-        when(pedidoCardapioProdutoPorta.obterProdutoVendido(
+        when(pedidoAssociacaoPorta.obterProdutoVendido(
                 pedidoCriacaoDTO.idCardapio(),
                 itensDTO.get(0).idProduto()))
                 .thenReturn(produtoVendido);
-        when(pedidoMapper.mapearPedidoDto(any(Pedido.class))).thenReturn(pedidoDTO);
+        when(pedidoMapeador.mapearPedidoDto(any(Pedido.class))).thenReturn(pedidoDTO);
 
         ArgumentCaptor<Pedido> pedidoCaptor = ArgumentCaptor.forClass(Pedido.class);
         ArgumentCaptor<PedidoCriadoEvento> eventoCaptor = ArgumentCaptor.forClass(PedidoCriadoEvento.class);
 
         PedidoDTO resultado = casoDeUso.executar(pedidoCriacaoDTO, cliente);
 
-        verify(pedidoCardapioProdutoPorta).validarEstoque(eq(pedidoCriacaoDTO.idCardapio()), anyList());
-        verify(pedidoCardapioProdutoPorta).obterProdutoVendido(
+        verify(pedidoAssociacaoPorta).validarEstoque(eq(pedidoCriacaoDTO.idCardapio()), anyList());
+        verify(pedidoAssociacaoPorta).obterProdutoVendido(
                 pedidoCriacaoDTO.idCardapio(), itensDTO.get(0).idProduto());
         verify(pedidoClientePorta).obterDetalhesClienteParaPedido(cliente);
         verify(pedidoClientePorta).obterEndereco(cliente);
@@ -98,7 +98,7 @@ class CriarNovoPedidoCasoDeUsoTest {
         ItemPedido itemSalvo = pedidoSalvo.getItens().get(0);
         assertThat(itemSalvo.getProduto()).isEqualTo(representacaoProduto);
         assertThat(itemSalvo.getQuantidade()).isEqualTo(2);
-        assertThat(itemSalvo.getPrecoUnitario()).isEqualByComparingTo(cardapioProduto.resolverPrecoDeVenda());
+        assertThat(itemSalvo.getPrecoUnitario()).isEqualByComparingTo(associacao.resolverPrecoDeVenda());
         assertThat(itemSalvo.getObservacao()).isEqualTo("Teste de observação");
         assertThat(evento.pedido()).isEqualTo(pedidoSalvo);
         assertThat(evento.pedido().getIdCardapio()).isEqualTo(pedidoCriacaoDTO.idCardapio());
@@ -109,7 +109,7 @@ class CriarNovoPedidoCasoDeUsoTest {
     @DisplayName("Não deve salvar pedido nem publicar evento quando a validação de estoque falhar")
     void naoDeveSalvarQuandoValidacaoFalhar() {
         Cliente cliente = ClienteBuilder.umCliente().build();
-        CardapioProduto produtoSolicitado = CardapioProdutoBuilder.umCardapioProduto()
+        Associacao produtoSolicitado = CardapioProdutoBuilder.umCardapioProduto()
                 .comQuantidadeCustomizada(3)
                 .build();
         List<ItemPedidoSolicitadoDTO> itensDTO = List.of(
@@ -117,11 +117,11 @@ class CriarNovoPedidoCasoDeUsoTest {
         PedidoCriacaoDTO pedidoCriacaoDTO = new PedidoCriacaoDTO(
                 produtoSolicitado.getCardapio().getId(), itensDTO, null);
 
-        when(pedidoMapper.mapearParaValidacaoDeEstoque(itensDTO))
+        when(pedidoMapeador.mapearParaValidacaoDeEstoque(itensDTO))
                 .thenReturn(List.of(new ItemValidacaoEstoque(
                         produtoSolicitado.getProduto().getId(), 10)));
         doThrow(new RuntimeException("qualquer erro"))
-                .when(pedidoCardapioProdutoPorta).validarEstoque(anyLong(), anyList());
+                .when(pedidoAssociacaoPorta).validarEstoque(anyLong(), anyList());
 
         assertThatThrownBy(() -> casoDeUso.executar(pedidoCriacaoDTO, cliente))
                 .isInstanceOf(RuntimeException.class)

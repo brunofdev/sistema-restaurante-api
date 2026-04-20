@@ -1,23 +1,23 @@
 package com.restaurante01.api_restaurante.modulos.produto.aplicacao.casodeuso;
 
 import com.restaurante01.api_restaurante.modulos.produto.api.dto.entrada.ProdutoDTO;
-import com.restaurante01.api_restaurante.modulos.produto.aplicacao.mapeador.ProdutoMapper;
-import com.restaurante01.api_restaurante.modulos.produto.aplicacao.validador.ProdutoValidator;
+import com.restaurante01.api_restaurante.modulos.produto.aplicacao.mapeador.ProdutoMapeador;
+import com.restaurante01.api_restaurante.modulos.produto.aplicacao.validador.ProdutoValidador;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
-import com.restaurante01.api_restaurante.modulos.produto.infraestrutura.adaptador.ProdutoRepositorioAdapter;
+import com.restaurante01.api_restaurante.modulos.produto.infraestrutura.adaptador.ProdutoJpaAdaptador;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AtualizarUmProdutoCasoDeUso {
 
-    private final ProdutoValidator validador;
-    private final ProdutoMapper mapeador;
-    private final ProdutoRepositorioAdapter repositorio;
+    private final ProdutoValidador validador;
+    private final ProdutoMapeador mapeador;
+    private final ProdutoJpaAdaptador repositorio;
     private final ObterProdutoPorIdCasoDeUso obterProdutoPorIdCasoDeUso;
 
-    public AtualizarUmProdutoCasoDeUso(ProdutoValidator validador,
-                                       ProdutoMapper mapeador,
-                                       ProdutoRepositorioAdapter repositorio,
+    public AtualizarUmProdutoCasoDeUso(ProdutoValidador validador,
+                                       ProdutoMapeador mapeador,
+                                       ProdutoJpaAdaptador repositorio,
                                        ObterProdutoPorIdCasoDeUso obterProdutoPorIdCasoDeUso) {
         this.validador = validador;
         this.mapeador = mapeador;

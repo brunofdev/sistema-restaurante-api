@@ -1,6 +1,6 @@
 package com.restaurante01.api_restaurante.infraestrutura.jwt;
 
-import com.restaurante01.api_restaurante.modulos.usuario.dominio.role.Role;
+import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.role.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;

@@ -1,9 +1,9 @@
 package com.restaurante01.api_restaurante.infraestrutura.inicializador;
 
-import com.restaurante01.api_restaurante.modulos.usuario.dominio.entidade.Cpf;
-import com.restaurante01.api_restaurante.modulos.usuario.dominio.entidade.Email;
+import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Cpf;
+import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Email;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Cardapio;
-import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.entidade.CardapioProduto;
+import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Associacao;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.*;
 import com.restaurante01.api_restaurante.modulos.usuario.operador.dominio.entidade.Operador;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.*;
@@ -91,7 +91,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         entityManager.persist(cardapioInverno);
 
         // --- 5. VINCULANDO PRODUTO AO CARDÁPIO (CardapioProduto) ---
-        CardapioProduto associacao1 = new CardapioProduto();
+        Associacao associacao1 = new Associacao();
         associacao1.setCardapio(cardapioInverno);
         associacao1.setProduto(hamburguer);
         associacao1.setPrecoCustomizado(new BigDecimal("30.00")); // Preço promocional no cardápio
@@ -99,7 +99,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         associacao1.setDisponibilidadeCustomizada(true);
         entityManager.persist(associacao1);
 
-        CardapioProduto associacao2 = new CardapioProduto();
+        Associacao associacao2 = new Associacao();
         associacao2.setCardapio(cardapioInverno);
         associacao2.setProduto(refrigerante);
         associacao2.setPrecoCustomizado(new BigDecimal("6.00")); // Preço promocional no cardápio

@@ -1,9 +1,9 @@
 package com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.casodeuso;
 
-import com.restaurante01.api_restaurante.modulos.cardapio.api.dto.entrada.CardapioCreateDTO;
+import com.restaurante01.api_restaurante.modulos.cardapio.api.dto.entrada.CriarCardapioDTO;
 import com.restaurante01.api_restaurante.modulos.cardapio.api.dto.saida.CardapioDTO;
-import com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.mapeador.CardapioMapper;
-import com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.validador.CardapioValidator;
+import com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.mapeador.CardapioMapeador;
+import com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.validador.CardapioValidador;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Cardapio;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.repositorio.CardapioRepositorio;
 import org.springframework.stereotype.Service;
@@ -12,20 +12,20 @@ import org.springframework.stereotype.Service;
 public class CriarCardapioCasoDeUso {
 
     private final CardapioRepositorio cardapioRepositorio;
-    private final CardapioMapper cardapioMapper;
-    private final CardapioValidator cardapioValidator;
+    private final CardapioMapeador cardapioMapeador;
+    private final CardapioValidador cardapioValidador;
 
-    public CriarCardapioCasoDeUso(CardapioRepositorio cardapioRepositorio, CardapioMapper cardapioMapper, CardapioValidator cardapioValidator) {
+    public CriarCardapioCasoDeUso(CardapioRepositorio cardapioRepositorio, CardapioMapeador cardapioMapeador, CardapioValidador cardapioValidador) {
         this.cardapioRepositorio = cardapioRepositorio;
-        this.cardapioMapper = cardapioMapper;
-        this.cardapioValidator = cardapioValidator;
+        this.cardapioMapeador = cardapioMapeador;
+        this.cardapioValidador = cardapioValidador;
     }
-    public CardapioDTO executar (CardapioCreateDTO dto){
-        CardapioDTO cardapioDTO = cardapioMapper.mapearCardapioCreateParaCardapioDTO(dto);
-        cardapioValidator.validarCardapio(cardapioDTO);
-        Cardapio novoCardapio = cardapioMapper.mapearCardapioCreateParaEntidade(dto);
+    public CardapioDTO executar (CriarCardapioDTO dto){
+        CardapioDTO cardapioDTO = cardapioMapeador.mapearCardapioCreateParaCardapioDTO(dto);
+        cardapioValidador.validarCardapio(cardapioDTO);
+        Cardapio novoCardapio = cardapioMapeador.mapearCardapioCreateParaEntidade(dto);
         cardapioRepositorio.save(novoCardapio);
-        return cardapioMapper.mapearUmaEntidadeParaDTO(novoCardapio);
+        return cardapioMapeador.mapearUmaEntidadeParaDTO(novoCardapio);
     }
 }
 

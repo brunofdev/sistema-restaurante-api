@@ -1,9 +1,9 @@
 package com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade;
 
-import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.CardapioNaoEncontradoException;
+import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.CardapioNaoEncontradoExcecao;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.enums.StatusPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.EnderecoDoPedidoInvalidoExcecao;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.StatusPedidoInvalidoException;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.StatusPedidoInvalidoExcecao;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.EnderecoPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.InformacoesClienteParaPedido;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,24 +65,24 @@ class PedidoTest {
         @DisplayName("Deve lançar exceção quando idCardapio for nulo")
         void deveLancarExcecaoQuandoIdCardapioForNulo() {
             assertThatThrownBy(() -> Pedido.criar(null, cliente, enderecoPedidoValido))
-                    .isInstanceOf(CardapioNaoEncontradoException.class);
+                    .isInstanceOf(CardapioNaoEncontradoExcecao.class);
         }
 
         @Test
         @DisplayName("Deve lançar exceção quando idCardapio for zero ou negativo")
         void deveLancarExcecaoQuandoIdCardapioForZeroOuNegativo() {
             assertThatThrownBy(() -> Pedido.criar(0L, cliente, enderecoPedidoValido))
-                    .isInstanceOf(CardapioNaoEncontradoException.class);
+                    .isInstanceOf(CardapioNaoEncontradoExcecao.class);
 
             assertThatThrownBy(() -> Pedido.criar(-1L, cliente, enderecoPedidoValido))
-                    .isInstanceOf(CardapioNaoEncontradoException.class);
+                    .isInstanceOf(CardapioNaoEncontradoExcecao.class);
         }
 
         @Test
         @DisplayName("Deve lançar exceção quando cliente for nulo")
         void deveLancarExcecaoQuandoClienteForNulo() {
             assertThatThrownBy(() -> Pedido.criar(1L, null, enderecoPedidoValido))
-                    .isInstanceOf(StatusPedidoInvalidoException.class);
+                    .isInstanceOf(StatusPedidoInvalidoExcecao.class);
         }
     }
 
@@ -148,7 +148,7 @@ class PedidoTest {
             pedido.mudarStatus(StatusPedido.EM_PREPARACAO);
 
             assertThatThrownBy(() -> pedido.mudarStatus(StatusPedido.PENDENTE))
-                    .isInstanceOf(StatusPedidoInvalidoException.class);
+                    .isInstanceOf(StatusPedidoInvalidoExcecao.class);
         }
 
         @Test
@@ -158,7 +158,7 @@ class PedidoTest {
             pedido.mudarStatus(StatusPedido.CANCELADO);
 
             assertThatThrownBy(() -> pedido.mudarStatus(StatusPedido.EM_PREPARACAO))
-                    .isInstanceOf(StatusPedidoInvalidoException.class);
+                    .isInstanceOf(StatusPedidoInvalidoExcecao.class);
         }
     }
 }

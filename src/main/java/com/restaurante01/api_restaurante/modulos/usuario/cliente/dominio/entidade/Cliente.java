@@ -1,10 +1,9 @@
 package com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade;
 
-import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.PontuacaoFidelidade;
-import com.restaurante01.api_restaurante.modulos.usuario.dominio.entidade.Cpf;
-import com.restaurante01.api_restaurante.modulos.usuario.dominio.entidade.Email;
-import com.restaurante01.api_restaurante.modulos.usuario.dominio.entidade.Usuario;
-import com.restaurante01.api_restaurante.modulos.usuario.dominio.role.Role;
+import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Cpf;
+import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Email;
+import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Usuario;
+import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.role.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;

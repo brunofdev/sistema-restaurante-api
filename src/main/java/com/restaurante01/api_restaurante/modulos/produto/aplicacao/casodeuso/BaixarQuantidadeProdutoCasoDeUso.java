@@ -2,7 +2,7 @@ package com.restaurante01.api_restaurante.modulos.produto.aplicacao.casodeuso;
 
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPedido;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
-import com.restaurante01.api_restaurante.modulos.produto.infraestrutura.adaptador.ProdutoRepositorioAdapter;
+import com.restaurante01.api_restaurante.modulos.produto.infraestrutura.adaptador.ProdutoJpaAdaptador;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,10 +13,10 @@ import java.util.List;
 public class BaixarQuantidadeProdutoCasoDeUso {
 
 
-    private final ProdutoRepositorioAdapter repositorio;
+    private final ProdutoJpaAdaptador repositorio;
     private final ObterProdutoPorIdCasoDeUso obterProdutoPorIdCasoDeUso;
 
-    public BaixarQuantidadeProdutoCasoDeUso(ProdutoRepositorioAdapter repositorio,
+    public BaixarQuantidadeProdutoCasoDeUso(ProdutoJpaAdaptador repositorio,
                                             ObterProdutoPorIdCasoDeUso obterProdutoPorIdCasoDeUso) {
 
         this.repositorio = repositorio;

@@ -1,14 +1,11 @@
 package com.restaurante01.api_restaurante.modulos.usuario.operador.dominio.entidade;
 
-import com.restaurante01.api_restaurante.modulos.usuario.dominio.entidade.Cpf;
-import com.restaurante01.api_restaurante.modulos.usuario.dominio.entidade.Email;
-import com.restaurante01.api_restaurante.modulos.usuario.dominio.entidade.Usuario;
-import com.restaurante01.api_restaurante.modulos.usuario.dominio.role.Role;
-import jakarta.persistence.Column;
+import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Cpf;
+import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Email;
+import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Usuario;
+import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.role.Role;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

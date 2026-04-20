@@ -2,20 +2,20 @@ package com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.casodeuso;
 
 
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Cardapio;
-import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.CardapioNaoEncontradoException;
-import com.restaurante01.api_restaurante.modulos.cardapio.infraestrutura.adaptador.CardapioRepositorioAdaptador;
+import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.CardapioNaoEncontradoExcecao;
+import com.restaurante01.api_restaurante.modulos.cardapio.infraestrutura.adaptador.CardapioJpaAdaptador;
 import org.springframework.stereotype.Service;
 
 @Service
 public class BuscarCardapioPorIdCasoDeUso {
-    private final CardapioRepositorioAdaptador respositorio;
+    private final CardapioJpaAdaptador respositorio;
 
-    public BuscarCardapioPorIdCasoDeUso(CardapioRepositorioAdaptador respositorio) {
+    public BuscarCardapioPorIdCasoDeUso(CardapioJpaAdaptador respositorio) {
         this.respositorio = respositorio;
     }
 
     public Cardapio executar(Long id) {
         return respositorio.findById(id)
-                .orElseThrow(() -> new CardapioNaoEncontradoException("Cardápio não encontrado"));
+                .orElseThrow(() -> new CardapioNaoEncontradoExcecao("Cardápio não encontrado"));
     }
 }

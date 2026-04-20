@@ -2,11 +2,10 @@ package com.restaurante01.api_restaurante.modulos.usuario.operador.aplicacao.cas
 
 import com.restaurante01.api_restaurante.modulos.usuario.operador.api.dto.entrada.CadastrarOperadorDTO;
 import com.restaurante01.api_restaurante.modulos.usuario.operador.api.dto.saida.OperadorDTO;
-import com.restaurante01.api_restaurante.modulos.usuario.operador.aplicacao.mapeador.OperadorMapper;
-import com.restaurante01.api_restaurante.modulos.usuario.operador.aplicacao.validador.OperadorValidator;
+import com.restaurante01.api_restaurante.modulos.usuario.operador.aplicacao.mapeador.OperadorMapeador;
+import com.restaurante01.api_restaurante.modulos.usuario.operador.aplicacao.validador.OperadorValidador;
 import com.restaurante01.api_restaurante.modulos.usuario.operador.dominio.entidade.Operador;
 import com.restaurante01.api_restaurante.modulos.usuario.operador.dominio.repositorio.OperadorRepositorio;
-import com.restaurante01.api_restaurante.modulos.usuario.dominio.role.Role;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,10 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class CadastrarOperadorCasoDeUso {
 
     private final OperadorRepositorio repository;
-    private final OperadorValidator validator;
-    private final OperadorMapper mapper;
+    private final OperadorValidador validator;
+    private final OperadorMapeador mapper;
 
-    public CadastrarOperadorCasoDeUso(OperadorRepositorio repository, OperadorValidator validator, OperadorMapper mapper) {
+    public CadastrarOperadorCasoDeUso(OperadorRepositorio repository, OperadorValidador validator, OperadorMapeador mapper) {
         this.repository = repository;
         this.validator = validator;
         this.mapper = mapper;

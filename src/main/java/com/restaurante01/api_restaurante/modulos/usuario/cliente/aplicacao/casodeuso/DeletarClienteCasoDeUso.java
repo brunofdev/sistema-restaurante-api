@@ -2,7 +2,7 @@ package com.restaurante01.api_restaurante.modulos.usuario.cliente.aplicacao.caso
 
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.Cliente;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.repositorio.ClienteRepositorio;
-import com.restaurante01.api_restaurante.modulos.usuario.dominio.exceptions.UserDontFoundException;
+import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.exceptions.UsuarioNaoEncontradoExcecao;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +18,7 @@ public class DeletarClienteCasoDeUso {
     @Transactional
     public void executar(Long id) {
         Cliente cliente = repository.buscarPorId(id)
-                .orElseThrow(() -> new UserDontFoundException("Cliente não encontrado"));
+                .orElseThrow(() -> new UsuarioNaoEncontradoExcecao("Cliente não encontrado"));
         repository.deletar(cliente);
     }
 }

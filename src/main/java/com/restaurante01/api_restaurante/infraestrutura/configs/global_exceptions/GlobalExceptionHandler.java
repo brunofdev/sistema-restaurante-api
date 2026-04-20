@@ -2,13 +2,12 @@ package com.restaurante01.api_restaurante.infraestrutura.configs.global_exceptio
 
 import com.restaurante01.api_restaurante.compartilhado.dominio.excecao.RegraDeNegocioExcecao;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.*;
-import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.excecao.AssociacaoNaoExisteException;
+import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.AssociacaoNaoExisteExcecao;
 import com.restaurante01.api_restaurante.compartilhado.retorno_padrao_api.ApiError;
 import com.restaurante01.api_restaurante.compartilhado.retorno_padrao_api.ApiResponse;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.*;
-import com.restaurante01.api_restaurante.modulos.usuario.dominio.exceptions.InvalidCredentialsException;
-import com.restaurante01.api_restaurante.modulos.usuario.dominio.exceptions.UserDontFoundException;
-import com.restaurante01.api_restaurante.modulos.usuario.dominio.exceptions.UserNotFoundException;
+import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.exceptions.CredencialInvalidaExcecao;
+import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.exceptions.UsuarioNaoEncontradoExcecao;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,14 +86,13 @@ public class GlobalExceptionHandler {
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
         if (ex instanceof ProdutoNaoEncontradoException ||
-                ex instanceof CardapioNaoEncontradoException ||
-                ex instanceof UserNotFoundException ||
-                ex instanceof UserDontFoundException ||
-                ex instanceof AssociacaoNaoExisteException) {
+                ex instanceof CardapioNaoEncontradoExcecao ||
+                ex instanceof UsuarioNaoEncontradoExcecao ||
+                ex instanceof AssociacaoNaoExisteExcecao) {
             status = HttpStatus.NOT_FOUND;
         }
 
-        if (ex instanceof InvalidCredentialsException) {
+        if (ex instanceof CredencialInvalidaExcecao) {
             status = HttpStatus.UNAUTHORIZED;
         }
 

@@ -1,6 +1,6 @@
 package com.restaurante01.api_restaurante.builders;
 
-import com.restaurante01.api_restaurante.modulos.cardapioproduto.dominio.entidade.CardapioProduto;
+import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Associacao;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Cardapio;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
 
@@ -76,8 +76,8 @@ public class CardapioProdutoBuilder {
     }
 
     // --- BUILD ---
-    public CardapioProduto build() {
-        CardapioProduto entity = new CardapioProduto();
+    public Associacao build() {
+        Associacao entity = new Associacao();
 
         entity.setId(id);
         entity.setCardapio(cardapio);

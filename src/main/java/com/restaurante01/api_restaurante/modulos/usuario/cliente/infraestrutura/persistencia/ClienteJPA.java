@@ -1,7 +1,7 @@
 package com.restaurante01.api_restaurante.modulos.usuario.cliente.infraestrutura.persistencia;
 
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.Cliente;
-import com.restaurante01.api_restaurante.modulos.usuario.dominio.entidade.Cpf;
+import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Cpf;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
