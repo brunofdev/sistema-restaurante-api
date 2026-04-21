@@ -11,5 +11,6 @@ public record PedidoCriacaoDTO(
         @NotNull
         List<ItemPedidoSolicitadoDTO> itens,
         @Valid
-        EnderecoDTO enderecoAlternativo
+        EnderecoDTO enderecoAlternativo,
+        String cupom
 ) {}

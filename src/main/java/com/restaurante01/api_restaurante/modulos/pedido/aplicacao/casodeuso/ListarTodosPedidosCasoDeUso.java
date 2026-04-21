@@ -1,6 +1,7 @@
 package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso;
 
-import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDTO;
+import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoCriadoDTO;
+import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDetalhadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mapeador.PedidoMapeador;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.repositorio.PedidoRepositorio;
 import org.springframework.data.domain.Page;
@@ -18,7 +19,7 @@ public class ListarTodosPedidosCasoDeUso {
         this.mapper = mapper;
     }
 
-    public Page<PedidoDTO> executar(Pageable pageable) {
-        return repository.buscarTodos(pageable).map(mapper::mapearPedidoDto);
+    public Page<PedidoDetalhadoDTO> executar(Pageable pageable) {
+        return repository.buscarTodos(pageable).map(mapper::mapearPedidoDetalhadoDto);
     }
 }

@@ -8,8 +8,11 @@ import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.StatusPe
 import com.restaurante01.api_restaurante.infraestrutura.security.auditoria.Auditable;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.EnderecoPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.InformacoesClienteParaPedido;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.InformacoesCupom;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.ValoresPedido;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.Delegate;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -31,28 +34,26 @@ public class Pedido extends Auditable {
     private StatusPedido statusPedido = StatusPedido.PENDENTE;
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPedido> itens = new ArrayList<>();
-    @Column(nullable = false)
-    private BigDecimal valorTotal = BigDecimal.ZERO;
     @Column(nullable = true)
     @Embedded
     private EnderecoPedido enderecoPedidoEntrega;
     @Column(name = "cardapio_de_referencia", nullable = false)
     private Long idCardapio;
+    @Embedded
+    @Delegate
+    private ValoresPedido valores = ValoresPedido.inicial();
+
+    @Embedded
+    private InformacoesCupom cupom;
 
     public static Pedido criar(Long idCardapio, InformacoesClienteParaPedido cliente, EnderecoPedido enderecoPedido) {
         Pedido pedido = new Pedido();
         pedido.vincularCardapioPedido(idCardapio);
         pedido.vincularCliente(cliente);
         pedido.adicionarEndereco(enderecoPedido);
+        pedido.aplicarDesconto(BigDecimal.ZERO);
         return pedido;
     }
-
-    protected Pedido(Long idCardapio, InformacoesClienteParaPedido cliente) {
-        this.idCardapio = idCardapio;
-        this.cliente = cliente;
-        this.statusPedido = StatusPedido.PENDENTE;
-    }
-
     public void adicionarItem(ItemPedido item) {
         itens.add(item);
         calcularTotal();
@@ -62,39 +63,38 @@ public class Pedido extends Auditable {
         itens.remove(item);
         calcularTotal();
     }
-
-    public void calcularTotal() {
-        this.valorTotal = itens.stream()
-                .map(ItemPedido::calcularSubTotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    private void calcularTotal() {
+        this.valores = valores.recalcular(itens);
     }
-
     public void mudarStatus(StatusPedido novoStatus) {
         if (!this.statusPedido.podeTransicionarPara(novoStatus)) {
             throw new StatusPedidoInvalidoExcecao("Status do pedido não pode retroceder ou ser alterado caso este esteja cancelado");
         }
         this.statusPedido = novoStatus;
     }
-
-    public void vincularCardapioPedido(Long idCardapio) {
+    private void vincularCardapioPedido(Long idCardapio) {
         if (idCardapio == null || idCardapio <= 0) {
             throw new CardapioNaoEncontradoExcecao("Id de cardapio nao pode ser vazio ou zero ou menor que zero, valor recebido = " + idCardapio);
         }
         this.idCardapio = idCardapio;
     }
-
-    public void vincularCliente(InformacoesClienteParaPedido cliente) {
+    private void vincularCliente(InformacoesClienteParaPedido cliente) {
         if (cliente == null) {
             throw new StatusPedidoInvalidoExcecao("Erro ao vincular cliente, cliente invalido");
         }
         this.cliente = cliente;
     }
-
     public void adicionarEndereco(EnderecoPedido enderecoPedido) {
         if(enderecoPedido == null){
             throw new EnderecoDoPedidoInvalidoExcecao("Endereço adicionado no pedido está vazio");
         }
         this.enderecoPedidoEntrega = enderecoPedido;
+    }
+    public void vincularCupom(InformacoesCupom cupom){
+        this.cupom = cupom;
+    }
+    public void aplicarDesconto(BigDecimal desconto){
+        this.valores = valores.aplicarDesconto(desconto);
     }
 }
 

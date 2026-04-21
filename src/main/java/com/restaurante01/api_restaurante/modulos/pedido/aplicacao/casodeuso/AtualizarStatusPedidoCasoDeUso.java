@@ -1,7 +1,7 @@
 package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso;
 
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.StatusPedidoDTO;
-import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDTO;
+import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoCriadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mapeador.PedidoMapeador;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.enums.StatusPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
@@ -27,7 +27,7 @@ public class AtualizarStatusPedidoCasoDeUso {
     }
 
     @Transactional
-    public PedidoDTO executar(Long id, StatusPedidoDTO novoStatusDto) {
+    public PedidoCriadoDTO executar(Long id, StatusPedidoDTO novoStatusDto) {
         Pedido pedido = pedidoRepository.buscarPorId(id)
                 .orElseThrow(() -> new PedidoNaoEncontradoExcecao("Pedido não localizado: " + id));
         pedido.mudarStatus(novoStatusDto.statusPedido());
@@ -38,6 +38,6 @@ public class AtualizarStatusPedidoCasoDeUso {
         if(pedido.getStatusPedido() == StatusPedido.CANCELADO){
             eventPublisher.publishEvent(new PedidoCanceladoEvento(pedido));
         }
-        return pedidoMapeador.mapearPedidoDto(pedido);
+        return pedidoMapeador.mapearPedidoCriadoDto(pedido);
     }
 }

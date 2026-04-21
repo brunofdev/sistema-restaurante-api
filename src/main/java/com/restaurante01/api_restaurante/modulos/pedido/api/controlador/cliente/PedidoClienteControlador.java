@@ -4,7 +4,7 @@ import com.restaurante01.api_restaurante.compartilhado.retorno_padrao_api.ApiRes
 import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Usuario;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.Cliente;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.PedidoCriacaoDTO;
-import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDTO;
+import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoCriadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso.CriarNovoPedidoCasoDeUso;
 import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso.ListarPedidosPorClienteCasoDeUso;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,12 +47,12 @@ public class PedidoClienteControlador {
     @Operation(summary = "Cria um novo pedido", description = "Registra um pedido para o cliente logado e notifica a administração via WebSocket.")
     @PostMapping("/criar")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<ApiResponse<PedidoDTO>> criarPedido(
+    public ResponseEntity<ApiResponse<PedidoCriadoDTO>> criarPedido(
             @Validated @RequestBody PedidoCriacaoDTO dto,
             @AuthenticationPrincipal Usuario usuarioLogado) {
 
         if (usuarioLogado instanceof Cliente clienteLogado) {
-            PedidoDTO novoPedido = criarNovoPedido.executar(dto, clienteLogado);
+            PedidoCriadoDTO novoPedido = criarNovoPedido.executar(dto, clienteLogado);
             messagingTemplate.convertAndSend("/topico/admin-pedidos", novoPedido);
             return ResponseEntity.ok(ApiResponse.success("Recurso Criado", novoPedido));
         }
@@ -62,12 +62,12 @@ public class PedidoClienteControlador {
     @Operation(summary = "Listar pedidos do cliente logado", description = "Retorna o histórico de pedidos paginado do cliente autenticado.")
     @GetMapping("/historico")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<ApiResponse<Page<PedidoDTO>>> listarPedidosDoCliente(
+    public ResponseEntity<ApiResponse<Page<PedidoCriadoDTO>>> listarPedidosDoCliente(
             @ParameterObject @PageableDefault(size = 10, sort = "dataCriacao", direction = Sort.Direction.DESC) Pageable pageable,
             @AuthenticationPrincipal Usuario usuarioLogado) {
 
         if (usuarioLogado instanceof Cliente cliente) {
-            Page<PedidoDTO> paginaDePedidos = listarPedidosPorCliente.executar(cliente, pageable);
+            Page<PedidoCriadoDTO> paginaDePedidos = listarPedidosPorCliente.executar(cliente, pageable);
             return ResponseEntity.ok(ApiResponse.success("Recurso Obtido", paginaDePedidos));
         }
         throw new AccessDeniedException("Operadores não possuem histórico de pedidos pessoal.");
