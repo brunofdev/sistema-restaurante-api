@@ -4,7 +4,9 @@ import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.Cupom;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.CupomUtilizado;
 import org.springframework.stereotype.Component;
 
-
+//Transformar esta classe em um evento, que será disparado após um pedido ser feito
+//Ela deve analisar se o Pedido possui cupom, caso haja, diminuir a quantidade,
+//se nao, nao faz nada
 @Component
 public class ConsumirCupomCasoDeUso {
 

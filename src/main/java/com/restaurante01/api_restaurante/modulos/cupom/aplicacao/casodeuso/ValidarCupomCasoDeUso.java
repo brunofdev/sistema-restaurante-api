@@ -18,5 +18,10 @@ public class ValidarCupomCasoDeUso {
     public Cupom executar(String codigo, BigDecimal valorBrutoTotalPedido){
         return repositorio.obterPorCodigo(codigo);
         //precisa implementar regra para validar o cupom, data, quantidade etc...
+        //O que seria interessante validar?
+        //Verificar se está dentro do periodo
+        //Verificar se está ativo
+        //Verificar se atende critérios de valor, conforme valor bruto total to pedido
+
     }
 }
