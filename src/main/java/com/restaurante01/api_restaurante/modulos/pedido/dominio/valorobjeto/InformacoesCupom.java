@@ -1,6 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto;
 
-import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.RegraValorDesconto;
+import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.TipoDesconto;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,7 +12,7 @@ public record InformacoesCupom (
     @NotNull Long idCupom,
     @NotBlank String codigoCupom,
     @NotNull BigDecimal descontoDoCupom,
-    @NotNull RegraValorDesconto regraDoCupom,
+    @NotNull TipoDesconto regraDoCupom,
     @NotBlank String CupomCriadoPor
 ){
 }

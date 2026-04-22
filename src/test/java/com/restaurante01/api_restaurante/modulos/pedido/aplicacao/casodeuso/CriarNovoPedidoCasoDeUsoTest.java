@@ -1,6 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso;
 import com.restaurante01.api_restaurante.builders.CardapioProdutoBuilder;
-import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.RegraValorDesconto;
+import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.TipoDesconto;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoCupomPorta;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.ClienteBuilder;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Associacao;
@@ -161,7 +161,7 @@ class CriarNovoPedidoCasoDeUsoTest {
         PedidoCriadoDTO pedidoCriadoDTO = Instancio.create(PedidoCriadoDTO.class);
 
         InformacoesCupom cupomMock = new InformacoesCupom(
-                1L, "DESCONTO10", new BigDecimal("10"), RegraValorDesconto.PORCENTAGEM, "admin");
+                1L, "DESCONTO10", new BigDecimal("10"), TipoDesconto.PORCENTAGEM, "admin");
 
         when(pedidoMapeador.mapearParaValidacaoDeEstoque(itensDTO))
                 .thenReturn(List.of(new ItemValidacaoEstoque(associacao.getProduto().getId(), 2)));

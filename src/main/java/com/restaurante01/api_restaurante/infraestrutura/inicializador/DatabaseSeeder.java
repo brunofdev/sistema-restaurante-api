@@ -1,5 +1,8 @@
 package com.restaurante01.api_restaurante.infraestrutura.inicializador;
 
+import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.Cupom;
+import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.PeriodoCupom;
+import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.TipoDesconto;
 import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Cpf;
 import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Email;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Cardapio;
@@ -116,6 +119,23 @@ public class DatabaseSeeder implements CommandLineRunner {
         pedido.adicionarItem(item2);
 
         entityManager.persist(pedido);
+
+        // --- 7. CRIANDO CUPOM ---
+        PeriodoCupom periodoCupom = new PeriodoCupom("14/04/2026", "12:00", "14/06/2026", "15:00");
+        BigDecimal valorParaDesconto = new BigDecimal(15); //valor em porcentagem
+        BigDecimal valorMinPedido = new BigDecimal(60);
+        BigDecimal valorMaxPedido = new BigDecimal(200);
+        Cupom cupom = Cupom.criar(
+                "HELLOWORLD10",
+                periodoCupom,
+                true,
+                10,
+                TipoDesconto.PORCENTAGEM,
+                valorParaDesconto,
+                valorMinPedido,
+                valorMaxPedido);
+
+        entityManager.persist(cupom);
 
         // Salva tudo no banco H2
         entityManager.flush();
