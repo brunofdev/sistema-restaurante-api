@@ -10,6 +10,8 @@ import com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.mapeador.ass
 import com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.validador.associacao.validador.CardapioProdutoValidador;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Associacao;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.AssociacaoExistenteCardapioProdutoExcecao;
+import com.restaurante01.api_restaurante.modulos.cardapio.dominio.porta.associacao.CardapioPorta;
+import com.restaurante01.api_restaurante.modulos.cardapio.dominio.porta.associacao.ProdutoPorta;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.repositorio.CardapioProdutoRepositorio;
 import com.restaurante01.api_restaurante.modulos.produto.api.dto.entrada.ProdutoDTO;
 import com.restaurante01.api_restaurante.modulos.produto.aplicacao.casodeuso.ObterProdutoPorIdCasoDeUso;
@@ -43,10 +45,10 @@ class AssociarProdutoAoCardapioCasoDeUsoTest {
     private CardapioProdutoValidador cardapioProdutoValidador;
 
     @Mock
-    private BuscarCardapioPorIdCasoDeUso buscarCardapioPorIdCasoDeUso;
+    private CardapioPorta buscarCardapioPorIdCasoDeUso;
 
     @Mock
-    private ObterProdutoPorIdCasoDeUso obterProdutoPorIdCasoDeUso;
+    private ProdutoPorta obterProdutoPorIdCasoDeUso;
 
     @InjectMocks
     private AssociarProdutoAoCardapioCasoDeUso casoDeUso;
@@ -99,8 +101,8 @@ class AssociarProdutoAoCardapioCasoDeUsoTest {
         );
 
         when(cardapioProdutoRepositorio.existeAssociacao(dto.getIdCardapio(), dto.getIdProduto())).thenReturn(false);
-        when(obterProdutoPorIdCasoDeUso.retornarEntidade(dto.getIdProduto())).thenReturn(produto);
-        when(buscarCardapioPorIdCasoDeUso.executar(dto.getIdCardapio())).thenReturn(cardapio);
+        when(obterProdutoPorIdCasoDeUso.obterProdutoPorId(dto.getIdProduto())).thenReturn(produto);
+        when(buscarCardapioPorIdCasoDeUso.buscarCardapioPorId(dto.getIdCardapio())).thenReturn(cardapio);
         when(cardapioProdutoMapeador.mapearCardapioProduto(produto, cardapio, dto)).thenReturn(novaAssociacao);
         when(cardapioProdutoMapeador.mapearCardapioProdutoAssociacaoDTO(novaAssociacao)).thenReturn(associacaoFeitaRespostaDTO);
 
