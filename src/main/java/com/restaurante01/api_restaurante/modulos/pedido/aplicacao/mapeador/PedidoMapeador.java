@@ -5,7 +5,7 @@ import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.ItemPedi
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.*;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.EnderecoPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPedido;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.InformacoesCupom;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.CupomConsumido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.ItemValidacaoEstoque;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.ValoresPedido;
@@ -68,11 +68,11 @@ public class PedidoMapeador {
                 valores.getValorTotal()
         );
     }
-    private InformacoesCupomDTO mapearInformacoesCupomDTO(InformacoesCupom cupom){
+    private InformacoesCupomDTO mapearInformacoesCupomDTO(CupomConsumido cupom){
         return new InformacoesCupomDTO(
                 cupom.idCupom(),
                 cupom.codigoCupom(),
-                cupom.descontoDoCupom(),
+                cupom.valorParaDesconto(),
                 cupom.regraDoCupom(),
                 cupom.CupomCriadoPor()
         );

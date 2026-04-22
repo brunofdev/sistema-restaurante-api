@@ -8,7 +8,7 @@ import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.StatusPe
 import com.restaurante01.api_restaurante.infraestrutura.security.auditoria.Auditable;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.EnderecoPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.InformacoesClienteParaPedido;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.InformacoesCupom;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.CupomConsumido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.ValoresPedido;
 import jakarta.persistence.*;
 import lombok.*;
@@ -44,7 +44,7 @@ public class Pedido extends Auditable {
     private ValoresPedido valores = ValoresPedido.inicial();
 
     @Embedded
-    private InformacoesCupom cupom;
+    private CupomConsumido cupom;
 
     public static Pedido criar(Long idCardapio, InformacoesClienteParaPedido cliente, EnderecoPedido enderecoPedido) {
         Pedido pedido = new Pedido();
@@ -90,7 +90,7 @@ public class Pedido extends Auditable {
         }
         this.enderecoPedidoEntrega = enderecoPedido;
     }
-    public void vincularCupom(InformacoesCupom cupom){
+    public void vincularCupom(CupomConsumido cupom){
         this.cupom = cupom;
     }
     public void aplicarDesconto(BigDecimal desconto){

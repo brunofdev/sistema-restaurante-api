@@ -8,10 +8,10 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Embeddable
-public record InformacoesCupom (
+public record CupomConsumido(
     @NotNull Long idCupom,
     @NotBlank String codigoCupom,
-    @NotNull BigDecimal descontoDoCupom,
+    @NotNull BigDecimal valorParaDesconto,
     @NotNull TipoDesconto regraDoCupom,
     @NotBlank String CupomCriadoPor
 ){

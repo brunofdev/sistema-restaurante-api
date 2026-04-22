@@ -1,7 +1,8 @@
 package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso;
 
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoCupomPorta;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.InformacoesCupom;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.CupomUtilizado;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.CupomConsumido;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.Cliente;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.ItemPedidoSolicitadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.PedidoCriacaoDTO;
@@ -75,19 +76,19 @@ public class CriarNovoPedidoCasoDeUso {
 
     private void vincularCupomAoPedido(String codigoCupom, Pedido pedido){
         if(codigoCupom != null && !codigoCupom.isBlank()){
-            InformacoesCupom cupom = pedidoCupomPorta.validarCupom(codigoCupom, pedido.getValorBruto()); //pode estourar excecao no modulo de cupom, caso o cupom seja invalido
+            CupomConsumido cupom = pedidoCupomPorta.validarCupom(new CupomUtilizado(codigoCupom, pedido.getValorBruto())); //pode estourar excecao no modulo de cupom, caso o cupom seja invalido
             BigDecimal valorDesconto = calculaValorDesconto(cupom, pedido.getValorBruto());
             pedido.vincularCupom(cupom);
             pedido.aplicarDesconto(valorDesconto);
         }
     }
 
-    private BigDecimal calculaValorDesconto(InformacoesCupom cupom, BigDecimal valorBrutoPedido){
+    private BigDecimal calculaValorDesconto(CupomConsumido cupom, BigDecimal valorBrutoPedido){
         //se o cupom for invalido, cabe o modulo de cupom estourar uma excecao aqui
         return switch (cupom.regraDoCupom()) {
-            case VALOR -> cupom.descontoDoCupom();
+            case VALOR -> cupom.valorParaDesconto();
             case PORCENTAGEM ->
-                    valorBrutoPedido.multiply(cupom.descontoDoCupom()).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+                    valorBrutoPedido.multiply(cupom.valorParaDesconto()).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
         };
     }
 }

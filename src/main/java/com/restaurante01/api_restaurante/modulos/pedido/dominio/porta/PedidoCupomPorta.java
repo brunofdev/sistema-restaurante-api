@@ -1,10 +1,9 @@
 package com.restaurante01.api_restaurante.modulos.pedido.dominio.porta;
 
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.InformacoesCupom;
-
-import java.math.BigDecimal;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.CupomUtilizado;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.CupomConsumido;
 
 //Cupom deve cumprir este contrato
 public interface PedidoCupomPorta {
-    InformacoesCupom validarCupom(String codigoCupom, BigDecimal valorTotalPedido);
+    CupomConsumido validarCupom(CupomUtilizado cupomUtilizado);
 }

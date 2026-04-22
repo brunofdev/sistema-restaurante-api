@@ -141,7 +141,6 @@ class CriarNovoPedidoCasoDeUsoTest {
     void deveAplicarDescontoQuandoCupomValido() {
         Associacao associacao = CardapioProdutoBuilder.umCardapioProduto().build();
         Cliente cliente = ClienteBuilder.umCliente().build();
-
         InformacoesClienteParaPedido infoCliente = new InformacoesClienteParaPedido(
                 cliente.getId(), cliente.getNome(), cliente.getCpf().cpf(), cliente.getTelefone());
         EnderecoPedido enderecoPedido = new EnderecoPedido(
@@ -160,8 +159,9 @@ class CriarNovoPedidoCasoDeUsoTest {
                 associacao.getCardapio().getId(), itensDTO, null, "DESCONTO10"); // com cupom
         PedidoCriadoDTO pedidoCriadoDTO = Instancio.create(PedidoCriadoDTO.class);
 
-        InformacoesCupom cupomMock = new InformacoesCupom(
+        CupomConsumido cupomMock = new CupomConsumido(
                 1L, "DESCONTO10", new BigDecimal("10"), TipoDesconto.PORCENTAGEM, "admin");
+        CupomUtilizado cupomUtilizado = new CupomUtilizado(cupomMock.codigoCupom(), pedidoCriadoDTO.valores().bruto());
 
         when(pedidoMapeador.mapearParaValidacaoDeEstoque(itensDTO))
                 .thenReturn(List.of(new ItemValidacaoEstoque(associacao.getProduto().getId(), 2)));
@@ -169,7 +169,7 @@ class CriarNovoPedidoCasoDeUsoTest {
         when(pedidoClientePorta.obterEndereco(cliente)).thenReturn(enderecoPedido);
         when(pedidoAssociacaoPorta.obterProdutoVendido(dto.idCardapio(), itensDTO.get(0).idProduto()))
                 .thenReturn(produtoVendido);
-        when(pedidoCupomPorta.validarCupom(eq("DESCONTO10"), any(BigDecimal.class)))
+        when(pedidoCupomPorta.validarCupom(cupomUtilizado))
                 .thenReturn(cupomMock);
         when(pedidoMapeador.mapearPedidoCriadoDto(any(Pedido.class))).thenReturn(pedidoCriadoDTO);
 
@@ -178,7 +178,7 @@ class CriarNovoPedidoCasoDeUsoTest {
         casoDeUso.executar(dto, cliente);
 
         verify(pedidoRepository).salvar(pedidoCaptor.capture());
-        verify(pedidoCupomPorta).validarCupom(eq("DESCONTO10"), any(BigDecimal.class));
+        verify(pedidoCupomPorta).validarCupom(cupomUtilizado);
 
         Pedido pedidoSalvo = pedidoCaptor.getValue();
 
