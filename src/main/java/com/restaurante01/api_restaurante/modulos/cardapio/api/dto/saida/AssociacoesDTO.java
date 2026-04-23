@@ -20,7 +20,7 @@ public class AssociacoesDTO {
 
     private List<ProdutoCustomDTO> produtos;
 
-    public AssociacoesDTO(){};
+    public AssociacoesDTO(){}
     public AssociacoesDTO(Long id, String nome, String descricao, Boolean disponibilidade,
                           LocalDate dataInicio, LocalDate dataFim, List<ProdutoCustomDTO> produtos) {
         this.id = id;

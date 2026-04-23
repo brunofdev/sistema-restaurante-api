@@ -33,7 +33,7 @@ public class ValidarCupomCasoDeUso {
     private void validarPeriodo(PeriodoCupom periodoCupom){
         if(!periodoCupom.estaVigente()){
             throw  new PeriodoInvalidoExcecao("Cupom expirado");
-        };
+        }
     }
     private void validarQuantidade(Cupom cupom){
         if (!cupom.possuiQtdDisponivelParaConsumo()){

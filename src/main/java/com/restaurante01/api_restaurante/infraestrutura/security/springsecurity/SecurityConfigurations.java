@@ -24,8 +24,12 @@ import static java.util.Map.entry;
 @EnableWebSecurity
 public class SecurityConfigurations {
 
-    @Autowired
+
     SecurityFilter securityFilter;
+
+    public SecurityConfigurations(SecurityFilter securityFilter) {
+        this.securityFilter = securityFilter;
+    }
 
     // ROTAS PUBLICAS
     private static final String[] PUBLIC_ENDPOINTS = {

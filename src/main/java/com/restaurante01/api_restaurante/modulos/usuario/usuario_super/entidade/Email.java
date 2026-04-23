@@ -16,7 +16,4 @@ public record Email(
         email = email.toLowerCase().trim();
     }
 
-    public String getEmail(){
-        return email;
-    }
 }

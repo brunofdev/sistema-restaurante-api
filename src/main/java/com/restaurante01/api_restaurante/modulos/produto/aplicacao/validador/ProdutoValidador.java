@@ -6,7 +6,6 @@ import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.Produto
 import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.ProdutoNomeInvalidoException;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.ProdutoQntdNegativa;
 import com.restaurante01.api_restaurante.modulos.produto.infraestrutura.persistencia.ProdutoJPA;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 

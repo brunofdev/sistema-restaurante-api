@@ -2,7 +2,9 @@ package com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade;
 
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.excecao.CupomInvalidoExcecao;
 import jakarta.persistence.Embeddable;
+import lombok.Getter;
 
+@Getter
 @Embeddable
 public class CodigoCupom {
 
@@ -36,8 +38,6 @@ public class CodigoCupom {
                     "Código do cupom deve conter apenas letras maiúsculas e números, sem espaços ou caracteres especiais");
         }
     }
-
-    public String getValor() { return valor; }
 
     @Override
     public String toString() { return valor; }

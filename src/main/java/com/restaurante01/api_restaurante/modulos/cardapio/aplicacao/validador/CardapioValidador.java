@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class CardapioValidador {
 
-    @Autowired
     private final CardapioJPA cardapioJpa;
 
     public CardapioValidador(CardapioJPA cardapioJpa) {
