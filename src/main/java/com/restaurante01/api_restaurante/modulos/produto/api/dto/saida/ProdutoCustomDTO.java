@@ -1,7 +1,12 @@
 package com.restaurante01.api_restaurante.modulos.produto.api.dto.saida;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 
+@Setter
+@Getter
 public class ProdutoCustomDTO {
     private Long idProduto;
     private String nome;
@@ -33,91 +38,4 @@ public class ProdutoCustomDTO {
         this.observacao = observacao;
     }
 
-    public Long getIdProduto() {
-        return idProduto;
-    }
-
-    public void setIdProduto(Long idProduto) {
-        this.idProduto = idProduto;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public BigDecimal getPreco() {
-        return preco;
-    }
-
-    public void setPreco(BigDecimal preco) {
-        this.preco = preco;
-    }
-
-    public Long getQuantidadeAtual() {
-        return quantidadeAtual;
-    }
-
-    public void setQuantidadeAtual(Long quantidadeAtual) {
-        this.quantidadeAtual = quantidadeAtual;
-    }
-
-    public Boolean getDisponibilidade() {
-        return disponibilidade;
-    }
-
-    public void setDisponibilidade(Boolean disponibilidade) {
-        this.disponibilidade = disponibilidade;
-    }
-
-    public BigDecimal getPrecoCustomizado() {
-        return precoCustomizado;
-    }
-
-    public void setPrecoCustomizado(BigDecimal precoCustomizado) {
-        this.precoCustomizado = precoCustomizado;
-    }
-
-    public Integer getQuantidadeCustomizada() {
-        return quantidadeCustomizada;
-    }
-
-    public void setQuantidadeCustomizada(Integer quantidadeCustomizada) {
-        this.quantidadeCustomizada = quantidadeCustomizada;
-    }
-
-    public String getDescricaoCustomizada() {
-        return descricaoCustomizada;
-    }
-
-    public void setDescricaoCustomizada(String descricaoCustomizada) {
-        this.descricaoCustomizada = descricaoCustomizada;
-    }
-
-    public Boolean getDisponibilidadeCustomizada() {
-        return disponibilidadeCustomizada;
-    }
-
-    public void setDisponibilidadeCustomizada(Boolean disponibilidadeCustomizada) {
-        this.disponibilidadeCustomizada = disponibilidadeCustomizada;
-    }
-
-    public String getObservacao() {
-        return observacao;
-    }
-
-    public void setObservacao(String observacao) {
-        this.observacao = observacao;
-    }
 }

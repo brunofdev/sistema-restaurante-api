@@ -1,11 +1,15 @@
 package com.restaurante01.api_restaurante.modulos.cardapio.api.dto.saida;
 import com.restaurante01.api_restaurante.modulos.produto.api.dto.saida.ProdutoCustomDTO;
+import lombok.Getter;
+import lombok.Setter;
 
 
 import java.time.LocalDate;
 import java.util.List;
 
 
+@Setter
+@Getter
 public class AssociacoesDTO {
     private Long id;
     private String nome;
@@ -28,59 +32,4 @@ public class AssociacoesDTO {
         this.produtos = produtos;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public Boolean getDisponibilidade() {
-        return disponibilidade;
-    }
-
-    public void setDisponibilidade(Boolean disponibilidade) {
-        this.disponibilidade = disponibilidade;
-    }
-
-    public LocalDate getDataInicio() {
-        return dataInicio;
-    }
-
-    public void setDataInicio(LocalDate dataInicio) {
-        this.dataInicio = dataInicio;
-    }
-
-    public LocalDate getDataFim() {
-        return dataFim;
-    }
-
-    public void setDataFim(LocalDate dataFim) {
-        this.dataFim = dataFim;
-    }
-
-    public List<ProdutoCustomDTO> getProdutos() {
-        return produtos;
-    }
-
-    public void setProdutos(List<ProdutoCustomDTO> produtos) {
-        this.produtos = produtos;
-    }
 }

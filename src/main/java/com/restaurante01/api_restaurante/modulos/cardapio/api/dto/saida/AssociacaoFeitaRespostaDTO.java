@@ -1,9 +1,13 @@
 package com.restaurante01.api_restaurante.modulos.cardapio.api.dto.saida;
 
 import com.restaurante01.api_restaurante.modulos.produto.api.dto.entrada.ProdutoDTO;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
+@Setter
+@Getter
 public class AssociacaoFeitaRespostaDTO {
     private String message;
     private CardapioDTO cardapioDTO;
@@ -25,67 +29,4 @@ public class AssociacaoFeitaRespostaDTO {
         this.descricaoCustomizada = descricaoCustomizada;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public CardapioDTO getCardapioDTO() {
-        return cardapioDTO;
-    }
-
-    public void setCardapioDTO(CardapioDTO cardapioDTO) {
-        this.cardapioDTO = cardapioDTO;
-    }
-
-    public ProdutoDTO getProdutoDTO() {
-        return produtoDTO;
-    }
-
-    public void setProdutoDTO(ProdutoDTO produtoDTO) {
-        this.produtoDTO = produtoDTO;
-    }
-
-    public BigDecimal getPrecoCustomizado() {
-        return precoCustomizado;
-    }
-
-    public void setPrecoCustomizado(BigDecimal precoCustomizado) {
-        this.precoCustomizado = precoCustomizado;
-    }
-
-    public Integer getQuantidadeCustomizada() {
-        return quantidadeCustomizada;
-    }
-
-    public void setQuantidadeCustomizada(Integer quantidadeCustomizada) {
-        this.quantidadeCustomizada = quantidadeCustomizada;
-    }
-
-    public Boolean getDisponibilidadeCustomizada() {
-        return disponibilidadeCustomizada;
-    }
-
-    public void setDisponibilidadeCustomizada(Boolean disponibilidadeCustomizada) {
-        this.disponibilidadeCustomizada = disponibilidadeCustomizada;
-    }
-
-    public String getDescricaoCustomizada() {
-        return descricaoCustomizada;
-    }
-
-    public void setDescricaoCustomizada(String descricaoCustomizada) {
-        this.descricaoCustomizada = descricaoCustomizada;
-    }
-
-    public String getObservacao() {
-        return observacao;
-    }
-
-    public void setObservacao(String observacao) {
-        this.observacao = observacao;
-    }
 }
