@@ -7,11 +7,11 @@ import com.restaurante01.api_restaurante.modulos.cupom.dominio.excecao.CupomInva
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.excecao.PeriodoInvalidoExcecao;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.excecao.ValorMaxPedidoExcecao;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.excecao.ValorMinPedidoExcecao;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
-@Component
+@Service
 public class ValidarCupomCasoDeUso {
 
     private final CupomRepositorio repositorio;

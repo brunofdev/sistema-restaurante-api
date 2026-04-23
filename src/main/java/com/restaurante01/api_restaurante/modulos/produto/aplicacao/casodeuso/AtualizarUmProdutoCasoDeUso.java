@@ -27,7 +27,7 @@ public class AtualizarUmProdutoCasoDeUso {
 
     public ProdutoDTO executar(ProdutoDTO produtoAtualizado) {
         validador.validarProduto(produtoAtualizado);
-        Produto produtoExistente = obterProdutoPorIdCasoDeUso.retornarEntidade(produtoAtualizado.getId());
+        Produto produtoExistente = obterProdutoPorIdCasoDeUso.retornarEntidade(produtoAtualizado.id());
         mapeador.atualizarProduto(produtoExistente, produtoAtualizado);
         return mapeador.mapearUmaEntidadeParaDTO(repositorio.save(produtoExistente));
     }

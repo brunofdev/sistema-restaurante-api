@@ -14,7 +14,7 @@ import java.util.List;
 
 @Component
 public class ProdutoValidador {
-    @Autowired
+
     private final ProdutoJPA produtoRepository ;
 
     public ProdutoValidador(ProdutoJPA produtoRepository){
@@ -22,20 +22,20 @@ public class ProdutoValidador {
     }
 
     public void validarProduto(ProdutoDTO produtoDTO) {
-        String nomeProduto = FormatarString.limparEspacos(produtoDTO.getNome());
+        String nomeProduto = FormatarString.limparEspacos(produtoDTO.nome());
         Produto produtoExistente = produtoRepository.findByNome(nomeProduto);
-        if(produtoDTO.getQuantidadeAtual() < 0){
+        if(produtoDTO.quantidadeAtual() < 0){
             throw new ProdutoQntdNegativa("Quantidade não pode ser negativa");
         }
-        if(produtoDTO.getNome().length() <= 3){
+        if(produtoDTO.nome().length() <= 3){
             throw new ProdutoNomeInvalidoException("Nome **" + nomeProduto + "** deve possuir MAIS de três (3) caracteres");
         }
-        if(produtoDTO.getNome().length() >= 30){
+        if(produtoDTO.nome().length() >= 30){
             throw new ProdutoNomeInvalidoException("Nome **" + nomeProduto + "** deve possuir MENOS (30) caracteres");
         }
         //garante idempotência no verbo put do controlador
         if (produtoExistente != null) {
-            if (produtoDTO.getId() == null || !produtoExistente.getId().equals(produtoDTO.getId())) {
+            if (produtoDTO.id() == null || !produtoExistente.getId().equals(produtoDTO.id())) {
                 throw new ProdutoMesmoNomeExistenteException(
                         "Nome de Produto  **" + nomeProduto + "** já existe no sistema"
                 );

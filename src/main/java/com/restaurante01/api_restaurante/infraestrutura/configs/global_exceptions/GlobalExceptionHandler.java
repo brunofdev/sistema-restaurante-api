@@ -2,7 +2,6 @@ package com.restaurante01.api_restaurante.infraestrutura.configs.global_exceptio
 
 import com.restaurante01.api_restaurante.compartilhado.dominio.excecao.RegraDeNegocioExcecao;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.*;
-import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.AssociacaoNaoExisteExcecao;
 import com.restaurante01.api_restaurante.compartilhado.retorno_padrao_api.ApiError;
 import com.restaurante01.api_restaurante.compartilhado.retorno_padrao_api.ApiResponse;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.*;
