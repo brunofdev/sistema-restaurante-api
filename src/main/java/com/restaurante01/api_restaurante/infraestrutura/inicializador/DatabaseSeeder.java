@@ -72,7 +72,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         hamburguer.setNome("X-Tudo Artesanal");
         hamburguer.setDescricao("Pão brioche, blend 180g, queijo prato, bacon e salada.");
         hamburguer.setPreco(new BigDecimal("35.00"));
-        hamburguer.setQuantidadeAtual(50L);
+        hamburguer.setQuantidadeAtual(50);
         hamburguer.setDisponibilidade(true);
         entityManager.persist(hamburguer);
 
@@ -80,7 +80,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         refrigerante.setNome("Refrigerante Cola 350ml");
         refrigerante.setDescricao("Lata bem gelada.");
         refrigerante.setPreco(new BigDecimal("8.00"));
-        refrigerante.setQuantidadeAtual(200L);
+        refrigerante.setQuantidadeAtual(200);
         refrigerante.setDisponibilidade(true);
         entityManager.persist(refrigerante);
 

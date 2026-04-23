@@ -1,6 +1,5 @@
 package com.restaurante01.api_restaurante.infraestrutura.security.springsecurity;
 import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.role.Role;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

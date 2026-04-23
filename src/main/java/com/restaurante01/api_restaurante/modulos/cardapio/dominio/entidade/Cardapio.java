@@ -37,7 +37,7 @@ public class Cardapio extends Auditable {
     @Column(name = "dtinicio", nullable = false)
     private LocalDate dataInicio;
 
-    @Column(name = "dtfim", nullable = true)
+    @Column(name = "dtfim")
     private LocalDate dataFim;
 
 

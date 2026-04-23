@@ -34,7 +34,6 @@ public class Pedido extends Auditable {
     private StatusPedido statusPedido = StatusPedido.PENDENTE;
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPedido> itens = new ArrayList<>();
-    @Column(nullable = true)
     @Embedded
     private EnderecoPedido enderecoPedidoEntrega;
     @Column(name = "cardapio_de_referencia", nullable = false)

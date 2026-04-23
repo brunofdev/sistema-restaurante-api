@@ -66,7 +66,7 @@ class AssociarProdutoAoCardapioCasoDeUsoTest {
                 "X-SALADA",
                 "XIS COMPLETA SALADA COM MAIONESE",
                 BigDecimal.valueOf(28.80),
-                10L,
+                10,
                 true
         );
         Cardapio cardapio = new Cardapio(
@@ -90,7 +90,7 @@ class AssociarProdutoAoCardapioCasoDeUsoTest {
         AssociacaoFeitaRespostaDTO associacaoFeitaRespostaDTO = new AssociacaoFeitaRespostaDTO(
                 "Associação realizada",
                 new CardapioDTO(1L, "Cardapioo de verão", "Promoção de verão muito divertidas", true, LocalDate.now(), LocalDate.of(2026, 12, 28)),
-                new ProdutoDTO(1L, "X-SALADA", "XIS COMPLETA SALADA COM MAIONESE", BigDecimal.valueOf(28.80), 10L, true, LocalDateTime.now(), LocalDateTime.now(), "BRUNO", "BRUNO"),
+                new ProdutoDTO(1L, "X-SALADA", "XIS COMPLETA SALADA COM MAIONESE", BigDecimal.valueOf(28.80), 10, true, LocalDateTime.now(), LocalDateTime.now(), "BRUNO", "BRUNO"),
                 BigDecimal.valueOf(18.99),
                 10,
                 true,

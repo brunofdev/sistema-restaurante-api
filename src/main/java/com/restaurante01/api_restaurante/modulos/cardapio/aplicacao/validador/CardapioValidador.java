@@ -7,7 +7,6 @@ import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.Cardap
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.CardapioNomeInvalidoExcecao;
 import com.restaurante01.api_restaurante.modulos.cardapio.infraestrutura.persistencia.CardapioJPA;
 import com.restaurante01.api_restaurante.compartilhado.utils.formatadorstring.FormatarString;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component

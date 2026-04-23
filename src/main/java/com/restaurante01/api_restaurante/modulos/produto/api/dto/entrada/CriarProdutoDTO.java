@@ -16,7 +16,7 @@ public record CriarProdutoDTO(
 
         @NotNull(message = "Quantidade deve ser zero ou positivo")
         @Min(value = 0, message = "Quantidade minima deve ser zero")
-        Long quantidadeAtual,
+        Integer quantidadeAtual,
 
         Boolean disponibilidade
 ) {}

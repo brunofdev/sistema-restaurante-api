@@ -65,7 +65,7 @@ public class Associacao {
         if (this.quantidadeCustomizada != null) {
             return this.quantidadeCustomizada >= quantidadeSolicitada;
         }
-        if (this.produto.getQuantidadeAtual() != null) {
+        if (this.produto.getQuantidadeAtual() != 0) {
             return this.produto.getQuantidadeAtual() >= quantidadeSolicitada;
         }
         return false;

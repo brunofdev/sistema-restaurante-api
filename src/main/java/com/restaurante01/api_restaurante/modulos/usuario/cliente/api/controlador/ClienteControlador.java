@@ -52,7 +52,7 @@ public class ClienteControlador {
     @Operation(summary = "Listar todos os clientes", description = "Retorna uma lista paginada de clientes. Requer ROLE_ADMIN3.")
     @GetMapping("/obter-todos")
     public ResponseEntity<ApiResponse<Page<ClienteDTO>>> listarUsuarios(
-            @ParameterObject @PageableDefault(size = 10) Pageable pageable) {
+            @ParameterObject @PageableDefault Pageable pageable) {
         return ResponseEntity.ok(ApiResponse.success("Recurso disponível", listarClientes.executar(pageable)));
     }
 

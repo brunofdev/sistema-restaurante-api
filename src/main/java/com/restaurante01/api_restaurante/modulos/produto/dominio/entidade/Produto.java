@@ -38,7 +38,7 @@ public class Produto extends Auditable {
     @NotNull(message = "A quantidade inicial é obrigatória")
     @Min(value = 0, message = "A quantidade não pode ser negativa")
     @Column(name = "qtd_atual", nullable = false)
-    private Long quantidadeAtual = 0L;
+    private Integer quantidadeAtual = 0;
 
     @NotNull
     @Column(nullable = false)

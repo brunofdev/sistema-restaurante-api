@@ -11,9 +11,9 @@ public interface ProdutoRepositorio {
     List<Produto> findByDisponibilidade(boolean disponibilidade);
     Optional<Produto> findById(Long id);
     boolean existsByNome(String nome);
-    List<Produto> findByQuantidadeAtualLessThan(int quantidade);
+    List<Produto> findByQuantidadeAtualLessThan(Integer quantidade);
     Produto save(Produto produto);
     List<Produto> findAllById(Set<Long> ids);
-    List<Produto> saveAll(List<Produto> produtos);
+    void saveAll(List<Produto> produtos);
     void delete(Produto produto);
 }

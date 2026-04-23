@@ -38,7 +38,7 @@ public class ProdutoJpaAdaptador implements ProdutoRepositorio {
     }
 
     @Override
-    public List<Produto> findByQuantidadeAtualLessThan(int quantidade) {
+    public List<Produto> findByQuantidadeAtualLessThan(Integer quantidade) {
         return jpa.findByQuantidadeAtualLessThan(quantidade);
     }
 
@@ -53,8 +53,8 @@ public class ProdutoJpaAdaptador implements ProdutoRepositorio {
     }
 
     @Override
-    public List<Produto> saveAll(List<Produto> produtos) {
-        return jpa.saveAll(produtos);
+    public void saveAll(List<Produto> produtos) {
+        jpa.saveAll(produtos);
     }
 
     @Override

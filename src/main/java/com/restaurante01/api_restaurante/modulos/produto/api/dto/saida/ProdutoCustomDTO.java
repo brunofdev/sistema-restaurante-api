@@ -12,18 +12,18 @@ public class ProdutoCustomDTO {
     private String nome;
     private String descricao;
     private BigDecimal preco;
-    private Long quantidadeAtual;
+    private int quantidadeAtual;
     private Boolean disponibilidade;
     private BigDecimal precoCustomizado;
-    private Integer quantidadeCustomizada;
+    private int quantidadeCustomizada;
     private String descricaoCustomizada;
     private Boolean disponibilidadeCustomizada;
     private String observacao;
 
     public ProdutoCustomDTO(){}
     public ProdutoCustomDTO(Long idProduto, String nome, String descricao, BigDecimal preco,
-                            Long quantidadeAtual, Boolean disponibilidade, BigDecimal precoCustomizado,
-                            Integer quantidadeCustomizada, String descricaoCustomizada, Boolean disponibilidadeCustomizada,
+                            int quantidadeAtual, Boolean disponibilidade, BigDecimal precoCustomizado,
+                            int quantidadeCustomizada, String descricaoCustomizada, Boolean disponibilidadeCustomizada,
                             String observacao) {
         this.idProduto = idProduto;
         this.nome = nome;
