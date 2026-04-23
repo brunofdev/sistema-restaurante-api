@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.modulos.cupom.dominio;
+package com.restaurante01.api_restaurante.modulos.cupom.dominio.repositorio;
 
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.Cupom;
 

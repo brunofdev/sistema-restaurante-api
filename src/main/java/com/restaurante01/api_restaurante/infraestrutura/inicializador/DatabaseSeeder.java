@@ -125,8 +125,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         BigDecimal valorParaDesconto = new BigDecimal(15); //valor em porcentagem
         BigDecimal valorMinPedido = new BigDecimal(60);
         BigDecimal valorMaxPedido = new BigDecimal(200);
-        Cupom cupom = Cupom.criar(
-                "HELLOWORLD10",
+        Cupom cupomValido = Cupom.criar(
+                "VALIDO1",
                 periodoCupom,
                 true,
                 10,
@@ -134,8 +134,44 @@ public class DatabaseSeeder implements CommandLineRunner {
                 valorParaDesconto,
                 valorMinPedido,
                 valorMaxPedido);
+        entityManager.persist(cupomValido);
 
-        entityManager.persist(cupom);
+        // Cupom de 2024 - Já expirou (estamos em 2026)
+        PeriodoCupom periodoPassado = new PeriodoCupom("01/01/2024", "08:00", "01/03/2024", "18:00");
+        Cupom cupomExpirado = Cupom.criar(
+                "EXPIRADO1",
+                periodoPassado,
+                true,
+                100,
+                TipoDesconto.PORCENTAGEM,
+                new BigDecimal(10),
+                new BigDecimal(50),
+                new BigDecimal(299)); //limite 300 para regra de porcentagem
+        entityManager.persist(cupomExpirado);
+
+        // Ativo = false
+        Cupom cupomDesativado = Cupom.criar(
+                "DESATIVADO1",
+                periodoCupom, // Usando o período válido do seu exemplo
+                false,        // <-- O erro proposital está aqui
+                50,
+                TipoDesconto.VALOR,
+                new BigDecimal(5),
+                new BigDecimal(45),
+                new BigDecimal(100));
+        entityManager.persist(cupomDesativado);
+
+        // Erro: Min (100) é maior que Max (50)
+        Cupom cupomErroLogica = Cupom.criar(
+                "VALORES1",
+                periodoCupom,
+                true,
+                10,
+                TipoDesconto.PORCENTAGEM,
+                new BigDecimal(10),
+                new BigDecimal(30), // Min
+                new BigDecimal(100));  // Max
+        entityManager.persist(cupomErroLogica);
 
         // Salva tudo no banco H2
         entityManager.flush();

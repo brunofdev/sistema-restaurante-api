@@ -1,6 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.cupom.infraestrutura.adaptador;
 
-import com.restaurante01.api_restaurante.modulos.cupom.dominio.CupomRepositorio;
+import com.restaurante01.api_restaurante.modulos.cupom.dominio.repositorio.CupomRepositorio;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.CodigoCupom;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.Cupom;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.excecao.CupomInvalidoExcecao;

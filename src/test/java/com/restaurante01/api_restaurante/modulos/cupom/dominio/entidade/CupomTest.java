@@ -129,7 +129,4 @@ class CupomTest {
                 Cupom.criar(codigoCupomValido, periodoValido, cupomAtivo, quantidadeValida, regra, valorDescontoValido, valorMinimoPedidoValido, valorMax)
         );
     }
-
-
-
 }

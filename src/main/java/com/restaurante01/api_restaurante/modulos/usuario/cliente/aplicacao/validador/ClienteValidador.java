@@ -7,7 +7,7 @@ import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidad
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.repositorio.ClienteRepositorio;
 import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.exceptions.CpfInvalidoExcecao;
 import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.exceptions.EmailInvalidoExcecao;
-import com.restaurante01.api_restaurante.modulos.usuario.operador.dominio.repositorio.OperadorRepositorio; // Idealmente a interface de domínio
+import com.restaurante01.api_restaurante.modulos.usuario.operador.dominio.repositorio.OperadorRepositorio;
 import org.springframework.stereotype.Component;
 
 @Component

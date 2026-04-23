@@ -2,13 +2,10 @@ package com.restaurante01.api_restaurante.modulos.cupom.infraestrutura.adaptador
 
 import com.restaurante01.api_restaurante.modulos.cupom.aplicacao.casodeuso.ValidarCupomCasoDeUso;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.Cupom;
-import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.TipoDesconto;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoCupomPorta;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.CupomUtilizado;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.CupomConsumido;
 import org.springframework.stereotype.Component;
-
-import java.math.BigDecimal;
 
 @Component
 public class CupomPedidoAdaptador implements PedidoCupomPorta {

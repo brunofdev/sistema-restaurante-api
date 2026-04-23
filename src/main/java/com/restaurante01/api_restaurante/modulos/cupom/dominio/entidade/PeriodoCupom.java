@@ -50,6 +50,12 @@ public class PeriodoCupom {
         }
     }
 
+    public boolean estaVigente() {
+        LocalDateTime agora = LocalDateTime.now();
+        return agora.isEqual(toInicio()) || agora.isEqual(toFim())
+                || (agora.isAfter(toInicio()) && agora.isBefore(toFim()));
+    }
+
     public LocalDateTime toInicio() { return LocalDateTime.of(dataInicio, horaInicio); }
     public LocalDateTime toFim()    { return LocalDateTime.of(dataFim,    horaFim);    }
 

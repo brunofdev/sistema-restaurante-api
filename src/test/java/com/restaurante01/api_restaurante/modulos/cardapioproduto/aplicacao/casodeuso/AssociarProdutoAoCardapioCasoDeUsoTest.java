@@ -1,7 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.cardapioproduto.aplicacao.casodeuso;
 
 import com.restaurante01.api_restaurante.modulos.cardapio.api.dto.saida.CardapioDTO;
-import com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.casodeuso.BuscarCardapioPorIdCasoDeUso;
 import com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.casodeuso.associacao.casodeuso.AssociarProdutoAoCardapioCasoDeUso;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Cardapio;
 import com.restaurante01.api_restaurante.modulos.cardapio.api.dto.entrada.AssociacaoEntradaDTO;
@@ -14,7 +13,6 @@ import com.restaurante01.api_restaurante.modulos.cardapio.dominio.porta.associac
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.porta.associacao.ProdutoPorta;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.repositorio.CardapioProdutoRepositorio;
 import com.restaurante01.api_restaurante.modulos.produto.api.dto.entrada.ProdutoDTO;
-import com.restaurante01.api_restaurante.modulos.produto.aplicacao.casodeuso.ObterProdutoPorIdCasoDeUso;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

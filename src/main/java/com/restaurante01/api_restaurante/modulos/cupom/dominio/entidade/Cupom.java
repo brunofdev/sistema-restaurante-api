@@ -72,7 +72,8 @@ public class Cupom extends Auditable {
         }
         this.quantidade = quantidade;
     }
-    //Melhorar regras de valores, pensar em criar um ValueObject com regras ou Definir regras no Enum
+
+    //Substituir VALORES por um VALOROBJECT que agrupe os tres valores, com regras proprias
     public void setValorParaDesconto(BigDecimal valor){
         if(valor == null || valor.compareTo(BigDecimal.ZERO) <= 0){
             throw new ValorDescontoCupomExcecao("Valor atribuido para desconto deve ser uma Porcentagem ou Valor monetario, não pode ser zero ou negativo");
@@ -80,11 +81,8 @@ public class Cupom extends Auditable {
         this.valorParaDesconto = valor;
     }
     public void setValorTotalMinPedido(BigDecimal valor){
-        if(valor == null || valor.compareTo(BigDecimal.ZERO) < 0){
-            throw new ValorMinPedidoExcecao("Valor total minimo do pedido não deve ser 0");
-        }
-        if(valor.compareTo(BigDecimal.valueOf(40)) < 0){
-            throw new ValorMinPedidoExcecao("Valor total minimo do pedido não deve ser 0");
+        if(valor.compareTo(BigDecimal.valueOf(20)) < 0){
+            throw new ValorMinPedidoExcecao("Valor total minimo do pedido não deve ser 20");
         }
         this.valorTotalMinPedido = valor;
     }
@@ -95,6 +93,18 @@ public class Cupom extends Auditable {
         if(this.tipoDesconto == TipoDesconto.PORCENTAGEM && valor.compareTo(BigDecimal.valueOf(300)) > 0){
             throw new ValorMaxPedidoExcecao("Cupons com regra de desconto sob calculo de porcentagem não são aceitos em pedidos acima de R$300,00");
         }
+        if(this.valorTotalMinPedido.compareTo(valor) > 0){
+            throw new ValorMaxPedidoExcecao("valorTotalMaxPedido não poder ser menor que o valoTotalMinPedido");
+        }
         this.valorTotalMaxPedido = valor;
+
+    }
+    public boolean possuiQtdDisponivelParaConsumo(){
+        return this.quantidade > 0;
+    }
+    private void verificaValorMinMenorQueValorMax(BigDecimal valorTotalMinPedido, BigDecimal valorTotalMaxPedido){
+        if(valorTotalMinPedido.compareTo(valorTotalMaxPedido) > 0){
+            throw new CupomInvalidoExcecao("Valor min do pedido não pode ser maior que valor maximo do pedido");
+        }
     }
 }
