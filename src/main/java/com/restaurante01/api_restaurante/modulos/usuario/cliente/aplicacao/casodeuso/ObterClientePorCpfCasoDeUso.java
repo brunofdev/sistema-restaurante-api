@@ -1,5 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.usuario.cliente.aplicacao.casodeuso;
 
+import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Cpf;
 import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.exceptions.UsuarioNaoEncontradoExcecao;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.api.dto.saida.ClienteDTO;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.aplicacao.mapeador.ClienteMapeador;
@@ -20,7 +21,7 @@ public class ObterClientePorCpfCasoDeUso {
 
     public Cliente retornarEntidade(String cpf) {
         return repository
-                .buscarPorCpf(cpf)
+                .buscarPorCpf(new Cpf(cpf))
                 .orElseThrow(() -> new UsuarioNaoEncontradoExcecao("Cliente não encontrado com o CPF informado"));
     }
 

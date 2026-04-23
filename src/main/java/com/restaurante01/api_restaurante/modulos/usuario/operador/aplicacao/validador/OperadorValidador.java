@@ -1,6 +1,8 @@
 package com.restaurante01.api_restaurante.modulos.usuario.operador.aplicacao.validador;
 
 import com.restaurante01.api_restaurante.compartilhado.utils.validadorcpf.ValidadorCpf;
+import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Cpf;
+import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Email;
 import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.exceptions.CpfInvalidoExcecao;
 import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.exceptions.EmailInvalidoExcecao;
 import com.restaurante01.api_restaurante.modulos.usuario.operador.dominio.repositorio.OperadorRepositorio;
@@ -35,13 +37,13 @@ public class OperadorValidador {
     }
 
     private void checaEmailExiste(String email){
-        if (operadorRepositorio.existePorEmail(email)) {
+        if (operadorRepositorio.existePorEmail(new Email(email))) {
             throw new EmailInvalidoExcecao("Email já cadastrado no sistema");
         }
     }
 
     private void checaCpfExiste(String cpf){
-        if (operadorRepositorio.existePorCpf(cpf)) {
+        if (operadorRepositorio.existePorCpf(new Cpf(cpf))) {
             throw new CpfInvalidoExcecao("CPF já cadastrado no sistema");
         }
     }

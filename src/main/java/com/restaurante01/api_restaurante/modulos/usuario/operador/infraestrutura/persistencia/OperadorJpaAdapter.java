@@ -3,6 +3,7 @@ package com.restaurante01.api_restaurante.modulos.usuario.operador.infraestrutur
 import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Cpf;
 import com.restaurante01.api_restaurante.modulos.usuario.operador.dominio.entidade.Operador;
 import com.restaurante01.api_restaurante.modulos.usuario.operador.dominio.repositorio.OperadorRepositorio;
+import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Email;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -28,8 +29,8 @@ public class OperadorJpaAdapter implements OperadorRepositorio {
     }
 
     @Override
-    public Optional<Operador> buscarPorCpf(String cpf) {
-        return jpa.findByCpf(new Cpf(cpf));
+    public Optional<Operador> buscarPorCpf(Cpf cpf) {
+        return jpa.findByCpf(cpf);
     }
 
 
@@ -39,12 +40,12 @@ public class OperadorJpaAdapter implements OperadorRepositorio {
     }
 
     @Override
-    public boolean existePorCpf(String cpf) {
-        return jpa.existsByCpf(new Cpf(cpf));
+    public boolean existePorCpf(Cpf cpf) {
+        return jpa.existsByCpf(cpf);
     }
 
     @Override
-    public boolean existePorEmail(String email) {
+    public boolean existePorEmail(Email email) {
         return jpa.existsByEmail(email);
     }
 

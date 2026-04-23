@@ -47,9 +47,9 @@ public class PedidoOperadorControlador {
 
     @Operation(summary = "Listar todos os pedidos do sistema", description = "Retorna todos os pedidos registrados com paginação.")
     @GetMapping("/todos")
-    @PreAuthorize("hasAnyRole('ADMIN1', 'ADMIN2', 'ADMIN3')")
     public ResponseEntity<ApiResponse<Page<PedidoDetalhadoDTO>>> listarPedidosFeitos(
-            @ParameterObject @PageableDefault(size = 10, sort = "dataCriacao", direction = Sort.Direction.DESC) Pageable pageable) {
+            @ParameterObject
+            @PageableDefault(sort = "dataCriacao", direction = Sort.Direction.DESC) Pageable pageable) {
 
         Page<PedidoDetalhadoDTO> paginaDePedidos = listarTodosPedidos.executar(pageable);
         return ResponseEntity.ok(ApiResponse.success("Recurso obtido", paginaDePedidos));
@@ -57,9 +57,9 @@ public class PedidoOperadorControlador {
 
     @Operation(summary = "Listar pedidos realizados hoje", description = "Filtra e retorna apenas os pedidos feitos na data atual.")
     @GetMapping("/hoje")
-    @PreAuthorize("hasAnyRole('ADMIN1', 'ADMIN2', 'ADMIN3')")
     public ResponseEntity<ApiResponse<Page<PedidoCriadoDTO>>> listarPedidosDoDiaAtual(
-            @ParameterObject @PageableDefault(size = 10, sort = "dataCriacao", direction = Sort.Direction.DESC) Pageable pageable) {
+            @ParameterObject
+            @PageableDefault(sort = "dataCriacao", direction = Sort.Direction.DESC) Pageable pageable) {
 
         Page<PedidoCriadoDTO> paginaDePedidos = listarPedidosDoDia.executar(pageable);
         return ResponseEntity.ok(ApiResponse.success("Recurso obtido", paginaDePedidos));
@@ -67,7 +67,6 @@ public class PedidoOperadorControlador {
 
     @Operation(summary = "Atualizar status de um pedido", description = "Altera o status do pedido (ex: ENTREGUE) e dispara notificações WebSocket.")
     @PatchMapping("/{id}/status")
-    @PreAuthorize("hasAnyRole('ADMIN1', 'ADMIN2', 'ADMIN3')")
     public ResponseEntity<ApiResponse<PedidoCriadoDTO>> atualizarStatusPedido(
             @PathVariable Long id,
             @RequestBody StatusPedidoDTO novoStatus) {

@@ -4,6 +4,7 @@ import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidad
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.repositorio.ClienteRepositorio;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.infraestrutura.persistencia.ClienteJPA;
 import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Cpf;
+import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Email;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -30,13 +31,13 @@ public class ClienteJpaAdaptador implements ClienteRepositorio {
     }
 
     @Override
-    public Optional<Cliente> buscarPorEmail(String email) {
+    public Optional<Cliente> buscarPorEmail(Email email) {
         return jpa.findByEmail(email);
     }
 
     @Override
-    public Optional<Cliente> buscarPorCpf(String cpf) {
-        return jpa.findByCpf(new Cpf(cpf));
+    public Optional<Cliente> buscarPorCpf(Cpf cpf) {
+        return jpa.findByCpf(cpf);
     }
 
     @Override
@@ -45,13 +46,13 @@ public class ClienteJpaAdaptador implements ClienteRepositorio {
     }
 
     @Override
-    public boolean existePorEmail(String email) {
+    public boolean existePorEmail(Email email) {
         return jpa.existsByEmail(email);
     }
 
     @Override
-    public boolean existePorCpf(String cpf) {
-        return jpa.existsByCpf(new Cpf(cpf));
+    public boolean existePorCpf(Cpf cpf) {
+        return jpa.existsByCpf(cpf);
     }
 
     @Override

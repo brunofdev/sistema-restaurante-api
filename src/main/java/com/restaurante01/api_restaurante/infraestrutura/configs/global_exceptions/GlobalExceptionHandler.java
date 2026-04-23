@@ -72,7 +72,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiResponse<Object>> handleIntegrity(DataIntegrityViolationException ex) {
-        String detalhe = ex.getMostSpecificCause() != null ? ex.getMostSpecificCause().getMessage() : "Violação de integridade no banco.";
+        ex.getMostSpecificCause();
+        String detalhe = ex.getMostSpecificCause().getMessage();
         return buildError(HttpStatus.CONFLICT, "Data Integrity Violation", detalhe, "Conflito ao processar os dados.");
     }
 

@@ -63,7 +63,8 @@ public class PedidoClienteControlador {
     @GetMapping("/historico")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ApiResponse<Page<PedidoCriadoDTO>>> listarPedidosDoCliente(
-            @ParameterObject @PageableDefault(size = 10, sort = "dataCriacao", direction = Sort.Direction.DESC) Pageable pageable,
+            @ParameterObject
+            @PageableDefault(sort = "dataCriacao", direction = Sort.Direction.DESC) Pageable pageable,
             @AuthenticationPrincipal Usuario usuarioLogado) {
 
         if (usuarioLogado instanceof Cliente cliente) {
