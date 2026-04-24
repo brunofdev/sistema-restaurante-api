@@ -54,9 +54,9 @@ public class Cupom extends Auditable {
         cupom.setValorParaDesconto(valorParaDesconto);
         cupom.setValorTotalMinPedido(valorTotalMinPedido);
         cupom.setValorTotalMaxPedido(valorTotalMaxPedido);
+        verificaValorMinMenorQueValorMax(valorTotalMinPedido, valorTotalMaxPedido);
         return cupom;
     }
-//PRECISA CRIAR REGRA PARA DIMINUIR A QUANTIDADE APÓS O CONSUMO DO CUPOM
     public void adicionarCupom(String codigo){
         this.codigoCupom = new CodigoCupom(codigo);
     }
@@ -73,7 +73,7 @@ public class Cupom extends Auditable {
         this.quantidade = quantidade;
     }
 
-    //Substituir VALORES por um VALOROBJECT que agrupe os tres valores, com regras proprias
+    //Agrupar os VALORES em um VALOROBJECT que represente os tres valores, com regras proprias
     public void setValorParaDesconto(BigDecimal valor){
         if(valor == null || valor.compareTo(BigDecimal.ZERO) <= 0){
             throw new ValorDescontoCupomExcecao("Valor atribuido para desconto deve ser uma Porcentagem ou Valor monetario, não pode ser zero ou negativo");
@@ -102,9 +102,16 @@ public class Cupom extends Auditable {
     public boolean possuiQtdDisponivelParaConsumo(){
         return this.quantidade > 0;
     }
-    private void verificaValorMinMenorQueValorMax(BigDecimal valorTotalMinPedido, BigDecimal valorTotalMaxPedido){
+    private static void verificaValorMinMenorQueValorMax(BigDecimal valorTotalMinPedido, BigDecimal valorTotalMaxPedido){
         if(valorTotalMinPedido.compareTo(valorTotalMaxPedido) > 0){
             throw new CupomInvalidoExcecao("Valor min do pedido não pode ser maior que valor maximo do pedido");
         }
     }
+    public void subtrairQuantidade(){
+        if(this.quantidade <= 0){
+            throw new CupomNaoPodeSerConsumidoExcecao("quantidade do cupom esta em zero ou negativa, nao pode diminuir");
+        }
+        this.quantidade -= 1;
+    }
+
 }

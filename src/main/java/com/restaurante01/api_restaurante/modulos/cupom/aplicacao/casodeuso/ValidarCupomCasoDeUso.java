@@ -1,5 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.cupom.aplicacao.casodeuso;
 
+import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.CodigoCupom;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.repositorio.CupomRepositorio;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.Cupom;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.PeriodoCupom;
@@ -21,7 +22,7 @@ public class ValidarCupomCasoDeUso {
     }
 
     public Cupom executar(String codigo, BigDecimal valorBrutoTotalPedido){
-        Cupom cupom = repositorio.obterPorCodigo(codigo);
+        Cupom cupom = repositorio.obterPorCodigo(new CodigoCupom(codigo));
         validarPeriodo(cupom.getPeriodoCupom());
         validarQuantidade(cupom);
         validarSeEstaAtivo(cupom);

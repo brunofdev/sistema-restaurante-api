@@ -7,6 +7,8 @@ import com.restaurante01.api_restaurante.modulos.cupom.dominio.excecao.CupomInva
 import com.restaurante01.api_restaurante.modulos.cupom.infraestrutura.persistencia.CupomJPA;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class CupomJpaAdaptador implements CupomRepositorio {
 
@@ -17,7 +19,12 @@ public class CupomJpaAdaptador implements CupomRepositorio {
     }
 
     @Override
-    public Cupom obterPorCodigo(String codigo){
-        return jpa.findByCodigoCupom(new CodigoCupom(codigo)).orElseThrow(() -> new CupomInvalidoExcecao("Cupom Informado: >> " + codigo +  " << é Inválido"));
+    public Cupom obterPorCodigo(CodigoCupom codigo){
+        return jpa.findByCodigoCupom(codigo).orElseThrow(() -> new CupomInvalidoExcecao("Cupom Informado: >> " + codigo +  " << é Inválido"));
+    }
+
+    @Override
+    public void salvar(Cupom cupom){
+        jpa.save(cupom);
     }
 }
