@@ -23,9 +23,9 @@ public class ValidarCupomCasoDeUso {
 
     public Cupom executar(String codigo, BigDecimal valorBrutoTotalPedido){
         Cupom cupom = repositorio.obterPorCodigo(new CodigoCupom(codigo));
+        validarSeEstaAtivo(cupom);
         validarPeriodo(cupom.getPeriodoCupom());
         validarQuantidade(cupom);
-        validarSeEstaAtivo(cupom);
         validarSeEstaDentroValorMin(cupom, valorBrutoTotalPedido);
         validarSeEstaDentroValorMax(cupom, valorBrutoTotalPedido);
         return cupom;

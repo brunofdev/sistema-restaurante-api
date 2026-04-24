@@ -75,6 +75,24 @@ class ConsumirCupomCasoDeUsoTest {
         assertEquals(cupomSalvo.getCodigoCupom(), cupomEncontrado.getCodigoCupom());
     }
     @Test
+    @DisplayName("Deve subtrair e verificar se cupom continua ativo")
+    void deveVerificarSeCupomEstaAtivoPosConsumo(){
+        CodigoCupom codigoCupom = new CodigoCupom("CUPOM10");
+        Cupom cupomEncontrado = CupomBuilder.umCupom().comCodigo("CUPOM10").ativo().comQuantidade(10).build();
+
+        when(repositorio.obterPorCodigo(codigoCupom)).thenReturn(cupomEncontrado);
+        casoDeUso.executar(codigoCupom);
+
+        ArgumentCaptor<Cupom> captor = ArgumentCaptor.forClass(Cupom.class);
+        verify(repositorio).salvar(captor.capture());
+
+        Cupom cupomSalvo = captor.getValue();
+        assertTrue(cupomSalvo.isEstaAtivo());
+        assertEquals(9, cupomSalvo.getQuantidade());
+        assertEquals(cupomSalvo.getCodigoCupom(), cupomEncontrado.getCodigoCupom());
+    }
+
+    @Test
     @DisplayName("Deve verificar se o produto foi desativado após consumo da ultima unidade")
     void deveDesativarCupomAposConsumoUltimaUnidade(){
         CodigoCupom codigoCupom = new CodigoCupom("CUPOM10");

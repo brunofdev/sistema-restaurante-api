@@ -129,7 +129,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                 "VALIDO1",
                 periodoCupom,
                 true,
-                10,
+                3,
                 TipoDesconto.PORCENTAGEM,
                 valorParaDesconto,
                 valorMinPedido,
