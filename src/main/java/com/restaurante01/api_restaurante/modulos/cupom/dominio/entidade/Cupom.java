@@ -112,6 +112,10 @@ public class Cupom extends Auditable {
             throw new CupomNaoPodeSerConsumidoExcecao("quantidade do cupom esta em zero ou negativa, nao pode diminuir");
         }
         this.quantidade -= 1;
+        if(quantidade == 0){
+            setEstaAtivo(false);
+        }
+
     }
 
 }

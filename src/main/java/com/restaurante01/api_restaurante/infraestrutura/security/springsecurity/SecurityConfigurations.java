@@ -41,7 +41,8 @@ public class SecurityConfigurations {
             "/cardapio-produto/publico/**",
             "/cliente/cadastro",
             "/operador/cadastro", //teste apenas
-            "/ws/**"
+            "/ws/**",
+            "/cupom" //apenas para testar
     };
 
     // ROTAS PROTEGIDAS

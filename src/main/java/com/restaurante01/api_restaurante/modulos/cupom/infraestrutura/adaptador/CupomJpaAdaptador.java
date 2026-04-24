@@ -7,6 +7,7 @@ import com.restaurante01.api_restaurante.modulos.cupom.dominio.excecao.CupomInva
 import com.restaurante01.api_restaurante.modulos.cupom.infraestrutura.persistencia.CupomJPA;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -26,5 +27,10 @@ public class CupomJpaAdaptador implements CupomRepositorio {
     @Override
     public void salvar(Cupom cupom){
         jpa.save(cupom);
+    }
+
+    @Override
+    public List<Cupom> obterTodosOsCupons(){
+        return jpa.findAll();
     }
 }

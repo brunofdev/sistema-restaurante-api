@@ -74,4 +74,25 @@ class ConsumirCupomCasoDeUsoTest {
         assertEquals(9, cupomSalvo.getQuantidade());
         assertEquals(cupomSalvo.getCodigoCupom(), cupomEncontrado.getCodigoCupom());
     }
+    @Test
+    @DisplayName("Deve verificar se o produto foi desativado após consumo da ultima unidade")
+    void deveDesativarCupomAposConsumoUltimaUnidade(){
+        CodigoCupom codigoCupom = new CodigoCupom("CUPOM10");
+        Cupom cupomEncontrado = CupomBuilder.umCupom().ativo().comCodigo("CUPOM10").comQuantidade(1).build();
+
+        assertTrue(cupomEncontrado.isEstaAtivo());
+
+        when(repositorio.obterPorCodigo(codigoCupom)).thenReturn(cupomEncontrado);
+        casoDeUso.executar(codigoCupom);
+
+        ArgumentCaptor<Cupom> captor = ArgumentCaptor.forClass(Cupom.class);
+        verify(repositorio).salvar(captor.capture());
+
+        Cupom cupomSalvo = captor.getValue();
+
+        assertEquals(0, cupomSalvo.getQuantidade());
+        assertFalse(cupomSalvo.isEstaAtivo());
+        assertEquals(cupomSalvo.getCodigoCupom(), cupomEncontrado.getCodigoCupom());
+
+    }
 }
