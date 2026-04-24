@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface CupomJPA extends JpaRepository<Cupom, Long> {
     Optional<Cupom> findByCodigoCupom(CodigoCupom codigoCupom);
+    boolean existsByCodigoCupom(CodigoCupom codigoCupom);
 }

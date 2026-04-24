@@ -1,6 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade;
 
-import com.restaurante01.api_restaurante.modulos.cupom.dominio.excecao.CupomInvalidoExcecao;
+import com.restaurante01.api_restaurante.modulos.cupom.dominio.excecao.CodigoCupomInvalidoExcecao;
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
 
@@ -23,18 +23,18 @@ public class CodigoCupom {
 
     private void validar(String valor) {
         if (valor == null || valor.isBlank()) {
-            throw new CupomInvalidoExcecao("Código do cupom não pode ser nulo ou vazio");
+            throw new CodigoCupomInvalidoExcecao("Código do cupom não pode ser nulo ou vazio");
         }
         if (valor.length() < TAMANHO_MINIMO) {
-            throw new CupomInvalidoExcecao(
+            throw new CodigoCupomInvalidoExcecao(
                     "Código do cupom deve ter no mínimo " + TAMANHO_MINIMO + " caracteres");
         }
         if (valor.length() > TAMANHO_MAXIMO) {
-            throw new CupomInvalidoExcecao(
+            throw new CodigoCupomInvalidoExcecao(
                     "Código do cupom deve ter no máximo " + TAMANHO_MAXIMO + " caracteres");
         }
         if (!valor.matches(FORMATO_VALIDO)) {
-            throw new CupomInvalidoExcecao(
+            throw new CodigoCupomInvalidoExcecao(
                     "Código do cupom deve conter apenas letras maiúsculas e números, sem espaços ou caracteres especiais");
         }
     }

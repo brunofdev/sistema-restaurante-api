@@ -17,5 +17,5 @@ public class ListarTodosCuponsCasoDeUso {
 
     public List<Cupom> executar(){
         return cupomRepositorio.obterTodosOsCupons();
-    };
+    }
 }

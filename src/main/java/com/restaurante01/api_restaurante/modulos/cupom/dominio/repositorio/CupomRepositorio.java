@@ -9,4 +9,5 @@ public interface CupomRepositorio {
     Cupom obterPorCodigo(CodigoCupom codigo);
     void salvar(Cupom cupom);
     List<Cupom> obterTodosOsCupons();
+    boolean existeCodigoCupom(CodigoCupom codigoCupom);
 }
