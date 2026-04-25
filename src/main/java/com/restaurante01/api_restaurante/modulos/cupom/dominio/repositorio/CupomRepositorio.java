@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CupomRepositorio {
-    Cupom obterPorCodigo(CodigoCupom codigo);
+    Optional<Cupom> obterPorCodigo(CodigoCupom codigo);
     void salvar(Cupom cupom);
     List<Cupom> obterTodosOsCupons();
     boolean existeCodigoCupom(CodigoCupom codigoCupom);

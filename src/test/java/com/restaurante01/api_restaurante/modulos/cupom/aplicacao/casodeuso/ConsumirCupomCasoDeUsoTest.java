@@ -1,6 +1,4 @@
 package com.restaurante01.api_restaurante.modulos.cupom.aplicacao.casodeuso;
-
-
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.CodigoCupom;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.Cupom;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.builder.CupomBuilder;
@@ -12,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-
+import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -29,10 +27,9 @@ class ConsumirCupomCasoDeUsoTest {
     void deveLancarExcecaoQuandoCupomNaoEncontrado(){
         CodigoCupom codigoCupom = new CodigoCupom("CUPOM10");
 
-        when(repositorio.obterPorCodigo(codigoCupom)).thenThrow(new CupomInvalidoExcecao("Cupom Informado: >> \" + codigo +  \" << é Inválido\""));
+        when(repositorio.obterPorCodigo(codigoCupom)).thenReturn(Optional.empty());
 
         assertThrows(CupomInvalidoExcecao.class, () -> casoDeUso.executar(codigoCupom));
-
     }
     @Test
     @DisplayName("Deve lançar excecao quando Cupom esta com quantidade zero")
@@ -40,7 +37,7 @@ class ConsumirCupomCasoDeUsoTest {
         CodigoCupom codigoCupom = new CodigoCupom("CUPOM10");
         Cupom cupomEncontrado = CupomBuilder.umCupom().comCodigo("CUPOM10").comQuantidade(0).build();
 
-        when(repositorio.obterPorCodigo(codigoCupom)).thenReturn(cupomEncontrado);
+        when(repositorio.obterPorCodigo(codigoCupom)).thenReturn(Optional.of(cupomEncontrado));
 
         assertThrows(CupomNaoPodeSerConsumidoExcecao.class, () -> casoDeUso.executar(codigoCupom));
     }
@@ -51,7 +48,7 @@ class ConsumirCupomCasoDeUsoTest {
         CodigoCupom codigoCupom = new CodigoCupom("CUPOM10");
         Cupom cupomEncontrado = CupomBuilder.umCupom().comCodigo("CUPOM10").comQuantidade(10).build();
 
-        when(repositorio.obterPorCodigo(codigoCupom)).thenReturn(cupomEncontrado);
+        when(repositorio.obterPorCodigo(codigoCupom)).thenReturn(Optional.of(cupomEncontrado));
         Cupom cupomConsumido = casoDeUso.executar(codigoCupom);
 
         assertEquals(cupomEncontrado.getCodigoCupom(), cupomConsumido.getCodigoCupom());
@@ -64,7 +61,7 @@ class ConsumirCupomCasoDeUsoTest {
         CodigoCupom codigoCupom = new CodigoCupom("CUPOM10");
         Cupom cupomEncontrado = CupomBuilder.umCupom().comCodigo("CUPOM10").comQuantidade(10).build();
 
-        when(repositorio.obterPorCodigo(codigoCupom)).thenReturn(cupomEncontrado);
+        when(repositorio.obterPorCodigo(codigoCupom)).thenReturn(Optional.of(cupomEncontrado));
         casoDeUso.executar(codigoCupom);
 
         ArgumentCaptor<Cupom> captor = ArgumentCaptor.forClass(Cupom.class);
@@ -80,7 +77,7 @@ class ConsumirCupomCasoDeUsoTest {
         CodigoCupom codigoCupom = new CodigoCupom("CUPOM10");
         Cupom cupomEncontrado = CupomBuilder.umCupom().comCodigo("CUPOM10").ativo().comQuantidade(10).build();
 
-        when(repositorio.obterPorCodigo(codigoCupom)).thenReturn(cupomEncontrado);
+        when(repositorio.obterPorCodigo(codigoCupom)).thenReturn(Optional.of(cupomEncontrado));
         casoDeUso.executar(codigoCupom);
 
         ArgumentCaptor<Cupom> captor = ArgumentCaptor.forClass(Cupom.class);
@@ -100,7 +97,7 @@ class ConsumirCupomCasoDeUsoTest {
 
         assertTrue(cupomEncontrado.isEstaAtivo());
 
-        when(repositorio.obterPorCodigo(codigoCupom)).thenReturn(cupomEncontrado);
+        when(repositorio.obterPorCodigo(codigoCupom)).thenReturn(Optional.of(cupomEncontrado));
         casoDeUso.executar(codigoCupom);
 
         ArgumentCaptor<Cupom> captor = ArgumentCaptor.forClass(Cupom.class);

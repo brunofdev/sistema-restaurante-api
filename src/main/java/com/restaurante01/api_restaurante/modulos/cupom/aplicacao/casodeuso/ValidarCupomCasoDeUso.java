@@ -16,13 +16,12 @@ import java.math.BigDecimal;
 public class ValidarCupomCasoDeUso {
 
     private final CupomRepositorio repositorio;
-
     public ValidarCupomCasoDeUso(CupomRepositorio repositorio) {
         this.repositorio = repositorio;
     }
 
     public Cupom executar(String codigo, BigDecimal valorBrutoTotalPedido){
-        Cupom cupom = repositorio.obterPorCodigo(new CodigoCupom(codigo));
+        Cupom cupom = buscarPorCodigo(new CodigoCupom(codigo));
         validarSeEstaAtivo(cupom);
         validarPeriodo(cupom.getPeriodoCupom());
         validarQuantidade(cupom);
@@ -30,6 +29,9 @@ public class ValidarCupomCasoDeUso {
         validarSeEstaDentroValorMax(cupom, valorBrutoTotalPedido);
         return cupom;
 
+    }
+    private  Cupom buscarPorCodigo (CodigoCupom codigoCupom){
+        return repositorio.obterPorCodigo(codigoCupom).orElseThrow(() -> new CupomInvalidoExcecao("Cupom Informado: >> " + codigoCupom +  " << é Inválido"));
     }
     private void validarPeriodo(PeriodoCupom periodoCupom){
         if(!periodoCupom.estaVigente()){

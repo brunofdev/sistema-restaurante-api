@@ -20,8 +20,8 @@ public class CupomJpaAdaptador implements CupomRepositorio {
     }
 
     @Override
-    public Cupom obterPorCodigo(CodigoCupom codigo){
-        return jpa.findByCodigoCupom(codigo).orElseThrow(() -> new CupomInvalidoExcecao("Cupom Informado: >> " + codigo +  " << é Inválido"));
+    public Optional<Cupom> obterPorCodigo(CodigoCupom codigo){
+        return jpa.findByCodigoCupom(codigo);
     }
 
     @Override

@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -35,7 +36,8 @@ class ValidarCupomCasoDeUsoTest {
         CodigoCupom codigoCupom = new CodigoCupom("TESTE123");
         BigDecimal valorTotalBrutoPedido = new BigDecimal(200);
 
-        when(repositorio.obterPorCodigo(codigoCupom)).thenThrow(new CupomInvalidoExcecao("Cupom Informado: >> \" + codigo +  \" << é Inválido\""));
+        when(repositorio.obterPorCodigo(codigoCupom))
+                .thenReturn(Optional.empty());
 
         assertThrows(CupomInvalidoExcecao.class, () -> casoDeUso.executar(cupom, valorTotalBrutoPedido));
     }
@@ -48,7 +50,7 @@ class ValidarCupomCasoDeUsoTest {
         BigDecimal valorTotalBrutoPedido = new BigDecimal(200);
         Cupom cupomLocalizado  = CupomBuilder.umCupom().expirado().build();
 
-        when(repositorio.obterPorCodigo(codigoCupom)).thenReturn(cupomLocalizado);
+        when(repositorio.obterPorCodigo(codigoCupom)).thenReturn(Optional.of(cupomLocalizado));
 
         assertThrows(PeriodoInvalidoExcecao.class, () -> casoDeUso.executar(cupom, valorTotalBrutoPedido));
     }
@@ -61,7 +63,7 @@ class ValidarCupomCasoDeUsoTest {
         BigDecimal valorTotalBrutoPedido = new BigDecimal(200);
         Cupom cupomLocalizado = CupomBuilder.umCupom().comQuantidade(0).build();
 
-        when(repositorio.obterPorCodigo(codigoCupom)).thenReturn(cupomLocalizado);
+        when(repositorio.obterPorCodigo(codigoCupom)).thenReturn(Optional.of(cupomLocalizado));
 
         assertThrows(CupomInvalidoExcecao.class, () -> casoDeUso.executar(cupom, valorTotalBrutoPedido));
     }
@@ -74,7 +76,7 @@ class ValidarCupomCasoDeUsoTest {
         BigDecimal valorTotalBrutoPedido = new BigDecimal(200);
         Cupom cupomLocalizado = CupomBuilder.umCupom().inativo().build();
 
-        when(repositorio.obterPorCodigo(codigoCupom)).thenReturn(cupomLocalizado);
+        when(repositorio.obterPorCodigo(codigoCupom)).thenReturn(Optional.of(cupomLocalizado));
 
         assertThrows(CupomInvalidoExcecao.class, () -> casoDeUso.executar(cupom, valorTotalBrutoPedido));
 
@@ -88,7 +90,7 @@ class ValidarCupomCasoDeUsoTest {
         BigDecimal valorTotalBrutoPedido = new BigDecimal(50);
         Cupom cupomLocalizado = CupomBuilder.umCupom().comValorMinPedido(new BigDecimal(100)).build();
 
-        when(repositorio.obterPorCodigo(codigoCupom)).thenReturn(cupomLocalizado);
+        when(repositorio.obterPorCodigo(codigoCupom)).thenReturn(Optional.of(cupomLocalizado));
 
         assertThrows(ValorMinPedidoExcecao.class, () -> casoDeUso.executar(cupom, valorTotalBrutoPedido));
     }
@@ -101,7 +103,7 @@ class ValidarCupomCasoDeUsoTest {
         BigDecimal valorTotalBrutoPedido = new BigDecimal(150);
         Cupom cupomLocalizado = CupomBuilder.umCupom().comValorMaxPedido(new BigDecimal(100)).build();
 
-        when(repositorio.obterPorCodigo(codigoCupom)).thenReturn(cupomLocalizado);
+        when(repositorio.obterPorCodigo(codigoCupom)).thenReturn(Optional.of(cupomLocalizado));
 
         assertThrows(ValorMaxPedidoExcecao.class, () -> casoDeUso.executar(cupom, valorTotalBrutoPedido));
     }
@@ -114,7 +116,7 @@ class ValidarCupomCasoDeUsoTest {
         BigDecimal valorTotalBrutoPedido = new BigDecimal(150);
         Cupom cupomLocalizado = CupomBuilder.umCupom().comCodigo(cupom).build();
 
-        when(repositorio.obterPorCodigo(codigoCupom)).thenReturn(cupomLocalizado);
+        when(repositorio.obterPorCodigo(codigoCupom)).thenReturn(Optional.of(cupomLocalizado));
 
         Cupom cupomValido = casoDeUso.executar(cupom, valorTotalBrutoPedido);
 
