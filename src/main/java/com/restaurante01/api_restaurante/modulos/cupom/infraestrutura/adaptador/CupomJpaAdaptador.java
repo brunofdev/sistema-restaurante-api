@@ -8,6 +8,7 @@ import com.restaurante01.api_restaurante.modulos.cupom.infraestrutura.persistenc
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class CupomJpaAdaptador implements CupomRepositorio {
@@ -39,8 +40,12 @@ public class CupomJpaAdaptador implements CupomRepositorio {
     }
 
     @Override
-    public Cupom obterPorId(Long id){
-        return jpa.findById(id).orElseThrow(() -> new CupomInvalidoExcecao("Cupom não encontrado com o id: " + id));
+    public Optional<Cupom> obterPorId(Long id){
+        return jpa.findById(id);
+    }
+    @Override
+    public void deletarCupom (Cupom cupom){
+        jpa.delete(cupom);
     }
 
 }

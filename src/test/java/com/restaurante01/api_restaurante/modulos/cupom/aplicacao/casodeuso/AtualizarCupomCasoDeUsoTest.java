@@ -18,6 +18,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -33,8 +35,6 @@ class AtualizarCupomCasoDeUsoTest {
 
     @InjectMocks
     AtualizarCupomCasoDeUso casoDeUso;
-
-
 
     @Test
     @DisplayName("Deve lançar exececao caso cupom a ser atualizado não seja encontrado")
@@ -57,7 +57,7 @@ class AtualizarCupomCasoDeUsoTest {
         CupomAdminDTO cupomRetornado = CupomAdminDTOBuilder.umCupomAdminDTO().comId(id).comCodigo(cupomAtualizadoDTO.codigo()).comPeriodo(periodoSaidaAtualizado).build();
 
 
-        when(repositorio.obterPorId(id)).thenReturn(cupomEncontrado);
+        when(repositorio.obterPorId(id)).thenReturn(Optional.of(cupomEncontrado));
         when(repositorio.existeCodigoCupom(codigoCupomAtualizado)).thenReturn(false);
         when(mapeador.mapearDtoDetalhado(cupomEncontrado)).thenReturn(cupomRetornado);
 
@@ -82,7 +82,7 @@ class AtualizarCupomCasoDeUsoTest {
         CupomAtualizadoDTO dto = CupomAtualizadoDTOBuilder.umCupomAtualizado().comCodigo("JAEXISTE").build();
         Cupom cupomEncontrado = CupomBuilder.umCupom().comCodigo("CODIGOANTIGO").build();
 
-        when(repositorio.obterPorId(id)).thenReturn(cupomEncontrado);
+        when(repositorio.obterPorId(id)).thenReturn(Optional.of(cupomEncontrado));
         when(repositorio.existeCodigoCupom(new CodigoCupom("JAEXISTE"))).thenReturn(true);
 
         assertThrows(CodigoCupomInvalidoExcecao.class, () -> casoDeUso.executar(id, dto));
@@ -98,7 +98,7 @@ class AtualizarCupomCasoDeUsoTest {
         Cupom cupomEncontrado = CupomBuilder.umCupom().comCodigo("MESMOCOD").build();
         CupomAdminDTO cupomRetornado = CupomAdminDTOBuilder.umCupomAdminDTO().comCodigo("MESMOCOD").build();
 
-        when(repositorio.obterPorId(id)).thenReturn(cupomEncontrado);
+        when(repositorio.obterPorId(id)).thenReturn(Optional.of(cupomEncontrado));
         when(repositorio.existeCodigoCupom(new CodigoCupom("MESMOCOD"))).thenReturn(true); // existe, mas é o mesmo!
         when(mapeador.mapearDtoDetalhado(cupomEncontrado)).thenReturn(cupomRetornado);
 

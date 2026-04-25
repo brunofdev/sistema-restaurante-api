@@ -4,11 +4,13 @@ import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.CodigoCu
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.Cupom;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CupomRepositorio {
     Cupom obterPorCodigo(CodigoCupom codigo);
     void salvar(Cupom cupom);
     List<Cupom> obterTodosOsCupons();
     boolean existeCodigoCupom(CodigoCupom codigoCupom);
-    Cupom obterPorId(Long id);
+    Optional<Cupom> obterPorId(Long id);
+    void deletarCupom(Cupom cupom);
 }

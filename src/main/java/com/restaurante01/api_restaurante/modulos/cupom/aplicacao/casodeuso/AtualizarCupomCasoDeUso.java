@@ -7,6 +7,7 @@ import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.CodigoCu
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.Cupom;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.PeriodoCupom;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.excecao.CodigoCupomInvalidoExcecao;
+import com.restaurante01.api_restaurante.modulos.cupom.dominio.excecao.CupomInvalidoExcecao;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.repositorio.CupomRepositorio;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,7 @@ public class AtualizarCupomCasoDeUso {
     }
 
     public CupomAdminDTO executar(Long id, CupomAtualizadoDTO dto){
-        Cupom cupom = repositorio.obterPorId(id);
+        Cupom cupom = repositorio.obterPorId(id).orElseThrow(() -> new CupomInvalidoExcecao("Cupom não encontrado com o id: " + id));;
         validaSeCodigoNaoExiste(dto.codigo(), cupom.getCodigoCupom().getValor());
         atualizaOsCampos(cupom, dto);
         repositorio.salvar(cupom);
