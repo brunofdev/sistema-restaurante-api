@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
-@Schema(description = "Objeto contendo as datas e horários de validade do cupom.")
+@Schema(description = "Objeto de entrada contendo as datas e horários de validade do cupom.")
 public record PeriodoCupomDTO(
 
         @Schema(description = "Data de início da validade no formato DD/MM/AAAA.", example = "14/04/2026")

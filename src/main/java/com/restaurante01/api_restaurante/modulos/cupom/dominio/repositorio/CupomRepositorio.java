@@ -10,4 +10,5 @@ public interface CupomRepositorio {
     void salvar(Cupom cupom);
     List<Cupom> obterTodosOsCupons();
     boolean existeCodigoCupom(CodigoCupom codigoCupom);
+    Cupom obterPorId(Long id);
 }

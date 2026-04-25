@@ -1,4 +1,8 @@
-package com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade;
+package com.restaurante01.api_restaurante.modulos.cupom.dominio.builder;
+
+import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.Cupom;
+import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.PeriodoCupom;
+import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.TipoDesconto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -8,6 +12,7 @@ public class CupomBuilder {
 
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+    private Long id = 23L;
     private String codigo = "CUPOM10";
     private boolean estaAtivo = true;
     private int quantidade = 10;
@@ -24,6 +29,11 @@ public class CupomBuilder {
 
     public static CupomBuilder umCupom() {
         return new CupomBuilder();
+    }
+
+    public CupomBuilder comId(Long id){
+        this.id = id;
+        return this;
     }
 
     // ── Código ────────────────────────────────────────────────────────────────

@@ -2,10 +2,15 @@ package com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade;
 
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.excecao.CodigoCupomInvalidoExcecao;
 import jakarta.persistence.Embeddable;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
+
 
 @Getter
 @Embeddable
+@EqualsAndHashCode(of = "valor")
+@ToString(of = "valor")
 public class CodigoCupom {
 
     private static final int TAMANHO_MINIMO = 5;
@@ -38,18 +43,4 @@ public class CodigoCupom {
                     "Código do cupom deve conter apenas letras maiúsculas e números, sem espaços ou caracteres especiais");
         }
     }
-
-    @Override
-    public String toString() { return valor; }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof CodigoCupom)) return false;
-        CodigoCupom that = (CodigoCupom) o;
-        return valor.equals(that.valor);
-    }
-
-    @Override
-    public int hashCode() { return valor.hashCode(); }
 }

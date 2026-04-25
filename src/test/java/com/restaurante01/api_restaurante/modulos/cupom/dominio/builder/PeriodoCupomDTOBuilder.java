@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.builders;
+package com.restaurante01.api_restaurante.modulos.cupom.dominio.builder;
 
 import com.restaurante01.api_restaurante.modulos.cupom.api.dto.entrada.PeriodoCupomDTO;
 

@@ -1,11 +1,10 @@
 package com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade;
-
-
-
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.excecao.PeriodoInvalidoExcecao;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,6 +13,8 @@ import java.time.format.DateTimeFormatter;
 
 @Getter
 @Embeddable
+@EqualsAndHashCode
+@ToString
 public class PeriodoCupom {
 
     private static final DateTimeFormatter DATA_FORMATTER =

@@ -1,6 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.cupom.aplicacao.casodeuso;
 
-import com.restaurante01.api_restaurante.builders.CriarCupomDTOBuilder;
+import com.restaurante01.api_restaurante.modulos.cupom.dominio.builder.CriarCupomDTOBuilder;
 import com.restaurante01.api_restaurante.compartilhado.dominio.excecao.RegraDeNegocioExcecao;
 import com.restaurante01.api_restaurante.modulos.cupom.api.dto.entrada.CriarCupomDTO;
 import com.restaurante01.api_restaurante.modulos.cupom.api.dto.saida.CupomAdminDTO;
@@ -8,7 +8,7 @@ import com.restaurante01.api_restaurante.modulos.cupom.api.dto.saida.PeriodoCupo
 import com.restaurante01.api_restaurante.modulos.cupom.aplicacao.mapeador.CupomMapeador;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.CodigoCupom;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.Cupom;
-import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.CupomBuilder;
+import com.restaurante01.api_restaurante.modulos.cupom.dominio.builder.CupomBuilder;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.excecao.CupomInvalidoExcecao;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.repositorio.CupomRepositorio;
 import org.junit.jupiter.api.DisplayName;

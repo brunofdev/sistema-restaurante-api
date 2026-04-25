@@ -37,4 +37,10 @@ public class CupomJpaAdaptador implements CupomRepositorio {
     public boolean existeCodigoCupom(CodigoCupom codigo){
         return jpa.existsByCodigoCupom(codigo);
     }
+
+    @Override
+    public Cupom obterPorId(Long id){
+        return jpa.findById(id).orElseThrow(() -> new CupomInvalidoExcecao("Cupom não encontrado com o id: " + id));
+    }
+
 }

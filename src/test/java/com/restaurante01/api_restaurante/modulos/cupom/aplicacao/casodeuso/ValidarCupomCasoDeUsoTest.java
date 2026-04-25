@@ -3,7 +3,7 @@ package com.restaurante01.api_restaurante.modulos.cupom.aplicacao.casodeuso;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.CodigoCupom;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.repositorio.CupomRepositorio;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.Cupom;
-import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.CupomBuilder;
+import com.restaurante01.api_restaurante.modulos.cupom.dominio.builder.CupomBuilder;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.excecao.CupomInvalidoExcecao;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.excecao.PeriodoInvalidoExcecao;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.excecao.ValorMaxPedidoExcecao;

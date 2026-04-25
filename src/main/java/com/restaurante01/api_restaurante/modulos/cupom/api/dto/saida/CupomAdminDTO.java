@@ -1,7 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.cupom.api.dto.saida;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.Cupom;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.TipoDesconto;
 import io.swagger.v3.oas.annotations.media.Schema;
 

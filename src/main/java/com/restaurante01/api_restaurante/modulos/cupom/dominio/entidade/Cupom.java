@@ -1,18 +1,16 @@
 package com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade;
-
 import com.restaurante01.api_restaurante.infraestrutura.security.auditoria.Auditable;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.excecao.*;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 import java.math.BigDecimal;
-
-
 
 @NoArgsConstructor
 @Entity(name = "copons")
 @Getter
+@EqualsAndHashCode(of = "id", callSuper = false)
+@ToString(of = "id")
 public class Cupom extends Auditable {
 
     @Id
@@ -20,6 +18,7 @@ public class Cupom extends Auditable {
     private Long id;
     @Embedded
     private CodigoCupom codigoCupom;
+    @Setter
     @Column(name = "tipo_desconto", nullable = false)
     private TipoDesconto tipoDesconto;
     @Column(name = "quantidade", nullable = false)
@@ -56,6 +55,18 @@ public class Cupom extends Auditable {
         cupom.setValorTotalMaxPedido(valorTotalMaxPedido);
         verificaValorMinMenorQueValorMax(valorTotalMinPedido, valorTotalMaxPedido);
         return cupom;
+    }
+    public void atualizar(String novoCodigo, PeriodoCupom novoPeriodo,
+                          int novaQuantidade, BigDecimal novoValorDesconto, boolean novoEstado,
+                          BigDecimal novoValorTotalMin, BigDecimal novoTotalValorMax, TipoDesconto novoTipoDesconto) {
+        adicionarCupom(novoCodigo);
+        setPeriodoCupom(novoPeriodo);
+        setEstaAtivo(novoEstado);
+        setQuantidade(novaQuantidade);
+        setValorParaDesconto(novoValorDesconto);
+        setValorTotalMinPedido(novoValorTotalMin);
+        setValorTotalMaxPedido(novoTotalValorMax);
+        setTipoDesconto(novoTipoDesconto);
     }
     public void adicionarCupom(String codigo){
         this.codigoCupom = new CodigoCupom(codigo);
