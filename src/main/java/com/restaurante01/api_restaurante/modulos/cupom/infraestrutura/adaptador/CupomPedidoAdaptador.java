@@ -16,11 +16,9 @@ public class CupomPedidoAdaptador implements PedidoCupomPorta {
         this.validarCupomCasoDeUso = validarCupomCasoDeUso;
     }
 
-    //APENAS TESTES CRIANDO PEDIDO POR  ENQUANTO
     @Override
     public CupomConsumido validarCupom (CupomUtilizado cupomUtilizado){
         Cupom cupom = validarCupomCasoDeUso.executar(cupomUtilizado.codigoCupom(), cupomUtilizado.valorBrutoTotalPedido());
-        //DADOS DINAMICOS JA
         return new CupomConsumido(
                 cupom.getId(),
                 cupom.getCodigoCupom().getValor(),
