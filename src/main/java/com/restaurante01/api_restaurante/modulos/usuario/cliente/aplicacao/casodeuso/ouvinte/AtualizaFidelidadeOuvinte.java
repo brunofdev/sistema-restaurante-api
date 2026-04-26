@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.ouvinte;
+package com.restaurante01.api_restaurante.modulos.usuario.cliente.aplicacao.casodeuso.ouvinte;
 
 
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.aplicacao.casodeuso.AtualizarFidelidadeClienteCasoDeUso;

@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping("/cardapio-produto/publico")
 @CrossOrigin(origins = "*")
 @Validated
-@Tag(name = "4. Cardápio & Produto - Vitrine Pública", description = "Endpoints abertos para visitantes visualizarem os cardápios")
+@Tag(name = "-> Cardápio & Produto - Vitrine Pública", description = "Endpoints abertos para visitantes visualizarem os cardápios")
 public class CardapioProdutoPublicoControlador {
 
     private final ListarTodasAssociacoesCasoDeUso listarTodasAssociacoes;

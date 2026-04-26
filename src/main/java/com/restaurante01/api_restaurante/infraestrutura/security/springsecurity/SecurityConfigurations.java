@@ -42,7 +42,6 @@ public class SecurityConfigurations {
             "/cliente/cadastro",
             "/operador/cadastro", //teste apenas
             "/ws/**",
-            "/cupom" //apenas para testar
     };
 
     // ROTAS PROTEGIDAS
@@ -55,7 +54,8 @@ public class SecurityConfigurations {
             entry("/cardapio-produto/operador/**", Role.ADMIN1),
             entry("/pedido/operador/*/status", Role.ADMIN1),
             entry("/pedido/operador/hoje", Role.ADMIN1),
-            entry("/operador/{id}", Role.ADMIN3),
+
+            entry("/cupom/admin/**", Role.ADMIN1),
 
             // Apenas ADMIN2+
             entry("/pedido/operador/todos", Role.ADMIN2),
@@ -64,7 +64,8 @@ public class SecurityConfigurations {
 
             // Apenas ADMIN3
             entry("/operador/deletar/{id}", Role.ADMIN3),
-            entry("/nova-rota-ilimitada", Role.ADMIN3)
+            entry("/nova-rota-ilimitada", Role.ADMIN3),
+            entry("/operador/{id}", Role.ADMIN3)
     );
 
     @Bean

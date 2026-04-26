@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/cliente")
 @Validated
-@Tag(name = "8. Clientes", description = "Gerenciamento de usuários do tipo Cliente e fidelidade")
+@Tag(name = "-> Clientes", description = "Gerenciamento de usuários do tipo Cliente e fidelidade")
 public class ClienteControlador {
 
     private final CadastrarClienteCasoDeUso cadastrarCliente;

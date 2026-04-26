@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping("/produtos")
 @CrossOrigin(origins = "*")
 @Validated
-@Tag(name = "2. Produtos", description = "Gerenciamento do estoque e catálogo de produtos")
+@Tag(name = "-> Produtos", description = "Gerenciamento do estoque e catálogo de produtos")
 @SecurityRequirement(name = "bearerAuth")
 public class ProdutoControlador {
 

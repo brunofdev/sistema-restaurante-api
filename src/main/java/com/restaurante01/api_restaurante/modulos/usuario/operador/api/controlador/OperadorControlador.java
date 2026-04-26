@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/operador")
 @CrossOrigin("*")
 @Validated
-@Tag(name = "9. Operadores", description = "Gerenciamento de usuários administrativos e funcionários")
+@Tag(name = "-> Operadores", description = "Gerenciamento de usuários administrativos e funcionários")
 public class OperadorControlador {
 
     private final CadastrarOperadorCasoDeUso cadastrarOperador;

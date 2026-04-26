@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 public class ValidarCupomCasoDeUso {
 
     private final CupomRepositorio repositorio;
+
     public ValidarCupomCasoDeUso(CupomRepositorio repositorio) {
         this.repositorio = repositorio;
     }

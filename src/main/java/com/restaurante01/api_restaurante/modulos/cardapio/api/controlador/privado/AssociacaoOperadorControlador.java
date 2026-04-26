@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/cardapio-produto/operador")
 @CrossOrigin(origins = "*")
 @Validated
-@Tag(name = "5. Cardápio & Produto - Gerência", description = "Gerenciamento de vínculos entre produtos e cardápios")
+@Tag(name = "-> Cardápio & Produto - Gerência", description = "Gerenciamento de vínculos entre produtos e cardápios")
 @SecurityRequirement(name = "bearerAuth")
 @PreAuthorize("hasAnyRole('ADMIN1', 'ADMIN2', 'ADMIN3')")
 public class AssociacaoOperadorControlador {
