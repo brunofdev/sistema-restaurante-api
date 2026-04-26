@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/pedido/operador")
 @CrossOrigin(origins = "*")
 @Validated
-@Tag(name = "7. Pedidos - Operador", description = "Visão gerencial e atualização de status de pedidos")
+@Tag(name = "-> Pedidos - Operador", description = "Visão gerencial e atualização de status de pedidos")
 @SecurityRequirement(name = "bearerAuth")
 public class PedidoOperadorControlador {
 
