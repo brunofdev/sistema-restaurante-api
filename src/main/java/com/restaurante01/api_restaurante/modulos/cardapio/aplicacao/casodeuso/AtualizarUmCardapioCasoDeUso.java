@@ -26,7 +26,7 @@ public class AtualizarUmCardapioCasoDeUso {
     }
 
     public CardapioDTO executar(CardapioDTO cardapioDTO) {
-        Cardapio cardapioExistente = buscarCardapioPorId.executar(cardapioDTO.getId());
+        Cardapio cardapioExistente = buscarCardapioPorId.executar(cardapioDTO.id());
         cardapioValidador.validarCardapio(cardapioDTO);
         Cardapio cardapioAtualizado = cardapioMapeador.atualizarCampos(cardapioExistente, cardapioDTO);
         cardapioRepositorio.save(cardapioAtualizado);

@@ -6,13 +6,8 @@ import com.restaurante01.api_restaurante.infraestrutura.autenticacao.api.dto.Ope
 import com.restaurante01.api_restaurante.infraestrutura.jwt.JwtProvider;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.api.dto.saida.ClienteDTO;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.aplicacao.casodeuso.AutenticarClienteCasoDeUso;
-import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.repositorio.ClienteRepositorio;
 import com.restaurante01.api_restaurante.modulos.usuario.operador.api.dto.saida.OperadorDTO;
 import com.restaurante01.api_restaurante.modulos.usuario.operador.aplicacao.casodeuso.AutenticarOperadorCasoDeUso;
-import com.restaurante01.api_restaurante.modulos.usuario.operador.dominio.repositorio.OperadorRepositorio;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -12,11 +12,11 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Component
-public class PedidoJpaAdapter implements PedidoRepositorio {
+public class PedidoJpaAdaptador implements PedidoRepositorio {
 
     private final PedidoJPA jpa;
 
-    public PedidoJpaAdapter(PedidoJPA jpa) {
+    public PedidoJpaAdaptador(PedidoJPA jpa) {
         this.jpa = jpa;
     }
 

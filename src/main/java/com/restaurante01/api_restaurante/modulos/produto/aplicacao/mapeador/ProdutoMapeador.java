@@ -30,24 +30,24 @@ public class ProdutoMapeador extends AbstractMapper<Produto, ProdutoDTO> {
     @Override
     public Produto mapearUmaDtoParaEntidade(ProdutoDTO produtoDTO) {
         return new Produto(
-                produtoDTO.getId(),
-                FormatarString.limparEspacos(produtoDTO.getNome()),
-                FormatarString.limparEspacos(produtoDTO.getDescricao()),
-                produtoDTO.getPreco(),
-                produtoDTO.getQuantidadeAtual(),
-                produtoDTO.getDisponibilidade()
+                produtoDTO.id(),
+                FormatarString.limparEspacos(produtoDTO.nome()),
+                FormatarString.limparEspacos(produtoDTO.descricao()),
+                produtoDTO.preco(),
+                produtoDTO.quantidadeAtual(),
+                produtoDTO.disponibilidade()
         );
     }
     public Map<Long, ProdutoDTO> mapearIdsEntidadeParaDTO(List<ProdutoDTO> loteProdutosDTO) {
         return loteProdutosDTO.stream()
-                .collect(Collectors.toMap(ProdutoDTO::getId, dto -> dto));
+                .collect(Collectors.toMap(ProdutoDTO::id, dto -> dto));
     }
     public  void atualizarProduto(Produto produto, ProdutoDTO dto) {
-        produto.setNome(FormatarString.limparEspacos(dto.getNome()));
-        produto.setDescricao(FormatarString.limparEspacos(dto.getDescricao()));
-        produto.setPreco(dto.getPreco());
-        produto.setQuantidadeAtual(dto.getQuantidadeAtual());
-        produto.setDisponibilidade(dto.getDisponibilidade());
+        produto.setNome(FormatarString.limparEspacos(dto.nome()));
+        produto.setDescricao(FormatarString.limparEspacos(dto.descricao()));
+        produto.setPreco(dto.preco());
+        produto.setQuantidadeAtual(dto.quantidadeAtual());
+        produto.setDisponibilidade(dto.disponibilidade());
     }
     public  List<Produto> atualizarProdutosEmLote (Map<Long, ProdutoDTO> idsMapeados, List<Produto> produtosEncontrados){
         for (Produto produto : produtosEncontrados) {
@@ -59,11 +59,11 @@ public class ProdutoMapeador extends AbstractMapper<Produto, ProdutoDTO> {
     public ProdutoDTO mapearProdutoDTO(CriarProdutoDTO criarProdutoDTO){
        return new ProdutoDTO(
                null,
-               FormatarString.limparEspacos(criarProdutoDTO.getNome()),
-               FormatarString.limparEspacos(criarProdutoDTO.getDescricao()),
-               criarProdutoDTO.getPreco(),
-               criarProdutoDTO.getQuantidadeAtual(),
-               criarProdutoDTO.getDisponibilidade(),
+               FormatarString.limparEspacos(criarProdutoDTO.nome()),
+               FormatarString.limparEspacos(criarProdutoDTO.descricao()),
+               criarProdutoDTO.preco(),
+               criarProdutoDTO.quantidadeAtual(),
+               criarProdutoDTO.disponibilidade(),
                null,
                null,
                null,

@@ -41,7 +41,7 @@ public record EnderecoCliente(
         bairro     = bairro.trim();
         cidade     = cidade.trim();
         estado     = estado.trim();
-        cep        = cep.replaceAll("[^\\d]", "");
+        cep        = cep.replaceAll("\\D", "");
         complemento = complemento.trim();
         referencia = (referencia != null && !referencia.isBlank()) ? referencia.trim() : null;
     }

@@ -34,7 +34,7 @@ public class ItemPedido {
     @Column(name = "preco_unitario", nullable = false)
     private BigDecimal precoUnitario;
 
-    @Column(name = "observacao", nullable = true)
+    @Column(name = "observacao")
     private String observacao;
 
     //package protected para facilitar o builder nos testes

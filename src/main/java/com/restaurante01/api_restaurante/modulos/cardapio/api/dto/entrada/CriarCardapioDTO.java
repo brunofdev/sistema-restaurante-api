@@ -3,9 +3,11 @@ package com.restaurante01.api_restaurante.modulos.cardapio.api.dto.entrada;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 
 import java.time.LocalDate;
 
+@Getter
 public class CriarCardapioDTO {
     @NotBlank(message = "O Nome não pode ser vazio")
     private final String nome;
@@ -28,23 +30,4 @@ public class CriarCardapioDTO {
         this.dataFim = dataFim;
     }
 
-    public String getNome() {
-        return nome;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public Boolean getDisponibilidade() {
-        return disponibilidade;
-    }
-
-    public LocalDate getDataInicio() {
-        return dataInicio;
-    }
-
-    public LocalDate getDataFim() {
-        return dataFim;
-    }
 }

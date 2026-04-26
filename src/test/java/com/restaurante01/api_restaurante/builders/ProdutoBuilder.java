@@ -10,7 +10,7 @@ public class ProdutoBuilder {
     private String nome = "Produto Teste";
     private String descricao = "Descrição do produto teste";
     private BigDecimal preco = BigDecimal.valueOf(10.00);
-    private Long quantidadeAtual = 10L;
+    private Integer quantidadeAtual = 10;
     private Boolean disponibilidade = true;
 
     // --- FACTORY ---
@@ -39,7 +39,7 @@ public class ProdutoBuilder {
         return this;
     }
 
-    public ProdutoBuilder comQuantidade(Long quantidade) {
+    public ProdutoBuilder comQuantidade(Integer quantidade) {
         this.quantidadeAtual = quantidade;
         return this;
     }

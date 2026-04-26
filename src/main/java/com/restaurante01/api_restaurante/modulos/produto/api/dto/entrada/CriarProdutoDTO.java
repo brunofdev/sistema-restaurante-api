@@ -1,49 +1,22 @@
 package com.restaurante01.api_restaurante.modulos.produto.api.dto.entrada;
 
 import jakarta.validation.constraints.*;
-
 import java.math.BigDecimal;
 
-public class CriarProdutoDTO {
-    @NotBlank(message = "Nome não deve ser vazio")
-    private String nome;
-    @NotBlank(message = "Descrição não deve ser vazia")
-    private String descricao;
-    @NotNull(message = "Preço deve ser informado")
-    @PositiveOrZero(message = "Preço deve ser zero ou positivo")
-    private BigDecimal preco;
-    @NotNull(message = "Quantidade deve ser zero ou positivo")
-    @Min(value = 0, message = "Quantidade minima deve ser zero")
-    private Long quantidadeAtual;
-    private Boolean disponibilidade;
+public record CriarProdutoDTO(
+        @NotBlank(message = "Nome não deve ser vazio")
+        String nome,
 
-    public CriarProdutoDTO(String nome, String descricao, BigDecimal preco, Long quantidadeAtual, Boolean disponibilidade) {
-        this.nome = nome;
-        this.descricao = descricao;
-        this.preco = preco;
-        this.quantidadeAtual = quantidadeAtual;
-        this.disponibilidade = disponibilidade;
-    }
+        @NotBlank(message = "Descrição não deve ser vazia")
+        String descricao,
 
-    public String getDescricao() {
-        return descricao;
-    }
+        @NotNull(message = "Preço deve ser informado")
+        @PositiveOrZero(message = "Preço deve ser zero ou positivo")
+        BigDecimal preco,
 
-    public Long getQuantidadeAtual() {
-        return quantidadeAtual;
-    }
+        @NotNull(message = "Quantidade deve ser zero ou positivo")
+        @Min(value = 0, message = "Quantidade minima deve ser zero")
+        Integer quantidadeAtual,
 
-    public Boolean getDisponibilidade() {
-        return disponibilidade;
-    }
-
-    public BigDecimal getPreco() {
-        return preco;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-}
-
-
+        Boolean disponibilidade
+) {}

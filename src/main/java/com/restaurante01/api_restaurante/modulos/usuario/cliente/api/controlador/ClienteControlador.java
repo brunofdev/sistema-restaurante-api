@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/cliente")
 @Validated
-@Tag(name = "8. Clientes", description = "Gerenciamento de usuários do tipo Cliente e fidelidade")
+@Tag(name = "-> Clientes", description = "Gerenciamento de usuários do tipo Cliente e fidelidade")
 public class ClienteControlador {
 
     private final CadastrarClienteCasoDeUso cadastrarCliente;
@@ -52,7 +52,7 @@ public class ClienteControlador {
     @Operation(summary = "Listar todos os clientes", description = "Retorna uma lista paginada de clientes. Requer ROLE_ADMIN3.")
     @GetMapping("/obter-todos")
     public ResponseEntity<ApiResponse<Page<ClienteDTO>>> listarUsuarios(
-            @ParameterObject @PageableDefault(size = 10) Pageable pageable) {
+            @ParameterObject @PageableDefault Pageable pageable) {
         return ResponseEntity.ok(ApiResponse.success("Recurso disponível", listarClientes.executar(pageable)));
     }
 

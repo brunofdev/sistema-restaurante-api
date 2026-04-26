@@ -4,7 +4,6 @@ import com.restaurante01.api_restaurante.infraestrutura.autenticacao.api.dto.Cre
 import com.restaurante01.api_restaurante.infraestrutura.autenticacao.api.dto.ClienteLoginResponseDTO;
 import com.restaurante01.api_restaurante.infraestrutura.autenticacao.api.dto.OperadorLoginResponseDTO;
 import com.restaurante01.api_restaurante.infraestrutura.autenticacao.service.ServicoAutenticacao;
-import com.restaurante01.api_restaurante.infraestrutura.autenticacao.service.ServicoAutorizacao;
 import com.restaurante01.api_restaurante.compartilhado.retorno_padrao_api.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/auth")
-@Tag(name = "1. Autenticação", description = "Endpoints públicos para login e geração de tokens JWT")
+@Tag(name = "-> Autenticação", description = "Endpoints públicos para login e geração de tokens JWT")
 public class AuthenticationController {
 
     private final ServicoAutenticacao servicoAutenticacao;

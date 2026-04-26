@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/cardapio")
 @CrossOrigin(origins = "*")
-@Tag(name = "3. Cardápio", description = "Endpoints para gerenciamento do cardápio do restaurante")
+@Tag(name = "-> Cardápio", description = "Endpoints para gerenciamento do cardápio do restaurante")
 @SecurityRequirement(name = "bearerAuth")
 public class CardapioControlador {
 

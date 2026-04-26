@@ -39,7 +39,7 @@ public class AssociarProdutoAoCardapioCasoDeUso {
     public AssociacaoFeitaRespostaDTO executar(AssociacaoEntradaDTO dto) {
         if(repository.existeAssociacao(dto.getIdCardapio(), dto.getIdProduto())){
             throw new AssociacaoExistenteCardapioProdutoExcecao("Associação já existe");
-        };
+        }
         validator.validarCardapioProdutoAssociacaoEntradaDTO(dto);
         Produto produto = produtoPorta.obterProdutoPorId(dto.getIdProduto());
         Cardapio cardapio = cardapioPorta.buscarCardapioPorId(dto.getIdCardapio());

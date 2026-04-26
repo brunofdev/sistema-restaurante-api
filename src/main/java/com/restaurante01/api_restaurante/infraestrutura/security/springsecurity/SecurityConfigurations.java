@@ -1,6 +1,5 @@
 package com.restaurante01.api_restaurante.infraestrutura.security.springsecurity;
 import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.role.Role;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,8 +23,12 @@ import static java.util.Map.entry;
 @EnableWebSecurity
 public class SecurityConfigurations {
 
-    @Autowired
+
     SecurityFilter securityFilter;
+
+    public SecurityConfigurations(SecurityFilter securityFilter) {
+        this.securityFilter = securityFilter;
+    }
 
     // ROTAS PUBLICAS
     private static final String[] PUBLIC_ENDPOINTS = {
@@ -38,7 +41,7 @@ public class SecurityConfigurations {
             "/cardapio-produto/publico/**",
             "/cliente/cadastro",
             "/operador/cadastro", //teste apenas
-            "/ws/**"
+            "/ws/**",
     };
 
     // ROTAS PROTEGIDAS
@@ -51,7 +54,8 @@ public class SecurityConfigurations {
             entry("/cardapio-produto/operador/**", Role.ADMIN1),
             entry("/pedido/operador/*/status", Role.ADMIN1),
             entry("/pedido/operador/hoje", Role.ADMIN1),
-            entry("/operador/{id}", Role.ADMIN3),
+
+            entry("/cupom/admin/**", Role.ADMIN1),
 
             // Apenas ADMIN2+
             entry("/pedido/operador/todos", Role.ADMIN2),
@@ -60,7 +64,8 @@ public class SecurityConfigurations {
 
             // Apenas ADMIN3
             entry("/operador/deletar/{id}", Role.ADMIN3),
-            entry("/nova-rota-ilimitada", Role.ADMIN3)
+            entry("/nova-rota-ilimitada", Role.ADMIN3),
+            entry("/operador/{id}", Role.ADMIN3)
     );
 
     @Bean

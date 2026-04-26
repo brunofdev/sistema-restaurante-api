@@ -9,7 +9,7 @@ import java.util.List;
 public interface ProdutoJPA extends JpaRepository<Produto, Long> {
 
     List<Produto> findByDisponibilidade(boolean disponibilidade);
-    List<Produto> findByQuantidadeAtualLessThan(int quantidade);
+    List<Produto> findByQuantidadeAtualLessThan(Integer quantidade);
     boolean existsByNome(String nome);
     Produto findByNome(String nomeProduto);
 }

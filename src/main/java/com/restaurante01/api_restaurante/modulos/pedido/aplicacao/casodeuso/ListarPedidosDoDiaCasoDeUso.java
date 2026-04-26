@@ -1,6 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso;
 
-import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDTO;
+import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoCriadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mapeador.PedidoMapeador;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.repositorio.PedidoRepositorio;
 import org.springframework.data.domain.Page;
@@ -21,12 +21,12 @@ public class ListarPedidosDoDiaCasoDeUso {
         this.mapper = mapper;
     }
 
-    public Page<PedidoDTO> executar(Pageable pageable) {
+    public Page<PedidoCriadoDTO> executar(Pageable pageable) {
         LocalDate hoje = LocalDate.now();
         LocalDateTime inicio = hoje.atStartOfDay();
         LocalDateTime fim = hoje.atTime(23, 59, 59, 999999999);
 
         return repository.buscarPorDataCriacaoEntre(inicio, fim, pageable)
-                .map(mapper::mapearPedidoDto);
+                .map(mapper::mapearPedidoCriadoDto);
     }
 }

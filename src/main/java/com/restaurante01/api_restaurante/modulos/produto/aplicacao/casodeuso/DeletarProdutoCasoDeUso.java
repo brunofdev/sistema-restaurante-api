@@ -16,7 +16,7 @@ public class DeletarProdutoCasoDeUso {
 
     public void execute(long id) {
         Produto produto = repositorio.findById(id)
-                .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto com id " + id + " não encontrado"));;
+                .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto com id " + id + " não encontrado"));
         repositorio.delete(produto);
     }
 }

@@ -23,10 +23,10 @@ public interface AssociacaoJPA extends JpaRepository<Associacao, Long> {
     @Query(value = "DELETE FROM cardapio_produto cp WHERE cp.cardapio_id = :idCardapio AND cp.produto_id = :idProduto", nativeQuery = true)
     void deleteProdutoFromCardapio(@Param("idCardapio") long idCardapio, @Param("idProduto") long idProduto);
     @Query("""
-        SELECT cp FROM Associacao cp 
-        JOIN FETCH cp.cardapio c 
-        JOIN FETCH cp.produto p 
-        WHERE c.id = :idCardapio 
+        SELECT cp FROM Associacao cp
+        JOIN FETCH cp.cardapio c
+        JOIN FETCH cp.produto p
+        WHERE c.id = :idCardapio
         AND p.id IN :idsProdutos
     """)
     List<Associacao> buscarItensDoPedido(

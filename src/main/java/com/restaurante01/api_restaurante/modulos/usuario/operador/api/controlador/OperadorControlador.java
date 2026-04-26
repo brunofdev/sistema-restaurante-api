@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/operador")
 @CrossOrigin("*")
 @Validated
-@Tag(name = "9. Operadores", description = "Gerenciamento de usuários administrativos e funcionários")
+@Tag(name = "-> Operadores", description = "Gerenciamento de usuários administrativos e funcionários")
 public class OperadorControlador {
 
     private final CadastrarOperadorCasoDeUso cadastrarOperador;
@@ -60,7 +60,7 @@ public class OperadorControlador {
     @Operation(summary = "Listar todos os operadores", description = "Retorna uma lista paginada de operadores. Requer ROLE_ADMIN2.")
     @GetMapping("/obter-todos")
     public ResponseEntity<ApiResponse<Page<OperadorDTO>>> listarUsuarios(
-            @ParameterObject @PageableDefault(size = 10) Pageable pageable){
+            @ParameterObject @PageableDefault Pageable pageable){
         return ResponseEntity.ok(ApiResponse.success("Recurso disponível", listarOperadores.executar(pageable)));
     }
 

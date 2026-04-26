@@ -23,12 +23,12 @@ public class CardapioMapeador extends AbstractMapper<Cardapio, CardapioDTO> {
     @Override
     public Cardapio mapearUmaDtoParaEntidade(CardapioDTO cardapioDTO){
         return new Cardapio(
-                cardapioDTO.getId(),
-                FormatarString.limparEspacos(cardapioDTO.getNome()),
-                FormatarString.limparEspacos(cardapioDTO.getDescricao()),
-                cardapioDTO.getDisponibilidade(),
-                cardapioDTO.getDataInicio(),
-                cardapioDTO.getDataFim()
+                cardapioDTO.id(),
+                FormatarString.limparEspacos(cardapioDTO.nome()),
+                FormatarString.limparEspacos(cardapioDTO.descricao()),
+                cardapioDTO.disponibilidade(),
+                cardapioDTO.dataInicio(),
+                cardapioDTO.dataFim()
                 );
     }
     public Cardapio mapearCardapioCreateParaEntidade(CriarCardapioDTO criarCardapioDTO){
@@ -41,11 +41,11 @@ public class CardapioMapeador extends AbstractMapper<Cardapio, CardapioDTO> {
         return cardapio;
     }
     public Cardapio atualizarCampos(Cardapio cardapioExistente , CardapioDTO cardapioAtualizado){
-        cardapioExistente.setNome(FormatarString.limparEspacos(cardapioAtualizado.getNome()));
-        cardapioExistente.setDescricao(FormatarString.limparEspacos(cardapioAtualizado.getDescricao()));
-        cardapioExistente.setDisponibilidade(cardapioAtualizado.getDisponibilidade());
-        cardapioExistente.setDataInicio(cardapioAtualizado.getDataInicio());
-        cardapioExistente.setDataFim(cardapioAtualizado.getDataFim());
+        cardapioExistente.setNome(FormatarString.limparEspacos(cardapioAtualizado.nome()));
+        cardapioExistente.setDescricao(FormatarString.limparEspacos(cardapioAtualizado.descricao()));
+        cardapioExistente.setDisponibilidade(cardapioAtualizado.disponibilidade());
+        cardapioExistente.setDataInicio(cardapioAtualizado.dataInicio());
+        cardapioExistente.setDataFim(cardapioAtualizado.dataFim());
         return cardapioExistente;
     }
 

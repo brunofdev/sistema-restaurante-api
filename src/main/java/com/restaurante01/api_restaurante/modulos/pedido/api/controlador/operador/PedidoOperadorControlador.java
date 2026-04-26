@@ -2,7 +2,8 @@ package com.restaurante01.api_restaurante.modulos.pedido.api.controlador.operado
 
 import com.restaurante01.api_restaurante.compartilhado.retorno_padrao_api.ApiResponse;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.StatusPedidoDTO;
-import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDTO;
+import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoCriadoDTO;
+import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDetalhadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso.AtualizarStatusPedidoCasoDeUso;
 import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso.ListarPedidosDoDiaCasoDeUso;
 import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso.ListarTodosPedidosCasoDeUso;
@@ -16,7 +17,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/pedido/operador")
 @CrossOrigin(origins = "*")
 @Validated
-@Tag(name = "7. Pedidos - Operador", description = "Visão gerencial e atualização de status de pedidos")
+@Tag(name = "-> Pedidos - Operador", description = "Visão gerencial e atualização de status de pedidos")
 @SecurityRequirement(name = "bearerAuth")
 public class PedidoOperadorControlador {
 
@@ -46,32 +46,31 @@ public class PedidoOperadorControlador {
 
     @Operation(summary = "Listar todos os pedidos do sistema", description = "Retorna todos os pedidos registrados com paginação.")
     @GetMapping("/todos")
-    @PreAuthorize("hasAnyRole('ADMIN1', 'ADMIN2', 'ADMIN3')")
-    public ResponseEntity<ApiResponse<Page<PedidoDTO>>> listarPedidosFeitos(
-            @ParameterObject @PageableDefault(size = 10, sort = "dataCriacao", direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<ApiResponse<Page<PedidoDetalhadoDTO>>> listarPedidosFeitos(
+            @ParameterObject
+            @PageableDefault(sort = "dataCriacao", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        Page<PedidoDTO> paginaDePedidos = listarTodosPedidos.executar(pageable);
+        Page<PedidoDetalhadoDTO> paginaDePedidos = listarTodosPedidos.executar(pageable);
         return ResponseEntity.ok(ApiResponse.success("Recurso obtido", paginaDePedidos));
     }
 
     @Operation(summary = "Listar pedidos realizados hoje", description = "Filtra e retorna apenas os pedidos feitos na data atual.")
     @GetMapping("/hoje")
-    @PreAuthorize("hasAnyRole('ADMIN1', 'ADMIN2', 'ADMIN3')")
-    public ResponseEntity<ApiResponse<Page<PedidoDTO>>> listarPedidosDoDiaAtual(
-            @ParameterObject @PageableDefault(size = 10, sort = "dataCriacao", direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<ApiResponse<Page<PedidoCriadoDTO>>> listarPedidosDoDiaAtual(
+            @ParameterObject
+            @PageableDefault(sort = "dataCriacao", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        Page<PedidoDTO> paginaDePedidos = listarPedidosDoDia.executar(pageable);
+        Page<PedidoCriadoDTO> paginaDePedidos = listarPedidosDoDia.executar(pageable);
         return ResponseEntity.ok(ApiResponse.success("Recurso obtido", paginaDePedidos));
     }
 
     @Operation(summary = "Atualizar status de um pedido", description = "Altera o status do pedido (ex: ENTREGUE) e dispara notificações WebSocket.")
     @PatchMapping("/{id}/status")
-    @PreAuthorize("hasAnyRole('ADMIN1', 'ADMIN2', 'ADMIN3')")
-    public ResponseEntity<ApiResponse<PedidoDTO>> atualizarStatusPedido(
+    public ResponseEntity<ApiResponse<PedidoCriadoDTO>> atualizarStatusPedido(
             @PathVariable Long id,
             @RequestBody StatusPedidoDTO novoStatus) {
 
-        PedidoDTO pedidoAtualizado = atualizarStatusPedido.executar(id, novoStatus);
+        PedidoCriadoDTO pedidoAtualizado = atualizarStatusPedido.executar(id, novoStatus);
 
         // Notifica o cliente específico e o painel administrativo
         messagingTemplate.convertAndSend("/topico/pedido/" + id, pedidoAtualizado);
