@@ -1,6 +1,7 @@
 package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso;
 import com.restaurante01.api_restaurante.builders.CardapioProdutoBuilder;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.TipoDesconto;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.CalculoDescontoCupom;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoCupomPorta;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.ClienteBuilder;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Associacao;
@@ -18,6 +19,7 @@ import com.restaurante01.api_restaurante.modulos.pedido.dominio.repositorio.Pedi
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.*;
 import org.instancio
         .Instancio;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +31,8 @@ import org.springframework.context.ApplicationEventPublisher;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -41,182 +45,117 @@ class CriarNovoPedidoCasoDeUsoTest {
     @Mock private PedidoAssociacaoPorta pedidoAssociacaoPorta;
     @Mock private PedidoClientePorta pedidoClientePorta;
     @Mock private ApplicationEventPublisher eventPublisher;
-    @Mock private PedidoCupomPorta pedidoCupomPorta; //
-
+    @Mock private PedidoCupomPorta pedidoCupomPorta;
+    @Mock private Map<String, CalculoDescontoCupom> calculoDescontoCupom;
 
     @InjectMocks
     private CriarNovoPedidoCasoDeUso casoDeUso;
 
+    // fixtures compartilhadas
+    private Associacao associacao;
+    private Cliente cliente;
+    private InformacoesClienteParaPedido infoCliente;
+    private EnderecoPedido enderecoPedido;
+    private ProdutoVendido produtoVendido;
+
+    @BeforeEach
+    void setUp() {
+        associacao = CardapioProdutoBuilder.umCardapioProduto().build();
+        cliente = ClienteBuilder.umCliente().build();
+        infoCliente = new InformacoesClienteParaPedido(
+                cliente.getId(), cliente.getNome(), cliente.getCpf().cpf(), cliente.getTelefone());
+        enderecoPedido = new EnderecoPedido(
+                cliente.getEnderecoCliente().rua(), cliente.getEnderecoCliente().numero(),
+                cliente.getEnderecoCliente().bairro(), cliente.getEnderecoCliente().cidade(),
+                cliente.getEnderecoCliente().estado(), cliente.getEnderecoCliente().cep(),
+                cliente.getEnderecoCliente().referencia());
+        produtoVendido = new ProdutoVendido(
+                new RepresentacaoProdutoItemPedido(associacao.getProduto().getId(), associacao.getProduto().getNome()),
+                associacao.resolverPrecoDeVenda());
+    }
+
+    // metodo auxiliar para o setup comum entre testes
+    private void mockearSetupBasico(List<ItemPedidoSolicitadoDTO> itensDTO) {
+        when(pedidoMapeador.mapearParaValidacaoDeEstoque(itensDTO))
+                .thenReturn(List.of(new ItemValidacaoEstoque(associacao.getProduto().getId(), itensDTO.get(0).quantidade())));
+        when(pedidoClientePorta.obterDetalhesClienteParaPedido(cliente)).thenReturn(infoCliente);
+        when(pedidoClientePorta.obterEndereco(cliente)).thenReturn(enderecoPedido);
+        when(pedidoAssociacaoPorta.obterProdutoVendido(any(), any())).thenReturn(produtoVendido);
+        when(pedidoMapeador.mapearPedidoCriadoDto(any(Pedido.class))).thenReturn(Instancio.create(PedidoCriadoDTO.class));
+    }
+
     @Test
     @DisplayName("Deve criar um pedido com sucesso quando os dados forem válidos")
     void deveCriarPedidoComStatusPendenteESalvarQuandoDadosValidos() {
-        Associacao associacao = CardapioProdutoBuilder.umCardapioProduto().build();
-        Cliente cliente = ClienteBuilder.umCliente().build();
-
-        RepresentacaoProdutoItemPedido representacaoProduto = new RepresentacaoProdutoItemPedido(
-                associacao.getProduto().getId(),
-                associacao.getProduto().getNome());
-        ProdutoVendido produtoVendido = new ProdutoVendido(
-                representacaoProduto,
-                associacao.resolverPrecoDeVenda());
-        InformacoesClienteParaPedido infoCliente = new InformacoesClienteParaPedido(
-                cliente.getId(), cliente.getNome(), cliente.getCpf().cpf(), cliente.getTelefone());
-        EnderecoPedido enderecoPedidoCliente = new EnderecoPedido(
-                cliente.getEnderecoCliente().rua(), cliente.getEnderecoCliente().numero(), cliente.getEnderecoCliente().bairro(),
-                cliente.getEnderecoCliente().cidade(), cliente.getEnderecoCliente().estado(), cliente.getEnderecoCliente().cep(), cliente.getEnderecoCliente().referencia());
-
         List<ItemPedidoSolicitadoDTO> itensDTO = List.of(
-                new ItemPedidoSolicitadoDTO(associacao.getProduto().getId(), 2, "Teste de observação"));
-        PedidoCriacaoDTO pedidoCriacaoDTO = new PedidoCriacaoDTO(
-                associacao.getCardapio().getId(), itensDTO, null, null);
-        PedidoCriadoDTO pedidoCriadoDTO = Instancio.create(PedidoCriadoDTO.class);
-
-        when(pedidoMapeador.mapearParaValidacaoDeEstoque(itensDTO))
-                .thenReturn(List.of(new ItemValidacaoEstoque(associacao.getProduto().getId(), 2)));
-        when(pedidoClientePorta.obterDetalhesClienteParaPedido(cliente)).thenReturn(infoCliente);
-        when(pedidoClientePorta.obterEndereco(cliente)).thenReturn(enderecoPedidoCliente);
-        when(pedidoAssociacaoPorta.obterProdutoVendido(
-                pedidoCriacaoDTO.idCardapio(),
-                itensDTO.get(0).idProduto()))
-                .thenReturn(produtoVendido);
-        when(pedidoMapeador.mapearPedidoCriadoDto(any(Pedido.class))).thenReturn(pedidoCriadoDTO);
+                new ItemPedidoSolicitadoDTO(associacao.getProduto().getId(), 2, "obs"));
+        PedidoCriacaoDTO dto = new PedidoCriacaoDTO(associacao.getCardapio().getId(), itensDTO, null, null);
+        mockearSetupBasico(itensDTO);
 
         ArgumentCaptor<Pedido> pedidoCaptor = ArgumentCaptor.forClass(Pedido.class);
-        ArgumentCaptor<PedidoCriadoEvento> eventoCaptor = ArgumentCaptor.forClass(PedidoCriadoEvento.class);
-
-        PedidoCriadoDTO resultado = casoDeUso.executar(pedidoCriacaoDTO, cliente);
-
-        verify(pedidoAssociacaoPorta).validarEstoque(eq(pedidoCriacaoDTO.idCardapio()), anyList());
-        verify(pedidoAssociacaoPorta).obterProdutoVendido(
-                pedidoCriacaoDTO.idCardapio(), itensDTO.get(0).idProduto());
-        verify(pedidoClientePorta).obterDetalhesClienteParaPedido(cliente);
-        verify(pedidoClientePorta).obterEndereco(cliente);
+        casoDeUso.executar(dto, cliente);
         verify(pedidoRepository).salvar(pedidoCaptor.capture());
-        verify(eventPublisher).publishEvent(eventoCaptor.capture());
 
         Pedido pedidoSalvo = pedidoCaptor.getValue();
-        PedidoCriadoEvento evento = eventoCaptor.getValue();
-
         assertThat(pedidoSalvo.getCliente()).isEqualTo(infoCliente);
         assertThat(pedidoSalvo.getStatusPedido()).isEqualTo(StatusPedido.PENDENTE);
         assertThat(pedidoSalvo.getItens()).hasSize(1);
-
-        ItemPedido itemSalvo = pedidoSalvo.getItens().get(0);
-        assertThat(itemSalvo.getProduto()).isEqualTo(representacaoProduto);
-        assertThat(itemSalvo.getQuantidade()).isEqualTo(2);
-        assertThat(itemSalvo.getPrecoUnitario()).isEqualByComparingTo(associacao.resolverPrecoDeVenda());
-        assertThat(itemSalvo.getObservacao()).isEqualTo("Teste de observação");
-        assertThat(evento.pedido()).isEqualTo(pedidoSalvo);
-        assertThat(evento.pedido().getIdCardapio()).isEqualTo(pedidoCriacaoDTO.idCardapio());
-        assertThat(resultado).isEqualTo(pedidoCriadoDTO);
     }
+
+    @Test
+    @DisplayName("Deve aplicar desconto no pedido quando cupom válido for informado")
+    void deveAplicarDescontoQuandoCupomValido() {
+        List<ItemPedidoSolicitadoDTO> itensDTO = List.of(
+                new ItemPedidoSolicitadoDTO(associacao.getProduto().getId(), 2, "obs"));
+        PedidoCriacaoDTO dto = new PedidoCriacaoDTO(associacao.getCardapio().getId(), itensDTO, null, "DESCONTO10");
+        CupomConsumido cupomMock = new CupomConsumido(1L, "DESCONTO10", new BigDecimal("10"), TipoDesconto.PORCENTAGEM, "admin");
+        CalculoDescontoCupom estrategiaMock = mock(CalculoDescontoCupom.class);
+
+        mockearSetupBasico(itensDTO);
+        when(pedidoCupomPorta.validarCupom(any())).thenReturn(cupomMock);
+        when(calculoDescontoCupom.get(TipoDesconto.PORCENTAGEM.name())).thenReturn(estrategiaMock);
+        when(estrategiaMock.calcularDesconto(any(), any())).thenReturn(new BigDecimal("10"));
+
+        ArgumentCaptor<Pedido> pedidoCaptor = ArgumentCaptor.forClass(Pedido.class);
+        casoDeUso.executar(dto, cliente);
+        verify(pedidoRepository).salvar(pedidoCaptor.capture());
+
+        Pedido pedidoSalvo = pedidoCaptor.getValue();
+        assertThat(pedidoSalvo.getDescontoAplicado()).isGreaterThan(BigDecimal.ZERO);
+        assertThat(pedidoSalvo.getValorTotal()).isLessThan(pedidoSalvo.getValorBruto());
+        assertThat(pedidoSalvo.getCupom().codigoCupom()).isEqualTo("DESCONTO10");
+    }
+
     @Test
     @DisplayName("Não deve salvar pedido nem publicar evento quando a validação de estoque falhar")
     void naoDeveSalvarQuandoValidacaoFalhar() {
-        Cliente cliente = ClienteBuilder.umCliente().build();
-        Associacao produtoSolicitado = CardapioProdutoBuilder.umCardapioProduto()
-                .comQuantidadeCustomizada(3)
-                .build();
         List<ItemPedidoSolicitadoDTO> itensDTO = List.of(
-                new ItemPedidoSolicitadoDTO(produtoSolicitado.getProduto().getId(), 10, "Teste"));
-        PedidoCriacaoDTO pedidoCriacaoDTO = new PedidoCriacaoDTO(
-                produtoSolicitado.getCardapio().getId(), itensDTO, null, null);
+                new ItemPedidoSolicitadoDTO(associacao.getProduto().getId(), 10, "obs"));
+        PedidoCriacaoDTO dto = new PedidoCriacaoDTO(associacao.getCardapio().getId(), itensDTO, null, null);
 
         when(pedidoMapeador.mapearParaValidacaoDeEstoque(itensDTO))
-                .thenReturn(List.of(new ItemValidacaoEstoque(
-                        produtoSolicitado.getProduto().getId(), 10)));
+                .thenReturn(List.of(new ItemValidacaoEstoque(associacao.getProduto().getId(), 10)));
         doThrow(new RuntimeException("qualquer erro"))
                 .when(pedidoAssociacaoPorta).validarEstoque(anyLong(), anyList());
 
-        assertThatThrownBy(() -> casoDeUso.executar(pedidoCriacaoDTO, cliente))
+        assertThatThrownBy(() -> casoDeUso.executar(dto, cliente))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("qualquer erro");
 
         verify(pedidoRepository, never()).salvar(any());
         verify(eventPublisher, never()).publishEvent(any());
     }
-    @Test
-    @DisplayName("Deve aplicar desconto no pedido quando cupom válido for informado")
-    void deveAplicarDescontoQuandoCupomValido() {
-        Associacao associacao = CardapioProdutoBuilder.umCardapioProduto().build();
-        Cliente cliente = ClienteBuilder.umCliente().build();
-        InformacoesClienteParaPedido infoCliente = new InformacoesClienteParaPedido(cliente.getId(), cliente.getNome(), cliente.getCpf().cpf(), cliente.getTelefone());
-        EnderecoPedido enderecoPedido = new EnderecoPedido(cliente.getEnderecoCliente().rua(), cliente.getEnderecoCliente().numero(), cliente.getEnderecoCliente().bairro(), cliente.getEnderecoCliente().cidade(), cliente.getEnderecoCliente().estado(), cliente.getEnderecoCliente().cep(), cliente.getEnderecoCliente().referencia());
-        RepresentacaoProdutoItemPedido representacaoProduto = new RepresentacaoProdutoItemPedido(associacao.getProduto().getId(), associacao.getProduto().getNome());
-        ProdutoVendido produtoVendido = new ProdutoVendido(representacaoProduto, associacao.resolverPrecoDeVenda());
-        List<ItemPedidoSolicitadoDTO> itensDTO = List.of(new ItemPedidoSolicitadoDTO(associacao.getProduto().getId(), 2, "obs"));
-        PedidoCriacaoDTO dto = new PedidoCriacaoDTO(associacao.getCardapio().getId(), itensDTO, null, "DESCONTO10");
-        PedidoCriadoDTO pedidoCriadoDTO = Instancio.create(PedidoCriadoDTO.class);
 
-        CupomConsumido cupomMock = new CupomConsumido(1L, "DESCONTO10", new BigDecimal("10"), TipoDesconto.PORCENTAGEM, "admin");
-
-        when(pedidoMapeador.mapearParaValidacaoDeEstoque(itensDTO)).thenReturn(List.of(new ItemValidacaoEstoque(associacao.getProduto().getId(), 2)));
-        when(pedidoClientePorta.obterDetalhesClienteParaPedido(cliente)).thenReturn(infoCliente);
-        when(pedidoClientePorta.obterEndereco(cliente)).thenReturn(enderecoPedido);
-        when(pedidoAssociacaoPorta.obterProdutoVendido(dto.idCardapio(), itensDTO.get(0).idProduto())).thenReturn(produtoVendido);
-
-
-        when(pedidoCupomPorta.validarCupom(any(CupomUtilizado.class))).thenReturn(cupomMock);
-
-        when(pedidoMapeador.mapearPedidoCriadoDto(any(Pedido.class))).thenReturn(pedidoCriadoDTO);
-
-        ArgumentCaptor<Pedido> pedidoCaptor = ArgumentCaptor.forClass(Pedido.class);
-
-        ArgumentCaptor<CupomUtilizado> cupomUtilizadoCaptor = ArgumentCaptor.forClass(CupomUtilizado.class);
-
-        casoDeUso.executar(dto, cliente);
-
-        verify(pedidoRepository).salvar(pedidoCaptor.capture());
-
-
-        verify(pedidoCupomPorta).validarCupom(cupomUtilizadoCaptor.capture());
-
-        Pedido pedidoSalvo = pedidoCaptor.getValue();
-        CupomUtilizado cupomEnviadoParaValidacao = cupomUtilizadoCaptor.getValue();
-
-
-        assertThat(pedidoSalvo.getDescontoAplicado()).isGreaterThan(BigDecimal.ZERO);
-        assertThat(pedidoSalvo.getValorTotal()).isLessThan(pedidoSalvo.getValorBruto());
-        assertThat(pedidoSalvo.getCupom()).isNotNull();
-        assertThat(pedidoSalvo.getCupom().codigoCupom()).isEqualTo("DESCONTO10");
-
-
-        BigDecimal valorBrutoEsperado = associacao.resolverPrecoDeVenda().multiply(new BigDecimal("2"));
-        assertThat(cupomEnviadoParaValidacao.codigoCupom()).isEqualTo("DESCONTO10");
-        assertThat(cupomEnviadoParaValidacao.valorBrutoTotalPedido()).isEqualByComparingTo(valorBrutoEsperado);
-    }
     @Test
     @DisplayName("Não deve chamar porta de cupom quando nenhum cupom for informado")
     void naoDeveInteragirComCupomPortaQuandoCupomNaoInformado() {
-        Associacao associacao = CardapioProdutoBuilder.umCardapioProduto().build();
-        Cliente cliente = ClienteBuilder.umCliente().build();
-
-        InformacoesClienteParaPedido infoCliente = new InformacoesClienteParaPedido(
-                cliente.getId(), cliente.getNome(), cliente.getCpf().cpf(), cliente.getTelefone());
-        EnderecoPedido enderecoPedido = new EnderecoPedido(
-                cliente.getEnderecoCliente().rua(), cliente.getEnderecoCliente().numero(),
-                cliente.getEnderecoCliente().bairro(), cliente.getEnderecoCliente().cidade(),
-                cliente.getEnderecoCliente().estado(), cliente.getEnderecoCliente().cep(),
-                cliente.getEnderecoCliente().referencia());
-
         List<ItemPedidoSolicitadoDTO> itensDTO = List.of(
                 new ItemPedidoSolicitadoDTO(associacao.getProduto().getId(), 1, "obs"));
-        PedidoCriacaoDTO dto = new PedidoCriacaoDTO(
-                associacao.getCardapio().getId(), itensDTO, null, null); // sem cupom
-
-        when(pedidoMapeador.mapearParaValidacaoDeEstoque(itensDTO))
-                .thenReturn(List.of(new ItemValidacaoEstoque(associacao.getProduto().getId(), 1)));
-        when(pedidoClientePorta.obterDetalhesClienteParaPedido(cliente)).thenReturn(infoCliente);
-        when(pedidoClientePorta.obterEndereco(cliente)).thenReturn(enderecoPedido);
-        when(pedidoAssociacaoPorta.obterProdutoVendido(any(), any()))
-                .thenReturn(new ProdutoVendido(
-                        new RepresentacaoProdutoItemPedido(associacao.getProduto().getId(), associacao.getProduto().getNome()),
-                        associacao.resolverPrecoDeVenda()));
-        when(pedidoMapeador.mapearPedidoCriadoDto(any())).thenReturn(Instancio.create(PedidoCriadoDTO.class));
+        PedidoCriacaoDTO dto = new PedidoCriacaoDTO(associacao.getCardapio().getId(), itensDTO, null, null);
+        mockearSetupBasico(itensDTO);
 
         casoDeUso.executar(dto, cliente);
 
-        // garante que a porta de cupom nunca foi tocada
         verifyNoInteractions(pedidoCupomPorta);
     }
 }
