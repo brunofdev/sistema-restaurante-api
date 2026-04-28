@@ -3,7 +3,7 @@
 # 🍽️ Sistema Restaurante — API REST
 
 **Backend completo para gestão de restaurantes, desenvolvido com Java 17 e Spring Boot.**  
-Projeto educacional com foco em boas práticas de engenharia de software, arquitetura limpa e segurança.
+Projeto com foco em arquitetura hexagonal, design orientado a domínio e boas práticas de engenharia de software.
 
 [![Java](https://img.shields.io/badge/Java-17-orange?style=flat-square&logo=openjdk)](https://www.java.com)
 [![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.4.5-6DB33F?style=flat-square&logo=springboot)](https://spring.io/projects/spring-boot)
@@ -21,333 +21,219 @@ Projeto educacional com foco em boas práticas de engenharia de software, arquit
 
 ## 📖 Sobre o Projeto
 
-Este projeto simula o **backend completo de um sistema de restaurante**, cobrindo desde a vitrine pública de cardápios até o painel operacional da cozinha com alertas em tempo real. Foi construído com atenção especial a princípios de design como **SOLID**, coesão de classes, separação entre domínio e infraestrutura, e segurança por níveis de acesso.
+Este projeto simula o **backend completo de um sistema de restaurante**, cobrindo desde a vitrine pública de cardápios até o painel operacional da cozinha com alertas em tempo real.
+
+O objetivo não foi só fazer funcionar — foi tomar **decisões conscientes de design** a cada etapa: onde cada regra deve viver, como isolar o domínio da infraestrutura, como garantir que o sistema possa crescer sem virar um emaranhado de `if/else`. As seções abaixo documentam essas decisões.
 
 ---
 
-##  Funcionalidades Completas
+## 🏗️ Arquitetura e Decisões de Design
 
-### 🔓 Acesso Público (sem autenticação)
+### Estrutura Modular por Domínio
 
-- Visualização de **cardápios ativos** com seus produtos e preços
-- Acesso aos **produtos disponíveis** por cardápio
-- Cadastro de **novos clientes** (`POST /cliente/cadastro`)
-- Cadastro de **novos operadores** (`POST /operador/cadastro`)
-
----
-
-### 🔐 Autenticação
-
-- Login de **clientes** via CPF ou username com geração de token **JWT** (`POST /api/auth/cliente-login`)
-- Login de **operadores** via username com geração de token **JWT** (`POST /api/auth/operador-login`)
-- Todos os tokens carregam as roles do usuário para controle de acesso por nível hierárquico
-
----
-
-### 👤 Área do Cliente (`ROLE_USER`)
-
-**Pedidos**
-- Criar pedido com múltiplos itens, cada item com quantidade e observação individual (`POST /pedido/criar-pedido`)
-- Adicionar **endereço alternativo de entrega** no pedido, ou utilizar o endereço cadastrado
-- Aplicar **cupom de desconto** no pedido
-- Consultar histórico completo de pedidos com paginação (`GET /pedido/obter-pedidos-do-cliente`)
-- Acompanhar status dos pedidos **em tempo real** via WebSocket — push automático em `/topico/pedido/{id}` a cada mudança de status
-
-**Perfil**
-- Visualizar e atualizar dados do próprio cadastro
-- Gerenciar endereços cadastrados
-
-**Fidelidade**
-- Consultar saldo atual de **pontos de fidelidade**
-- Pontos acumulados automaticamente com base no valor total de pedidos com status `ENTREGUE`
-
----
-
-### ⚙️ Área Operacional — Gestão de Pedidos
-
-**Níveis de acesso:** `ADMIN1`, `ADMIN2`, `ADMIN3`
-
-**Painel do Dia**
-- Listar todos os pedidos do dia corrente com paginação (`GET /pedido/obter-pedidos-do-dia`)
-- Receber **alertas em tempo real** via WebSocket (`/topico/admin-pedidos`) quando novos pedidos chegam
-- Painel com ordenação automática por prioridade de status
-
-**Fluxo de Status dos Pedidos**
+O projeto é organizado por módulos de negócio, cada um com suas próprias camadas internas. O domínio não conhece JPA, Spring, nem nenhum detalhe de infraestrutura — ele expõe interfaces (portas) que a infraestrutura implementa (adaptadores).
 
 ```
-PENDENTE → EM_PREPARAÇÃO → SAIU_PARA_ENTREGA → ENTREGUE
+módulo/
+├── api/              → controllers e DTOs
+├── aplicacao/        → casos de uso e mapeadores
+├── dominio/          → entidades, value objects, interfaces de repositório e exceções
+└── infraestrutura/   → adaptadores JPA e implementações das portas
+```
+
+Módulos implementados: `auth`, `cardapio`, `cardapioproduto`, `cliente`, `cupom`, `operador`, `pedido`, `produto`, `websocket`.
+
+---
+
+### Enums com Comportamento — Strategy Pattern sem cerimônia
+
+Um dos padrões mais utilizados no projeto é encapsular comportamento diretamente nos enums, eliminando `switch/case` espalhados e respeitando o Open/Closed Principle.
+
+**Exemplo 1 — Tipos de desconto de cupom:**
+
+```java
+public enum TipoDesconto {
+    PORCENTAGEM {
+        @Override
+        public BigDecimal aplicar(BigDecimal bruto, BigDecimal desconto) {
+            return bruto.multiply(desconto).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+        }
+    },
+    VALOR {
+        @Override
+        public BigDecimal aplicar(BigDecimal bruto, BigDecimal desconto) {
+            return desconto;
+        }
+    };
+
+    public abstract BigDecimal aplicar(BigDecimal bruto, BigDecimal desconto);
+}
+```
+
+Adicionar um novo tipo de desconto (`FRETE_GRATIS`, por exemplo) não exige alterar nenhuma outra classe — apenas um novo valor no enum com sua própria implementação.
+
+**Exemplo 2 — Regras de recorrência de cupom:**
+
+```java
+public enum RegraRecorrencia {
+    DEZ_DIAS(10), QUINZE_DIAS(15), VINTE_DIAS(20), TRINTA_DIAS(30);
+
+    private final int dias;
+
+    RegraRecorrencia(int dias) { this.dias = dias; }
+
+    public void aplicar(LocalDateTime dataUltimoUso) {
+        if (!dataUltimoUso.isBefore(LocalDateTime.now().minusDays(dias))) {
+            throw new CupomNaoPodeSerConsumidoExcecao(
+                "Este cupom só pode ser reutilizado de " + dias + " em " + dias + " dias. Último uso: " + dataUltimoUso);
+        }
+    }
+}
+```
+
+Cada valor do enum carrega seus próprios dados e comportamento. A lógica de validação não vaza para os casos de uso.
+
+**Exemplo 3 — Transição de status de pedido:**
+
+```java
+// O enum StatusPedido sabe quais transições são válidas
+PENDENTE → EM_PREPARACAO → SAIU_PARA_ENTREGA → ENTREGUE
                                               ↘ CANCELADO
 ```
 
-> ⚠️ Pedidos com status `ENTREGUE` **não podem ser cancelados**.  
-> ⚠️ Pedidos com status `CANCELADO` **não podem ser reabertos**.  
-> As regras de transição ficam encapsuladas diretamente no enum `StatusPedido`.
+> ⚠️ Pedidos `ENTREGUE` não podem ser cancelados. Pedidos `CANCELADO` não podem ser reabertos. Essas regras vivem no próprio enum, não nos controllers nem nos casos de uso.
 
-- Atualizar status de um pedido (`PATCH /pedido/{id}/status`)
-- Histórico completo de todos os pedidos para auditoria
+---
 
-**Automações disparadas pelo fluxo de status (via Padrão Observer):**
+### Separação de Contextos — Cupom não conhece Cliente
 
-| Evento | Ações automáticas |
+Ao implementar a validação de recorrência de cupom por cliente, uma decisão importante foi tomada: **o módulo de Cupom não deve conhecer o módulo de Cliente**. Criar esse acoplamento quebraria a independência entre os domínios.
+
+A solução foi usar o que o módulo de Pedido já possui naturalmente — ele registra qual cliente fez qual pedido com qual cupom. A query de verificação vive no repositório de Pedido:
+
+```java
+@Query("""
+    SELECT p.dataCriacao FROM Pedido p
+    WHERE p.cliente.clienteId = :clienteId
+    AND p.cupom.codigoCupom = :codigoCupom
+    ORDER BY p.dataCriacao DESC
+    LIMIT 1
+""")
+Optional<LocalDateTime> buscarDataUltimoUsoDoCupomPeloCliente(
+    @Param("clienteId") Long clienteId,
+    @Param("codigoCupom") String codigoCupom);
+```
+
+O caso de uso de pedido passa essa informação ao validar o cupom, e a regra de intervalo fica encapsulada no `RegraRecorrencia`.
+
+---
+
+### Padrão Observer — Módulos Desacoplados por Eventos
+
+Ao criar ou atualizar um pedido, diversas ações precisam acontecer em outros módulos: subtrair estoque, acumular pontos de fidelidade, estornar cupom em caso de cancelamento. Chamar esses módulos diretamente do caso de uso criaria acoplamento desnecessário.
+
+A solução foi o **padrão Observer via `ApplicationEventPublisher`** do Spring:
+
+| Evento | Ações disparadas automaticamente |
 |---|---|
-| Pedido criado | Valida estoque, valida produtos, verifica associação ao cardápio, consome cupom |
-| Pedido confirmado | Subtrai quantidade em `Produto` e em `CardapioProduto` |
-| Status → `ENTREGUE` | Calcula e acrescenta pontos de fidelidade ao cliente |
-| Status → `CANCELADO` | Estorna quantidades em estoque, estorna cupom utilizado |
+| Pedido criado | Valida estoque, valida produtos, consome cupom |
+| Status → `ENTREGUE` | Calcula e acrescenta pontos de fidelidade |
+| Status → `CANCELADO` | Estorna estoque e estorna cupom |
+
+O caso de uso de pedido apenas publica o evento — ele não sabe quem vai reagir.
 
 ---
 
-### 📦 Módulo de Produtos (`ADMIN`)
+## ⚙️ Funcionalidades
 
-- Listar todos os produtos com paginação e filtros
-- Buscar produto por ID
-- **Criar produto** com nome, descrição, preço, disponibilidade e quantidade em estoque (`POST /produto`)
-- **Atualizar produto** individualmente (`PUT /produto/{id}`)
-- **Atualização em lote** de múltiplos produtos de uma só vez (`PUT /produto/lote`)
-- **Deletar produto** (`DELETE /produto/{id}`)
-- Quantidade disponível é **subtraída automaticamente** a cada venda
-- Produto marcado como **indisponível automaticamente** ao atingir zero unidades
+### 🔓 Acesso Público
 
----
+- Visualização de cardápios ativos com produtos e preços
+- Cadastro de clientes e operadores
 
-### 🗓️ Módulo de Cardápios (`ADMIN`)
+### 🔐 Autenticação
 
-- Listar todos os cardápios (ativos e inativos) com paginação
-- Listar apenas cardápios **ativos** (rota pública)
-- Buscar cardápio por ID
-- **Criar cardápio** com nome, descrição, datas de início e fim, e flag de disponibilidade (`POST /cardapio`)
-- **Atualizar cardápio** (`PUT /cardapio/{id}`)
-- **Deletar cardápio** (`DELETE /cardapio/{id}`)
-- Suporte a cardápios temáticos com **datas específicas de vigência** *(ex: Cardápio de Verão, Promoção de Terça)*
-- Múltiplos cardápios podem coexistir, com controle de disponibilidade independente
+- Login de clientes via CPF ou username com geração de token JWT
+- Login de operadores via username com geração de token JWT
+- Todos os tokens carregam as roles do usuário para controle de acesso hierárquico
 
----
+### 👤 Área do Cliente (`ROLE_USER`)
 
-### 🔗 Módulo de Associação Cardápio-Produto (`CardapioProduto`)
+- Criar pedido com múltiplos itens, observações individuais, endereço alternativo e cupom de desconto
+- Acompanhar status do pedido **em tempo real** via WebSocket
+- Consultar histórico de pedidos com paginação
+- Gerenciar perfil e endereços
+- Consultar saldo de pontos de fidelidade
 
-O sistema utiliza uma **tabela associativa** distinta da entidade `Produto`, o que permite criar cardápios dinâmicos com campos customizados por associação.
+### ⚙️ Área Operacional (`ADMIN1`, `ADMIN2`, `ADMIN3`)
 
-- Associar um produto a um cardápio (`POST /cardapio-produto`)
-- Listar todas as associações de um cardápio específico
-- Buscar associação por ID
-- **Campos customizáveis por associação:** preço promocional e quantidade disponível no contexto do cardápio (independente do estoque global do produto)
-- Atualizar dados de uma associação (`PUT /cardapio-produto/{id}`)
-- Remover associação (`DELETE /cardapio-produto/{id}`)
-- Validação: ao criar um pedido, o sistema verifica se os produtos selecionados **realmente pertencem ao cardápio informado**
+- Receber **alertas em tempo real** quando novos pedidos chegam
+- Gerenciar fluxo de status dos pedidos
+- CRUD completo de produtos, cardápios, associações, cupons, clientes e operadores
+- Controle de estoque com subtração automática por venda
 
 ---
 
-### 🎟️ Módulo de Cupons (`ADMIN`)
+## 📡 WebSocket — Tempo Real
 
-- Criar cupons de desconto com código, valor/percentual e data de validade
-- Listar cupons disponíveis
-- Atualizar e remover cupons
-- Cupom é **consumido automaticamente** ao ser aplicado a um pedido
-- Cupom é **estornado automaticamente** se o pedido for cancelado
-
----
-
-### 👥 Módulo de Clientes (`ADMIN`)
-
-- Listar todos os clientes com paginação
-- Buscar cliente por ID ou CPF
-- Atualizar dados cadastrais de um cliente
-- Remover cliente
-- Visualizar **saldo de pontos de fidelidade** de qualquer cliente
-- Consultar histórico de pedidos de um cliente específico
-
----
-
-### 🛠️ Módulo de Operadores (`ADMIN`)
-
-- Listar todos os operadores com paginação
-- Buscar operador por ID
-- Criar, atualizar e remover operadores
-- Controle de **níveis hierárquicos** (`ADMIN1`, `ADMIN2`, `ADMIN3`) com permissões distintas por nível
-- Segregação de acesso: operadores não conseguem criar pedidos como clientes
-
----
-
-### 📡 WebSocket — Tempo Real
-
-O sistema usa WebSocket com protocolo **STOMP** (via SockJS) para comunicação em tempo real:
+O sistema usa WebSocket com protocolo **STOMP** (via SockJS):
 
 | Tópico | Descrição | Consumidor |
 |---|---|---|
-| `/topico/admin-pedidos` | Alerta ao chegar um novo pedido | Painel da cozinha / gerência |
-| `/topico/pedido/{id}` | Atualização de status de um pedido específico | App do cliente |
+| `/topico/admin-pedidos` | Novo pedido chegou | Painel da cozinha |
+| `/topico/pedido/{id}` | Status do pedido atualizado | App do cliente |
 
-- O painel administrativo é notificado **imediatamente** ao entrar um novo pedido
-- O cliente recebe **push automático** cada vez que o operador avança o status do seu pedido
-- O arquivo `TestadorWebSocket.html` na raiz do projeto simula todo o fluxo em dois painéis simultâneos no navegador
+O arquivo `TestadorWebSocket.html` na raiz simula o sistema completo em dois painéis simultâneos no navegador.
 
 ---
 
-### 🌱 Database Seeder
-
-O sistema inicializa automaticamente com dados de teste em todos os módulos:
-
-- Clientes pré-cadastrados com endereço
-- Produtos e cardápios já associados
-- Operadores com diferentes níveis de acesso
-- Pedidos em vários estados do fluxo
-
-Nenhuma configuração de banco externo é necessária para rodar localmente — o **H2 in-memory** é usado por padrão.
-
----
-
-### 🛡️ Segurança e Controle de Acesso
+## 🛡️ Segurança
 
 - Autenticação **stateless** via JWT em todas as rotas protegidas
 - Segregação estrita de papéis: clientes não alteram status de pedidos, operadores não criam pedidos como clientes
-- **Bean Validation** em todos os DTOs de entrada com mensagens de erro descritivas
-- Respostas de erro com **estrutura uniforme** — sem stack traces expostos ao consumidor
-- Dependências transitivas com vulnerabilidades corrigidas via pinning de versão no `pom.xml` (Tomcat, PostgreSQL, AssertJ, Jackson)
+- Bean Validation em todos os DTOs com mensagens de erro descritivas
+- Respostas de erro com estrutura uniforme — sem stack traces expostos
+- Vulnerabilidades de dependências transitivas corrigidas via pinning de versão no `pom.xml`
 
 ---
 
-## 🏗️ Infraestrutura
+## 🚀 Como Rodar
 
-| Recurso | Descrição |
-|---|---|
-| 🔐 Segurança por papéis | JWT + Spring Security com roles hierárquicas |
-| ⚡ WebSocket STOMP | Alertas e atualizações de status em tempo real |
-| 🌱 Database Seeder | Dados de teste carregados na inicialização |
-| 📖 Swagger / OpenAPI | Documentação interativa em `/swagger-ui.html` |
-| 🛡️ Tratamento de erros | Respostas padronizadas com mensagens claras |
-| 🐳 Docker | Dockerfile multi-stage + docker-compose com PostgreSQL |
-| 📐 Lombok | Redução de boilerplate em entidades e DTOs |
-| 🧪 Instancio | Geração de objetos aleatórios para testes |
+### Opção 1 — H2 em memória (recomendado para explorar)
+
+```bash
+git clone https://github.com/brunofdev/sistema-restaurante-api
+cd sistema-restaurante-api
+./mvnw spring-boot:run
+```
+
+A API sobe com banco H2 em memória e dados de teste carregados automaticamente. Nenhuma configuração externa necessária.
+
+### Opção 2 — Docker Compose com PostgreSQL
+
+```bash
+docker-compose up --build
+```
+
+Acesse a documentação interativa em `http://localhost:8080/swagger-ui.html`
+
+---
+
+## 🧪 Testando
+
+O sistema já inicia com dados de teste em todos os módulos. O fluxo mais completo para testar:
+
+1. Autentique-se como cliente no Swagger
+2. Crie um pedido com itens e cupom
+3. Autentique-se como operador e avance o status
+4. Observe os eventos sendo disparados (estoque, pontos, cupom)
+5. Abra o `TestadorWebSocket.html` para ver as notificações em tempo real
 
 ---
 
 ## 🗺️ Rotas Principais
 
 ![Rotas da API](https://github.com/user-attachments/assets/505a863e-1c64-44f1-8d64-e65211469705)
-
----
-
-## ⚙️ Tecnologias
-
-| Categoria | Tecnologias |
-|---|---|
-| Linguagem & Framework | Java 17, Spring Boot 3.4.5, Spring Security 6.4, Spring Data JPA |
-| Persistência | Hibernate, H2 (testes/dev), PostgreSQL (produção) |
-| Segurança | JWT — jjwt 0.12.5, Spring Security |
-| Comunicação em tempo real | WebSocket, STOMP, SockJS |
-| Documentação | Swagger / SpringDoc OpenAPI 2.7 |
-| Testes | JUnit 5, Mockito, Spring Security Test, Instancio |
-| Build & DevOps | Maven, Docker, Docker Compose |
-| Utilitários | Lombok, Bean Validation |
-
----
-
-## 🏛️ Arquitetura
-
-O projeto segue uma **arquitetura modular por funcionalidade**, onde cada módulo possui suas próprias camadas internas:
-
-```
-módulo/
-├── api/              → controllers e DTOs
-├── aplicacao/        → use cases, mappers, factories e validadores
-├── dominio/          → entidades, repositórios (interfaces) e exceções
-└── infraestrutura/   → adapters e persistência JPA
-```
-
-**Módulos implementados:**
-
-```
-src/
-├── auth/
-├── cardapio/
-├── cardapioproduto/
-├── cliente/
-├── cupom/
-├── operador/
-├── pedido/
-├── produto/
-└── websocket/
-```
-
-**Princípios aplicados:**
-
-- **SOLID** — especialmente SRP e DIP, com separação clara entre domínio e infraestrutura
-- **Programação para interfaces** — serviços dependem de contratos, não de implementações concretas
-- **Padrão Repository + Adapter** — o domínio não conhece JPA; a infraestrutura não conhece as regras de negócio
-- **Enums com comportamento** — regras de transição de status encapsuladas no enum `StatusPedido`
-- **Padrão Observer** — módulos desacoplados que reagem a eventos do domínio (estoque, pontos, cupom)
-- **Padrão Factory + Mapper** — criação e conversão de entidades encapsuladas em classes dedicadas
-- **Padrão Validator** — validações de negócio separadas das validações de entrada (Bean Validation)
-
----
-
-## 🚀 Como Rodar
-
-### Opção 1 — H2 em memória (mais rápido para testar)
-
-```bash
-# 1. Clone o repositório
-git clone https://github.com/brunofdev/sistema-restaurante-api
-
-# 2. Entre na pasta
-cd sistema-restaurante-api
-
-# 3. Rode com Maven
-./mvnw spring-boot:run
-```
-
-> A API sobe com **banco H2 em memória** e dados de teste carregados automaticamente.  
-> Nenhum banco de dados externo precisa ser configurado.
-
-### Opção 2 — Docker Compose com PostgreSQL
-
-```bash
-# Sobe a API + banco PostgreSQL juntos
-docker-compose up --build
-```
-
-> O `docker-compose.yml` configura automaticamente o banco `restaurante_db` e conecta os serviços.
-
-Acesse a documentação interativa em:
-```
-http://localhost:8080/swagger-ui.html
-```
-
----
-
-## 🧪 Testando o Projeto
-
-### 1. Autenticação
-
-O sistema já inicia populado com dados de teste em todos os módulos. O primeiro passo é se autenticar no Swagger — o mesmo endpoint serve tanto clientes quanto operadores:
-
-![Como logar no Swagger](https://github.com/user-attachments/assets/ec53396e-ac22-4a6c-881b-3af180348289)
-
----
-
-### 2. Fazendo um Pedido
-
-O teste mais interessante é realizar um pedido completo:
-
-![Fazendo um pedido](https://github.com/user-attachments/assets/6dc941fa-f12e-4e43-91d8-6d29edcf60bc)
-
-Em caso de sucesso, o sistema retorna um JSON no formato padrão do sistema:
-
-![Resposta de sucesso](https://github.com/user-attachments/assets/632eb0e6-7632-4987-8040-77dcc67941cd)
-
----
-
-### 3. Atualizando o Status do Pedido
-
-Administradores devem atualizar o status do pedido pelo painel:
-
-![Atualização de status](https://github.com/user-attachments/assets/5ccb9f59-9c13-441e-a9bf-a01efc9ac369)
-
----
-
-### 4. Testando o WebSocket
-
-Na raiz do projeto existe o arquivo `TestadorWebSocket.html`. Abra-o no navegador para simular o sistema completo em dois painéis — o painel do cliente e o painel da cozinha — com alertas e atualizações de status em tempo real.
 
 ---
 
@@ -361,6 +247,21 @@ Na raiz do projeto existe o arquivo `TestadorWebSocket.html`. Abra-o no navegado
 
 ---
 
+## ⚙️ Tecnologias
+
+| Categoria | Tecnologias |
+|---|---|
+| Linguagem & Framework | Java 17, Spring Boot 3.4.5, Spring Security 6.4, Spring Data JPA |
+| Persistência | Hibernate, H2 (dev/testes), PostgreSQL (produção) |
+| Segurança | JWT — jjwt 0.12.5 |
+| Tempo real | WebSocket, STOMP, SockJS |
+| Documentação | Swagger / SpringDoc OpenAPI 2.7 |
+| Testes | JUnit 5, Mockito, Instancio |
+| Build & DevOps | Maven, Docker, Docker Compose |
+| Utilitários | Lombok, Bean Validation |
+
+---
+
 ## 📬 Contato
 
-Desenvolvido por **Bruno Fraga** · [github.com/brunofdev](https://github.com/brunofdev)
+Desenvolvido por **Bruno Fraga** · [github.com/brunofdev](https://github.com/brunofdev) · [linkedin.com/in/bruno-fraga-dev](https://linkedin.com/in/bruno-fraga-dev)
