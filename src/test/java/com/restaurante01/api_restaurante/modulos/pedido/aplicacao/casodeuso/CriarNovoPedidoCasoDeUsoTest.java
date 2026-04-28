@@ -1,5 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso;
 import com.restaurante01.api_restaurante.builders.CardapioProdutoBuilder;
+import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.RegraRecorrencia;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.TipoDesconto;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoCupomPorta;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.ClienteBuilder;
@@ -29,7 +30,6 @@ import org.springframework.context.ApplicationEventPublisher;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -105,7 +105,7 @@ class CriarNovoPedidoCasoDeUsoTest {
         List<ItemPedidoSolicitadoDTO> itensDTO = List.of(
                 new ItemPedidoSolicitadoDTO(associacao.getProduto().getId(), 2, "obs"));
         PedidoCriacaoDTO dto = new PedidoCriacaoDTO(associacao.getCardapio().getId(), itensDTO, null, "DESCONTO10");
-        CupomConsumido cupomMock = new CupomConsumido(1L, "DESCONTO10", new BigDecimal("10"), TipoDesconto.PORCENTAGEM, "admin");
+        CupomConsumido cupomMock = new CupomConsumido(1L, "DESCONTO10", new BigDecimal("10"), TipoDesconto.PORCENTAGEM, RegraRecorrencia.QUINZE_DIAS);
 
         mockearSetupBasico(itensDTO);
         when(pedidoCupomPorta.validarCupom(any())).thenReturn(cupomMock);

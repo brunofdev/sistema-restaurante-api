@@ -8,9 +8,12 @@ import com.restaurante01.api_restaurante.modulos.cupom.dominio.excecao.CupomInva
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.excecao.PeriodoInvalidoExcecao;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.excecao.ValorMaxPedidoExcecao;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.excecao.ValorMinPedidoExcecao;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.CupomUtilizado;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class ValidarCupomCasoDeUso {
@@ -21,15 +24,15 @@ public class ValidarCupomCasoDeUso {
         this.repositorio = repositorio;
     }
 
-    public Cupom executar(String codigo, BigDecimal valorBrutoTotalPedido){
-        Cupom cupom = buscarPorCodigo(new CodigoCupom(codigo));
+    public Cupom executar(CupomUtilizado cupomUtilizado){
+        Cupom cupom = buscarPorCodigo(new CodigoCupom(cupomUtilizado.codigoCupom()));
         validarSeEstaAtivo(cupom);
         validarPeriodo(cupom.getPeriodoCupom());
         validarQuantidade(cupom);
-        validarSeEstaDentroValorMin(cupom, valorBrutoTotalPedido);
-        validarSeEstaDentroValorMax(cupom, valorBrutoTotalPedido);
+        validarSeEstaDentroValorMin(cupom, cupomUtilizado.valorBrutoTotalPedido());
+        validarSeEstaDentroValorMax(cupom, cupomUtilizado.valorBrutoTotalPedido());
+        validarRecorrencia(cupom, cupomUtilizado.dataDoUltimoUso());
         return cupom;
-
     }
     private  Cupom buscarPorCodigo (CodigoCupom codigoCupom){
         return repositorio.obterPorCodigo(codigoCupom).orElseThrow(() -> new CupomInvalidoExcecao("Cupom Informado: >> " + codigoCupom +  " << é Inválido"));
@@ -48,6 +51,9 @@ public class ValidarCupomCasoDeUso {
         if(!cupom.isEstaAtivo()){
             throw new CupomInvalidoExcecao("Este Cupom está inativo no momento");
         }
+    }
+    private void validarRecorrencia(Cupom cupom, Optional<LocalDateTime> dataDeUltimoUso){
+        dataDeUltimoUso.ifPresent(localDateTime -> cupom.getRecorrencia().aplicar(localDateTime));
     }
     private void validarSeEstaDentroValorMin(Cupom cupom, BigDecimal valorBrutoTotalPedido){
         if(cupom.getValorTotalMinPedido().compareTo(valorBrutoTotalPedido) > 0){

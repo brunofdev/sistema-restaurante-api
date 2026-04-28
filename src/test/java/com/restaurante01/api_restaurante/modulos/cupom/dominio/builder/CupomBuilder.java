@@ -2,6 +2,7 @@ package com.restaurante01.api_restaurante.modulos.cupom.dominio.builder;
 
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.Cupom;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.PeriodoCupom;
+import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.RegraRecorrencia;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.TipoDesconto;
 
 import java.math.BigDecimal;
@@ -17,6 +18,7 @@ public class CupomBuilder {
     private boolean estaAtivo = true;
     private int quantidade = 10;
     private TipoDesconto tipoDesconto = TipoDesconto.VALOR;
+    private RegraRecorrencia recorrencia = RegraRecorrencia.QUINZE_DIAS;
     private BigDecimal valorParaDesconto = BigDecimal.valueOf(10);
     private BigDecimal valorTotalMinPedido = BigDecimal.valueOf(50);
     private BigDecimal valorTotalMaxPedido = BigDecimal.valueOf(200);
@@ -55,7 +57,31 @@ public class CupomBuilder {
         return this;
     }
 
-    // ── Quantidade ────────────────────────────────────────────────────────────
+    // ── Tipo de Desconto ──────────────────────────────────────────────────────
+
+    public CupomBuilder baseadoEmPorcentagem(){
+        this.tipoDesconto = TipoDesconto.PORCENTAGEM;
+        return this;
+    }
+
+    public CupomBuilder baseadoEmValor(){
+        this.tipoDesconto = TipoDesconto.VALOR;
+        return this;
+    }
+
+    // ── Regras de Recorrência ─────────────────────────────────────────────────
+
+    public CupomBuilder recorrenciaDe15Dias(){
+        this.recorrencia = RegraRecorrencia.QUINZE_DIAS;
+        return this;
+    }
+
+    public CupomBuilder recorrenciaDe30Dias(){
+        this.recorrencia = RegraRecorrencia.TRINTA_DIAS;
+        return this;
+    }
+
+    // ── Estoque / Quantidade ──────────────────────────────────────────────────
 
     public CupomBuilder comQuantidade(int quantidade) {
         this.quantidade = quantidade;
@@ -67,24 +93,7 @@ public class CupomBuilder {
         return this;
     }
 
-    // ── Tipo de desconto ──────────────────────────────────────────────────────
-
-    public CupomBuilder comTipoDesconto(TipoDesconto tipoDesconto) {
-        this.tipoDesconto = tipoDesconto;
-        return this;
-    }
-
-    public CupomBuilder descontoPorcentagem() {
-        this.tipoDesconto = TipoDesconto.PORCENTAGEM;
-        return this;
-    }
-
-    public CupomBuilder descontoValor() {
-        this.tipoDesconto = TipoDesconto.VALOR;
-        return this;
-    }
-
-    // ── Valores ───────────────────────────────────────────────────────────────
+    // ── Valores e Limites ─────────────────────────────────────────────────────
 
     public CupomBuilder comValorDesconto(BigDecimal valor) {
         this.valorParaDesconto = valor;
@@ -101,18 +110,16 @@ public class CupomBuilder {
         return this;
     }
 
-    // ── Período ───────────────────────────────────────────────────────────────
+    // ── Período de Vigência ───────────────────────────────────────────────────
 
-    public CupomBuilder comPeriodo(String dataInicio, String horaInicio,
-                                   String dataFim,    String horaFim) {
-        this.dataInicio = dataInicio;
-        this.horaInicio = horaInicio;
-        this.dataFim    = dataFim;
-        this.horaFim    = horaFim;
+    public CupomBuilder vigente() {
+        this.dataInicio = LocalDate.now().minusDays(1).format(FMT);
+        this.horaInicio = "00:00";
+        this.dataFim    = LocalDate.now().plusDays(30).format(FMT);
+        this.horaFim    = "23:59";
         return this;
     }
 
-    /** Período já encerrado ontem às 23:59 */
     public CupomBuilder expirado() {
         this.dataInicio = LocalDate.now().minusDays(60).format(FMT);
         this.horaInicio = "00:00";
@@ -121,7 +128,6 @@ public class CupomBuilder {
         return this;
     }
 
-    /** Período que começa daqui 5 dias (ainda não vigente) */
     public CupomBuilder aindaNaoVigente() {
         this.dataInicio = LocalDate.now().plusDays(5).format(FMT);
         this.horaInicio = "00:00";
@@ -130,12 +136,12 @@ public class CupomBuilder {
         return this;
     }
 
-    /** Período ativo agora (default, mas explícito quando o nome importa) */
-    public CupomBuilder vigente() {
-        this.dataInicio = LocalDate.now().minusDays(1).format(FMT);
-        this.horaInicio = "00:00";
-        this.dataFim    = LocalDate.now().plusDays(30).format(FMT);
-        this.horaFim    = "23:59";
+    public CupomBuilder comPeriodoCustomizado(String dataInicio, String horaInicio,
+                                              String dataFim,    String horaFim) {
+        this.dataInicio = dataInicio;
+        this.horaInicio = horaInicio;
+        this.dataFim    = dataFim;
+        this.horaFim    = horaFim;
         return this;
     }
 
@@ -149,6 +155,7 @@ public class CupomBuilder {
                 estaAtivo,
                 quantidade,
                 tipoDesconto,
+                recorrencia,
                 valorParaDesconto,
                 valorTotalMinPedido,
                 valorTotalMaxPedido

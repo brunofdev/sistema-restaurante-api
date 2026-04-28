@@ -18,13 +18,13 @@ public class CupomPedidoAdaptador implements PedidoCupomPorta {
 
     @Override
     public CupomConsumido validarCupom (CupomUtilizado cupomUtilizado){
-        Cupom cupom = validarCupomCasoDeUso.executar(cupomUtilizado.codigoCupom(), cupomUtilizado.valorBrutoTotalPedido());
+        Cupom cupom = validarCupomCasoDeUso.executar(cupomUtilizado);
         return new CupomConsumido(
                 cupom.getId(),
                 cupom.getCodigoCupom().getValor(),
                 cupom.getValorParaDesconto(),
                 cupom.getTipoDesconto(),
-                cupom.getCriadoPor()
+                cupom.getRecorrencia()
         );
     }
 }

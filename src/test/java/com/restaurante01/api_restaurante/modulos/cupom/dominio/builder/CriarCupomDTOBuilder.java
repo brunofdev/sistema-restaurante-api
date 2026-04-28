@@ -3,6 +3,7 @@ package com.restaurante01.api_restaurante.modulos.cupom.dominio.builder;
 
 import com.restaurante01.api_restaurante.modulos.cupom.api.dto.entrada.CriarCupomDTO;
 import com.restaurante01.api_restaurante.modulos.cupom.api.dto.entrada.PeriodoCupomDTO;
+import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.RegraRecorrencia;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.TipoDesconto;
 import java.math.BigDecimal;
 
@@ -10,6 +11,7 @@ public class CriarCupomDTOBuilder {
 
     private String codigoCupom = "PROMO10";
     private TipoDesconto tipoDesconto = TipoDesconto.PORCENTAGEM;
+    private RegraRecorrencia recorrencia = RegraRecorrencia.QUINZE_DIAS;
     private Integer quantidade = 50;
     private BigDecimal valorParaDesconto = new BigDecimal("10.00");
     private BigDecimal valorTotalMinPedido = new BigDecimal("50.00");
@@ -25,6 +27,14 @@ public class CriarCupomDTOBuilder {
 
     public CriarCupomDTOBuilder comCodigo(String codigo) {
         this.codigoCupom = codigo;
+        return this;
+    }
+    public CriarCupomDTOBuilder comTipoDeDesconton(TipoDesconto tp){
+        this.tipoDesconto = tp;
+        return this;
+    }
+    public CriarCupomDTOBuilder comRegraDeRecorrencia(RegraRecorrencia regRec){
+        this.recorrencia = regRec;
         return this;
     }
 
@@ -52,6 +62,7 @@ public class CriarCupomDTOBuilder {
         return new CriarCupomDTO(
                 codigoCupom,
                 tipoDesconto,
+                recorrencia,
                 quantidade,
                 valorParaDesconto,
                 valorTotalMinPedido,
