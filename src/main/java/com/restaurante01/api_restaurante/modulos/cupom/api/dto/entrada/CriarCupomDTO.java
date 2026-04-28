@@ -1,5 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.cupom.api.dto.entrada;
 
+import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.RegraRecorrencia;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.TipoDesconto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
@@ -15,6 +16,10 @@ public record CriarCupomDTO(
         @Schema(description = "Tipo de desconto a ser aplicado (Ex: VALOR ou PORCENTAGEM).", example = "PORCENTAGEM")
         @NotNull(message = "O tipo de desconto é obrigatório")
         TipoDesconto tipoDesconto,
+
+        @Schema(description = "Regra de recorrencia uso (Ex: SÓ PODE SER USADO DAQUI 15 OU 30 DIAS. VALORES ACEITOS: DEZ_DIAS | QUINZE_DIAS | VINTE_DIAS | TRINTA_DIAS).", example = "QUINZE_DIAS")
+        @NotNull(message = "O tipo de desconto é obrigatório")
+        RegraRecorrencia regraRecorrencia,
 
         @Schema(description = "Quantidade de vezes que o cupom pode ser utilizado por todos os clientes no total.", example = "50")
         @NotNull(message = "A quantidade é obrigatória")

@@ -26,6 +26,7 @@ class CupomTest {
     private boolean cupomAtivo;
     private int quantidadeValida;
     private TipoDesconto regraPorcentagem;
+    private RegraRecorrencia recorrencia;
     private BigDecimal valorDescontoValido;
     private BigDecimal valorMinimoPedidoValido;
     private BigDecimal valorMaximoPedidoValido;
@@ -45,6 +46,7 @@ class CupomTest {
         cupomAtivo = true;
         quantidadeValida = 10;
         regraPorcentagem = TipoDesconto.PORCENTAGEM;
+        recorrencia = RegraRecorrencia.DEZ_DIAS;
         valorDescontoValido = new BigDecimal(15);
         valorMinimoPedidoValido = new BigDecimal(40);
         valorMaximoPedidoValido = new BigDecimal(150);
@@ -59,6 +61,7 @@ class CupomTest {
                 cupomAtivo,
                 quantidadeValida,
                 regraPorcentagem,
+                recorrencia,
                 valorDescontoValido,
                 valorMinimoPedidoValido,
                 valorMaximoPedidoValido
@@ -80,28 +83,28 @@ class CupomTest {
     @DisplayName("Deve lancar excecao ao criar cupom com quantidade negativa")
     public void deveLancarExcecaoQuantidadeNegativa() {
         assertThrows(QtdCupomInvalidaExcecao.class, () ->
-                Cupom.criar(codigoCupomValido, periodoValido, cupomAtivo, quantidadeInvalidaNegativa, regraPorcentagem, valorDescontoValido, valorMinimoPedidoValido, valorMaximoPedidoValido)
+                Cupom.criar(codigoCupomValido, periodoValido, cupomAtivo, quantidadeInvalidaNegativa, regraPorcentagem, recorrencia, valorDescontoValido, valorMinimoPedidoValido, valorMaximoPedidoValido)
         );
     }
     @Test
     @DisplayName("Deve lancar excecao ao criar cupom com valorDesconto = 0 ou negativo")
     public void deveLancarExcecaoValorDescontoNegativo() {
         assertThrows(ValorDescontoCupomExcecao.class, () ->
-                Cupom.criar(codigoCupomValido, periodoValido, cupomAtivo, quantidadeValida, regraPorcentagem, descontoNegativo, valorMinimoPedidoValido, valorMaximoPedidoValido)
+                Cupom.criar(codigoCupomValido, periodoValido, cupomAtivo, quantidadeValida, regraPorcentagem, recorrencia, descontoNegativo, valorMinimoPedidoValido, valorMaximoPedidoValido)
         );
     }
     @Test
     @DisplayName("Deve lancar excecao ao criar cupom com Regra de valor que é enum  = null")
     public void deveLancarExcecaoRegraValorCupomNull() {
         assertThrows(RegraCupomInvalidaExcecao.class, () ->
-                Cupom.criar(codigoCupomValido, periodoValido, cupomAtivo, quantidadeValida, null, valorDescontoValido, valorMinimoPedidoValido, valorMaximoPedidoValido)
+                Cupom.criar(codigoCupomValido, periodoValido, cupomAtivo, quantidadeValida, null, recorrencia, valorDescontoValido, valorMinimoPedidoValido, valorMaximoPedidoValido)
         );
     }
     @Test
     @DisplayName("Deve lancar excecao ao criar cupom valor minimo do pedido menor ou igual a zero")
     public void deveLancarExcecaoValorMinPedidoMenorIgualZero() {
         assertThrows(ValorMinPedidoExcecao.class, () ->
-                Cupom.criar(codigoCupomValido, periodoValido, cupomAtivo, quantidadeValida, regraPorcentagem, valorDescontoValido, valorMinimoInvalidoNegativo, valorMaximoPedidoValido)
+                Cupom.criar(codigoCupomValido, periodoValido, cupomAtivo, quantidadeValida, regraPorcentagem, recorrencia, valorDescontoValido, valorMinimoInvalidoNegativo, valorMaximoPedidoValido)
         );
     }
     @Test
@@ -109,7 +112,7 @@ class CupomTest {
     public void deveLancarExcecaoValorMinPedidoMenorQueQuarenta() {
         BigDecimal valorMinInvalido = new BigDecimal(10);
         assertThrows(ValorMinPedidoExcecao.class, () ->
-                Cupom.criar(codigoCupomValido, periodoValido, cupomAtivo, quantidadeValida, regraPorcentagem, valorDescontoValido, valorMinInvalido, valorMaximoPedidoValido)
+                Cupom.criar(codigoCupomValido, periodoValido, cupomAtivo, quantidadeValida, regraPorcentagem, recorrencia, valorDescontoValido, valorMinInvalido, valorMaximoPedidoValido)
         );
     }
     @Test
@@ -117,7 +120,7 @@ class CupomTest {
     public void deveLancarExcecaoValorMaxZero() {
         BigDecimal valorMaxInvalido = new BigDecimal(0);
         assertThrows(ValorMaxPedidoExcecao.class, () ->
-                Cupom.criar(codigoCupomValido, periodoValido, cupomAtivo, quantidadeValida, regraPorcentagem, valorDescontoValido, valorMinimoPedidoValido, valorMaxInvalido)
+                Cupom.criar(codigoCupomValido, periodoValido, cupomAtivo, quantidadeValida, regraPorcentagem, recorrencia, valorDescontoValido, valorMinimoPedidoValido, valorMaxInvalido)
         );
     }
     @Test
@@ -126,7 +129,7 @@ class CupomTest {
         BigDecimal valorMax = new BigDecimal(310);
         TipoDesconto regra = TipoDesconto.PORCENTAGEM;
         assertThrows(ValorMaxPedidoExcecao.class, () ->
-                Cupom.criar(codigoCupomValido, periodoValido, cupomAtivo, quantidadeValida, regra, valorDescontoValido, valorMinimoPedidoValido, valorMax)
+                Cupom.criar(codigoCupomValido, periodoValido, cupomAtivo, quantidadeValida, regra, recorrencia, valorDescontoValido, valorMinimoPedidoValido, valorMax)
         );
     }
 }

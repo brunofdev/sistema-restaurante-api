@@ -34,6 +34,7 @@ public class CupomMapeador {
                 dto.estaAtivo(),
                 dto.quantidade(),
                 dto.tipoDesconto(),
+                dto.regraRecorrencia(),
                 dto.valorParaDesconto(),
                 dto.valorTotalMinPedido(),
                 dto.valorTotalMaxPedido()

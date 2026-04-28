@@ -14,5 +14,6 @@ public interface PedidoRepositorio {
     Page<Pedido> buscarTodos(Pageable pageable);
     Page<Pedido> buscarPorCliente(Cliente cliente, Pageable pageable);
     Page<Pedido> buscarPorDataCriacaoEntre(LocalDateTime inicio, LocalDateTime fim, Pageable pageable);
+    Optional<LocalDateTime> encontrarPedidoComCupomRecorrente(Long clienteId, String codigoCupom);
 }
 

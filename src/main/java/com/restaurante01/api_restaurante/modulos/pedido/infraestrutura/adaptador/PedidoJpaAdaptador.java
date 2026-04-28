@@ -4,6 +4,7 @@ import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidad
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.repositorio.PedidoRepositorio;
 import com.restaurante01.api_restaurante.modulos.pedido.infraestrutura.persistencia.PedidoJPA;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -43,5 +44,9 @@ public class PedidoJpaAdaptador implements PedidoRepositorio {
     @Override
     public Page<Pedido> buscarPorDataCriacaoEntre(LocalDateTime inicio, LocalDateTime fim, Pageable pageable) {
         return jpa.findByDataCriacaoBetween(inicio, fim, pageable);
+    }
+    @Override
+    public Optional<LocalDateTime> encontrarPedidoComCupomRecorrente (Long idCliente, String codigoCupom){
+        return jpa.buscarDataUltimoUsoDoCupomPeloCliente(idCliente, codigoCupom);
     }
 }

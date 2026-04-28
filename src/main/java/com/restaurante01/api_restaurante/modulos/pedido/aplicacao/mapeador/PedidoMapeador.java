@@ -74,7 +74,7 @@ public class PedidoMapeador {
                 cupom.codigoCupom(),
                 cupom.valorParaDesconto(),
                 cupom.regraDoCupom(),
-                cupom.CupomCriadoPor()
+                cupom.regraRecorrencia()
         );
     }
     private EnderecoDTO mapearEndereco (EnderecoPedido enderecoPedido){

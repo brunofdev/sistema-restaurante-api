@@ -31,15 +31,20 @@ public class Cupom extends Auditable {
     @Setter
     @Embedded
     PeriodoCupom periodoCupom;
+    @Column(name = "recorrencia", nullable = false)
+    @Setter
+    private RegraRecorrencia recorrencia;
     @Setter
     private boolean estaAtivo;
+
 
     public static Cupom criar(
             String codigoCupom,
             PeriodoCupom periodoCupom,
             boolean estaAtivo,
             int quantidade,
-            TipoDesconto regra,
+            TipoDesconto regraDesconto,
+            RegraRecorrencia regraRecorrencia,
             BigDecimal valorParaDesconto,
             BigDecimal valorTotalMinPedido,
             BigDecimal valorTotalMaxPedido){
@@ -47,7 +52,8 @@ public class Cupom extends Auditable {
         cupom.adicionarCupom(codigoCupom);
         cupom.setPeriodoCupom(periodoCupom);
         cupom.setEstaAtivo(estaAtivo);
-        cupom.setTipoDesconto(regra);
+        cupom.setTipoDesconto(regraDesconto);
+        cupom.setRecorrencia(regraRecorrencia);
         cupom.setQuantidade(quantidade);
         cupom.setValorParaDesconto(valorParaDesconto);
         cupom.setValorTotalMinPedido(valorTotalMinPedido);

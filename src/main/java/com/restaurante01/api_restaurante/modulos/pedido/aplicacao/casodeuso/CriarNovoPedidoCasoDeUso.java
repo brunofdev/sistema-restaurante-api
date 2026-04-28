@@ -74,7 +74,7 @@ public class CriarNovoPedidoCasoDeUso {
 
     private void vincularCupomAoPedido(String codigoCupom, Pedido pedido){
         if(codigoCupom != null && !codigoCupom.isBlank()){
-            CupomConsumido cupom = pedidoCupomPorta.validarCupom(new CupomUtilizado(codigoCupom, pedido.getValorBruto()));
+            CupomConsumido cupom = pedidoCupomPorta.validarCupom(new CupomUtilizado(codigoCupom, pedido.getValorBruto(), pedidoRepository.encontrarPedidoComCupomRecorrente(pedido.getCliente().clienteId(), codigoCupom)));
             BigDecimal valorDesconto = cupom.regraDoCupom().aplicar(pedido.getValorBruto(), cupom.valorParaDesconto());
             pedido.vincularCupom(cupom);
             pedido.aplicarDesconto(valorDesconto);

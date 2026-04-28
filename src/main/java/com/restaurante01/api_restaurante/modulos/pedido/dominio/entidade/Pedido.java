@@ -41,7 +41,6 @@ public class Pedido extends Auditable {
     @Embedded
     @Delegate
     private ValoresPedido valores = ValoresPedido.inicial();
-
     @Embedded
     private CupomConsumido cupom;
 

@@ -2,6 +2,7 @@ package com.restaurante01.api_restaurante.infraestrutura.inicializador;
 
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.Cupom;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.PeriodoCupom;
+import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.RegraRecorrencia;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.TipoDesconto;
 import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Cpf;
 import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Email;
@@ -131,6 +132,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                 true,
                 3,
                 TipoDesconto.PORCENTAGEM,
+                RegraRecorrencia.QUINZE_DIAS,
                 valorParaDesconto,
                 valorMinPedido,
                 valorMaxPedido);
@@ -144,6 +146,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                 true,
                 100,
                 TipoDesconto.PORCENTAGEM,
+                RegraRecorrencia.VINTE_DIAS,
                 new BigDecimal(10),
                 new BigDecimal(50),
                 new BigDecimal(299)); //limite 300 para regra de porcentagem
@@ -156,6 +159,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                 false,        // <-- O erro proposital está aqui
                 50,
                 TipoDesconto.VALOR,
+                RegraRecorrencia.TRINTA_DIAS,
                 new BigDecimal(5),
                 new BigDecimal(45),
                 new BigDecimal(100));
@@ -168,6 +172,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                 true,
                 10,
                 TipoDesconto.PORCENTAGEM,
+                RegraRecorrencia.QUINZE_DIAS,
                 new BigDecimal(10),
                 new BigDecimal(30), // Min
                 new BigDecimal(100));  // Max
