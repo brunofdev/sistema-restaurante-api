@@ -1,7 +1,5 @@
 package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso;
 
-import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.TipoDesconto;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.CalculoDescontoCupom;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoCupomPorta;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.CupomUtilizado;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.CupomConsumido;
@@ -20,10 +18,8 @@ import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.Prod
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class CriarNovoPedidoCasoDeUso {
@@ -34,7 +30,6 @@ public class CriarNovoPedidoCasoDeUso {
     private final PedidoAssociacaoPorta produto;
     private final PedidoClientePorta pedidoClientePorta;
     private final PedidoCupomPorta pedidoCupomPorta;
-    private final Map<String, CalculoDescontoCupom> calculoDescontoCupom;
 
 
     public CriarNovoPedidoCasoDeUso(PedidoRepositorio pedidoRepository,
@@ -42,8 +37,7 @@ public class CriarNovoPedidoCasoDeUso {
                                     ApplicationEventPublisher eventPublisher,
                                     PedidoAssociacaoPorta produto,
                                     PedidoClientePorta pedidoClientePorta,
-                                    PedidoCupomPorta pedidoCupomPorta,
-                                    Map<String, CalculoDescontoCupom> calculoDescontoCupom
+                                    PedidoCupomPorta pedidoCupomPorta
                                         ) {
         this.pedidoRepository = pedidoRepository;
         this.pedidoMapeador = pedidoMapeador;
@@ -51,7 +45,6 @@ public class CriarNovoPedidoCasoDeUso {
         this.produto = produto;
         this.pedidoClientePorta = pedidoClientePorta;
         this.pedidoCupomPorta = pedidoCupomPorta;
-        this.calculoDescontoCupom = calculoDescontoCupom;
     }
 
     @Transactional
@@ -82,7 +75,7 @@ public class CriarNovoPedidoCasoDeUso {
     private void vincularCupomAoPedido(String codigoCupom, Pedido pedido){
         if(codigoCupom != null && !codigoCupom.isBlank()){
             CupomConsumido cupom = pedidoCupomPorta.validarCupom(new CupomUtilizado(codigoCupom, pedido.getValorBruto()));
-            BigDecimal valorDesconto = calculoDescontoCupom.get(cupom.regraDoCupom().name()).calcularDesconto(cupom.valorParaDesconto(), pedido.getValorBruto());
+            BigDecimal valorDesconto = cupom.regraDoCupom().aplicar(pedido.getValorBruto(), cupom.valorParaDesconto());
             pedido.vincularCupom(cupom);
             pedido.aplicarDesconto(valorDesconto);
         }

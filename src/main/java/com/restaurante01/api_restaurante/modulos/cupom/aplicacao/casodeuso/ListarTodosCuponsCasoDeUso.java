@@ -1,6 +1,7 @@
 package com.restaurante01.api_restaurante.modulos.cupom.aplicacao.casodeuso;
 
-import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.Cupom;
+import com.restaurante01.api_restaurante.modulos.cupom.api.dto.saida.CupomAdminDTO;
+import com.restaurante01.api_restaurante.modulos.cupom.aplicacao.mapeador.CupomMapeador;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.repositorio.CupomRepositorio;
 import org.springframework.stereotype.Service;
 
@@ -10,12 +11,14 @@ import java.util.List;
 public class ListarTodosCuponsCasoDeUso {
 
     private final CupomRepositorio cupomRepositorio;
+    private final CupomMapeador cupomMapeador;
 
-    public ListarTodosCuponsCasoDeUso(CupomRepositorio cupomRepositorio) {
+    public ListarTodosCuponsCasoDeUso(CupomRepositorio cupomRepositorio, CupomMapeador cupomMapeador) {
         this.cupomRepositorio = cupomRepositorio;
+        this.cupomMapeador = cupomMapeador;
     }
 
-    public List<Cupom> executar(){
-        return cupomRepositorio.obterTodosOsCupons();
+    public List<CupomAdminDTO> executar(){
+        return cupomMapeador.mapearListaDtoDetalhado(cupomRepositorio.obterTodosOsCupons());
     }
 }

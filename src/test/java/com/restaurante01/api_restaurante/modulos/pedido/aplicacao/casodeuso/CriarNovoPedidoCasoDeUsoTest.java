@@ -1,7 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso;
 import com.restaurante01.api_restaurante.builders.CardapioProdutoBuilder;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.TipoDesconto;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.CalculoDescontoCupom;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoCupomPorta;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.ClienteBuilder;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Associacao;
@@ -12,7 +11,6 @@ import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoCria
 import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mapeador.PedidoMapeador;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.*;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.enums.StatusPedido;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.evento.PedidoCriadoEvento;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoAssociacaoPorta;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoClientePorta;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.repositorio.PedidoRepositorio;
@@ -46,7 +44,6 @@ class CriarNovoPedidoCasoDeUsoTest {
     @Mock private PedidoClientePorta pedidoClientePorta;
     @Mock private ApplicationEventPublisher eventPublisher;
     @Mock private PedidoCupomPorta pedidoCupomPorta;
-    @Mock private Map<String, CalculoDescontoCupom> calculoDescontoCupom;
 
     @InjectMocks
     private CriarNovoPedidoCasoDeUso casoDeUso;
@@ -109,12 +106,10 @@ class CriarNovoPedidoCasoDeUsoTest {
                 new ItemPedidoSolicitadoDTO(associacao.getProduto().getId(), 2, "obs"));
         PedidoCriacaoDTO dto = new PedidoCriacaoDTO(associacao.getCardapio().getId(), itensDTO, null, "DESCONTO10");
         CupomConsumido cupomMock = new CupomConsumido(1L, "DESCONTO10", new BigDecimal("10"), TipoDesconto.PORCENTAGEM, "admin");
-        CalculoDescontoCupom estrategiaMock = mock(CalculoDescontoCupom.class);
 
         mockearSetupBasico(itensDTO);
         when(pedidoCupomPorta.validarCupom(any())).thenReturn(cupomMock);
-        when(calculoDescontoCupom.get(TipoDesconto.PORCENTAGEM.name())).thenReturn(estrategiaMock);
-        when(estrategiaMock.calcularDesconto(any(), any())).thenReturn(new BigDecimal("10"));
+
 
         ArgumentCaptor<Pedido> pedidoCaptor = ArgumentCaptor.forClass(Pedido.class);
         casoDeUso.executar(dto, cliente);

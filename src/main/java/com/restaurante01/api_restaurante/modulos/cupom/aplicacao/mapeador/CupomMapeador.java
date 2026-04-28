@@ -9,6 +9,8 @@ import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.Cupom;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.PeriodoCupom;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class CupomMapeador {
     public PeriodoCupom mapearPeriodo(PeriodoCupomDTO dto) {
@@ -66,6 +68,9 @@ public class CupomMapeador {
                 cupom.getCriadoPor(),
                 cupom.getAtualizadoPor()
         );
+    }
+    public List<CupomAdminDTO> mapearListaDtoDetalhado (List<Cupom> cupons){
+        return cupons.stream().map(this::mapearDtoDetalhado).toList();
     }
 
     public CodigoCupom mapearCodigoCupom(String codigo){

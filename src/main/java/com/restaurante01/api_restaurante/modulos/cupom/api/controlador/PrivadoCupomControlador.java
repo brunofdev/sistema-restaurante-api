@@ -52,8 +52,8 @@ public class PrivadoCupomControlador {
 
     @Operation(summary = "Listar todos os cupons", description = "Retorna uma lista contendo todos os cupons registrados no banco de dados.")
     @GetMapping("/listar")
-    public ResponseEntity<ApiResponse<List<Cupom>>> listarTodos() {
-        List<Cupom> listaCupons = listarTodosCupons.executar();
+    public ResponseEntity<ApiResponse<List<CupomAdminDTO>>> listarTodos() {
+        List<CupomAdminDTO> listaCupons = listarTodosCupons.executar();
         return ResponseEntity.ok(ApiResponse.success("Cupons obtidos com sucesso", listaCupons));
     }
 

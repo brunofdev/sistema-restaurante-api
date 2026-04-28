@@ -18,7 +18,6 @@ public class Cupom extends Auditable {
     private Long id;
     @Embedded
     private CodigoCupom codigoCupom;
-    @Setter
     @Column(name = "tipo_desconto", nullable = false)
     private TipoDesconto tipoDesconto;
     @Column(name = "quantidade", nullable = false)
