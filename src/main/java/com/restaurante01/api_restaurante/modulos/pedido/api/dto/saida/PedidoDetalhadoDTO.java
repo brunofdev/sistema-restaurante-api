@@ -4,6 +4,7 @@ import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.Endereco
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.enums.StatusPedido;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record PedidoDetalhadoDTO(
@@ -15,6 +16,7 @@ public record PedidoDetalhadoDTO(
         ValoresCalculoPedidoDTO valores,
         StatusPedido statusPedido,
         EnderecoDTO enderecoDeEntrega,
-        InformacoesCupomDTO cupomDTO
+        InformacoesCupomDTO cupomDTO,
+        LocalDateTime dataCriacao
 ) {
 }

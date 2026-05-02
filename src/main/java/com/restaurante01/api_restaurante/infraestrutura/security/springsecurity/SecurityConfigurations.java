@@ -54,6 +54,7 @@ public class SecurityConfigurations {
             entry("/cardapio-produto/operador/**", Role.ADMIN1),
             entry("/pedido/operador/*/status", Role.ADMIN1),
             entry("/pedido/operador/hoje", Role.ADMIN1),
+            entry("/pedido/operador/top-produtos-vendidos", Role.ADMIN1),
 
             entry("/cupom/admin/**", Role.ADMIN1),
 

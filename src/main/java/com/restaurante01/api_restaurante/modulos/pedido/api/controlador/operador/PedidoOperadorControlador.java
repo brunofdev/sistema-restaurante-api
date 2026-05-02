@@ -2,9 +2,12 @@ package com.restaurante01.api_restaurante.modulos.pedido.api.controlador.operado
 
 import com.restaurante01.api_restaurante.compartilhado.retorno_padrao_api.ApiResponse;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.StatusPedidoDTO;
+import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.TopProdutosVendidosDTO;
+import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.ItensMaisVendidosNaSemana;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoCriadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDetalhadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso.AtualizarStatusPedidoCasoDeUso;
+import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso.ListarMaisVendidosDaSemanaCasoDeUso;
 import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso.ListarPedidosDoDiaCasoDeUso;
 import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso.ListarTodosPedidosCasoDeUso;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,16 +34,14 @@ public class PedidoOperadorControlador {
     private final ListarTodosPedidosCasoDeUso listarTodosPedidos;
     private final ListarPedidosDoDiaCasoDeUso listarPedidosDoDia;
     private final AtualizarStatusPedidoCasoDeUso atualizarStatusPedido;
+    private final ListarMaisVendidosDaSemanaCasoDeUso listarMaisVendidosDaSemana;
     private final SimpMessagingTemplate messagingTemplate;
 
-    public PedidoOperadorControlador(
-            ListarTodosPedidosCasoDeUso listarTodosPedidos,
-            ListarPedidosDoDiaCasoDeUso listarPedidosDoDia,
-            AtualizarStatusPedidoCasoDeUso atualizarStatusPedido,
-            SimpMessagingTemplate messagingTemplate) {
+    public PedidoOperadorControlador(ListarTodosPedidosCasoDeUso listarTodosPedidos, ListarPedidosDoDiaCasoDeUso listarPedidosDoDia, AtualizarStatusPedidoCasoDeUso atualizarStatusPedido, ListarMaisVendidosDaSemanaCasoDeUso listarMaisVendidosDaSemana, SimpMessagingTemplate messagingTemplate) {
         this.listarTodosPedidos = listarTodosPedidos;
         this.listarPedidosDoDia = listarPedidosDoDia;
         this.atualizarStatusPedido = atualizarStatusPedido;
+        this.listarMaisVendidosDaSemana = listarMaisVendidosDaSemana;
         this.messagingTemplate = messagingTemplate;
     }
 
@@ -62,6 +63,16 @@ public class PedidoOperadorControlador {
 
         Page<PedidoCriadoDTO> paginaDePedidos = listarPedidosDoDia.executar(pageable);
         return ResponseEntity.ok(ApiResponse.success("Recurso obtido", paginaDePedidos));
+    }
+
+    @Operation(summary = "Listar produtos mais vendidos em um periodo", description = "Filtra e retorna  os produtos mais vendidos em um periodo, limita quantos quer que retorne.")
+    @GetMapping("/top-produtos-vendidos")
+    public ResponseEntity<ApiResponse<ItensMaisVendidosNaSemana>> listarTopProdutosVendidos(
+            @ParameterObject
+            @PageableDefault(sort = "dataCriacao", direction = Sort.Direction.DESC)
+            Pageable pageable,
+            TopProdutosVendidosDTO dto) {
+        return ResponseEntity.ok(ApiResponse.success("Recurso obtido", listarMaisVendidosDaSemana.executar(dto)));
     }
 
     @Operation(summary = "Atualizar status de um pedido", description = "Altera o status do pedido (ex: ENTREGUE) e dispara notificações WebSocket.")

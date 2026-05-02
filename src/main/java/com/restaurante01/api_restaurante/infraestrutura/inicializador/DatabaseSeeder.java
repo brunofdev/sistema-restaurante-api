@@ -50,7 +50,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         // -------------------------------------------------------------------------
         // OPERADOR
         // -------------------------------------------------------------------------
-        Operador admin = Operador.criar("Admin", senha, new Email("admin@restaurante.com"), new Cpf("00000000191"));
+        Operador admin = Operador.criar("Admin", senha, new Email("admin@restaurante.com"), new Cpf("00000000000"));
         entityManager.persist(admin);
 
         // -------------------------------------------------------------------------
@@ -58,7 +58,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         // -------------------------------------------------------------------------
         Cliente maria = Cliente.criar(
                 "Maria Silva", senha,
-                new Email("maria@email.com"), new Cpf("00000000272"),
+                new Email("maria@email.com"), new Cpf("00000000000"),
                 new EnderecoCliente("Rua das Flores", 100, "Centro", "Porto Alegre", "RS", "90010010", "Apto 12", ""),
                 "51999990001");
         entityManager.persist(maria);
