@@ -58,7 +58,8 @@ public class PedidoMapeador {
                 mapearValoresPedidoDTO(pedido.getValores()),
                 pedido.getStatusPedido(),
                 mapearEndereco(pedido.getEnderecoPedidoEntrega()),
-                (pedido.getCupom() == null ? null : mapearInformacoesCupomDTO(pedido.getCupom())) //impede de tentar mapear um cupom null
+                (pedido.getCupom() == null ? null : mapearInformacoesCupomDTO(pedido.getCupom())),
+                pedido.getDataCriacao()//impede de tentar mapear um cupom null
         );
     }
     private ValoresCalculoPedidoDTO mapearValoresPedidoDTO(ValoresPedido valores){

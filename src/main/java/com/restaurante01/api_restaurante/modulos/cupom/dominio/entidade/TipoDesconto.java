@@ -1,7 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.function.BiFunction;
 
 public enum TipoDesconto {
     PORCENTAGEM {
