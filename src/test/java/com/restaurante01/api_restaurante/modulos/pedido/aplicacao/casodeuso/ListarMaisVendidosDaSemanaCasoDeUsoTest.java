@@ -1,9 +1,9 @@
 package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso;
 
 import com.restaurante01.api_restaurante.builders.ProdutoBuilder;
-import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.TopProdutosVendidosDTO;
+import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.SolicitarTopProdutoVendidosDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.ItemPedidoMaisVendidoSemanal;
-import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.ItensMaisVendidosNaSemana;
+import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.ItensMaisVendidosPorPeriodo;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPedidoBuilder;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.PedidoBuilder;
@@ -61,38 +61,85 @@ class ListarMaisVendidosDaSemanaCasoDeUsoTest {
                 .comItem(ItemPedidoBuilder.umItemPedido().comId(8L).comProduto(xisMaionese).comQuantidade(23).comPrecoUnitario(new BigDecimal("23.45")).build())
                 .build();
 
-        LocalDateTime dataIni = LocalDateTime.of(LocalDate.of(2026, 2, 1), LocalTime.now());
-        LocalDateTime dataFim = LocalDateTime.of(LocalDate.of(2026, 2, 8), LocalTime.now());
-        TopProdutosVendidosDTO dto = new TopProdutosVendidosDTO(dataIni, dataFim, 5);
+        LocalDate dataIni = LocalDate.of(2026, 2, 1);
+        LocalDate dataFim = LocalDate.of(2026, 2, 8);
+        SolicitarTopProdutoVendidosDTO dto = new SolicitarTopProdutoVendidosDTO(dataIni, dataFim, 5);
 
-        when(repositorio.buscarPorDataCriacaoEntre(dataIni, dataFim, Pageable.unpaged()))
+        when(repositorio.buscarPorDataCriacaoEntre(LocalDateTime.of(dataIni, LocalTime.MIN), LocalDateTime.of(dataFim, LocalTime.MAX), Pageable.unpaged()))
                 .thenReturn(new PageImpl<>(List.of(pedido1, pedido2)));
 
-        ItensMaisVendidosNaSemana resultado = casoDeUso.executar(dto);
+        ItensMaisVendidosPorPeriodo resultado = casoDeUso.executar(dto);
+
+        assertEquals(dataIni, resultado.doDia());
+        assertEquals(dataFim, resultado.ateDia());
 
         // Totais: X-salada(45), X-Strogonoff(39), X-maionese(23), X-bacon(20), X-frango(16)
         List<ItemPedidoMaisVendidoSemanal> itens = resultado.itens();
         assertEquals(5,                itens.size());
+
         assertEquals("Xis salada",     itens.get(0).nomeProduto());
         assertEquals(45,               itens.get(0).qtdVendida());
+        assertEquals(2,                itens.get(0).qntVezesPedido());
+        assertEquals(new BigDecimal("19.99"), itens.get(0).precoMedio());
+
         assertEquals("Xis Strogonoff", itens.get(1).nomeProduto());
         assertEquals(39,               itens.get(1).qtdVendida());
+        assertEquals(1,                itens.get(1).qntVezesPedido());
+        assertEquals(new BigDecimal("41.56"), itens.get(1).precoMedio());
+
         assertEquals("Xis maionese",   itens.get(2).nomeProduto());
         assertEquals(23,               itens.get(2).qtdVendida());
+        assertEquals(1,                itens.get(2).qntVezesPedido());
+        assertEquals(new BigDecimal("23.45"), itens.get(2).precoMedio());
+
         assertEquals("Xis bacon",      itens.get(3).nomeProduto());
         assertEquals(20,               itens.get(3).qtdVendida());
+        assertEquals(2,                itens.get(3).qntVezesPedido());
+        assertEquals(new BigDecimal("25.60"), itens.get(3).precoMedio());
+
         assertEquals("Xis frango",     itens.get(4).nomeProduto());
         assertEquals(16,               itens.get(4).qtdVendida());
+        assertEquals(2,                itens.get(4).qntVezesPedido());
+        assertEquals(new BigDecimal("18.20"), itens.get(4).precoMedio());
+    }
+
+    @Test
+    @DisplayName("Deve calcular o preço médio corretamente quando o mesmo produto é vendido por preços diferentes")
+    void deveCalcularPrecoMedioCorretamenteQuandoPrecosVariam() {
+        Produto xisBacon = ProdutoBuilder.umProduto().comId(1L).comNome("Xis bacon").build();
+
+        Pedido pedido1 = PedidoBuilder.umPedido()
+                .comItem(ItemPedidoBuilder.umItemPedido().comId(1L).comProduto(xisBacon).comQuantidade(2).comPrecoUnitario(new BigDecimal("20.00")).build())
+                .build();
+
+        Pedido pedido2 = PedidoBuilder.umPedido()
+                .comItem(ItemPedidoBuilder.umItemPedido().comId(2L).comProduto(xisBacon).comQuantidade(1).comPrecoUnitario(new BigDecimal("30.00")).build())
+                .build();
+
+        LocalDate dataIni = LocalDate.of(2026, 2, 1);
+        LocalDate dataFim = LocalDate.of(2026, 2, 8);
+        SolicitarTopProdutoVendidosDTO dto = new SolicitarTopProdutoVendidosDTO(dataIni, dataFim, 1);
+
+        when(repositorio.buscarPorDataCriacaoEntre(LocalDateTime.of(dataIni, LocalTime.MIN), LocalDateTime.of(dataFim, LocalTime.MAX), Pageable.unpaged()))
+                .thenReturn(new PageImpl<>(List.of(pedido1, pedido2)));
+
+        ItensMaisVendidosPorPeriodo resultado = casoDeUso.executar(dto);
+
+        ItemPedidoMaisVendidoSemanal item = resultado.itens().get(0);
+        assertEquals(3,                        item.qtdVendida());
+        assertEquals(2,                        item.qntVezesPedido());
+        // (20.00 + 30.00) / 2 = 25.00 — falha se qntVezesPedido for calculado com qtdVendida
+        assertEquals(new BigDecimal("25.00"),   item.precoMedio());
     }
 
     @Test
     @DisplayName("Deve lançar exceção quando nenhum pedido for encontrado no período")
     void deveLancarExcecaoQuandoNenhumPedidoForEncontradoNoPeriodo() {
-        LocalDateTime dataIni = LocalDateTime.of(LocalDate.of(2026, 1, 1), LocalTime.MIDNIGHT);
-        LocalDateTime dataFim = LocalDateTime.of(LocalDate.of(2026, 1, 7), LocalTime.MIDNIGHT);
-        TopProdutosVendidosDTO dto = new TopProdutosVendidosDTO(dataIni, dataFim, 5);
+        LocalDate dataIni = LocalDate.of(2026, 1, 1);
+        LocalDate dataFim = LocalDate.of(2026, 1, 7);
+        SolicitarTopProdutoVendidosDTO dto = new SolicitarTopProdutoVendidosDTO(dataIni, dataFim, 5);
 
-        when(repositorio.buscarPorDataCriacaoEntre(dataIni, dataFim, Pageable.unpaged()))
+        when(repositorio.buscarPorDataCriacaoEntre(LocalDateTime.of(dataIni, LocalTime.MIN), LocalDateTime.of(dataFim, LocalTime.MAX), Pageable.unpaged()))
                 .thenReturn(Page.empty());
 
         assertThrows(PedidoNaoEncontradoExcecao.class, () -> casoDeUso.executar(dto));
@@ -115,14 +162,14 @@ class ListarMaisVendidosDaSemanaCasoDeUsoTest {
                 .comItem(ItemPedidoBuilder.umItemPedido().comId(5L).comProduto(xisMaionese).comQuantidade(23).comPrecoUnitario(new BigDecimal("23.45")).build())
                 .build();
 
-        LocalDateTime dataIni = LocalDateTime.of(LocalDate.of(2026, 2, 1), LocalTime.MIDNIGHT);
-        LocalDateTime dataFim = LocalDateTime.of(LocalDate.of(2026, 2, 8), LocalTime.MIDNIGHT);
-        TopProdutosVendidosDTO dto = new TopProdutosVendidosDTO(dataIni, dataFim, 3);
+        LocalDate dataIni = LocalDate.of(2026, 2, 1);
+        LocalDate dataFim = LocalDate.of(2026, 2, 8);
+        SolicitarTopProdutoVendidosDTO dto = new SolicitarTopProdutoVendidosDTO(dataIni, dataFim, 3);
 
-        when(repositorio.buscarPorDataCriacaoEntre(dataIni, dataFim, Pageable.unpaged()))
+        when(repositorio.buscarPorDataCriacaoEntre(LocalDateTime.of(dataIni, LocalTime.MIN), LocalDateTime.of(dataFim, LocalTime.MAX), Pageable.unpaged()))
                 .thenReturn(new PageImpl<>(List.of(pedido)));
 
-        ItensMaisVendidosNaSemana resultado = casoDeUso.executar(dto);
+        ItensMaisVendidosPorPeriodo resultado = casoDeUso.executar(dto);
 
         // Existem 5 produtos mas solicitou apenas 3 — deve retornar somente os 3 mais vendidos
         List<ItemPedidoMaisVendidoSemanal> itens = resultado.itens();
@@ -143,14 +190,14 @@ class ListarMaisVendidosDaSemanaCasoDeUsoTest {
                 .comItem(ItemPedidoBuilder.umItemPedido().comId(2L).comProduto(xisSalada).comQuantidade(20).comPrecoUnitario(new BigDecimal("19.99")).build())
                 .build();
 
-        LocalDateTime dataIni = LocalDateTime.of(LocalDate.of(2026, 2, 1), LocalTime.MIDNIGHT);
-        LocalDateTime dataFim = LocalDateTime.of(LocalDate.of(2026, 2, 8), LocalTime.MIDNIGHT);
-        TopProdutosVendidosDTO dto = new TopProdutosVendidosDTO(dataIni, dataFim, 10);
+        LocalDate dataIni = LocalDate.of(2026, 2, 1);
+        LocalDate dataFim = LocalDate.of(2026, 2, 8);
+        SolicitarTopProdutoVendidosDTO dto = new SolicitarTopProdutoVendidosDTO(dataIni, dataFim, 10);
 
-        when(repositorio.buscarPorDataCriacaoEntre(dataIni, dataFim, Pageable.unpaged()))
+        when(repositorio.buscarPorDataCriacaoEntre(LocalDateTime.of(dataIni, LocalTime.MIN), LocalDateTime.of(dataFim, LocalTime.MAX), Pageable.unpaged()))
                 .thenReturn(new PageImpl<>(List.of(pedido)));
 
-        ItensMaisVendidosNaSemana resultado = casoDeUso.executar(dto);
+        ItensMaisVendidosPorPeriodo resultado = casoDeUso.executar(dto);
 
         // Solicitou 10 mas só existem 2 produtos distintos — deve retornar 2
         assertEquals(2, resultado.itens().size());

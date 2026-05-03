@@ -2,8 +2,8 @@ package com.restaurante01.api_restaurante.modulos.pedido.api.controlador.operado
 
 import com.restaurante01.api_restaurante.compartilhado.retorno_padrao_api.ApiResponse;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.StatusPedidoDTO;
-import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.TopProdutosVendidosDTO;
-import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.ItensMaisVendidosNaSemana;
+import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.SolicitarTopProdutoVendidosDTO;
+import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.ItensMaisVendidosPorPeriodo;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoCriadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoDetalhadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso.AtualizarStatusPedidoCasoDeUso;
@@ -67,11 +67,11 @@ public class PedidoOperadorControlador {
 
     @Operation(summary = "Listar produtos mais vendidos em um periodo", description = "Filtra e retorna  os produtos mais vendidos em um periodo, limita quantos quer que retorne.")
     @GetMapping("/top-produtos-vendidos")
-    public ResponseEntity<ApiResponse<ItensMaisVendidosNaSemana>> listarTopProdutosVendidos(
+    public ResponseEntity<ApiResponse<ItensMaisVendidosPorPeriodo>> listarTopProdutosVendidos(
             @ParameterObject
             @PageableDefault(sort = "dataCriacao", direction = Sort.Direction.DESC)
             Pageable pageable,
-            TopProdutosVendidosDTO dto) {
+            SolicitarTopProdutoVendidosDTO dto) {
         return ResponseEntity.ok(ApiResponse.success("Recurso obtido", listarMaisVendidosDaSemana.executar(dto)));
     }
 

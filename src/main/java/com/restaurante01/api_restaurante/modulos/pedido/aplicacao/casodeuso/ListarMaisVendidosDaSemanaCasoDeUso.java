@@ -1,8 +1,8 @@
 package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso;
 
-import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.TopProdutosVendidosDTO;
+import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.SolicitarTopProdutoVendidosDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.ItemPedidoMaisVendidoSemanal;
-import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.ItensMaisVendidosNaSemana;
+import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.ItensMaisVendidosPorPeriodo;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.PedidoNaoEncontradoExcecao;
@@ -10,11 +10,11 @@ import com.restaurante01.api_restaurante.modulos.pedido.dominio.repositorio.Pedi
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class ListarMaisVendidosDaSemanaCasoDeUso {
@@ -25,46 +25,51 @@ public class ListarMaisVendidosDaSemanaCasoDeUso {
         this.repositorio = repositorio;
     }
 
-    public ItensMaisVendidosNaSemana executar(TopProdutosVendidosDTO dto) {
-       Page<Pedido> pedidosEncontrados = buscarPedidos(dto.dataIni(), dto.dataFim());
-       verificaSePedidosForamEncontrados(pedidosEncontrados, dto);
-       List<ItemPedido> itensDoPedido = capturarItensDosPedidos(pedidosEncontrados);
-       List<ItemPedidoMaisVendidoSemanal> cincoMaisVendidos = agrupaItensESelecionaMaisVendido(itensDoPedido, dto.quantidadeParaRetornar());
-        return new ItensMaisVendidosNaSemana(dto.dataIni().toString(), dto.dataFim().toString(), cincoMaisVendidos);
+    public ItensMaisVendidosPorPeriodo executar(SolicitarTopProdutoVendidosDTO dto){
+        Page<Pedido> pedidosEncontrados = buscarPedidos(LocalDateTime.of(dto.dataIni(), LocalTime.MIN), LocalDateTime.of(dto.dataFim(), LocalTime.MAX));
+        verificaSeEncontrouAlgumPedido(pedidosEncontrados, dto);
+        List<ItemPedido> itensDoPedido = capturarItensDosPedidos(pedidosEncontrados);
+        Map<String, ItemPedidoMaisVendidoSemanal> mapa = agruparPorProdutoVendido(itensDoPedido);
+        List<ItemPedidoMaisVendidoSemanal> maisVendidosFiltrados = filtrarMaisVendidos(mapa, dto.quantidadeParaRetornar());
+        return new ItensMaisVendidosPorPeriodo(dto.dataIni(), dto.dataFim(), maisVendidosFiltrados);
     }
 
-    private void verificaSePedidosForamEncontrados(Page<Pedido> pedidosEncontrados, TopProdutosVendidosDTO dto) {
+    private void verificaSeEncontrouAlgumPedido(Page<Pedido> pedidosEncontrados, SolicitarTopProdutoVendidosDTO dto) {
         if (pedidosEncontrados.getTotalElements() == 0) {
-            throw new PedidoNaoEncontradoExcecao("Nenhum pedido foi encontrado no periodo enviado: "  + dto.dataIni().toString() + " - " + dto.dataFim().toString());
+            throw new PedidoNaoEncontradoExcecao("Nenhum pedido foi encontrado no periodo enviado: " + dto.dataIni().toString() + " - " + dto.dataFim().toString());
         }
     }
-
     private Page<Pedido> buscarPedidos(LocalDateTime dataIni, LocalDateTime dataFim){
         return repositorio.buscarPorDataCriacaoEntre(dataIni, dataFim, Pageable.unpaged());
     }
-
     private List<ItemPedido> capturarItensDosPedidos(Page<Pedido> pedidosEncontrados) {
         return pedidosEncontrados.getContent().stream()
                 .flatMap(pedido -> pedido.getItens().stream())
                 .toList();
     }
-
-    //PRECO MÉDIO ESTA CALCULANDO ERRADO, É COMPLEXO DE SE FAZER, POIS CADA PEDIDO PODE SER VENDIDO POR UM VALOR DEPENDENDO DO DIA E CARDAPIO ONDE ELE FOI VENDIDO
-    private List<ItemPedidoMaisVendidoSemanal>  agrupaItensESelecionaMaisVendido(List<ItemPedido> itensDoPedido, Integer quantidadeParaRetornar) {
-        return itensDoPedido.stream()
-                .collect(Collectors.toMap(
-                        item -> item.getProduto().nome(),
-                        item ->  new ItemPedidoMaisVendidoSemanal(item.getProduto().idProduto(), item.getProduto().nome(), item.getQuantidade(), item.getPrecoUnitario()),
-                        (item1, item2) -> {
-                                    int quantidade = item1.qtdVendida() + item2.qtdVendida();
-                                    BigDecimal precoMedio = item1.precoMedio().add(item2.precoMedio()).divide(new BigDecimal("2"));
-                                    return new ItemPedidoMaisVendidoSemanal(item1.idProduto(), item1.nomeProduto(), quantidade, precoMedio);
-                                })
-                        )
-                .values()
+    private Map<String, ItemPedidoMaisVendidoSemanal> agruparPorProdutoVendido(List<ItemPedido> itensDoPedido){
+        Map<String, ItemPedidoMaisVendidoSemanal> mapaAgrupado = new HashMap<>();
+        for(ItemPedido itemPedido : itensDoPedido){
+            if (!mapaAgrupado.containsKey(itemPedido.getProduto().nome())) {
+                mapaAgrupado.put(itemPedido.getProduto().nome(), new ItemPedidoMaisVendidoSemanal(itemPedido.getProduto().idProduto(), itemPedido.getProduto().nome(), itemPedido.getQuantidade(), itemPedido.getPrecoUnitario(), 1));
+            }else{
+                int qtdVezesPedida = mapaAgrupado.get(itemPedido.getProduto().nome()).qntVezesPedido() + 1;
+                int quantidade = mapaAgrupado.get(itemPedido.getProduto().nome()).qtdVendida() + itemPedido.getQuantidade();
+                BigDecimal precoMedio = mapaAgrupado.get(itemPedido.getProduto().nome()).precoMedio().add(itemPedido.getPrecoUnitario());
+                mapaAgrupado.put(itemPedido.getProduto().nome(), new ItemPedidoMaisVendidoSemanal(itemPedido.getProduto().idProduto(), itemPedido.getProduto().nome(), quantidade, precoMedio, qtdVezesPedida));
+            }
+        }
+        return mapaAgrupado;
+    }
+    private List<ItemPedidoMaisVendidoSemanal> filtrarMaisVendidos(Map<String, ItemPedidoMaisVendidoSemanal> mapa, Integer quantidadeFiltro) {
+        return mapa.values()
+                .stream()
+                .map(itemPedido -> new ItemPedidoMaisVendidoSemanal(
+                        itemPedido.idProduto(), itemPedido.nomeProduto(), itemPedido.qtdVendida(), itemPedido.precoMedio().divide(new BigDecimal(itemPedido.qntVezesPedido()), 2, RoundingMode.HALF_UP), itemPedido.qntVezesPedido()))
+                .toList()
                 .stream()
                 .sorted(Comparator.comparing(ItemPedidoMaisVendidoSemanal::qtdVendida).reversed())
-                .limit(quantidadeParaRetornar)
+                .limit(quantidadeFiltro)
                 .toList();
     }
 }
