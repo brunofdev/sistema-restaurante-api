@@ -43,6 +43,7 @@ public class SecurityConfigurations {
             "/cliente/cadastro",
             "/operador/cadastro", //teste apenas
             "/ws/**",
+            "/h2-console/**",
     };
 
     // ROTAS PROTEGIDAS
@@ -75,6 +76,7 @@ public class SecurityConfigurations {
         return httpSecurity
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
+                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers(PUBLIC_ENDPOINTS).permitAll();

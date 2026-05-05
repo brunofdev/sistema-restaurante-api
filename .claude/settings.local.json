@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh pr edit 19 --body ' *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\Bruno\\\\Documents\\\\Repositorios Git\\\\src\\\\test\" -Recurse -Include \"*.java\")",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(git checkout *)",
+      "Bash(git pull *)"
+    ]
+  }
+}
