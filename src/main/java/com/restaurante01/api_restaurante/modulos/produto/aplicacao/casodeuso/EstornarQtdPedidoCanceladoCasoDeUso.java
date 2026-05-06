@@ -1,11 +1,9 @@
 package com.restaurante01.api_restaurante.modulos.produto.aplicacao.casodeuso;
 
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPedido;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.ItemPedidoPayload;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.repositorio.ProdutoRepositorio;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,12 +16,11 @@ public class EstornarQtdPedidoCanceladoCasoDeUso {
         this.obterProdutoPorIdCasoDeUso = obterProdutoPorIdCasoDeUso;
         this.repositorio = repositorio;
     }
-//Precisa melhorar para fazer apenas uma consulta no banco
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void executar (List<ItemPedido> itens){
-        for(ItemPedido item : itens){
-            Produto produto = obterProdutoPorIdCasoDeUso.retornarEntidade(item.getProduto().idProduto());
-            produto.aumentarQuantidade(item.getQuantidade());
+    //Precisa melhorar para fazer apenas uma consulta no banco
+    public void executar (List<ItemPedidoPayload> itens){
+        for(ItemPedidoPayload item : itens){
+            Produto produto = obterProdutoPorIdCasoDeUso.retornarEntidade(item.idProduto());
+            produto.aumentarQuantidade(item.quantidade());
             repositorio.save(produto);
         }
     }

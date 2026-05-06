@@ -21,16 +21,17 @@ public class BaixarQtdPosPedidoHandler implements OutboxEventoHandler {
     }
 
     @Override
-        public TipoEvento tipoEvento() {
-            return TipoEvento.BAIXAR_ESTOQUE_PRODUTO;
+    public TipoEvento tipoEvento() {
+        return TipoEvento.BAIXAR_ESTOQUE_PRODUTO;
+    }
+    @Override
+    public void processar(OutboxEvento outboxEvento){
+        try {
+            PedidoCriadoPayload payload = mapper.readValue(outboxEvento.getPayload(), PedidoCriadoPayload.class);
+            baixarQuantidadeProdutoCasoDeUso.executar(payload.itens());
         }
-        @Override
-        public void processar(OutboxEvento outboxEvento){
-            try {
-                PedidoCriadoPayload payload = mapper.readValue(outboxEvento.getPayload(), PedidoCriadoPayload.class);
-                baixarQuantidadeProdutoCasoDeUso.executar(payload.itens());
-            }
-            catch (Exception e){
-                throw new RuntimeException("Erro ao processar Outbox id= " + outboxEvento.getId() + "| Exception:  " +  e.getMessage());}
+        catch (Exception e){
+            throw new RuntimeException("Erro ao processar Outbox id= " + outboxEvento.getId() + "| Exception:  " +  e.getMessage());
+        }
     }
 }

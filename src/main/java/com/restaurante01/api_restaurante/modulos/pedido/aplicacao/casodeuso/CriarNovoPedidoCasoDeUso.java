@@ -81,10 +81,12 @@ public class CriarNovoPedidoCasoDeUso {
         }
     }
     private void publicarEventos(Pedido pedidoSalvo) throws JsonProcessingException {
-        List<ItemPedidoPayload>  itemPedidoPayload =  pedidoMapeador.mapearItemPedidoPayload(pedidoSalvo.getItens());
-        //CODIGO ABAIXO COMENTADO PARA TESTAR A RESILIENCIA DO SISTEMA, CASO UM EVENTO NAO SEJA PUBLICADO
-        //eventPublisher.publishEvent(new PedidoCriadoEvento(pedidoSalvo, itemPedidoPayload));
+        List<ItemPedidoPayload> itemPedidoPayload = pedidoMapeador.mapearItemPedidoPayload(pedidoSalvo.getItens());
+        eventPublisher.publishEvent(new PedidoCriadoEvento(pedidoSalvo, itemPedidoPayload));
         pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO, pedidoSalvo.getId(), TipoEvento.BAIXAR_ESTOQUE_ASSOCIACAO, objectMapper.writeValueAsString(new PedidoCriadoPayload(pedidoSalvo.getId(), pedidoSalvo.getIdCardapio(), itemPedidoPayload)));
         pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO, pedidoSalvo.getId(), TipoEvento.BAIXAR_ESTOQUE_PRODUTO, objectMapper.writeValueAsString(new PedidoCriadoPayload(pedidoSalvo.getId(), pedidoSalvo.getIdCardapio(), itemPedidoPayload)));
+        if (pedidoSalvo.getCupom() != null) {
+            pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO, pedidoSalvo.getId(), TipoEvento.CONSUMIR_CUPOM, objectMapper.writeValueAsString(pedidoSalvo.getCupom().codigoCupom()));
+        }
     }
 }

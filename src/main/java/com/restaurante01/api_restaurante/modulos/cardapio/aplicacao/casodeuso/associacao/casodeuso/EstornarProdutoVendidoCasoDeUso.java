@@ -3,6 +3,7 @@ package com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.casodeuso.a
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Associacao;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.repositorio.CardapioProdutoRepositorio;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPedido;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.ItemPedidoPayload;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.excecao.ProdutoNaoEncontradoException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -20,12 +21,11 @@ public class EstornarProdutoVendidoCasoDeUso {
         this.repositorio = repositorio;
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void executar(List<ItemPedido> itens, Long idCardapio){
-        for (ItemPedido itemPedido : itens){
-            Associacao produto = repositorio.findByCardapioIdAndProdutoId(idCardapio, itemPedido.getProduto().idProduto())
-                    .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto id: " + itemPedido.getProduto().idProduto() + " não encontrado no cardapio com id " + idCardapio));
-            produto.aumentarQuantidade(itemPedido.getQuantidade());
+    public void executar(List<ItemPedidoPayload> itens, Long idCardapio){
+        for (ItemPedidoPayload itemPedido : itens){
+            Associacao produto = repositorio.findByCardapioIdAndProdutoId(idCardapio, itemPedido.idProduto())
+                    .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto id: " + itemPedido.idProduto() + " não encontrado no cardapio com id " + idCardapio));
+            produto.aumentarQuantidade(itemPedido.quantidade());
         }
     }
 }

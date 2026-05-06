@@ -14,12 +14,15 @@ import com.restaurante01.api_restaurante.modulos.pedido.dominio.evento.PedidoEnt
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.PedidoNaoEncontradoExcecao;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoOutboxPorta;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.repositorio.PedidoRepositorio;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.ItemPedidoPayload;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.PedidoCriadoPayload;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.PedidoEntreguePayload;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class AtualizarStatusPedidoCasoDeUso {
@@ -48,7 +51,7 @@ public class AtualizarStatusPedidoCasoDeUso {
             pedidoOutboxPorta.guardarEvento(
                     Agregado.PEDIDO,
                     pedido.getId(),
-                    TipoEvento.PEDIDO_ENTREGUE,
+                    TipoEvento.COMPUTAR_PONTUACAO_FIDELIDADE,
                     objectMapper.writeValueAsString(
                             new PedidoEntreguePayload(
                                 pedido.getId(),
@@ -61,7 +64,11 @@ public class AtualizarStatusPedidoCasoDeUso {
             publicarEvento.publishEvent(new PedidoEntregueEvento(pedido));
         }
         if(pedido.getStatusPedido() == StatusPedido.CANCELADO){
-            publicarEvento.publishEvent(new PedidoCanceladoEvento(pedido));
+            List<ItemPedidoPayload> itensParaEstornar = pedidoMapeador.mapearItemPedidoPayload(pedido.getItens());
+            PedidoCriadoPayload pedidoCriadoPayload = new PedidoCriadoPayload(pedido.getId(), pedido.getIdCardapio(), itensParaEstornar);
+            publicarEvento.publishEvent(new PedidoCanceladoEvento(pedido, itensParaEstornar));
+            pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO, pedido.getId(), TipoEvento.ESTORNAR_ESTOQUE_ASSOCIACAO, objectMapper.writeValueAsString(pedidoCriadoPayload));
+            pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO, pedido.getId(), TipoEvento.ESTORNAR_ESTOQUE_PRODUTO, objectMapper.writeValueAsString(pedidoCriadoPayload));
         }
         return pedidoMapeador.mapearPedidoCriadoDto(pedido);
     }

@@ -21,7 +21,7 @@ public class PedidoEntregueHandler implements OutboxEventoHandler {
 
     @Override
     public TipoEvento tipoEvento() {
-        return TipoEvento.PEDIDO_ENTREGUE;
+        return TipoEvento.COMPUTAR_PONTUACAO_FIDELIDADE;
     }
 
     @Override

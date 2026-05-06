@@ -31,7 +31,7 @@ public class AtualizaFidelidadeOuvinte {
     public void quandoPedidoStatusEntregue(PedidoEntregueEvento evento) {
         OutboxEvento outbox = outboxRepositorio
                 .buscarPorAgregadoEIdAgregadoETipoEvento(Agregado.PEDIDO,
-                        evento.pedido().getId(), TipoEvento.PEDIDO_ENTREGUE);
+                        evento.pedido().getId(), TipoEvento.COMPUTAR_PONTUACAO_FIDELIDADE);
         try {
             atualizarFidelidade.executar(
                     evento.pedido().getCliente().clienteId(),
