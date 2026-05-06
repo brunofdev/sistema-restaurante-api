@@ -48,19 +48,8 @@ public class AtualizarStatusPedidoCasoDeUso {
         pedido.mudarStatus(novoStatusDto.statusPedido());
         pedidoRepository.salvar(pedido);
         if (pedido.getStatusPedido() == StatusPedido.ENTREGUE) {
-            pedidoOutboxPorta.guardarEvento(
-                    Agregado.PEDIDO,
-                    pedido.getId(),
-                    TipoEvento.COMPUTAR_PONTUACAO_FIDELIDADE,
-                    objectMapper.writeValueAsString(
-                            new PedidoEntreguePayload(
-                                pedido.getId(),
-                                pedido.getCliente().clienteId(),
-                                pedido.getValorBruto(),
-                                LocalDateTime.now()
-                            )
-                    )
-            );
+            PedidoEntreguePayload pedidoEntreguePayload = new PedidoEntreguePayload(pedido.getId(),pedido.getCliente().clienteId(),pedido.getValorBruto(),LocalDateTime.now());
+            pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO,pedido.getId(),TipoEvento.COMPUTAR_PONTUACAO_FIDELIDADE,objectMapper.writeValueAsString(pedidoEntreguePayload));
             publicarEvento.publishEvent(new PedidoEntregueEvento(pedido));
         }
         if(pedido.getStatusPedido() == StatusPedido.CANCELADO){

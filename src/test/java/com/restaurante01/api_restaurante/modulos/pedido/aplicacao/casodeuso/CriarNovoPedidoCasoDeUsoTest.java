@@ -2,7 +2,9 @@ package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso;
 import com.restaurante01.api_restaurante.builders.CardapioProdutoBuilder;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.RegraRecorrencia;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.TipoDesconto;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoCupomPorta;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoOutboxPorta;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.ClienteBuilder;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Associacao;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.Cliente;
@@ -44,6 +46,8 @@ class CriarNovoPedidoCasoDeUsoTest {
     @Mock private PedidoClientePorta pedidoClientePorta;
     @Mock private ApplicationEventPublisher eventPublisher;
     @Mock private PedidoCupomPorta pedidoCupomPorta;
+    @Mock private PedidoOutboxPorta pedidoOutboxPorta;
+    @Mock private ObjectMapper objectMapper;
 
     @InjectMocks
     private CriarNovoPedidoCasoDeUso casoDeUso;
@@ -78,12 +82,14 @@ class CriarNovoPedidoCasoDeUsoTest {
         when(pedidoClientePorta.obterDetalhesClienteParaPedido(cliente)).thenReturn(infoCliente);
         when(pedidoClientePorta.obterEndereco(cliente)).thenReturn(enderecoPedido);
         when(pedidoAssociacaoPorta.obterProdutoVendido(any(), any())).thenReturn(produtoVendido);
+        when(pedidoRepository.salvar(any())).thenAnswer(inv -> inv.getArgument(0));
+        when(pedidoMapeador.mapearItemPedidoPayload(anyList())).thenReturn(List.of());
         when(pedidoMapeador.mapearPedidoCriadoDto(any(Pedido.class))).thenReturn(Instancio.create(PedidoCriadoDTO.class));
     }
 
     @Test
     @DisplayName("Deve criar um pedido com sucesso quando os dados forem válidos")
-    void deveCriarPedidoComStatusPendenteESalvarQuandoDadosValidos() {
+    void deveCriarPedidoComStatusPendenteESalvarQuandoDadosValidos() throws Exception {
         List<ItemPedidoSolicitadoDTO> itensDTO = List.of(
                 new ItemPedidoSolicitadoDTO(associacao.getProduto().getId(), 2, "obs"));
         PedidoCriacaoDTO dto = new PedidoCriacaoDTO(associacao.getCardapio().getId(), itensDTO, null, null);
@@ -101,7 +107,7 @@ class CriarNovoPedidoCasoDeUsoTest {
 
     @Test
     @DisplayName("Deve aplicar desconto no pedido quando cupom válido for informado")
-    void deveAplicarDescontoQuandoCupomValido() {
+    void deveAplicarDescontoQuandoCupomValido() throws Exception {
         List<ItemPedidoSolicitadoDTO> itensDTO = List.of(
                 new ItemPedidoSolicitadoDTO(associacao.getProduto().getId(), 2, "obs"));
         PedidoCriacaoDTO dto = new PedidoCriacaoDTO(associacao.getCardapio().getId(), itensDTO, null, "DESCONTO10");
@@ -143,7 +149,7 @@ class CriarNovoPedidoCasoDeUsoTest {
 
     @Test
     @DisplayName("Não deve chamar porta de cupom quando nenhum cupom for informado")
-    void naoDeveInteragirComCupomPortaQuandoCupomNaoInformado() {
+    void naoDeveInteragirComCupomPortaQuandoCupomNaoInformado() throws Exception {
         List<ItemPedidoSolicitadoDTO> itensDTO = List.of(
                 new ItemPedidoSolicitadoDTO(associacao.getProduto().getId(), 1, "obs"));
         PedidoCriacaoDTO dto = new PedidoCriacaoDTO(associacao.getCardapio().getId(), itensDTO, null, null);

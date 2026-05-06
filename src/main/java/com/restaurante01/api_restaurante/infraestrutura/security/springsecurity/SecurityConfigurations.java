@@ -46,8 +46,8 @@ public class SecurityConfigurations {
             "/h2-console/**",
     };
 
-    // ROTAS PROTEGIDAS
-    private static final Map<String, Role> PROTECTED_ROUTES = Map.ofEntries(
+    // ROTAS PROTEGIDAS — ordem importa: rotas exatas devem vir antes de padrões com variáveis de path
+    private static final List<Map.Entry<String, Role>> PROTECTED_ROUTES = List.of(
             // Apenas USER+
             entry("/pedido/cliente/**", Role.USER),
 
@@ -57,7 +57,6 @@ public class SecurityConfigurations {
             entry("/pedido/operador/*/status", Role.ADMIN1),
             entry("/pedido/operador/hoje", Role.ADMIN1),
             entry("/pedido/operador/top-produtos-vendidos", Role.ADMIN1),
-
             entry("/cupom/admin/**", Role.ADMIN1),
 
             // Apenas ADMIN2+
@@ -65,7 +64,7 @@ public class SecurityConfigurations {
             entry("/operador/obter-todos", Role.ADMIN2),
             entry("/clientes/obter-todos", Role.ADMIN2),
 
-            // Apenas ADMIN3
+            // Apenas ADMIN3 — rotas exatas antes dos padrões com {id}
             entry("/operador/deletar/{id}", Role.ADMIN3),
             entry("/nova-rota-ilimitada", Role.ADMIN3),
             entry("/operador/{id}", Role.ADMIN3)
@@ -80,9 +79,9 @@ public class SecurityConfigurations {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers(PUBLIC_ENDPOINTS).permitAll();
-                    PROTECTED_ROUTES.forEach((url, role) -> {
-                        authorize.requestMatchers(url).hasRole(role.name());
-                    });
+                    PROTECTED_ROUTES.forEach(e ->
+                        authorize.requestMatchers(e.getKey()).hasRole(e.getValue().name())
+                    );
                     authorize.anyRequest().hasRole("ADMIN3");
                 })
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
