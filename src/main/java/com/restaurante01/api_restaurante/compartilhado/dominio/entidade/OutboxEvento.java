@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Table(
         name = "outbox_eventos",
         uniqueConstraints = @UniqueConstraint(columnNames = {"agregado_tipo",
-                "agregado_id"})
+                "agregado_id", "tipo"})
 )
 @Getter
 @NoArgsConstructor

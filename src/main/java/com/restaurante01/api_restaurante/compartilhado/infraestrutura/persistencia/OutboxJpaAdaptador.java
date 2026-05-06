@@ -3,6 +3,7 @@ package com.restaurante01.api_restaurante.compartilhado.infraestrutura.persisten
 import com.restaurante01.api_restaurante.compartilhado.dominio.entidade.OutboxEvento;
 import com.restaurante01.api_restaurante.compartilhado.dominio.enums.Agregado;
 import com.restaurante01.api_restaurante.compartilhado.dominio.enums.StatusOutbox;
+import com.restaurante01.api_restaurante.compartilhado.dominio.enums.TipoEvento;
 import com.restaurante01.api_restaurante.compartilhado.dominio.excecao.OutboxNaoEncontradoExcecao;
 import com.restaurante01.api_restaurante.compartilhado.dominio.repositorio.OutboxRepositorio;
 import org.springframework.stereotype.Component;
@@ -24,15 +25,14 @@ public class OutboxJpaAdaptador implements OutboxRepositorio {
     }
 
     @Override
-    public OutboxEvento buscarPorAgregadoEIdAgregado(Agregado agregado, Long idAgregado){
-        return jpa.findByAgregadoTipoAndAgregadoId(agregado, idAgregado).orElseThrow(() -> new OutboxNaoEncontradoExcecao("Outbox não encontrado para o evento solicitado"));
+    public OutboxEvento buscarPorAgregadoEIdAgregadoETipoEvento(Agregado agregado, Long idAgregado, TipoEvento tipoEvento){
+        return jpa.findByAgregadoTipoAndAgregadoIdAndTipo(agregado, idAgregado, tipoEvento).orElseThrow(() -> new OutboxNaoEncontradoExcecao("Outbox não encontrado para o evento solicitado"));
     }
 
     @Override
     public List<OutboxEvento> buscarPendentes(){
         return jpa.findByStatus(StatusOutbox.PENDENTE);
     }
-
 
 }
 

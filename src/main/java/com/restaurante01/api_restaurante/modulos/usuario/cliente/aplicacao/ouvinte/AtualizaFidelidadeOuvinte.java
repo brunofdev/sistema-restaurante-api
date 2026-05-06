@@ -2,6 +2,7 @@ package com.restaurante01.api_restaurante.modulos.usuario.cliente.aplicacao.ouvi
 
 import com.restaurante01.api_restaurante.compartilhado.dominio.entidade.OutboxEvento;
 import com.restaurante01.api_restaurante.compartilhado.dominio.enums.Agregado;
+import com.restaurante01.api_restaurante.compartilhado.dominio.enums.TipoEvento;
 import com.restaurante01.api_restaurante.compartilhado.dominio.repositorio.OutboxRepositorio;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.aplicacao.casodeuso.AtualizarFidelidadeClienteCasoDeUso;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.evento.PedidoEntregueEvento;
@@ -29,8 +30,8 @@ public class AtualizaFidelidadeOuvinte {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void quandoPedidoStatusEntregue(PedidoEntregueEvento evento) {
         OutboxEvento outbox = outboxRepositorio
-                .buscarPorAgregadoEIdAgregado(Agregado.PEDIDO,
-                        evento.pedido().getId());
+                .buscarPorAgregadoEIdAgregadoETipoEvento(Agregado.PEDIDO,
+                        evento.pedido().getId(), TipoEvento.PEDIDO_ENTREGUE);
         try {
             atualizarFidelidade.executar(
                     evento.pedido().getCliente().clienteId(),

@@ -1,8 +1,12 @@
 package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.restaurante01.api_restaurante.compartilhado.dominio.enums.Agregado;
+import com.restaurante01.api_restaurante.compartilhado.dominio.enums.TipoEvento;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoCupomPorta;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.CupomUtilizado;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.CupomConsumido;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoOutboxPorta;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.*;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.Cliente;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.ItemPedidoSolicitadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.PedidoCriacaoDTO;
@@ -13,8 +17,6 @@ import com.restaurante01.api_restaurante.modulos.pedido.dominio.evento.PedidoCri
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoAssociacaoPorta;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoClientePorta;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.repositorio.PedidoRepositorio;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.EnderecoPedido;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.ProdutoVendido;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,32 +32,30 @@ public class CriarNovoPedidoCasoDeUso {
     private final PedidoAssociacaoPorta produto;
     private final PedidoClientePorta pedidoClientePorta;
     private final PedidoCupomPorta pedidoCupomPorta;
+    private final PedidoOutboxPorta pedidoOutboxPorta;
+    private final ObjectMapper objectMapper;
 
 
-    public CriarNovoPedidoCasoDeUso(PedidoRepositorio pedidoRepository,
-                                    PedidoMapeador pedidoMapeador,
-                                    ApplicationEventPublisher eventPublisher,
-                                    PedidoAssociacaoPorta produto,
-                                    PedidoClientePorta pedidoClientePorta,
-                                    PedidoCupomPorta pedidoCupomPorta
-                                        ) {
+    public CriarNovoPedidoCasoDeUso(PedidoRepositorio pedidoRepository, PedidoMapeador pedidoMapeador, ApplicationEventPublisher eventPublisher, PedidoAssociacaoPorta produto, PedidoClientePorta pedidoClientePorta, PedidoCupomPorta pedidoCupomPorta, PedidoOutboxPorta pedidoOutboxPorta, ObjectMapper objectMapper) {
         this.pedidoRepository = pedidoRepository;
         this.pedidoMapeador = pedidoMapeador;
         this.eventPublisher = eventPublisher;
         this.produto = produto;
         this.pedidoClientePorta = pedidoClientePorta;
         this.pedidoCupomPorta = pedidoCupomPorta;
+        this.pedidoOutboxPorta = pedidoOutboxPorta;
+        this.objectMapper = objectMapper;
     }
 
     @Transactional
-    public PedidoCriadoDTO executar(PedidoCriacaoDTO dto, Cliente cliente) {
+    public PedidoCriadoDTO executar(PedidoCriacaoDTO dto, Cliente cliente) throws JsonProcessingException {
         produto.validarEstoque(dto.idCardapio(), pedidoMapeador.mapearParaValidacaoDeEstoque(dto.itens()));
         Pedido pedido = Pedido.criar(dto.idCardapio(), pedidoClientePorta.obterDetalhesClienteParaPedido(cliente), selecionaEndereco(dto, cliente));
         vincularItensAoPedido(pedido, dto.itens());
         vincularCupomAoPedido(dto.cupom(), pedido);
-        pedidoRepository.salvar(pedido);
-        eventPublisher.publishEvent(new PedidoCriadoEvento(pedido));
-        return pedidoMapeador.mapearPedidoCriadoDto(pedido);
+        Pedido pedidoSalvo = pedidoRepository.salvar(pedido);
+        publicarEventos(pedidoSalvo);
+        return pedidoMapeador.mapearPedidoCriadoDto(pedidoSalvo);
     }
 
     private void vincularItensAoPedido(Pedido pedido, List<ItemPedidoSolicitadoDTO> itensDto) {
@@ -79,5 +79,12 @@ public class CriarNovoPedidoCasoDeUso {
             pedido.vincularCupom(cupom);
             pedido.aplicarDesconto(valorDesconto);
         }
+    }
+    private void publicarEventos(Pedido pedidoSalvo) throws JsonProcessingException {
+        List<ItemPedidoPayload>  itemPedidoPayload =  pedidoMapeador.mapearItemPedidoPayload(pedidoSalvo.getItens());
+        //CODIGO ABAIXO COMENTADO PARA TESTAR A RESILIENCIA DO SISTEMA, CASO UM EVENTO NAO SEJA PUBLICADO
+        //eventPublisher.publishEvent(new PedidoCriadoEvento(pedidoSalvo, itemPedidoPayload));
+        pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO, pedidoSalvo.getId(), TipoEvento.BAIXAR_ESTOQUE_ASSOCIACAO, objectMapper.writeValueAsString(new PedidoCriadoPayload(pedidoSalvo.getId(), pedidoSalvo.getIdCardapio(), itemPedidoPayload)));
+        pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO, pedidoSalvo.getId(), TipoEvento.BAIXAR_ESTOQUE_PRODUTO, objectMapper.writeValueAsString(new PedidoCriadoPayload(pedidoSalvo.getId(), pedidoSalvo.getIdCardapio(), itemPedidoPayload)));
     }
 }
