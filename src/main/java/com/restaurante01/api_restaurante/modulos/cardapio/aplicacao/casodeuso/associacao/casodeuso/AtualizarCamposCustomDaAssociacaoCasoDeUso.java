@@ -25,7 +25,7 @@ public class AtualizarCamposCustomDaAssociacaoCasoDeUso {
 
     @Transactional
     public AssociacaoFeitaRespostaDTO executar(AssociacaoEntradaDTO dto) {
-        Associacao associacaoExistente = encontrarCardapioProduto(dto.getIdCardapio(), dto.getIdProduto());
+        Associacao associacaoExistente = encontrarCardapioProduto(dto.idCardapio(), dto.idProduto());
         validator.validarCardapioProdutoAssociacaoEntradaDTO(dto);
         Associacao atualizada = mapper.mapearCamposCustom(associacaoExistente, dto);
         repository.save(atualizada);

@@ -13,13 +13,13 @@ public class CardapioProdutoValidador {
 
 
     public void validarCardapioProdutoAssociacaoEntradaDTO(AssociacaoEntradaDTO dto){
-        if(dto.getPrecoCustomizado() != null && dto.getPrecoCustomizado().compareTo(BigDecimal.ZERO) < 0){
+        if(dto.precoCustomizado() != null && dto.precoCustomizado().compareTo(BigDecimal.ZERO) < 0){
             throw new PrecoProdutoNegativoException("O preço customizado não pode ser negativo");
         }
-        if(dto.getQuantidadeCustomizada() < 0){
+        if(dto.quantidadeCustomizada() != null && dto.quantidadeCustomizada() < 0){
             throw new ProdutoQntdNegativa("A quantidade customizada não pode ser negativa");
         }
-        if(dto.getDescricaoCustomizada() != null && dto.getDescricaoCustomizada().length() < 10){
+        if(dto.descricaoCustomizada() != null && dto.descricaoCustomizada().length() < 10){
             throw new ProdutoDescricaoInvalidaExcpetion("Descrição deve conter mais de 10 caracteres");
         }
     }
