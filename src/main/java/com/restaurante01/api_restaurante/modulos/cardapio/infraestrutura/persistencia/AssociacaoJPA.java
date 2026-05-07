@@ -14,7 +14,7 @@ import java.util.Optional;
 @Repository
 public interface AssociacaoJPA extends JpaRepository<Associacao, Long> {
 
-    Optional <Associacao> findByCardapioId(long id);
+    List<Associacao> findByCardapioId(long id);
     Optional<Associacao> findByCardapioIdAndProdutoId(long cardapioId, long produtoId);
     @Query(value = "SELECT EXISTS (SELECT 1 FROM cardapio_produto cp WHERE cp.cardapio_id = :idCardapio AND cp.produto_id = :idProduto)", nativeQuery = true)
     boolean encontrarProdutoCardapio(@Param("idCardapio") long idCardapio, @Param("idProduto") long idProduto);

@@ -37,12 +37,12 @@ public class AssociarProdutoAoCardapioCasoDeUso {
 
     @Transactional
     public AssociacaoFeitaRespostaDTO executar(AssociacaoEntradaDTO dto) {
-        if(repository.existeAssociacao(dto.getIdCardapio(), dto.getIdProduto())){
+        if(repository.existeAssociacao(dto.idCardapio(), dto.idProduto())){
             throw new AssociacaoExistenteCardapioProdutoExcecao("Associação já existe");
         }
         validator.validarCardapioProdutoAssociacaoEntradaDTO(dto);
-        Produto produto = produtoPorta.obterProdutoPorId(dto.getIdProduto());
-        Cardapio cardapio = cardapioPorta.buscarCardapioPorId(dto.getIdCardapio());
+        Produto produto = produtoPorta.obterProdutoPorId(dto.idProduto());
+        Cardapio cardapio = cardapioPorta.buscarCardapioPorId(dto.idCardapio());
         Associacao novaAssociacao = mapper.mapearCardapioProduto(produto, cardapio, dto);
         repository.save(novaAssociacao);
         return mapper.mapearCardapioProdutoAssociacaoDTO(novaAssociacao);

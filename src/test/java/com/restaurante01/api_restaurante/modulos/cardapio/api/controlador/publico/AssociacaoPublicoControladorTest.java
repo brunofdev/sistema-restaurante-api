@@ -3,7 +3,6 @@ package com.restaurante01.api_restaurante.modulos.cardapio.api.controlador.publi
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restaurante01.api_restaurante.infraestrutura.autenticacao.service.ServicoAutorizacao;
 import com.restaurante01.api_restaurante.infraestrutura.jwt.JwtProvider;
-import com.restaurante01.api_restaurante.modulos.cardapio.api.dto.entrada.AssociacaoDTO;
 import com.restaurante01.api_restaurante.modulos.cardapio.api.dto.saida.AssociacoesDTO;
 import com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.casodeuso.associacao.casodeuso.ListarAssociacaoPorCardapioIdCasoDeUso;
 import com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.casodeuso.associacao.casodeuso.ListarTodasAssociacoesCasoDeUso;
@@ -17,17 +16,15 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
-
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(CardapioProdutoPublicoControlador.class)
+@WebMvcTest(AssociacaoPublicoControlador.class)
 @Import(SecurityConfigurations.class)
-class CardapioProdutoPublicoControladorTest {
+class AssociacaoPublicoControladorTest {
 
     @Autowired MockMvc mockMvc;
     @Autowired ObjectMapper objectMapper;
@@ -56,7 +53,7 @@ class CardapioProdutoPublicoControladorTest {
     @Test
     @DisplayName("Deve retornar associação de um cardápio pelo ID sem autenticação")
     void deveRetornarAssociacaoPorCardapioId() throws Exception {
-        var associacaoEsperada = Instancio.create(AssociacaoDTO.class);
+        var associacaoEsperada = Instancio.create(AssociacoesDTO.class);
         when(listarPorCardapioId.executar(anyLong())).thenReturn(associacaoEsperada);
 
         mockMvc.perform(get("/cardapio-produto/publico/cardapio/1"))

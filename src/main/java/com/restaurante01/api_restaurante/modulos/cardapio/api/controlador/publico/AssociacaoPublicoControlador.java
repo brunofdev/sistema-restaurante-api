@@ -1,7 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.cardapio.api.controlador.publico;
 
 import com.restaurante01.api_restaurante.compartilhado.retorno_padrao_api.ApiResponse;
-import com.restaurante01.api_restaurante.modulos.cardapio.api.dto.entrada.AssociacaoDTO;
 import com.restaurante01.api_restaurante.modulos.cardapio.api.dto.saida.AssociacoesDTO;
 import com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.casodeuso.associacao.casodeuso.ListarAssociacaoPorCardapioIdCasoDeUso;
 import com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.casodeuso.associacao.casodeuso.ListarTodasAssociacoesCasoDeUso;
@@ -19,12 +18,12 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 @Validated
 @Tag(name = "-> Cardápio & Produto - Vitrine Pública", description = "Endpoints abertos para visitantes visualizarem os cardápios")
-public class CardapioProdutoPublicoControlador {
+public class AssociacaoPublicoControlador {
 
     private final ListarTodasAssociacoesCasoDeUso listarTodasAssociacoes;
     private final ListarAssociacaoPorCardapioIdCasoDeUso listarPorCardapioId;
 
-    public CardapioProdutoPublicoControlador(
+    public AssociacaoPublicoControlador(
             ListarTodasAssociacoesCasoDeUso listarTodasAssociacoes,
             ListarAssociacaoPorCardapioIdCasoDeUso listarPorCardapioId) {
         this.listarTodasAssociacoes = listarTodasAssociacoes;
@@ -39,7 +38,7 @@ public class CardapioProdutoPublicoControlador {
 
     @Operation(summary = "Obter produtos de um cardápio", description = "Retorna a associação de produtos de um cardápio específico. Rota pública.")
     @GetMapping("/cardapio/{idCardapio}")
-    public ResponseEntity<ApiResponse<AssociacaoDTO>> obterAssociacaoPorCardapioId(@PathVariable @Min(1) long idCardapio){
+    public ResponseEntity<ApiResponse<AssociacoesDTO>> obterAssociacaoPorCardapioId(@PathVariable @Min(1) long idCardapio){
         return ResponseEntity.ok(ApiResponse.success("Recurso encontrado", listarPorCardapioId.executar(idCardapio)));
     }
 }

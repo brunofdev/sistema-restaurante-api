@@ -29,7 +29,7 @@ public class CardapioProdutoMapeador extends AbstractMapper<Associacao, Associac
     }
 
     @Override
-    public AssociacaoDTO mapearUmaEntidadeParaDTO (Associacao associacao) {
+    public AssociacaoDTO mapearUmaEntidadeParaDTO(Associacao associacao) {
         return new AssociacaoDTO(
                 associacao.getId(),
                 cardapioMapeador.mapearUmaEntidadeParaDTO(associacao.getCardapio()),
@@ -41,21 +41,22 @@ public class CardapioProdutoMapeador extends AbstractMapper<Associacao, Associac
                 associacao.getObservacao()
         );
     }
-    @Override
-    public Associacao mapearUmaDtoParaEntidade (AssociacaoDTO associacaoDTO) {
-        return new Associacao(
-                associacaoDTO.getId(),
-                cardapioMapeador.mapearUmaDtoParaEntidade(associacaoDTO.getCardapio()),
-                produtoMapeador.mapearUmaDtoParaEntidade(associacaoDTO.getProduto()),
-                associacaoDTO.getPrecoCustomizado(),
-                associacaoDTO.getQuantidadeCustomizada(),
-                associacaoDTO.getDescricaoCustomizada(),
-                associacaoDTO.getDisponibilidadeCustomizada(),
-                associacaoDTO.getObservacao()
 
+    @Override
+    public Associacao mapearUmaDtoParaEntidade(AssociacaoDTO associacaoDTO) {
+        return new Associacao(
+                associacaoDTO.id(),
+                cardapioMapeador.mapearUmaDtoParaEntidade(associacaoDTO.cardapio()),
+                produtoMapeador.mapearUmaDtoParaEntidade(associacaoDTO.produto()),
+                associacaoDTO.precoCustomizado(),
+                associacaoDTO.quantidadeCustomizada(),
+                associacaoDTO.descricaoCustomizada(),
+                associacaoDTO.disponibilidadeCustomizada(),
+                associacaoDTO.observacao()
         );
     }
-    public AssociacaoFeitaRespostaDTO mapearCardapioProdutoAssociacaoDTO(Associacao associacao){
+
+    public AssociacaoFeitaRespostaDTO mapearCardapioProdutoAssociacaoDTO(Associacao associacao) {
         return new AssociacaoFeitaRespostaDTO(
                 "O produto: " + associacao.getProduto().getNome() + " foi associado ao " + associacao.getCardapio().getNome(),
                 cardapioMapeador.mapearUmaEntidadeParaDTO(associacao.getCardapio()),
@@ -68,65 +69,63 @@ public class CardapioProdutoMapeador extends AbstractMapper<Associacao, Associac
         );
     }
 
-    public List<AssociacoesDTO> mapearCardapioComListaDeProduto(List<Associacao> listaDeAssociacao){
+    public List<AssociacoesDTO> mapearCardapioComListaDeProduto(List<Associacao> listaDeAssociacao) {
         Map<Long, AssociacoesDTO> map = new LinkedHashMap<>();
-        for(Associacao cp : listaDeAssociacao){
+        for (Associacao cp : listaDeAssociacao) {
             Cardapio cardapio = cp.getCardapio();
-            AssociacoesDTO dto = map.computeIfAbsent(cardapio.getId(), id ->{
-                return mapearCardapioProdutoDTO(cardapio);
-        });
-            Produto produto = cp.getProduto();
-            ProdutoCustomDTO produtoCustomDTO = criarProdutoCustomDTO(produto, cp);
-            dto.getProdutos().add(produtoCustomDTO);
-    }
+            AssociacoesDTO dto = map.computeIfAbsent(cardapio.getId(), id -> mapearCardapioProdutoDTO(cardapio));
+            dto.produtos().add(criarProdutoCustomDTO(cp.getProduto(), cp));
+        }
         return new ArrayList<>(map.values());
     }
-    public Associacao mapearCardapioProduto(Produto produto, Cardapio cardapio, AssociacaoEntradaDTO associacaoEntradaDTO){
+
+    public Associacao mapearCardapioProduto(Produto produto, Cardapio cardapio, AssociacaoEntradaDTO dto) {
         return new Associacao(
                 null,
                 cardapio,
                 produto,
-                associacaoEntradaDTO.getPrecoCustomizado(),
-                associacaoEntradaDTO.getQuantidadeCustomizada(),
-                associacaoEntradaDTO.getDescricaoCustomizada(),
-                associacaoEntradaDTO.getDisponibilidadeCustomizada(),
-                associacaoEntradaDTO.getObservacao()
+                dto.precoCustomizado(),
+                dto.quantidadeCustomizada(),
+                dto.descricaoCustomizada(),
+                dto.disponibilidadeCustomizada(),
+                dto.observacao()
         );
     }
+
     public AssociacoesDTO mapearCardapioProdutoDTO(Cardapio cardapio) {
-        AssociacoesDTO cardapioProdutoDTO = new AssociacoesDTO();
-        cardapioProdutoDTO.setId(cardapio.getId());
-        cardapioProdutoDTO.setNome(cardapio.getNome());
-        cardapioProdutoDTO.setDescricao(cardapio.getDescricao());
-        cardapioProdutoDTO.setDisponibilidade(cardapio.getDisponibilidade());
-        cardapioProdutoDTO.setDataInicio(cardapio.getDataInicio());
-        cardapioProdutoDTO.setDataFim(cardapio.getDataFim());
-        cardapioProdutoDTO.setProdutos(new ArrayList<>());
-        return cardapioProdutoDTO;
+        return new AssociacoesDTO(
+                cardapio.getId(),
+                cardapio.getNome(),
+                cardapio.getDescricao(),
+                cardapio.getDisponibilidade(),
+                cardapio.getDataInicio(),
+                cardapio.getDataFim(),
+                new ArrayList<>()
+        );
     }
-    public ProdutoCustomDTO criarProdutoCustomDTO (Produto produto, Associacao associacao){
-        ProdutoCustomDTO produtoCustomDTO = new ProdutoCustomDTO();
-        produtoCustomDTO.setIdProduto(produto.getId());
-        produtoCustomDTO.setNome(produto.getNome());
-        produtoCustomDTO.setDescricao(produto.getDescricao());
-        produtoCustomDTO.setPreco(produto.getPreco());
-        produtoCustomDTO.setQuantidadeAtual(produto.getQuantidadeAtual());
-        produtoCustomDTO.setDisponibilidade(produto.getDisponibilidade());
-        produtoCustomDTO.setPrecoCustomizado(associacao.getPrecoCustomizado());
-        produtoCustomDTO.setDescricaoCustomizada(associacao.getDescricaoCustomizada());
-        produtoCustomDTO.setQuantidadeCustomizada(associacao.getQuantidadeCustomizada());
-        produtoCustomDTO.setDisponibilidadeCustomizada(associacao.getDisponibilidadeCustomizada());
-        produtoCustomDTO.setObservacao(associacao.getObservacao());
-        return produtoCustomDTO;
+
+    public ProdutoCustomDTO criarProdutoCustomDTO(Produto produto, Associacao associacao) {
+        return new ProdutoCustomDTO(
+                produto.getId(),
+                produto.getNome(),
+                produto.getDescricao(),
+                produto.getPreco(),
+                produto.getQuantidadeAtual(),
+                produto.getDisponibilidade(),
+                associacao.getPrecoCustomizado(),
+                associacao.getQuantidadeCustomizada() != null ? associacao.getQuantidadeCustomizada() : 0,
+                associacao.getDescricaoCustomizada(),
+                associacao.getDisponibilidadeCustomizada(),
+                associacao.getObservacao()
+        );
     }
-    public Associacao mapearCamposCustom(Associacao associacao, AssociacaoEntradaDTO dto){
-        associacao.setPrecoCustomizado(dto.getPrecoCustomizado());
-        associacao.setObservacao(dto.getObservacao());
-        associacao.setDescricaoCustomizada(dto.getDescricaoCustomizada());
-        associacao.setDisponibilidadeCustomizada(dto.getDisponibilidadeCustomizada());
-        associacao.setQuantidadeCustomizada(dto.getQuantidadeCustomizada());
+
+    public Associacao mapearCamposCustom(Associacao associacao, AssociacaoEntradaDTO dto) {
+        associacao.setPrecoCustomizado(dto.precoCustomizado());
+        associacao.setObservacao(dto.observacao());
+        associacao.setDescricaoCustomizada(dto.descricaoCustomizada());
+        associacao.setDisponibilidadeCustomizada(dto.disponibilidadeCustomizada());
+        associacao.setQuantidadeCustomizada(dto.quantidadeCustomizada());
         return associacao;
     }
-
-
 }

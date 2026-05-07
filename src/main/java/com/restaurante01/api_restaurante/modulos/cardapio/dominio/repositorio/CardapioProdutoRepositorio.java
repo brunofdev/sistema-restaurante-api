@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CardapioProdutoRepositorio {
-    Optional<Associacao> findByCardapioId(long id);
+    List<Associacao> findByCardapioId(long id);
     Optional<Associacao> findByCardapioIdAndProdutoId(long cardapioId, long produtoId);
     boolean existeAssociacao(long idCardapio, long idProduto);
     void deletarAssociacao(long idCardapio, long idProduto);

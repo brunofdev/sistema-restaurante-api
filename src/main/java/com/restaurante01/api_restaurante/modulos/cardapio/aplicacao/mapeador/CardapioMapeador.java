@@ -33,11 +33,11 @@ public class CardapioMapeador extends AbstractMapper<Cardapio, CardapioDTO> {
     }
     public Cardapio mapearCardapioCreateParaEntidade(CriarCardapioDTO criarCardapioDTO){
         Cardapio cardapio = new Cardapio();
-        cardapio.setNome(FormatarString.limparEspacos(criarCardapioDTO.getNome()));
-        cardapio.setDescricao(FormatarString.limparEspacos(criarCardapioDTO.getDescricao()));
-        cardapio.setDisponibilidade(criarCardapioDTO.getDisponibilidade());
-        cardapio.setDataInicio(criarCardapioDTO.getDataInicio());
-        cardapio.setDataFim(criarCardapioDTO.getDataFim());
+        cardapio.setNome(FormatarString.limparEspacos(criarCardapioDTO.nome()));
+        cardapio.setDescricao(FormatarString.limparEspacos(criarCardapioDTO.descricao()));
+        cardapio.setDisponibilidade(criarCardapioDTO.disponibilidade());
+        cardapio.setDataInicio(criarCardapioDTO.dataInicio());
+        cardapio.setDataFim(criarCardapioDTO.dataFim());
         return cardapio;
     }
     public Cardapio atualizarCampos(Cardapio cardapioExistente , CardapioDTO cardapioAtualizado){
@@ -52,11 +52,11 @@ public class CardapioMapeador extends AbstractMapper<Cardapio, CardapioDTO> {
     public CardapioDTO mapearCardapioCreateParaCardapioDTO(CriarCardapioDTO criarCardapioDTO) {
         return new CardapioDTO(
                 null,
-                criarCardapioDTO.getNome(),
-                criarCardapioDTO.getDescricao(),
-                criarCardapioDTO.getDisponibilidade(),
-                criarCardapioDTO.getDataInicio(),
-                criarCardapioDTO.getDataFim()
+                criarCardapioDTO.nome(),
+                criarCardapioDTO.descricao(),
+                criarCardapioDTO.disponibilidade(),
+                criarCardapioDTO.dataInicio(),
+                criarCardapioDTO.dataFim()
         );
     }
 }

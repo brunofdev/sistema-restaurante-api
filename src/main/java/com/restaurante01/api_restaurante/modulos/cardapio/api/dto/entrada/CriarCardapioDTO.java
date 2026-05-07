@@ -3,31 +3,15 @@ package com.restaurante01.api_restaurante.modulos.cardapio.api.dto.entrada;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
 
 import java.time.LocalDate;
 
-@Getter
-public class CriarCardapioDTO {
-    @NotBlank(message = "O Nome não pode ser vazio")
-    private final String nome;
-    @NotBlank(message = "A descrição não pode ser vazia")
-    private final String descricao;
-    @NotNull(message = "A disponibilidade do cardápio deve ser preenchida")
-    private final Boolean disponibilidade;
-    @NotNull(message = "A Data do cardápio deve ser preenchida")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private final LocalDate dataInicio;
-    @NotNull(message = "A Data do cardápio deve ser preenchida")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private final LocalDate dataFim;
-
-    public CriarCardapioDTO(String nome, String descricao, Boolean disponibilidade, LocalDate dataInicio, LocalDate dataFim) {
-        this.nome = nome;
-        this.descricao = descricao;
-        this.disponibilidade = disponibilidade;
-        this.dataInicio = dataInicio;
-        this.dataFim = dataFim;
-    }
-
-}
+public record CriarCardapioDTO(
+        @NotBlank(message = "O Nome não pode ser vazio") String nome,
+        @NotBlank(message = "A descrição não pode ser vazia") String descricao,
+        @NotNull(message = "A disponibilidade do cardápio deve ser preenchida") Boolean disponibilidade,
+        @NotNull(message = "A Data do cardápio deve ser preenchida")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd") LocalDate dataInicio,
+        @NotNull(message = "A Data do cardápio deve ser preenchida")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd") LocalDate dataFim
+) {}

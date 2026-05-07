@@ -98,9 +98,9 @@ class AssociarProdutoAoCardapioCasoDeUsoTest {
                 "Nenhuma Descrição Customizada"
         );
 
-        when(cardapioProdutoRepositorio.existeAssociacao(dto.getIdCardapio(), dto.getIdProduto())).thenReturn(false);
-        when(obterProdutoPorIdCasoDeUso.obterProdutoPorId(dto.getIdProduto())).thenReturn(produto);
-        when(buscarCardapioPorIdCasoDeUso.buscarCardapioPorId(dto.getIdCardapio())).thenReturn(cardapio);
+        when(cardapioProdutoRepositorio.existeAssociacao(dto.idCardapio(), dto.idProduto())).thenReturn(false);
+        when(obterProdutoPorIdCasoDeUso.obterProdutoPorId(dto.idProduto())).thenReturn(produto);
+        when(buscarCardapioPorIdCasoDeUso.buscarCardapioPorId(dto.idCardapio())).thenReturn(cardapio);
         when(cardapioProdutoMapeador.mapearCardapioProduto(produto, cardapio, dto)).thenReturn(novaAssociacao);
         when(cardapioProdutoMapeador.mapearCardapioProdutoAssociacaoDTO(novaAssociacao)).thenReturn(associacaoFeitaRespostaDTO);
 
@@ -126,7 +126,7 @@ class AssociarProdutoAoCardapioCasoDeUsoTest {
                 "teste descricao teste",
                 true,
                 "teste de observação");
-        when(cardapioProdutoRepositorio.existeAssociacao(dto.getIdCardapio(), dto.getIdProduto())).thenReturn(true);
+        when(cardapioProdutoRepositorio.existeAssociacao(dto.idCardapio(), dto.idProduto())).thenReturn(true);
 
 
         assertThatThrownBy(() -> casoDeUso.executar(dto))
