@@ -1,5 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.pedido.api.controlador.operador;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.restaurante01.api_restaurante.compartilhado.retorno_padrao_api.ApiResponse;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.StatusPedidoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.SolicitarTopProdutoVendidosDTO;
@@ -79,7 +80,7 @@ public class PedidoOperadorControlador {
     @PatchMapping("/{id}/status")
     public ResponseEntity<ApiResponse<PedidoCriadoDTO>> atualizarStatusPedido(
             @PathVariable Long id,
-            @RequestBody StatusPedidoDTO novoStatus) {
+            @RequestBody StatusPedidoDTO novoStatus) throws JsonProcessingException {
 
         PedidoCriadoDTO pedidoAtualizado = atualizarStatusPedido.executar(id, novoStatus);
 

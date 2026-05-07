@@ -18,7 +18,6 @@ public class ConsumirCupomCasoDeUso {
         this.repositorio = repositorio;
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Cupom executar (CodigoCupom codigoCupom){
         Cupom cupom = buscarPorCodigo(codigoCupom);
         cupom.subtrairQuantidade();

@@ -3,12 +3,9 @@ package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mapeador;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.EnderecoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.ItemPedidoSolicitadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.*;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.EnderecoPedido;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.*;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPedido;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.CupomConsumido;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.ItemValidacaoEstoque;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.ValoresPedido;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -100,4 +97,7 @@ public class PedidoMapeador {
                     dto.referencia()
             );
         }
+    public List<ItemPedidoPayload> mapearItemPedidoPayload(List<ItemPedido> itens){
+        return itens.stream().map(item -> new ItemPedidoPayload(item.getProduto().idProduto(), item.getQuantidade())).toList();
+    }
 }

@@ -1,6 +1,7 @@
 package com.restaurante01.api_restaurante.modulos.produto.aplicacao.casodeuso;
 
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPedido;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.ItemPedidoPayload;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
 import com.restaurante01.api_restaurante.modulos.produto.infraestrutura.adaptador.ProdutoJpaAdaptador;
 import org.springframework.stereotype.Service;
@@ -24,11 +25,10 @@ public class BaixarQuantidadeProdutoCasoDeUso {
     }
 
     //aqui seria interessante ter um bloco try, para caso não seja possivel atualizar por algum motivo, termos isso registrado
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void executar(List<ItemPedido> itensPedido) {
-        for (ItemPedido item : itensPedido) {
-            Produto produtoParaBaixarQuantidade = obterProdutoPorIdCasoDeUso.retornarEntidade(item.getProduto().idProduto());
-            produtoParaBaixarQuantidade.diminuirQuantidade(item.getQuantidade());
+    public void executar(List<ItemPedidoPayload> itensPedido) {
+        for (ItemPedidoPayload item : itensPedido) {
+            Produto produtoParaBaixarQuantidade = obterProdutoPorIdCasoDeUso.retornarEntidade(item.idProduto());
+            produtoParaBaixarQuantidade.diminuirQuantidade(item.quantidade());
             repositorio.save(produtoParaBaixarQuantidade);
         }
     }

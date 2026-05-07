@@ -1,5 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.pedido.api.controlador.cliente;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.restaurante01.api_restaurante.compartilhado.retorno_padrao_api.ApiResponse;
 import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Usuario;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.Cliente;
@@ -49,7 +50,7 @@ public class PedidoClienteControlador {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ApiResponse<PedidoCriadoDTO>> criarPedido(
             @Validated @RequestBody PedidoCriacaoDTO dto,
-            @AuthenticationPrincipal Usuario usuarioLogado) {
+            @AuthenticationPrincipal Usuario usuarioLogado) throws JsonProcessingException {
 
         if (usuarioLogado instanceof Cliente clienteLogado) {
             PedidoCriadoDTO novoPedido = criarNovoPedido.executar(dto, clienteLogado);

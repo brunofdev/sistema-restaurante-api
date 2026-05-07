@@ -3,11 +3,8 @@ package com.restaurante01.api_restaurante.modulos.cardapio.aplicacao.casodeuso.a
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Associacao;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.AssociacaoNaoExisteExcecao;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.repositorio.CardapioProdutoRepositorio;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPedido;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.ItemPedidoPayload;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Service
@@ -20,11 +17,10 @@ public class BaixarQtdCustomizadaCasoDeUso {
 
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void executar(Long idCardapio, List<ItemPedido> itensPedido) {
-        for (ItemPedido item : itensPedido) {
-            Associacao produtoParaAtualizar = encontrarCardapioProduto(idCardapio, item.getProduto().idProduto());
-            produtoParaAtualizar.diminuirQuantidade(item.getQuantidade());
+    public void executar(Long idCardapio, List<ItemPedidoPayload> itensPedido) {
+        for (ItemPedidoPayload item : itensPedido) {
+            Associacao produtoParaAtualizar = encontrarCardapioProduto(idCardapio, item.idProduto());
+            produtoParaAtualizar.diminuirQuantidade(item.quantidade());
             repository.save(produtoParaAtualizar);
         }
     }
