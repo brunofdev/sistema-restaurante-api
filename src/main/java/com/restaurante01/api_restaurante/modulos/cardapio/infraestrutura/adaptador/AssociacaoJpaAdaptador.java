@@ -18,7 +18,7 @@ public class AssociacaoJpaAdaptador implements CardapioProdutoRepositorio {
     }
 
     @Override
-    public Optional<Associacao> findByCardapioId(long id) {
+    public List<Associacao> findByCardapioId(long id) {
         return jpa.findByCardapioId(id);
     }
 
