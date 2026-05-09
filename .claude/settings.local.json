@@ -7,7 +7,10 @@
       "Bash(git checkout *)",
       "Bash(git pull *)",
       "Bash(mvn test *)",
-      "Bash(./mvnw test *)"
+      "Bash(./mvnw test *)",
+      "Bash(xargs grep -l \"interface.*Porta\")",
+      "mcp__claude_ai_Notion__notion-search",
+      "mcp__claude_ai_Notion__notion-fetch"
     ]
   }
 }
