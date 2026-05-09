@@ -1,4 +1,6 @@
-package com.restaurante01.api_restaurante.modulos.avaliacao.dominio;
+package com.restaurante01.api_restaurante.modulos.avaliacao.dominio.enums;
+
+import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.NotaAvaliacao;
 
 public enum ClassificacaoAvaliacao {
 
