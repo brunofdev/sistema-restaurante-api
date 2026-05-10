@@ -1,22 +1,21 @@
-package com.restaurante01.api_restaurante.modulos.usuario.operador.infraestrutura.persistencia;
+package com.restaurante01.api_restaurante.modulos.usuario.operador.infraestrutura.adaptador;
 
+import com.restaurante01.api_restaurante.modulos.usuario.operador.infraestrutura.persistencia.OperadorJPA;
 import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Cpf;
 import com.restaurante01.api_restaurante.modulos.usuario.operador.dominio.entidade.Operador;
 import com.restaurante01.api_restaurante.modulos.usuario.operador.dominio.repositorio.OperadorRepositorio;
 import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Email;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Component
+@Repository
+@AllArgsConstructor
 public class OperadorJpaAdapter implements OperadorRepositorio {
     private final OperadorJPA jpa;
-
-    public OperadorJpaAdapter(OperadorJPA jpa) {
-        this.jpa = jpa;
-    }
 
     @Override
     public Operador salvar(Operador operador) {

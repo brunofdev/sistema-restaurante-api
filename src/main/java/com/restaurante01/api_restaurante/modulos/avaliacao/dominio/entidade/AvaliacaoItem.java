@@ -27,8 +27,10 @@ public class AvaliacaoItem {
     private Long itemPedidoId;
     private Long produtoId;
     @Embedded
+    @AttributeOverride(name = "valor", column = @Column(name = "item_nota_valor"))
     private NotaAvaliacao notaAvaliacao;
     @Embedded
+    @AttributeOverride(name = "valor", column = @Column(name = "item_comentario_valor"))
     private ComentarioAvaliacao comentarioAvaliacao;
 
     public static AvaliacaoItem criar(Long itemPedidoId, Long produtoId, NotaAvaliacao notaAvaliacao, ComentarioAvaliacao comentarioAvaliacao) {

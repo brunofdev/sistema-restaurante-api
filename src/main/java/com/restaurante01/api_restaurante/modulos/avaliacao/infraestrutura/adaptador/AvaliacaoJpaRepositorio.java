@@ -1,0 +1,35 @@
+package com.restaurante01.api_restaurante.modulos.avaliacao.infraestrutura.adaptador;
+
+import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.entidade.Avaliacao;
+import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.repositorio.AvaliacaoRepositorio;
+import com.restaurante01.api_restaurante.modulos.avaliacao.infraestrutura.persistencia.AvaliacaoJPA;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+@RequiredArgsConstructor
+public class AvaliacaoJpaRepositorio implements AvaliacaoRepositorio {
+    private final AvaliacaoJPA jpa;
+
+
+    @Override
+    public Avaliacao salvar(Avaliacao avaliacao){
+        return jpa.save(avaliacao);
+    }
+    @Override
+    public Avaliacao atualizar(Avaliacao avaliacao){
+        return jpa.save(avaliacao);
+    }
+
+    @Override
+    public Optional<Avaliacao> buscarPorId(Long id){
+        return jpa.findById(id);
+    }
+
+    @Override
+    public Optional<Avaliacao> buscarPorPedidoId(Long pedidoId){
+        return jpa.findByPedidoId(pedidoId);
+    }
+}

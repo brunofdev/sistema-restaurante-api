@@ -5,20 +5,17 @@ import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.reposit
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.infraestrutura.persistencia.ClienteJPA;
 import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Cpf;
 import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Email;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Component
+@Repository
+@AllArgsConstructor
 public class ClienteJpaAdaptador implements ClienteRepositorio {
-
     private final ClienteJPA jpa;
-
-    public ClienteJpaAdaptador(ClienteJPA jpa) {
-        this.jpa = jpa;
-    }
 
     @Override
     public Cliente salvar(Cliente cliente) {

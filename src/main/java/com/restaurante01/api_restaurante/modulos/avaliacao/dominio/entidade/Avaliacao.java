@@ -31,8 +31,10 @@ public class Avaliacao {
     @NotNull
     private Long clienteId;
     @Embedded
+    @AttributeOverride(name = "valor", column = @Column(name = "nota_valor"))
     private NotaAvaliacao nota;
     @Embedded
+    @AttributeOverride(name = "valor", column = @Column(name = "comentario_valor"))
     private ComentarioAvaliacao comentarioAvaliacao;
     @Enumerated(EnumType.STRING)
     private StatusAvaliacao status;
@@ -44,7 +46,7 @@ public class Avaliacao {
     LocalDateTime dataCriacao;
     @NotNull
     LocalDateTime dataExpiracao;
-    @OneToMany(mappedBy = "avaliacoes", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "avaliacao", cascade = CascadeType.ALL, orphanRemoval = true)
     List<AvaliacaoItem> itensAvaliados = new ArrayList<>();
 
     public static Avaliacao criar(Long pedidoId, long clienteId){

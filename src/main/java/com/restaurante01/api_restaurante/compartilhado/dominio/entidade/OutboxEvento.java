@@ -40,6 +40,7 @@ public class OutboxEvento {
     @Column(name = "tipo", nullable = false, length = 100)
     private TipoEvento tipo;
 
+    @Lob
     @Column(name = "payload", nullable = false, columnDefinition = "TEXT")
     private String payload;
 

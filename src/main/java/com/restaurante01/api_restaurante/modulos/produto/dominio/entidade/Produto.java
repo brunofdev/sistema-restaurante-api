@@ -27,6 +27,7 @@ public class Produto extends Auditable {
     private String nome;
 
     @NotBlank(message = "A descrição é obrigatória")
+    @Lob
     @Column(name = "descricao", columnDefinition = "TEXT", nullable = false)
     private String descricao;
 
