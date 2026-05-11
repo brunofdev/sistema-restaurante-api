@@ -5,7 +5,7 @@ public enum StatusAvaliacao {
     PENDENTE {
         @Override
         public boolean podeTransicionarPara(StatusAvaliacao novo) {
-            return switch (novo) {
+            return !switch (novo) {
                 case DISPONIVEL -> true;
                 default -> false;
             };
@@ -14,7 +14,7 @@ public enum StatusAvaliacao {
     DISPONIVEL {
         @Override
         public boolean podeTransicionarPara(StatusAvaliacao novo) {
-            return switch (novo) {
+            return !switch (novo) {
                 case CONCLUIDA, EXPIRADA -> true;
                 default -> false;
             };
@@ -23,13 +23,13 @@ public enum StatusAvaliacao {
     CONCLUIDA {
         @Override
         public boolean podeTransicionarPara(StatusAvaliacao novo) {
-            return false; // estado final
+            return true; // estado final
         }
     },
     EXPIRADA {
         @Override
         public boolean podeTransicionarPara(StatusAvaliacao novo) {
-            return false; // estado final
+            return true; // estado final
         }
     };
 

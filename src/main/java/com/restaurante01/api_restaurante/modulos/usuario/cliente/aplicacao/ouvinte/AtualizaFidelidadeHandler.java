@@ -9,12 +9,12 @@ import com.restaurante01.api_restaurante.modulos.usuario.cliente.aplicacao.casod
 import org.springframework.stereotype.Component;
 
 @Component
-public class PedidoEntregueHandler implements OutboxEventoHandler {
+public class AtualizaFidelidadeHandler implements OutboxEventoHandler {
 
     private final AtualizarFidelidadeClienteCasoDeUso atualizarFidelidade;
     private final ObjectMapper mapper;
 
-    public PedidoEntregueHandler(AtualizarFidelidadeClienteCasoDeUso atualizarFidelidade, ObjectMapper mapper) {
+    public AtualizaFidelidadeHandler(AtualizarFidelidadeClienteCasoDeUso atualizarFidelidade, ObjectMapper mapper) {
         this.atualizarFidelidade = atualizarFidelidade;
         this.mapper = mapper;
     }

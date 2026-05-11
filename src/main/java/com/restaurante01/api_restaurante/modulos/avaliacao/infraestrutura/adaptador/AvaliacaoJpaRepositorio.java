@@ -6,6 +6,7 @@ import com.restaurante01.api_restaurante.modulos.avaliacao.infraestrutura.persis
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -31,5 +32,10 @@ public class AvaliacaoJpaRepositorio implements AvaliacaoRepositorio {
     @Override
     public Optional<Avaliacao> buscarPorPedidoId(Long pedidoId){
         return jpa.findByPedidoId(pedidoId);
+    }
+
+    @Override
+    public List<Avaliacao> buscarTodos(){
+        return jpa.findAll();
     }
 }

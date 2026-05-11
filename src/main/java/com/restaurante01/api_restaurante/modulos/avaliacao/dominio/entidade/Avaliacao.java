@@ -73,7 +73,7 @@ public class Avaliacao {
     }
 
     protected void mudarStatusAvaliacao(StatusAvaliacao status){
-        if (!this.status.podeTransicionarPara(status)) {
+        if (this.status.podeTransicionarPara(status)) {
             throw new StatusAvaliacaoInvalidoExcecao(
                     "Transição inválida: " + this.status + " -> " + status
             );
@@ -114,7 +114,7 @@ public class Avaliacao {
     }
 
     private void validarSePodeTransicionarPara(){
-        if(!this.status.podeTransicionarPara(StatusAvaliacao.CONCLUIDA)){
+        if(this.status.podeTransicionarPara(StatusAvaliacao.CONCLUIDA)){
             throw new StatusAvaliacaoInvalidoExcecao("Avaliação não pode ser concluída no status atual.");
         }
     }
