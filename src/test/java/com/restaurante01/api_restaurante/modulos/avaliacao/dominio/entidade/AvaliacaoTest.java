@@ -149,6 +149,7 @@ class AvaliacaoTest {
     @DisplayName("Dado uma avaliação com data vencida, Quando pedir para expirar, Então altera status para EXPIRADA")
     void deveExpirarAvaliacaoVencida() {
         Avaliacao avaliacao = AvaliacaoBuilder.umaAvaliacao().construir();
+        ReflectionTestUtils.setField(avaliacao, "status", StatusAvaliacao.DISPONIVEL);
         ReflectionTestUtils.setField(avaliacao, "dataExpiracao", LocalDateTime.now().minusDays(1));
 
         avaliacao.expirarAvaliacao();

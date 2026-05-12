@@ -7,7 +7,6 @@ import com.restaurante01.api_restaurante.compartilhado.dominio.enums.TipoEvento;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.StatusPedidoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoCriadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mapeador.PedidoMapeador;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.enums.StatusPedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.evento.PedidoCanceladoEvento;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.evento.PedidoEntregueEvento;
@@ -44,15 +43,12 @@ public class AtualizarStatusPedidoCasoDeUso {
         Pedido pedido = pedidoRepository.buscarPorId(id)
                 .orElseThrow(() -> new PedidoNaoEncontradoExcecao("Pedido não localizado: " + id));
         pedido.mudarStatus(novoStatusDto.statusPedido());
-        pedidoRepository.salvar(pedido);
-        if (pedido.getStatusPedido() == StatusPedido.ENTREGUE) {
-            publicaEventosSeEntregue(pedido);
+        Pedido pedidoAtualizado = pedidoRepository.salvar(pedido);
+        switch (pedido.getStatusPedido()) {
+            case ENTREGUE -> publicaEventosSeEntregue(pedidoAtualizado);
+            case CANCELADO -> publicaEventosSeCancelado(pedidoAtualizado);
         }
-        if(pedido.getStatusPedido() == StatusPedido.CANCELADO){
-
-            publicaEventosSeCancelado(pedido);
-        }
-        return pedidoMapeador.mapearPedidoCriadoDto(pedido);
+        return pedidoMapeador.mapearPedidoCriadoDto(pedidoAtualizado);
     }
     private void publicaEventosSeEntregue(Pedido pedido) throws JsonProcessingException {
         List<ItemPedidoAvaliacaoPayload> itensParaAvaliacao = pedidoMapeador.mapearItemPedidoAvaliacaoPayload(pedido.getItens());
