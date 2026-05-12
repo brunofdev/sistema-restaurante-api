@@ -3,19 +3,18 @@ package com.restaurante01.api_restaurante.modulos.produto.infraestrutura.adaptad
 import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.repositorio.ProdutoRepositorio;
 import com.restaurante01.api_restaurante.modulos.produto.infraestrutura.persistencia.ProdutoJPA;
-import org.springframework.stereotype.Component;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-@Component
+@Repository
+@AllArgsConstructor
 public class ProdutoJpaAdaptador implements ProdutoRepositorio {
     private final ProdutoJPA jpa;
 
-    public ProdutoJpaAdaptador(ProdutoJPA jpa) {
-        this.jpa = jpa;
-    }
 
     @Override
     public List<Produto> findAll() {

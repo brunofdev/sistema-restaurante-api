@@ -5,7 +5,7 @@ import java.util.List;
 public record PedidoCriadoPayload (
     Long idPedido,
     Long idCardapio,
-    List<ItemPedidoPayload> itens
+    List<ItemPedidoClientePayload> itens
 )
     {
 }

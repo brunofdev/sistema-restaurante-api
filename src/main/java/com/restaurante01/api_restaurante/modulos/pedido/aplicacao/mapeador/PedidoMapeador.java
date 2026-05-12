@@ -97,7 +97,11 @@ public class PedidoMapeador {
                     dto.referencia()
             );
         }
-    public List<ItemPedidoPayload> mapearItemPedidoPayload(List<ItemPedido> itens){
-        return itens.stream().map(item -> new ItemPedidoPayload(item.getProduto().idProduto(), item.getQuantidade())).toList();
+    public List<ItemPedidoClientePayload> mapearItemPedidoClientePayload(List<ItemPedido> itens){
+        return itens.stream().map(item -> new ItemPedidoClientePayload(item.getProduto().idProduto(), item.getQuantidade())).toList();
+    }
+    public List<ItemPedidoAvaliacaoPayload> mapearItemPedidoAvaliacaoPayload(List<ItemPedido> itens){
+        return itens.stream().map(item -> new ItemPedidoAvaliacaoPayload(item.getProduto().idProduto(), item.getProduto().nome())).toList();
+
     }
 }

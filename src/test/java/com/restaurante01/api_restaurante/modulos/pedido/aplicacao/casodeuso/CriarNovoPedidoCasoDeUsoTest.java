@@ -83,7 +83,7 @@ class CriarNovoPedidoCasoDeUsoTest {
         when(pedidoClientePorta.obterEndereco(cliente)).thenReturn(enderecoPedido);
         when(pedidoAssociacaoPorta.obterProdutoVendido(any(), any())).thenReturn(produtoVendido);
         when(pedidoRepository.salvar(any())).thenAnswer(inv -> inv.getArgument(0));
-        when(pedidoMapeador.mapearItemPedidoPayload(anyList())).thenReturn(List.of());
+        when(pedidoMapeador.mapearItemPedidoClientePayload(anyList())).thenReturn(List.of());
         when(pedidoMapeador.mapearPedidoCriadoDto(any(Pedido.class))).thenReturn(Instancio.create(PedidoCriadoDTO.class));
     }
 

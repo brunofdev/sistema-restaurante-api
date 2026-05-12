@@ -42,8 +42,8 @@ public class SecurityConfigurations {
             "/cardapio-produto/publico/**",
             "/cliente/cadastro",
             "/operador/cadastro", //teste apenas
-            "/ws/**",
             "/h2-console/**",
+            "/avaliacao/cliente/listartodos"
     };
 
     // ROTAS PROTEGIDAS — ordem importa: rotas exatas devem vir antes de padrões com variáveis de path

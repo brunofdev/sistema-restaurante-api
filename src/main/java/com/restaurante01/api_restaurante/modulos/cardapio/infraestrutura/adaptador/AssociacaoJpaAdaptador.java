@@ -4,18 +4,17 @@ import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Assoc
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.repositorio.CardapioProdutoRepositorio;
 import com.restaurante01.api_restaurante.modulos.cardapio.infraestrutura.persistencia.AssociacaoJPA;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
-@Component
+@Repository
+@AllArgsConstructor
 public class AssociacaoJpaAdaptador implements CardapioProdutoRepositorio {
     private final AssociacaoJPA jpa;
-
-    public AssociacaoJpaAdaptador(AssociacaoJPA jpa) {
-        this.jpa = jpa;
-    }
 
     @Override
     public List<Associacao> findByCardapioId(long id) {

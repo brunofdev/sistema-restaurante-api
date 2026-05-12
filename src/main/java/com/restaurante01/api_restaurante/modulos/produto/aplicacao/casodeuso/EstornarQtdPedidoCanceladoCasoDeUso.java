@@ -1,6 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.produto.aplicacao.casodeuso;
 
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.ItemPedidoPayload;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.ItemPedidoClientePayload;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.entidade.Produto;
 import com.restaurante01.api_restaurante.modulos.produto.dominio.repositorio.ProdutoRepositorio;
 import org.springframework.stereotype.Service;
@@ -17,8 +17,8 @@ public class EstornarQtdPedidoCanceladoCasoDeUso {
         this.repositorio = repositorio;
     }
     //Precisa melhorar para fazer apenas uma consulta no banco
-    public void executar (List<ItemPedidoPayload> itens){
-        for(ItemPedidoPayload item : itens){
+    public void executar (List<ItemPedidoClientePayload> itens){
+        for(ItemPedidoClientePayload item : itens){
             Produto produto = obterProdutoPorIdCasoDeUso.retornarEntidade(item.idProduto());
             produto.aumentarQuantidade(item.quantidade());
             repositorio.save(produto);

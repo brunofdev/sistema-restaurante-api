@@ -3,19 +3,17 @@ package com.restaurante01.api_restaurante.modulos.cardapio.infraestrutura.adapta
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Cardapio;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.repositorio.CardapioRepositorio;
 import com.restaurante01.api_restaurante.modulos.cardapio.infraestrutura.persistencia.CardapioJPA;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
-@Component
+@Repository
+@AllArgsConstructor
 public class CardapioJpaAdaptador implements CardapioRepositorio {
-
     private final CardapioJPA cardapioJpa;
-
-    public CardapioJpaAdaptador(CardapioJPA cardapioJpa) {
-        this.cardapioJpa = cardapioJpa;
-    }
 
     @Override
     public Optional<Cardapio> findById(Long id) {

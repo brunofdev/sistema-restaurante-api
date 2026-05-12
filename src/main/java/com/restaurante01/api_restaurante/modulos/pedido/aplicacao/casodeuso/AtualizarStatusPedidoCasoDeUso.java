@@ -14,9 +14,7 @@ import com.restaurante01.api_restaurante.modulos.pedido.dominio.evento.PedidoEnt
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.PedidoNaoEncontradoExcecao;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoOutboxPorta;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.repositorio.PedidoRepositorio;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.ItemPedidoPayload;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.PedidoCriadoPayload;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.PedidoEntreguePayload;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.*;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,17 +46,27 @@ public class AtualizarStatusPedidoCasoDeUso {
         pedido.mudarStatus(novoStatusDto.statusPedido());
         pedidoRepository.salvar(pedido);
         if (pedido.getStatusPedido() == StatusPedido.ENTREGUE) {
-            PedidoEntreguePayload pedidoEntreguePayload = new PedidoEntreguePayload(pedido.getId(),pedido.getCliente().clienteId(),pedido.getValorBruto(),LocalDateTime.now());
-            pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO,pedido.getId(),TipoEvento.COMPUTAR_PONTUACAO_FIDELIDADE,objectMapper.writeValueAsString(pedidoEntreguePayload));
-            publicarEvento.publishEvent(new PedidoEntregueEvento(pedido));
+            publicaEventosSeEntregue(pedido);
         }
         if(pedido.getStatusPedido() == StatusPedido.CANCELADO){
-            List<ItemPedidoPayload> itensParaEstornar = pedidoMapeador.mapearItemPedidoPayload(pedido.getItens());
-            PedidoCriadoPayload pedidoCriadoPayload = new PedidoCriadoPayload(pedido.getId(), pedido.getIdCardapio(), itensParaEstornar);
-            publicarEvento.publishEvent(new PedidoCanceladoEvento(pedido, itensParaEstornar));
-            pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO, pedido.getId(), TipoEvento.ESTORNAR_ESTOQUE_ASSOCIACAO, objectMapper.writeValueAsString(pedidoCriadoPayload));
-            pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO, pedido.getId(), TipoEvento.ESTORNAR_ESTOQUE_PRODUTO, objectMapper.writeValueAsString(pedidoCriadoPayload));
+
+            publicaEventosSeCancelado(pedido);
         }
         return pedidoMapeador.mapearPedidoCriadoDto(pedido);
+    }
+    private void publicaEventosSeEntregue(Pedido pedido) throws JsonProcessingException {
+        List<ItemPedidoAvaliacaoPayload> itensParaAvaliacao = pedidoMapeador.mapearItemPedidoAvaliacaoPayload(pedido.getItens());
+        PedidoEntregueAvaliacaoPayload pedidoEntregueAvaliacaoPayload = new PedidoEntregueAvaliacaoPayload(pedido.getId(), pedido.getCliente().clienteId(), itensParaAvaliacao);
+        PedidoEntregueClientePayload pedidoEntregueClientePayload = new PedidoEntregueClientePayload(pedido.getId(),pedido.getCliente().clienteId(),pedido.getValorBruto(),LocalDateTime.now());
+        pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO,pedido.getId(),TipoEvento.COMPUTAR_PONTUACAO_FIDELIDADE,objectMapper.writeValueAsString(pedidoEntregueClientePayload));
+        pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO, pedido.getId(), TipoEvento.CRIAR_AVALIACAO, objectMapper.writeValueAsString(pedidoEntregueAvaliacaoPayload));
+        publicarEvento.publishEvent(new PedidoEntregueEvento(pedido, itensParaAvaliacao));
+    }
+    private void publicaEventosSeCancelado(Pedido pedido) throws JsonProcessingException {
+        List<ItemPedidoClientePayload> itensParaEstornar = pedidoMapeador.mapearItemPedidoClientePayload(pedido.getItens());
+        PedidoCriadoPayload pedidoCriadoPayload = new PedidoCriadoPayload(pedido.getId(), pedido.getIdCardapio(), itensParaEstornar);
+        publicarEvento.publishEvent(new PedidoCanceladoEvento(pedido, itensParaEstornar));
+        pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO, pedido.getId(), TipoEvento.ESTORNAR_ESTOQUE_ASSOCIACAO, objectMapper.writeValueAsString(pedidoCriadoPayload));
+        pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO, pedido.getId(), TipoEvento.ESTORNAR_ESTOQUE_PRODUTO, objectMapper.writeValueAsString(pedidoCriadoPayload));
     }
 }

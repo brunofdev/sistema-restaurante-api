@@ -5,19 +5,19 @@ import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.CodigoCu
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.Cupom;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.excecao.CupomInvalidoExcecao;
 import com.restaurante01.api_restaurante.modulos.cupom.infraestrutura.persistencia.CupomJPA;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
-@Component
+@Repository
+@AllArgsConstructor
 public class CupomJpaAdaptador implements CupomRepositorio {
 
     private final CupomJPA jpa;
 
-    public CupomJpaAdaptador(CupomJPA jpa) {
-        this.jpa = jpa;
-    }
 
     @Override
     public Optional<Cupom> obterPorCodigo(CodigoCupom codigo){
