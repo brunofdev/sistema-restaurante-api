@@ -11,6 +11,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,9 +19,10 @@ import java.util.List;
 
 @Entity
 @Table(name = "avaliacoes")
+@ToString
 @NoArgsConstructor
 @Getter
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 @AttributeOverrides({
         @AttributeOverride(name = "nota.valor", column = @Column(name = "nota_valor")),
         @AttributeOverride(name = "comentarioAvaliacao.valor", column = @Column(name = "comentario_valor"))
