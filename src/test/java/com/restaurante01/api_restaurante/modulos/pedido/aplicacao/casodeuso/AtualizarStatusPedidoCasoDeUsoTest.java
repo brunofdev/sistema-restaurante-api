@@ -15,7 +15,7 @@ import com.restaurante01.api_restaurante.modulos.pedido.dominio.evento.PedidoEnt
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.excecao.PedidoNaoEncontradoExcecao;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoOutboxPorta;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.repositorio.PedidoRepositorio;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.ItemPedidoPayload;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.ItemPedidoClientePayload;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -70,8 +70,10 @@ class AtualizarStatusPedidoCasoDeUsoTest {
 
         verify(pedidoOutboxPorta).guardarEvento(
                 eq(Agregado.PEDIDO), any(), eq(TipoEvento.COMPUTAR_PONTUACAO_FIDELIDADE), any());
+        verify(pedidoOutboxPorta).guardarEvento(
+                eq(Agregado.PEDIDO), any(), eq(TipoEvento.CRIAR_AVALIACAO), any());
         verify(publicarEvento).publishEvent(any(PedidoEntregueEvento.class));
-        verify(pedidoOutboxPorta, times(1)).guardarEvento(any(), any(), any(), any());
+        verify(pedidoOutboxPorta, times(2)).guardarEvento(any(), any(), any(), any());
     }
 
     @Test
@@ -79,7 +81,7 @@ class AtualizarStatusPedidoCasoDeUsoTest {
     void deveSalvarOutboxEPublicarEventoQuandoStatusCancelado() throws Exception {
         when(pedidoRepository.buscarPorId(any())).thenReturn(Optional.of(pedidoParaCancelar));
         when(pedidoRepository.salvar(any())).thenAnswer(inv -> inv.getArgument(0));
-        when(pedidoMapeador.mapearItemPedidoPayload(anyList())).thenReturn(List.of(new ItemPedidoPayload(1L, 2)));
+        when(pedidoMapeador.mapearItemPedidoClientePayload(anyList())).thenReturn(List.of(new ItemPedidoClientePayload(1L, 2)));
         when(pedidoMapeador.mapearPedidoCriadoDto(any())).thenReturn(Instancio.create(PedidoCriadoDTO.class));
 
         casoDeUso.executar(1L, new StatusPedidoDTO(StatusPedido.CANCELADO));

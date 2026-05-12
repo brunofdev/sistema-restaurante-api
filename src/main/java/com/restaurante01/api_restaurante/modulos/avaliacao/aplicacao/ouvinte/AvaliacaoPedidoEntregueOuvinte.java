@@ -29,7 +29,7 @@ public class AvaliacaoPedidoEntregueOuvinte {
     public void criaAvaliacaoAposPedidoEntregue(PedidoEntregueEvento evento){
         OutboxEvento outboxEvento = outboxRepositorio.buscarPorAgregadoEIdAgregadoETipoEvento(Agregado.PEDIDO, evento.pedido().getId(), TipoEvento.CRIAR_AVALIACAO);
         try {
-            criarAvaliacaoCasoDeUso.executar(evento.pedido().getId(), evento.pedido().getCliente().clienteId());
+            criarAvaliacaoCasoDeUso.executar(evento.pedido().getId(), evento.pedido().getCliente().clienteId(), evento.listaDeItensParaAvaliacao());
             outboxEvento.processar();
         }
         catch (Exception e){

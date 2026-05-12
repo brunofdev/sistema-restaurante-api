@@ -5,7 +5,8 @@ import com.restaurante01.api_restaurante.compartilhado.aplicacao.OutboxEventoHan
 import com.restaurante01.api_restaurante.compartilhado.dominio.entidade.OutboxEvento;
 import com.restaurante01.api_restaurante.compartilhado.dominio.enums.TipoEvento;
 import com.restaurante01.api_restaurante.modulos.avaliacao.aplicacao.casodeuso.CriarAvaliacaoCasoDeUso;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.PedidoEntreguePayload;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.PedidoEntregueAvaliacaoPayload;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.PedidoEntregueClientePayload;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -27,12 +28,12 @@ public class AtvaliacaoPedidoEntregueHandler implements OutboxEventoHandler {
     @Override
     public void processar(OutboxEvento outboxEvento) {
         try {
-            PedidoEntreguePayload payload = mapper.readValue(
+            PedidoEntregueAvaliacaoPayload payload = mapper.readValue(
                     outboxEvento.getPayload(),
-                    PedidoEntreguePayload.class
+                    PedidoEntregueAvaliacaoPayload.class
             );
             criarAvaliacaoCasoDeUso.executar(payload.pedidoId(),
-                    payload.clienteId());
+                    payload.clienteId(), payload.listaDeItensPedido());
         }
         catch(Exception e){
             throw new RuntimeException("Erro ao reprocessar outbox id=" +

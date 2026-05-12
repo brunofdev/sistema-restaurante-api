@@ -1,9 +1,10 @@
 package com.restaurante01.api_restaurante.modulos.avaliacao.dominio.entidade;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.excecao.AvaliacaoInvalidaExcecao;
+import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.excecao.ItemAvaliadoVazioExcecao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.ComentarioAvaliacao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.excecao.IdItemAvaliacaoVazioExcecao;
-import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.excecao.IdPedidoAvaliacaoVazioExcecao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.NotaAvaliacao;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
@@ -23,42 +24,52 @@ public class AvaliacaoItem {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "avaliacao_id")
+    @Setter
+    @JsonIgnore //quando tiver dtos da pra remover
     private Avaliacao avaliacao;
-    private Long itemPedidoId;
     private Long produtoId;
+    private String nomeProdutoAvaliacao;
     @Embedded
     @AttributeOverride(name = "valor", column = @Column(name = "item_nota_valor"))
-    private NotaAvaliacao notaAvaliacao;
+    private NotaAvaliacao nota;
     @Embedded
     @AttributeOverride(name = "valor", column = @Column(name = "item_comentario_valor"))
     private ComentarioAvaliacao comentarioAvaliacao;
 
-    public static AvaliacaoItem criar(Long itemPedidoId, Long produtoId, NotaAvaliacao notaAvaliacao, ComentarioAvaliacao comentarioAvaliacao) {
+    public static AvaliacaoItem criar(Long produtoId,String nomeItemPedido, NotaAvaliacao notaAvaliacao, ComentarioAvaliacao comentarioAvaliacao) {
         AvaliacaoItem avaliacaoItem = new AvaliacaoItem();
-        avaliacaoItem.setIdPedido(itemPedidoId);
         avaliacaoItem.setProdutoId(produtoId);
-        avaliacaoItem.notaAvaliacao = notaAvaliacao;
+        avaliacaoItem.setNomeProdutoAvaliacao(nomeItemPedido);
+        avaliacaoItem.nota = notaAvaliacao;
         avaliacaoItem.comentarioAvaliacao = comentarioAvaliacao;
         return  avaliacaoItem;
     }
 
-    private void setIdPedido(Long itemPedidoId) {
-        if (itemPedidoId == null) {
-            throw new IdPedidoAvaliacaoVazioExcecao("Item pedido nao pode ser nulo.");
-        }
-        this.itemPedidoId = itemPedidoId;
-    }
     private void setProdutoId(Long produtoId) {
         if(produtoId == null) {
-            throw new IdItemAvaliacaoVazioExcecao("O id do produto avaliado não pode ser vazui");
+            throw new IdItemAvaliacaoVazioExcecao("O id do produto avaliado não pode ser vazio");
         }
         this.produtoId = produtoId;
     }
-    protected void vincularAvaliacao(NotaAvaliacao nota, ComentarioAvaliacao comentarioAvaliacao){
-        if(nota == null){
-            throw new AvaliacaoInvalidaExcecao("Avaliação obrigatóriamente de possuir uma Nota.");
+    private void setNomeProdutoAvaliacao(String nomeProdutoAvaliacao) {
+        if (nomeProdutoAvaliacao == null || nomeProdutoAvaliacao.isEmpty()) {
+            throw new ItemAvaliadoVazioExcecao("Nome do pedido não pode ser vazio");
         }
-        this.notaAvaliacao = nota;
-        this.comentarioAvaliacao = (comentarioAvaliacao == null) ? new ComentarioAvaliacao("Avaliação feita sem comentário") :  comentarioAvaliacao;
+        this.nomeProdutoAvaliacao = nomeProdutoAvaliacao;
+    }
+
+    protected void vincularAvaliacao(NotaAvaliacao nota, ComentarioAvaliacao comentarioAvaliacao){
+        if(nota == null && comentarioAvaliacao != null){
+            throw new AvaliacaoInvalidaExcecao("Avaliação obrigatoriamente deve possuir uma Nota.");
+        }
+        //Voto em branco: aceita e não faz nada
+        if(nota == null){
+            this.nota = null;
+            this.comentarioAvaliacao = null;
+            return;
+        }
+        //Cenário de sucesso: preenche o que veio (usando ternário para o default)
+        this.nota = nota;
+        this.comentarioAvaliacao = (comentarioAvaliacao != null) ? comentarioAvaliacao : new ComentarioAvaliacao("Avaliação feita sem comentário");
     }
 }

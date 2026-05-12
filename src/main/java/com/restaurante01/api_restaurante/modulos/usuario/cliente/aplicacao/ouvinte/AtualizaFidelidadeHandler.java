@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restaurante01.api_restaurante.compartilhado.aplicacao.OutboxEventoHandler;
 import com.restaurante01.api_restaurante.compartilhado.dominio.entidade.OutboxEvento;
 import com.restaurante01.api_restaurante.compartilhado.dominio.enums.TipoEvento;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.PedidoEntreguePayload;
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.PedidoEntregueClientePayload;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.aplicacao.casodeuso.AtualizarFidelidadeClienteCasoDeUso;
 import org.springframework.stereotype.Component;
 
@@ -27,9 +27,9 @@ public class AtualizaFidelidadeHandler implements OutboxEventoHandler {
     @Override
     public void processar(OutboxEvento outboxEvento) {
         try {
-            PedidoEntreguePayload payload = mapper.readValue(
+            PedidoEntregueClientePayload payload = mapper.readValue(
                     outboxEvento.getPayload(),
-                    PedidoEntreguePayload.class
+                    PedidoEntregueClientePayload.class
             );
             atualizarFidelidade.executar(payload.clienteId(),
                     payload.valorTotal());
