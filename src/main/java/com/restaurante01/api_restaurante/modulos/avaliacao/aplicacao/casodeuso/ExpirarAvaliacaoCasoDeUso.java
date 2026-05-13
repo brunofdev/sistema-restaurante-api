@@ -20,7 +20,7 @@ public class ExpirarAvaliacaoCasoDeUso {
 
     @Transactional
     public void executar(){
-        List<Avaliacao> avaliacoesExpiradas = repositorio.buscarExpiradas(LocalDateTime.now());
+        List<Avaliacao> avaliacoesExpiradas = repositorio.buscarExpiradas(StatusAvaliacao.DISPONIVEL, LocalDateTime.now());
         if(avaliacoesExpiradas.isEmpty()){
             return;
         }

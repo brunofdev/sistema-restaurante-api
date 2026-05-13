@@ -312,9 +312,10 @@ public class DatabaseSeeder implements CommandLineRunner {
         // AVALIAÇÕES (6 cenários)
         // -------------------------------------------------------------------------
 
-        // 1. PENDENTE — criada mas notificação ainda não enviada ao cliente
+        // 1. PENDENTE — criada 2h atrás para ser capturada pelo scheduler de disponibilização
         Avaliacao av1 = Avaliacao.criar(p1.getId(), maria.getId(), List.of(
                 avalItem(hamburguer), avalItem(refrigerante)));
+        setarCampo(av1, "dataCriacao", LocalDateTime.now().minusHours(2));
         entityManager.persist(av1);
 
         // 2. DISPONIVEL — notificação enviada, aguardando resposta, prazo válido

@@ -46,7 +46,12 @@ public class AvaliacaoJpaRepositorio implements AvaliacaoRepositorio {
     }
 
     @Override
-    public List<Avaliacao> buscarExpiradas(LocalDateTime horarioAgora){
-        return jpa.findByStatusAndDataExpiracaoBefore(StatusAvaliacao.DISPONIVEL, horarioAgora);
+    public List<Avaliacao> buscarExpiradas(StatusAvaliacao status, LocalDateTime horarioAgora){
+        return jpa.findByStatusAndDataExpiracaoBefore(status, horarioAgora);
+    }
+
+    @Override
+    public List<Avaliacao> buscarTodasCriadasAte(StatusAvaliacao status, LocalDateTime horario){
+        return jpa.findByStatusAndDataCriacaoBefore(status, horario);
     }
 }
