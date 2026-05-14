@@ -102,7 +102,7 @@ public class Avaliacao extends Avaliavel {
         }
     }
     public void expirarAvaliacao(){
-        if(LocalDateTime.now().isAfter(this.dataExpiracao)){
+        if(!LocalDateTime.now().isBefore(this.dataExpiracao)){
             mudarStatusAvaliacao(StatusAvaliacao.EXPIRADA);
             return;
         }
