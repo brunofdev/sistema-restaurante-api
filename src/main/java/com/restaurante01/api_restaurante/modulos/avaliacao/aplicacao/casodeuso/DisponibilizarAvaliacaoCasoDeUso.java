@@ -6,12 +6,14 @@ import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.porta.Avaliac
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.AvaliacaoParaNotificar;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.repositorio.AvaliacaoRepositorio;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class DisponibilizarAvaliacaoCasoDeUso {
@@ -26,9 +28,14 @@ public class DisponibilizarAvaliacaoCasoDeUso {
         if (avaliacoes.isEmpty()) return;
 
         avaliacoes.forEach(avaliacao -> {
-            avaliacao.mudarStatusAvaliacao(StatusAvaliacao.DISPONIVEL);
-            avaliacao.foiEnviadaAoCliente();
-            notificadorPorta.notificarCliente(new AvaliacaoParaNotificar(avaliacao.getId(), avaliacao.getClienteId(), avaliacao.getPedidoId()));
+            try {
+                avaliacao.mudarStatusAvaliacao(StatusAvaliacao.DISPONIVEL);
+                avaliacao.foiEnviadaAoCliente();
+                notificadorPorta.notificarCliente(new AvaliacaoParaNotificar(avaliacao.getId(), avaliacao.getClienteId(), avaliacao.getPedidoId()));
+            }
+            catch (Exception e){
+                log.error("Erro ao notificar avaliacao id={}", avaliacao.getId(), e);
+            }
         });
         repositorio.salvarLista(avaliacoes);
     }

@@ -11,7 +11,7 @@ public class DisponibilizaAvaliacaoCriadaScheduler {
 
     private final DisponibilizarAvaliacaoCasoDeUso casoDeUso;
 
-    @Scheduled(fixedDelay = 60_000)
+    @Scheduled(fixedDelay = 60_000) //precisa ajustar o timer para um valor coerente com a regra.
     public void executar(){
         casoDeUso.executar();
     }

@@ -11,6 +11,7 @@ public class NotificadorAvaliacaoAdaptador implements AvaliacaoNotificadorPorta 
 
     @Override
     public void notificarCliente(AvaliacaoParaNotificar avaliacao){
-
+            System.out.println("::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::");
+            System.out.println("Oba, o cliente foi notificado, o pedido dele é: " + avaliacao.pedidoId());
     }
 }
