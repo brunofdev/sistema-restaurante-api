@@ -2,6 +2,7 @@ package com.restaurante01.api_restaurante.modulos.avaliacao.infraestrutura.adapt
 
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.entidade.Avaliacao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.enums.StatusAvaliacao;
+import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.enums.TentativaNotificacao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.repositorio.AvaliacaoRepositorio;
 import com.restaurante01.api_restaurante.modulos.avaliacao.infraestrutura.persistencia.AvaliacaoJPA;
 import lombok.RequiredArgsConstructor;
@@ -53,5 +54,10 @@ public class AvaliacaoJpaRepositorio implements AvaliacaoRepositorio {
     @Override
     public List<Avaliacao> buscarTodasCriadasAte(StatusAvaliacao status, LocalDateTime horario){
         return jpa.findByStatusAndDataCriacaoBefore(status, horario);
+    }
+
+    @Override
+    public List<Avaliacao> buscarPendentesDeRenotificacao(StatusAvaliacao status, TentativaNotificacao TentativaNotificacao, LocalDateTime horario){
+        return jpa.findByStatusAndNumeroNotificacaoClienteAndDataCriacaoBefore(status, TentativaNotificacao, horario);
     }
 }

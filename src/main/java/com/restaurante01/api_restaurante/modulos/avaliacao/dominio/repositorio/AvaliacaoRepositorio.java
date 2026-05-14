@@ -2,6 +2,7 @@ package com.restaurante01.api_restaurante.modulos.avaliacao.dominio.repositorio;
 
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.entidade.Avaliacao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.enums.StatusAvaliacao;
+import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.enums.TentativaNotificacao;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,5 +17,6 @@ public interface AvaliacaoRepositorio {
     List<Avaliacao> buscarTodos();
     List<Avaliacao> buscarExpiradas(StatusAvaliacao status, LocalDateTime horarioAgora);
     List<Avaliacao> buscarTodasCriadasAte(StatusAvaliacao status, LocalDateTime horario);
+    List<Avaliacao> buscarPendentesDeRenotificacao(StatusAvaliacao status, TentativaNotificacao TentativaNotificacao, LocalDateTime horario);
 
 }
