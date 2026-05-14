@@ -20,11 +20,11 @@ public class ExpirarAvaliacaoCasoDeUso {
 
     @Transactional
     public void executar(){
-        List<Avaliacao> avaliacoesExpiradas = repositorio.buscarExpiradas(StatusAvaliacao.DISPONIVEL, LocalDateTime.now());
+        List<Avaliacao> avaliacoesExpiradas = repositorio.buscarTodasCriadasAte(StatusAvaliacao.DISPONIVEL, LocalDateTime.now().minusDays(7));
         if(avaliacoesExpiradas.isEmpty()){
             return;
         }
-        avaliacoesExpiradas.forEach(avaliacao -> avaliacao.mudarStatusAvaliacao(StatusAvaliacao.EXPIRADA));
+        avaliacoesExpiradas.forEach(Avaliacao::expirarAvaliacao);
         repositorio.salvarLista(avaliacoesExpiradas);
     }
 }

@@ -101,8 +101,8 @@ public class Avaliacao extends Avaliavel {
             this.itensAvaliados.add(item);
         }
     }
-    protected void expirarAvaliacao(){
-        if(LocalDateTime.now().isAfter(this.dataExpiracao)) {
+    public void expirarAvaliacao(){
+        if(!LocalDateTime.now().isBefore(this.dataExpiracao)){
             mudarStatusAvaliacao(StatusAvaliacao.EXPIRADA);
             return;
         }
