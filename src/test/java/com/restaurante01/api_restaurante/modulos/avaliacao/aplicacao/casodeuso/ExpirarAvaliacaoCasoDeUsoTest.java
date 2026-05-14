@@ -38,7 +38,7 @@ class ExpirarAvaliacaoCasoDeUsoTest {
     @Test
     @DisplayName("Dado que nao ha avaliacoes expiradas, Quando executar, Entao nao deve salvar nada")
     void naoDeveSalvarSeListaVazia() {
-        when(repositorio.buscarTodasCriadasAte(eq(StatusAvaliacao.DISPONIVEL), any(LocalDateTime.class)))
+        when(repositorio.buscarExpiradas(eq(StatusAvaliacao.DISPONIVEL), any(LocalDateTime.class)))
                 .thenReturn(Collections.emptyList());
 
         casoDeUso.executar();
@@ -47,13 +47,13 @@ class ExpirarAvaliacaoCasoDeUsoTest {
     }
 
     @Test
-    @DisplayName("Dado uma avaliacao DISPONIVEL com data vencida, Quando executar, Entao deve atualizar para EXPIRADA e salvar")
+    @DisplayName("Dado uma avaliacao DISPONIVEL com dataExpiracao no passado, Quando executar, Entao deve atualizar para EXPIRADA e salvar")
     void deveExpirarUmaAvaliacao() {
         Avaliacao avaliacao = AvaliacaoBuilder.umaAvaliacao().construir();
         ReflectionTestUtils.setField(avaliacao, "status", StatusAvaliacao.DISPONIVEL);
         ReflectionTestUtils.setField(avaliacao, "dataExpiracao", LocalDateTime.now().minusDays(1));
 
-        when(repositorio.buscarTodasCriadasAte(eq(StatusAvaliacao.DISPONIVEL), any(LocalDateTime.class)))
+        when(repositorio.buscarExpiradas(eq(StatusAvaliacao.DISPONIVEL), any(LocalDateTime.class)))
                 .thenReturn(List.of(avaliacao));
 
         casoDeUso.executar();
@@ -63,7 +63,7 @@ class ExpirarAvaliacaoCasoDeUsoTest {
     }
 
     @Test
-    @DisplayName("Dado multiplas avaliacoes DISPONIVEL com data vencida, Quando executar, Entao deve atualizar todas para EXPIRADA")
+    @DisplayName("Dado multiplas avaliacoes DISPONIVEL com dataExpiracao no passado, Quando executar, Entao deve atualizar todas para EXPIRADA")
     void deveExpirarMultiplasAvaliacoes() {
         Avaliacao av1 = AvaliacaoBuilder.umaAvaliacao().construir();
         Avaliacao av2 = AvaliacaoBuilder.umaAvaliacao().construir();
@@ -72,7 +72,7 @@ class ExpirarAvaliacaoCasoDeUsoTest {
         ReflectionTestUtils.setField(av1, "dataExpiracao", LocalDateTime.now().minusDays(1));
         ReflectionTestUtils.setField(av2, "dataExpiracao", LocalDateTime.now().minusDays(1));
 
-        when(repositorio.buscarTodasCriadasAte(eq(StatusAvaliacao.DISPONIVEL), any(LocalDateTime.class)))
+        when(repositorio.buscarExpiradas(eq(StatusAvaliacao.DISPONIVEL), any(LocalDateTime.class)))
                 .thenReturn(List.of(av1, av2));
 
         casoDeUso.executar();
@@ -84,19 +84,17 @@ class ExpirarAvaliacaoCasoDeUsoTest {
     }
 
     @Test
-    @DisplayName("Dado qualquer cenario, Quando executar, Entao deve buscar com janela de 7 dias atras")
-    void deveBuscarComJanelaDe7Dias() {
+    @DisplayName("Dado qualquer cenario, Quando executar, Entao deve buscar com horario proximo ao atual")
+    void deveBuscarComHorarioAtual() {
         ArgumentCaptor<LocalDateTime> horarioCaptor = ArgumentCaptor.forClass(LocalDateTime.class);
-        when(repositorio.buscarTodasCriadasAte(eq(StatusAvaliacao.DISPONIVEL), any(LocalDateTime.class)))
+        when(repositorio.buscarExpiradas(eq(StatusAvaliacao.DISPONIVEL), any(LocalDateTime.class)))
                 .thenReturn(Collections.emptyList());
 
         LocalDateTime antes = LocalDateTime.now();
         casoDeUso.executar();
         LocalDateTime depois = LocalDateTime.now();
 
-        verify(repositorio).buscarTodasCriadasAte(eq(StatusAvaliacao.DISPONIVEL), horarioCaptor.capture());
-        assertThat(horarioCaptor.getValue()).isBetween(
-                antes.minusDays(7),
-                depois.minusDays(7));
+        verify(repositorio).buscarExpiradas(eq(StatusAvaliacao.DISPONIVEL), horarioCaptor.capture());
+        assertThat(horarioCaptor.getValue()).isBetween(antes, depois);
     }
 }
