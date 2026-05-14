@@ -170,4 +170,27 @@ class AvaliacaoTest {
 
         assertThat(avaliacao.getNumeroNotificacaoCliente()).isEqualTo(TentativaNotificacao.PRIMEIRA_TENTATIVA);
     }
+
+    @Test
+    @DisplayName("Dado uma avaliação com PRIMEIRA_TENTATIVA, Quando notificada novamente, Então avança para SEGUNDA_TENTATIVA")
+    void deveAvancarParaSegundaNotificacao() {
+        Avaliacao avaliacao = AvaliacaoBuilder.umaAvaliacao().construir();
+        avaliacao.foiEnviadaAoCliente();
+
+        avaliacao.foiEnviadaAoCliente();
+
+        assertThat(avaliacao.getNumeroNotificacaoCliente()).isEqualTo(TentativaNotificacao.SEGUNDA_TENTATIVA);
+    }
+
+    @Test
+    @DisplayName("Dado uma avaliação com SEGUNDA_TENTATIVA, Quando notificada novamente, Então avança para TERCEIRA_TENTATIVA")
+    void deveAvancarParaTerceiraNotificacao() {
+        Avaliacao avaliacao = AvaliacaoBuilder.umaAvaliacao().construir();
+        avaliacao.foiEnviadaAoCliente();
+        avaliacao.foiEnviadaAoCliente();
+
+        avaliacao.foiEnviadaAoCliente();
+
+        assertThat(avaliacao.getNumeroNotificacaoCliente()).isEqualTo(TentativaNotificacao.TERCEIRA_TENTATIVA);
+    }
 }
