@@ -198,6 +198,18 @@ public class DatabaseSeeder implements CommandLineRunner {
         entityManager.persist(p6);
         avancarAte(p6, StatusPedido.ENTREGUE);
 
+        Pedido p21 = Pedido.criar(principal.getId(), infoMaria, endMaria);
+        p21.adicionarItem(item(p21, 1, batataFrita,  aBatataP,       ""));
+        p21.adicionarItem(item(p21, 1, refrigerante, aRefrigeranteP, ""));
+        entityManager.persist(p21);
+        avancarAte(p21, StatusPedido.ENTREGUE);
+
+        Pedido p22 = Pedido.criar(fds.getId(), infoJoao, endJoao);
+        p22.adicionarItem(item(p22, 1, milkShake, aMilkShakeF, ""));
+        p22.adicionarItem(item(p22, 1, brownie,   aBrownieF,   ""));
+        entityManager.persist(p22);
+        avancarAte(p22, StatusPedido.ENTREGUE);
+
         // --- SAIU PARA ENTREGA ---
 
         Pedido p7 = Pedido.criar(principal.getId(), infoMaria, endMaria);
@@ -357,6 +369,23 @@ public class DatabaseSeeder implements CommandLineRunner {
         av6.foiEnviadaAoCliente();
         concluirAvaliacao(av6, new NotaAvaliacao(5), new ComentarioAvaliacao("Pedido excelente! Tudo chegou no prazo e bem fresquinho."));
         entityManager.persist(av6);
+
+        // 7. DISPONIVEL — PRIMEIRA_TENTATIVA há 4 dias → candidata à renotificação (regra: > 3 dias)
+        Avaliacao av7 = Avaliacao.criar(p21.getId(), maria.getId(), List.of(
+                avalItem(batataFrita), avalItem(refrigerante)));
+        av7.mudarStatusAvaliacao(StatusAvaliacao.DISPONIVEL);
+        av7.foiEnviadaAoCliente();
+        setarCampo(av7, "dataCriacao", LocalDateTime.now().minusDays(4));
+        entityManager.persist(av7);
+
+        // 8. DISPONIVEL — SEGUNDA_TENTATIVA há 7 dias → candidata à renotificação (regra: > 6 dias)
+        Avaliacao av8 = Avaliacao.criar(p22.getId(), joao.getId(), List.of(
+                avalItem(milkShake), avalItem(brownie)));
+        av8.mudarStatusAvaliacao(StatusAvaliacao.DISPONIVEL);
+        av8.foiEnviadaAoCliente();
+        av8.foiEnviadaAoCliente();
+        setarCampo(av8, "dataCriacao", LocalDateTime.now().minusDays(7));
+        entityManager.persist(av8);
 
         entityManager.flush();
     }
