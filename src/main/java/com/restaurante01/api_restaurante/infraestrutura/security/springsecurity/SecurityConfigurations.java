@@ -42,14 +42,14 @@ public class SecurityConfigurations {
             "/cardapio-produto/publico/**",
             "/cliente/cadastro",
             "/operador/cadastro", //teste apenas
-            "/h2-console/**",
-            "/avaliacao/cliente/listartodos"
+            "/h2-console/**"
     };
 
     // ROTAS PROTEGIDAS — ordem importa: rotas exatas devem vir antes de padrões com variáveis de path
     private static final List<Map.Entry<String, Role>> PROTECTED_ROUTES = List.of(
             // Apenas USER+
             entry("/pedido/cliente/**", Role.USER),
+            entry("/avaliacao/cliente/**", Role.CLIENT),
 
             // Apenas ADMIN1+
             entry("/produtos/adicionar-produto", Role.ADMIN1),

@@ -1,5 +1,8 @@
 package com.restaurante01.api_restaurante.modulos.avaliacao.aplicacao.mapeador;
 
+import com.restaurante01.api_restaurante.modulos.avaliacao.api.dto.saida.AvaliacaoPendenteClienteDTO;
+import com.restaurante01.api_restaurante.modulos.avaliacao.api.dto.saida.ItensDoPedidoSaidaDTO;
+import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.entidade.Avaliacao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.entidade.AvaliacaoItem;
 
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.ItemPedidoAvaliacaoPayload;
@@ -27,4 +30,26 @@ public class AvaliacaoMapeador {
                 .map(itemPedidos -> mapearItemPedido(itemPedidos.get(0)))
                 .toList();
         }
+
+    public ItensDoPedidoSaidaDTO mapearItensPedidoSaidaDTO(AvaliacaoItem item){
+        return new ItensDoPedidoSaidaDTO(
+                item.getId(),
+                item.getNomeProdutoAvaliacao()
+        );
     }
+    public List<ItensDoPedidoSaidaDTO> mapearListaItensPedidoSaidaDTO(List<AvaliacaoItem> itensPedido){
+        return itensPedido.stream().map(this::mapearItensPedidoSaidaDTO).collect(Collectors.toList());
+    }
+
+    public AvaliacaoPendenteClienteDTO mapearAvaliacaoPendenteCliente(Avaliacao avaliacao){
+        return new AvaliacaoPendenteClienteDTO(
+                avaliacao.getId(),
+                avaliacao.getDataCriacao(),
+                mapearListaItensPedidoSaidaDTO(avaliacao.getItensAvaliados())
+        );
+    }
+
+    public List<AvaliacaoPendenteClienteDTO> mapearAvaliacoesPendentesDoCliente(List<Avaliacao> avaliacoes){
+        return avaliacoes.stream().map(this::mapearAvaliacaoPendenteCliente).collect(Collectors.toList());
+    }
+}

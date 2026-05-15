@@ -73,6 +73,11 @@ public class Usuario implements UserDetails {
                         new SimpleGrantedAuthority("ROLE_ADMIN1"),
                         new SimpleGrantedAuthority("ROLE_USER")
                 );
+            case CLIENT:
+                return List.of(
+                        new SimpleGrantedAuthority("ROLE_CLIENT"),
+                        new SimpleGrantedAuthority("ROLE_USER")
+                );
             default: // USER
                 // Usuário comum só tem permissão básica.
                 return List.of(new SimpleGrantedAuthority("ROLE_USER"));

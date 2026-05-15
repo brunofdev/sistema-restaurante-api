@@ -21,7 +21,7 @@ public class ServicoAutorizacao {
     }
 
     public UserDetails carregarUsuarioPorCpfERole(String cpf, String role) {
-        if (role.equals("USER")) { // Supondo que a role do Cliente seja USER
+        if (role.equals("CLIENT") || role.equals("USER")) {
             return clienteRepositorio.buscarPorCpf(new Cpf(cpf))
                     .orElseThrow(() -> new UsernameNotFoundException("Cliente não encontrado."));
         }
