@@ -1,5 +1,10 @@
 package com.restaurante01.api_restaurante.infraestrutura.inicializador;
 
+import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.entidade.Avaliacao;
+import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.entidade.AvaliacaoItem;
+import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.enums.StatusAvaliacao;
+import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.ComentarioAvaliacao;
+import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.NotaAvaliacao;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.Cupom;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.PeriodoCupom;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.RegraRecorrencia;
@@ -24,8 +29,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -190,6 +198,18 @@ public class DatabaseSeeder implements CommandLineRunner {
         entityManager.persist(p6);
         avancarAte(p6, StatusPedido.ENTREGUE);
 
+        Pedido p21 = Pedido.criar(principal.getId(), infoMaria, endMaria);
+        p21.adicionarItem(item(p21, 1, batataFrita,  aBatataP,       ""));
+        p21.adicionarItem(item(p21, 1, refrigerante, aRefrigeranteP, ""));
+        entityManager.persist(p21);
+        avancarAte(p21, StatusPedido.ENTREGUE);
+
+        Pedido p22 = Pedido.criar(fds.getId(), infoJoao, endJoao);
+        p22.adicionarItem(item(p22, 1, milkShake, aMilkShakeF, ""));
+        p22.adicionarItem(item(p22, 1, brownie,   aBrownieF,   ""));
+        entityManager.persist(p22);
+        avancarAte(p22, StatusPedido.ENTREGUE);
+
         // --- SAIU PARA ENTREGA ---
 
         Pedido p7 = Pedido.criar(principal.getId(), infoMaria, endMaria);
@@ -300,6 +320,73 @@ public class DatabaseSeeder implements CommandLineRunner {
                 TipoDesconto.VALOR, RegraRecorrencia.TRINTA_DIAS,
                 new BigDecimal("5"), new BigDecimal("45"), new BigDecimal("100")));
 
+        // -------------------------------------------------------------------------
+        // AVALIAÇÕES (6 cenários)
+        // -------------------------------------------------------------------------
+
+        // 1. PENDENTE — criada 2h atrás para ser capturada pelo scheduler de disponibilização
+        Avaliacao av1 = Avaliacao.criar(p1.getId(), maria.getId(), List.of(
+                avalItem(hamburguer), avalItem(refrigerante)));
+        setarCampo(av1, "dataCriacao", LocalDateTime.now().minusHours(2));
+        entityManager.persist(av1);
+
+        // 2. DISPONIVEL — notificação enviada, aguardando resposta, prazo válido
+        Avaliacao av2 = Avaliacao.criar(p2.getId(), maria.getId(), List.of(
+                avalItem(frango), avalItem(suco)));
+        av2.mudarStatusAvaliacao(StatusAvaliacao.DISPONIVEL);
+        av2.foiEnviadaAoCliente();
+        entityManager.persist(av2);
+
+        // 3. DISPONIVEL + DATA EXPIRADA — deve ser capturada e expirada pelo scheduler
+        Avaliacao av3 = Avaliacao.criar(p3.getId(), joao.getId(), List.of(
+                avalItem(pizza), avalItem(batataFrita), avalItem(refrigerante)));
+        av3.mudarStatusAvaliacao(StatusAvaliacao.DISPONIVEL);
+        av3.foiEnviadaAoCliente();
+        setarCampo(av3, "dataExpiracao", LocalDateTime.now().minusDays(10));
+        entityManager.persist(av3);
+
+        // 4. DISPONIVEL + DATA EXPIRADA — outro candidato para o scheduler
+        Avaliacao av4 = Avaliacao.criar(p4.getId(), joao.getId(), List.of(
+                avalItem(hamburguer), avalItem(milkShake)));
+        av4.mudarStatusAvaliacao(StatusAvaliacao.DISPONIVEL);
+        av4.foiEnviadaAoCliente();
+        setarCampo(av4, "dataExpiracao", LocalDateTime.now().minusDays(3));
+        entityManager.persist(av4);
+
+        // 5. CONCLUIDA — voto em branco (sem nota, sem comentário) → NAO_AVALIADO
+        Avaliacao av5 = Avaliacao.criar(p5.getId(), maria.getId(), List.of(
+                avalItem(wrap), avalItem(suco), avalItem(brownie)));
+        av5.mudarStatusAvaliacao(StatusAvaliacao.DISPONIVEL);
+        av5.foiEnviadaAoCliente();
+        concluirAvaliacao(av5, null, null);
+        entityManager.persist(av5);
+
+        // 6. CONCLUIDA COMPLETA — nota 5, SATISFEITO, com comentário e itens avaliados
+        Avaliacao av6 = Avaliacao.criar(p6.getId(), joao.getId(), List.of(
+                avalItemComNota(salada, 5, "Salada fresquíssima, muito bem temperada!"),
+                avalItemComNota(suco, 4, null)));
+        av6.mudarStatusAvaliacao(StatusAvaliacao.DISPONIVEL);
+        av6.foiEnviadaAoCliente();
+        concluirAvaliacao(av6, new NotaAvaliacao(5), new ComentarioAvaliacao("Pedido excelente! Tudo chegou no prazo e bem fresquinho."));
+        entityManager.persist(av6);
+
+        // 7. DISPONIVEL — PRIMEIRA_TENTATIVA há 4 dias → candidata à renotificação (regra: > 3 dias)
+        Avaliacao av7 = Avaliacao.criar(p21.getId(), maria.getId(), List.of(
+                avalItem(batataFrita), avalItem(refrigerante)));
+        av7.mudarStatusAvaliacao(StatusAvaliacao.DISPONIVEL);
+        av7.foiEnviadaAoCliente();
+        setarCampo(av7, "dataCriacao", LocalDateTime.now().minusDays(4));
+        entityManager.persist(av7);
+
+        // 8. DISPONIVEL — SEGUNDA_TENTATIVA há 7 dias → candidata à renotificação (regra: > 6 dias)
+        Avaliacao av8 = Avaliacao.criar(p22.getId(), joao.getId(), List.of(
+                avalItem(milkShake), avalItem(brownie)));
+        av8.mudarStatusAvaliacao(StatusAvaliacao.DISPONIVEL);
+        av8.foiEnviadaAoCliente();
+        av8.foiEnviadaAoCliente();
+        setarCampo(av8, "dataCriacao", LocalDateTime.now().minusDays(7));
+        entityManager.persist(av8);
+
         entityManager.flush();
     }
 
@@ -354,6 +441,37 @@ public class DatabaseSeeder implements CommandLineRunner {
         for (StatusPedido status : fluxo) {
             pedido.mudarStatus(status);
             if (status == destino) break;
+        }
+    }
+
+    private AvaliacaoItem avalItem(Produto produto) {
+        return AvaliacaoItem.criar(produto.getId(), produto.getNome(), null, null);
+    }
+
+    private AvaliacaoItem avalItemComNota(Produto produto, int nota, String comentario) {
+        return AvaliacaoItem.criar(
+                produto.getId(), produto.getNome(),
+                new NotaAvaliacao(nota),
+                comentario != null ? new ComentarioAvaliacao(comentario) : null);
+    }
+
+    private void setarCampo(Object obj, String nomeCampo, Object valor) {
+        try {
+            Field field = obj.getClass().getDeclaredField(nomeCampo);
+            field.setAccessible(true);
+            field.set(obj, valor);
+        } catch (Exception e) {
+            throw new RuntimeException("Seeder: erro ao setar campo '" + nomeCampo + "'", e);
+        }
+    }
+
+    private void concluirAvaliacao(Avaliacao avaliacao, NotaAvaliacao nota, ComentarioAvaliacao comentario) {
+        try {
+            Method method = Avaliacao.class.getDeclaredMethod("concluirAvaliacao", NotaAvaliacao.class, ComentarioAvaliacao.class);
+            method.setAccessible(true);
+            method.invoke(avaliacao, nota, comentario);
+        } catch (Exception e) {
+            throw new RuntimeException("Seeder: erro ao invocar concluirAvaliacao", e);
         }
     }
 }
