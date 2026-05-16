@@ -61,7 +61,12 @@ public class AvaliacaoJpaRepositorio implements AvaliacaoRepositorio {
         return jpa.findByStatusAndNumeroNotificacaoClienteAndDataCriacaoBefore(status, TentativaNotificacao, horario);
     }
     @Override
-    public List<Avaliacao> buscarAvaliacoesPorClienteId(StatusAvaliacao statusAvaliacao, Long  idCliente){
+    public List<Avaliacao> buscarAvaliacoesPorClienteId(StatusAvaliacao statusAvaliacao, Long idCliente) {
         return jpa.findByStatusAndClienteId(statusAvaliacao, idCliente);
+    }
+
+    @Override
+    public List<Avaliacao> buscarTodosPorClienteId(Long idCliente) {
+        return jpa.findByClienteId(idCliente);
     }
 }
