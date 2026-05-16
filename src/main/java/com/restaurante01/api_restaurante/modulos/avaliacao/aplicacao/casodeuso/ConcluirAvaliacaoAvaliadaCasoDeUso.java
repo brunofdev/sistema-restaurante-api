@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restaurante01.api_restaurante.compartilhado.dominio.entidade.OutboxEvento;
 import com.restaurante01.api_restaurante.compartilhado.dominio.enums.Agregado;
+import com.restaurante01.api_restaurante.compartilhado.dominio.enums.GatilhoEvento;
 import com.restaurante01.api_restaurante.compartilhado.dominio.enums.TipoEvento;
 import com.restaurante01.api_restaurante.compartilhado.dominio.repositorio.OutboxRepositorio;
 import com.restaurante01.api_restaurante.modulos.avaliacao.api.dto.entrada.ResponderAvaliacaoDTO;
@@ -65,12 +66,12 @@ public class ConcluirAvaliacaoAvaliadaCasoDeUso {
     private void publicarEvento(Long idAvaliacao, Long clienteId, ClassificacaoAvaliacao classificacaoAvaliacao, int totalDeItensAvaliados) throws JsonProcessingException {
         if(classificacaoAvaliacao != ClassificacaoAvaliacao.NAO_AVALIADO || totalDeItensAvaliados > 0) {
             registrarOutbox(idAvaliacao, clienteId, classificacaoAvaliacao, totalDeItensAvaliados);
-            publicadorDeEvento.publishEvent(new AvaliacaoConcluidaEvento(clienteId, classificacaoAvaliacao, totalDeItensAvaliados));
+            publicadorDeEvento.publishEvent(new AvaliacaoConcluidaEvento(idAvaliacao, clienteId, classificacaoAvaliacao, totalDeItensAvaliados));
         }
     }
     private void registrarOutbox(Long idAvaliacao, Long clienteId, ClassificacaoAvaliacao classificacaoAvaliacao, int totalItensAvaliados) throws JsonProcessingException {
         AvaliacaoFidelidadePayload avaliacaoFidelidadePayload = new AvaliacaoFidelidadePayload(clienteId, classificacaoAvaliacao, totalItensAvaliados);
-        outboxRepositorio.salvar(OutboxEvento.criar(Agregado.AVALIACAO, idAvaliacao, TipoEvento.COMPUTAR_PONTUACAO_AVALIACAO_REALIZADA, objectMapper.writeValueAsString(avaliacaoFidelidadePayload)));
+        outboxRepositorio.salvar(OutboxEvento.criar(Agregado.AVALIACAO, idAvaliacao, GatilhoEvento.AVALIACAO_CONCLUIDA, TipoEvento.COMPUTAR_PONTUACAO_AVALIACAO_REALIZADA, objectMapper.writeValueAsString(avaliacaoFidelidadePayload)));
     }
 
 }

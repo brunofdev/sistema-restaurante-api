@@ -2,6 +2,7 @@ package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restaurante01.api_restaurante.compartilhado.dominio.enums.Agregado;
+import com.restaurante01.api_restaurante.compartilhado.dominio.enums.GatilhoEvento;
 import com.restaurante01.api_restaurante.compartilhado.dominio.enums.TipoEvento;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.StatusPedidoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoCriadoDTO;
@@ -69,11 +70,11 @@ class AtualizarStatusPedidoCasoDeUsoTest {
         casoDeUso.executar(1L, new StatusPedidoDTO(StatusPedido.ENTREGUE));
 
         verify(pedidoOutboxPorta).guardarEvento(
-                eq(Agregado.PEDIDO), any(), eq(TipoEvento.COMPUTAR_PONTUACAO_FIDELIDADE), any());
+                eq(Agregado.PEDIDO), any(), eq(GatilhoEvento.PEDIDO_ENTREGUE), eq(TipoEvento.COMPUTAR_PONTUACAO_FIDELIDADE), any());
         verify(pedidoOutboxPorta).guardarEvento(
-                eq(Agregado.PEDIDO), any(), eq(TipoEvento.CRIAR_AVALIACAO), any());
+                eq(Agregado.PEDIDO), any(), eq(GatilhoEvento.PEDIDO_ENTREGUE), eq(TipoEvento.CRIAR_AVALIACAO), any());
         verify(publicarEvento).publishEvent(any(PedidoEntregueEvento.class));
-        verify(pedidoOutboxPorta, times(2)).guardarEvento(any(), any(), any(), any());
+        verify(pedidoOutboxPorta, times(2)).guardarEvento(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -87,11 +88,11 @@ class AtualizarStatusPedidoCasoDeUsoTest {
         casoDeUso.executar(1L, new StatusPedidoDTO(StatusPedido.CANCELADO));
 
         verify(pedidoOutboxPorta).guardarEvento(
-                eq(Agregado.PEDIDO), any(), eq(TipoEvento.ESTORNAR_ESTOQUE_ASSOCIACAO), any());
+                eq(Agregado.PEDIDO), any(), eq(GatilhoEvento.PEDIDO_CANCELADO), eq(TipoEvento.ESTORNAR_ESTOQUE_ASSOCIACAO), any());
         verify(pedidoOutboxPorta).guardarEvento(
-                eq(Agregado.PEDIDO), any(), eq(TipoEvento.ESTORNAR_ESTOQUE_PRODUTO), any());
+                eq(Agregado.PEDIDO), any(), eq(GatilhoEvento.PEDIDO_CANCELADO), eq(TipoEvento.ESTORNAR_ESTOQUE_PRODUTO), any());
         verify(publicarEvento).publishEvent(any(PedidoCanceladoEvento.class));
-        verify(pedidoOutboxPorta, times(2)).guardarEvento(any(), any(), any(), any());
+        verify(pedidoOutboxPorta, times(2)).guardarEvento(any(), any(), any(), any(), any());
     }
 
     @Test

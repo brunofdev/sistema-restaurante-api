@@ -1,6 +1,7 @@
 package com.restaurante01.api_restaurante.compartilhado.dominio.entidade;
 
 import com.restaurante01.api_restaurante.compartilhado.dominio.enums.Agregado;
+import com.restaurante01.api_restaurante.compartilhado.dominio.enums.GatilhoEvento;
 import com.restaurante01.api_restaurante.compartilhado.dominio.enums.StatusOutbox;
 import com.restaurante01.api_restaurante.compartilhado.dominio.enums.TipoEvento;
 import com.restaurante01.api_restaurante.compartilhado.dominio.excecao.RegraDeNegocioExcecao;
@@ -37,6 +38,10 @@ public class OutboxEvento {
     private Long agregadoId;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "gatilho", nullable = false, length = 100)
+    private GatilhoEvento gatilho;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "tipo", nullable = false, length = 100)
     private TipoEvento tipo;
 
@@ -57,10 +62,11 @@ public class OutboxEvento {
     @Column(name = "processado_em")
     private LocalDateTime processadoEm;
 
-    public static OutboxEvento criar(Agregado agregadoTipo, Long agregadoId, TipoEvento tipo, String payload) {
+    public static OutboxEvento criar(Agregado agregadoTipo, Long agregadoId, GatilhoEvento gatilho, TipoEvento tipo, String payload) {
         OutboxEvento evento = new OutboxEvento();
         evento.agregadoTipo = agregadoTipo;
         evento.agregadoId = agregadoId;
+        evento.gatilho = gatilho;
         evento.tipo = tipo;
         evento.payload = payload;
         evento.status = StatusOutbox.PENDENTE;

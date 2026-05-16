@@ -3,6 +3,7 @@ package com.restaurante01.api_restaurante.modulos.usuario.cliente.aplicacao.caso
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restaurante01.api_restaurante.compartilhado.dominio.entidade.OutboxEvento;
 import com.restaurante01.api_restaurante.compartilhado.dominio.enums.Agregado;
+import com.restaurante01.api_restaurante.compartilhado.dominio.enums.GatilhoEvento;
 import com.restaurante01.api_restaurante.compartilhado.dominio.enums.TipoEvento;
 import com.restaurante01.api_restaurante.compartilhado.dominio.repositorio.OutboxRepositorio;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.api.dto.entrada.CadastrarClienteDTO;
@@ -52,6 +53,7 @@ public class CadastrarClienteCasoDeUso {
             ClienteCriadoPayload payload = new ClienteCriadoPayload(clienteId);
             outboxRepositorio.salvar(OutboxEvento.criar(
                     Agregado.CLIENTE, clienteId,
+                    GatilhoEvento.CLIENTE_CADASTRADO,
                     TipoEvento.CRIAR_FIDELIDADE_CLIENTE,
                     objectMapper.writeValueAsString(payload)));
             publicadorDeEvento.publishEvent(new ClienteCriadoEvento(clienteId));
