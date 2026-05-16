@@ -3,6 +3,7 @@ package com.restaurante01.api_restaurante.modulos.pedido.aplicacao.casodeuso;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restaurante01.api_restaurante.compartilhado.dominio.enums.Agregado;
+import com.restaurante01.api_restaurante.compartilhado.dominio.enums.GatilhoEvento;
 import com.restaurante01.api_restaurante.compartilhado.dominio.enums.TipoEvento;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoCupomPorta;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoOutboxPorta;
@@ -83,10 +84,10 @@ public class CriarNovoPedidoCasoDeUso {
     private void publicarEventos(Pedido pedidoSalvo) throws JsonProcessingException {
         List<ItemPedidoClientePayload> itemPedidoClientePayload = pedidoMapeador.mapearItemPedidoClientePayload(pedidoSalvo.getItens());
         eventPublisher.publishEvent(new PedidoCriadoEvento(pedidoSalvo, itemPedidoClientePayload));
-        pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO, pedidoSalvo.getId(), TipoEvento.BAIXAR_ESTOQUE_ASSOCIACAO, objectMapper.writeValueAsString(new PedidoCriadoPayload(pedidoSalvo.getId(), pedidoSalvo.getIdCardapio(), itemPedidoClientePayload)));
-        pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO, pedidoSalvo.getId(), TipoEvento.BAIXAR_ESTOQUE_PRODUTO, objectMapper.writeValueAsString(new PedidoCriadoPayload(pedidoSalvo.getId(), pedidoSalvo.getIdCardapio(), itemPedidoClientePayload)));
+        pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO, pedidoSalvo.getId(), GatilhoEvento.PEDIDO_CRIADO, TipoEvento.BAIXAR_ESTOQUE_ASSOCIACAO, objectMapper.writeValueAsString(new PedidoCriadoPayload(pedidoSalvo.getId(), pedidoSalvo.getIdCardapio(), itemPedidoClientePayload)));
+        pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO, pedidoSalvo.getId(), GatilhoEvento.PEDIDO_CRIADO, TipoEvento.BAIXAR_ESTOQUE_PRODUTO, objectMapper.writeValueAsString(new PedidoCriadoPayload(pedidoSalvo.getId(), pedidoSalvo.getIdCardapio(), itemPedidoClientePayload)));
         if (pedidoSalvo.getCupom() != null) {
-            pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO, pedidoSalvo.getId(), TipoEvento.CONSUMIR_CUPOM, objectMapper.writeValueAsString(pedidoSalvo.getCupom().codigoCupom()));
+            pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO, pedidoSalvo.getId(), GatilhoEvento.PEDIDO_CRIADO, TipoEvento.CONSUMIR_CUPOM, objectMapper.writeValueAsString(pedidoSalvo.getCupom().codigoCupom()));
         }
     }
 }

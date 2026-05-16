@@ -18,6 +18,9 @@ public class Cliente extends Usuario {
 
     private PontuacaoFidelidade pontuacaoFidelidade;
 
+    @Embedded
+    private FidelidadeReferenciaId fidelidadeReferenciaId;
+
     @Setter
     @Pattern(regexp = "\\d{10,11}", message = "Telefone deve ter 10 ou 11 dígitos numéricos")
     @Column(nullable = false, length = 11)
@@ -57,5 +60,9 @@ public class Cliente extends Usuario {
 
     public void acrescentarPontuacao(int pontos){
         this.pontuacaoFidelidade = this.pontuacaoFidelidade.acrescentar(pontos);
+    }
+
+    public void vincularFidelidade(Long fidelidadeId) {
+        this.fidelidadeReferenciaId = FidelidadeReferenciaId.de(fidelidadeId);
     }
 }

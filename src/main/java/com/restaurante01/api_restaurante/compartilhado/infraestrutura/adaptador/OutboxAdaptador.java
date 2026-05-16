@@ -3,6 +3,7 @@ package com.restaurante01.api_restaurante.compartilhado.infraestrutura.adaptador
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.restaurante01.api_restaurante.compartilhado.dominio.entidade.OutboxEvento;
 import com.restaurante01.api_restaurante.compartilhado.dominio.enums.Agregado;
+import com.restaurante01.api_restaurante.compartilhado.dominio.enums.GatilhoEvento;
 import com.restaurante01.api_restaurante.compartilhado.dominio.enums.TipoEvento;
 import com.restaurante01.api_restaurante.compartilhado.dominio.repositorio.OutboxRepositorio;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.porta.PedidoOutboxPorta;
@@ -20,10 +21,11 @@ public class OutboxAdaptador implements PedidoOutboxPorta {
 
     @Override
     public void guardarEvento(Agregado agregado, Long agregadoId,
-                                            TipoEvento tipoEvento, String payload) throws JsonProcessingException {
+                              GatilhoEvento gatilho, TipoEvento tipoEvento, String payload) throws JsonProcessingException {
         OutboxEvento outboxEvento = OutboxEvento.criar(
                 agregado,
                 agregadoId,
+                gatilho,
                 tipoEvento,
                 payload);
         repositorio.salvar(outboxEvento);

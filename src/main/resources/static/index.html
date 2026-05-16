@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Restaurante API — Painel de Testes</title>
+<style>
+  :root {
+    --bg:        #111827;
+    --surface:   #1f2937;
+    --border:    #374151;
+    --text:      #f3f4f6;
+    --muted:     #9ca3af;
+    --blue:      #3b82f6;
+    --green:     #22c55e;
+    --red:       #ef4444;
+    --yellow:    #f59e0b;
+    --purple:    #8b5cf6;
+    --blue-dim:  #1d3461;
+    --green-dim: #14532d;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;
+    font-size: 13px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 48px;
+  }
+  header h1 { font-size: 15px; font-weight: 700; color: var(--text); }
+  header h1 span { color: var(--green); }
+  .header-right { display: flex; align-items: center; gap: 16px; font-size: 12px; color: var(--muted); }
+  .header-right a { color: var(--blue); text-decoration: none; }
+  .header-right a:hover { text-decoration: underline; }
+  #poll-badge {
+    padding: 2px 10px; border-radius: 99px; font-size: 11px; font-weight: 600;
+    background: #374151; color: var(--muted);
+  }
+  #poll-badge.active { background: #14532d; color: #4ade80; }
+
+  /* ── LAYOUT ── */
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: calc(100vh - 48px);
+    overflow: hidden;
+  }
+  .col {
+    overflow-y: auto;
+    padding: 16px;
+    border-right: 1px solid var(--border);
+  }
+  .col:last-child { border-right: none; }
+
+  /* ── COL HEADER ── */
+  .col-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+  }
+  .col-header .icon {
+    width: 34px; height: 34px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; font-size: 16px;
+  }
+  .col-cliente .icon { background: var(--blue-dim); }
+  .col-admin   .icon { background: #3b1f5e; }
+  .col-header h2 { font-size: 14px; font-weight: 700; }
+  .col-header small { color: var(--muted); font-size: 11px; display: block; font-weight: 400; }
+  .col-cliente .col-header h2 { color: var(--blue); }
+  .col-admin   .col-header h2 { color: #a78bfa; }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    cursor: pointer;
+    user-select: none;
+    background: #263040;
+    transition: background 0.15s;
+  }
+  .card-header:hover { background: #2d3a4d; }
+  .card-header-left { display: flex; align-items: center; gap: 8px; }
+  .card-header-left .step {
+    width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700;
+    background: var(--border); color: var(--muted);
+  }
+  .col-cliente .card-header-left .step { background: var(--blue-dim); color: var(--blue); }
+  .col-admin   .card-header-left .step { background: #3b1f5e; color: #a78bfa; }
+  .card-title { font-size: 13px; font-weight: 600; }
+  .card-arrow { color: var(--muted); font-size: 11px; transition: transform 0.2s; }
+  .card-arrow.open { transform: rotate(180deg); }
+  .card-body { padding: 14px; display: none; }
+  .card-body.open { display: block; }
+
+  /* ── FORMS ── */
+  .form-group { margin-bottom: 10px; }
+  label { display: block; font-size: 11px; font-weight: 600; color: var(--muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.03em; }
+  input, select, textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 7px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: inherit;
+    transition: border-color 0.15s;
+    outline: none;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--blue); }
+  textarea { height: 60px; resize: vertical; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 7px 14px; border: none; border-radius: 6px;
+    cursor: pointer; font-family: inherit; font-size: 12px;
+    font-weight: 600; transition: opacity 0.15s; white-space: nowrap;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn-primary { background: var(--blue); color: #fff; }
+  .btn-success { background: var(--green); color: #000; }
+  .btn-danger  { background: var(--red);  color: #fff; }
+  .btn-warning { background: var(--yellow); color: #000; }
+  .btn-purple  { background: var(--purple); color: #fff; }
+  .btn-ghost   { background: var(--border); color: var(--text); }
+  .btn-sm { padding: 4px 10px; font-size: 11px; }
+  .btn-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+
+  /* ── RESPONSE BOX ── */
+  .resp-box {
+    background: #0d1117;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin-top: 10px;
+    font-size: 11px;
+    font-family: 'Courier New', monospace;
+    max-height: 130px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    color: #4ade80;
+    display: none;
+  }
+  .resp-box.err { color: #f87171; }
+
+  /* ── TOKEN STRIP ── */
+  .token-strip {
+    display: none;
+    background: #14532d;
+    border: 1px solid #166534;
+    border-radius: 6px;
+    padding: 6px 10px;
+    margin-top: 8px;
+    font-size: 11px;
+    color: #4ade80;
+    word-break: break-all;
+  }
+
+  /* ── STATUS DISPLAY ── */
+  .status-display {
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    margin-bottom: 10px;
+    transition: all 0.4s ease;
+    background: #1f2937;
+    border: 1px solid var(--border);
+  }
+  .status-display .status-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  .status-display .status-value { font-size: 20px; font-weight: 700; }
+  .status-display .status-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* ── ITEM CARD (para listas) ── */
+  .item-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    font-size: 12px;
+  }
+  .item-card strong { color: var(--text); }
+  .item-card .meta { color: var(--muted); font-size: 11px; margin-top: 2px; }
+
+  /* ── DIVIDER ── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
+
+  /* ── STATUS COLORS ── */
+  .s-PENDENTE          { background: #1e3a5f; border-color: #2563eb; }
+  .s-PENDENTE          .status-value { color: #60a5fa; }
+  .s-EM_PREPARACAO     { background: #1a3323; border-color: #16a34a; }
+  .s-EM_PREPARACAO     .status-value { color: #4ade80; }
+  .s-SAIU_PARA_ENTREGA { background: #3b1f5e; border-color: #7c3aed; }
+  .s-SAIU_PARA_ENTREGA .status-value { color: #c4b5fd; }
+  .s-ENTREGUE          { background: #14532d; border-color: #16a34a; }
+  .s-ENTREGUE          .status-value { color: #86efac; }
+  .s-CANCELADO         { background: #450a0a; border-color: #dc2626; }
+  .s-CANCELADO         .status-value { color: #fca5a5; }
+
+  .empty { color: var(--muted); font-size: 12px; text-align: center; padding: 10px 0; }
+
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ HEADER ══════════════ -->
+<header>
+  <h1>🍔 <span>Restaurante</span> API — Painel de Testes</h1>
+  <div class="header-right">
+    <span id="poll-badge">⚫ sem pedido ativo</span>
+    <span>base: <code>localhost:8080</code></span>
+    <a href="/swagger-ui.html" target="_blank">Swagger UI ↗</a>
+    <a href="/h2-console" target="_blank">H2 Console ↗</a>
+  </div>
+</header>
+
+<div class="layout">
+
+<!-- ══════════════════════════════════════
+     COLUNA CLIENTE
+══════════════════════════════════════════ -->
+<div class="col col-cliente">
+  <div class="col-header">
+    <div class="icon">👤</div>
+    <div>
+      <h2>Painel do Cliente</h2>
+      <small>Cadastro, pedidos e avaliações</small>
+    </div>
+  </div>
+
+  <!-- 1. Auth -->
+  <div class="card">
+    <div class="card-header" onclick="tog(this)">
+      <div class="card-header-left">
+        <div class="step">1</div>
+        <span class="card-title">Autenticação</span>
+      </div>
+      <span class="card-arrow open">▲</span>
+    </div>
+    <div class="card-body open">
+      <div class="grid-2">
+        <div class="form-group">
+          <label>CPF</label>
+          <input id="c-cpf" value="00000000000">
+        </div>
+        <div class="form-group">
+          <label>Senha</label>
+          <input id="c-senha" type="password" value="123456">
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="clienteLogin()">🔐 Entrar</button>
+        <button class="btn btn-ghost" onclick="toggleEl('cad-cli')">➕ Cadastrar</button>
+      </div>
+
+      <div id="cad-cli" style="display:none">
+        <hr class="divider">
+        <div class="grid-2">
+          <div>
+            <div class="form-group"><label>Nome</label><input id="c-nome" value="João da Silva"></div>
+            <div class="form-group"><label>CPF</label><input id="c-cpf2" value="11122233344"></div>
+            <div class="form-group"><label>Email</label><input id="c-email" value="joao@email.com"></div>
+            <div class="form-group"><label>Telefone</label><input id="c-tel" value="11987654321"></div>
+            <div class="form-group"><label>Senha</label><input id="c-senha2" value="Teste@123"></div>
+          </div>
+          <div>
+            <div class="form-group"><label>Estado</label><input id="c-uf" value="SP"></div>
+            <div class="form-group"><label>Cidade</label><input id="c-cidade" value="São Paulo"></div>
+            <div class="form-group"><label>Bairro</label><input id="c-bairro" value="Centro"></div>
+            <div class="form-group"><label>Rua</label><input id="c-rua" value="Rua das Flores"></div>
+            <div class="form-group"><label>Número</label><input id="c-num" type="number" value="100"></div>
+            <div class="form-group"><label>CEP</label><input id="c-cep" value="01310-100"></div>
+          </div>
+        </div>
+        <button class="btn btn-success" onclick="cadastrarCliente()">✔ Confirmar Cadastro</button>
+      </div>
+
+      <div id="c-tok" class="token-strip"></div>
+      <div id="c-resp" class="resp-box"></div>
+    </div>
+  </div>
+
+  <!-- 2. Cardápio -->
+  <div class="card">
+    <div class="card-header" onclick="tog(this)">
+      <div class="card-header-left">
+        <div class="step">2</div>
+        <span class="card-title">Cardápio (público)</span>
+      </div>
+      <span class="card-arrow">▲</span>
+    </div>
+    <div class="card-body">
+      <button class="btn btn-primary" onclick="carregarCardapio()">🔄 Carregar Cardápio</button>
+      <div id="cardapio-lista" style="margin-top:10px"></div>
+      <div id="cardapio-resp" class="resp-box"></div>
+    </div>
+  </div>
+
+  <!-- 3. Pedido -->
+  <div class="card">
+    <div class="card-header" onclick="tog(this)">
+      <div class="card-header-left">
+        <div class="step">3</div>
+        <span class="card-title">Fazer Pedido</span>
+      </div>
+      <span class="card-arrow">▲</span>
+    </div>
+    <div class="card-body">
+      <div class="form-group">
+        <label>ID do Cardápio</label>
+        <input id="p-cid" type="number" value="1">
+      </div>
+      <div class="form-group">
+        <label>Itens do Pedido (JSON)</label>
+        <textarea id="p-itens">[{"idProduto": 1, "quantidade": 1, "observacao": ""}]</textarea>
+      </div>
+      <div class="form-group">
+        <label>Cupom (opcional)</label>
+        <input id="p-cupom" placeholder="ex: DESCONTO10">
+      </div>
+      <button class="btn btn-success" onclick="criarPedido()">🛒 Confirmar Pedido</button>
+      <div id="p-resp" class="resp-box"></div>
+    </div>
+  </div>
+
+  <!-- 4. Status ao vivo -->
+  <div class="card">
+    <div class="card-header" onclick="tog(this)">
+      <div class="card-header-left">
+        <div class="step">4</div>
+        <span class="card-title">Status do Pedido — Tempo Real</span>
+      </div>
+      <span class="card-arrow">▲</span>
+    </div>
+    <div class="card-body">
+      <div id="status-cli" class="status-display">
+        <div class="status-label">Aguardando pedido...</div>
+        <div class="status-value">—</div>
+        <div class="status-sub">Faça um pedido para acompanhar o status</div>
+      </div>
+      <div id="pedido-detalhe" style="font-size:11px; color:var(--muted); text-align:center"></div>
+    </div>
+  </div>
+
+  <!-- 5. Avaliações -->
+  <div class="card">
+    <div class="card-header" onclick="tog(this)">
+      <div class="card-header-left">
+        <div class="step">5</div>
+        <span class="card-title">Avaliar Pedido</span>
+      </div>
+      <span class="card-arrow">▲</span>
+    </div>
+    <div class="card-body">
+      <button class="btn btn-primary" onclick="buscarAvaliacoesPendentes()">🔍 Ver Avaliações Pendentes</button>
+      <div id="av-pendentes-lista" style="margin-top:10px"></div>
+      <div id="av-pendentes-resp" class="resp-box"></div>
+
+      <hr class="divider">
+      <div class="grid-2">
+        <div class="form-group">
+          <label>ID da Avaliação</label>
+          <input id="av-id" type="number" placeholder="ID">
+        </div>
+        <div class="form-group">
+          <label>Nota Geral (1–5, vazio = sem nota)</label>
+          <input id="av-nota" type="number" min="1" max="5" placeholder="1 a 5">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Comentário Geral (opcional)</label>
+        <input id="av-comentario" placeholder="Ótimo atendimento!">
+      </div>
+      <div class="form-group">
+        <label>Itens Avaliados (JSON)</label>
+        <textarea id="av-itens">[]</textarea>
+      </div>
+      <button class="btn btn-success" onclick="concluirAvaliacao()">⭐ Enviar Avaliação</button>
+      <div id="av-resp" class="resp-box"></div>
+    </div>
+  </div>
+
+</div><!-- /col-cliente -->
+
+
+<!-- ══════════════════════════════════════
+     COLUNA ADMIN
+══════════════════════════════════════════ -->
+<div class="col col-admin">
+  <div class="col-header">
+    <div class="icon">🔧</div>
+    <div>
+      <h2>Painel do Operador</h2>
+      <small>Pedidos, produtos, avaliações e cupons</small>
+    </div>
+  </div>
+
+  <!-- 1. Auth Operador -->
+  <div class="card">
+    <div class="card-header" onclick="tog(this)">
+      <div class="card-header-left">
+        <div class="step">1</div>
+        <span class="card-title">Autenticação do Operador</span>
+      </div>
+      <span class="card-arrow open">▲</span>
+    </div>
+    <div class="card-body open">
+      <div class="grid-2">
+        <div class="form-group">
+          <label>CPF</label>
+          <input id="op-cpf" value="00000000000">
+        </div>
+        <div class="form-group">
+          <label>Senha</label>
+          <input id="op-senha" type="password" value="123456">
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-danger" onclick="operadorLogin()">🔐 Entrar como Operador</button>
+        <button class="btn btn-ghost" onclick="toggleEl('cad-op')">➕ Cadastrar Operador</button>
+      </div>
+
+      <div id="cad-op" style="display:none">
+        <hr class="divider">
+        <div class="grid-2">
+          <div>
+            <div class="form-group"><label>Nome</label><input id="op-nome2" value="Admin Principal"></div>
+            <div class="form-group"><label>CPF</label><input id="op-cpf2" value="99988877766"></div>
+            <div class="form-group"><label>Email</label><input id="op-email2" value="admin@restaurante.com"></div>
+            <div class="form-group"><label>Telefone</label><input id="op-tel2" value="11999887766"></div>
+          </div>
+          <div>
+            <div class="form-group"><label>Senha</label><input id="op-senha2" value="Admin@123"></div>
+            <div class="form-group"><label>Matrícula (1000–999999)</label><input id="op-matricula" type="number" value="10001"></div>
+          </div>
+        </div>
+        <button class="btn btn-danger" onclick="cadastrarOperador()">✔ Confirmar Cadastro</button>
+      </div>
+
+      <div id="op-tok" class="token-strip"></div>
+      <div id="op-resp" class="resp-box"></div>
+    </div>
+  </div>
+
+  <!-- 2. Pedidos do dia -->
+  <div class="card">
+    <div class="card-header" onclick="tog(this)">
+      <div class="card-header-left">
+        <div class="step">2</div>
+        <span class="card-title">Pedidos do Dia</span>
+      </div>
+      <span class="card-arrow">▲</span>
+    </div>
+    <div class="card-body">
+      <button class="btn btn-primary" onclick="pedidosHoje()">🔄 Carregar Pedidos</button>
+      <div id="pedidos-lista" style="margin-top:10px"></div>
+      <div id="pedidos-resp" class="resp-box"></div>
+    </div>
+  </div>
+
+  <!-- 3. Mover status -->
+  <div class="card">
+    <div class="card-header" onclick="tog(this)">
+      <div class="card-header-left">
+        <div class="step">3</div>
+        <span class="card-title">Mover Status do Pedido</span>
+      </div>
+      <span class="card-arrow">▲</span>
+    </div>
+    <div class="card-body">
+      <div id="status-adm" class="status-display">
+        <div class="status-label">Nenhum pedido selecionado</div>
+        <div class="status-value">—</div>
+        <div class="status-sub">Selecione um pedido na lista acima</div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>ID do Pedido</label>
+          <input id="status-id" type="number" placeholder="ID">
+        </div>
+        <div class="form-group">
+          <label>Novo Status</label>
+          <select id="status-novo">
+            <option value="EM_PREPARACAO">🍳 EM PREPARAÇÃO</option>
+            <option value="SAIU_PARA_ENTREGA">🛵 SAIU PARA ENTREGA</option>
+            <option value="ENTREGUE">📦 ENTREGUE</option>
+            <option value="CANCELADO">❌ CANCELADO</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-warning" onclick="atualizarStatus()">🔄 Atualizar Status</button>
+      <div id="status-resp" class="resp-box"></div>
+    </div>
+  </div>
+
+  <!-- 4. Avaliações Admin -->
+  <div class="card">
+    <div class="card-header" onclick="tog(this)">
+      <div class="card-header-left">
+        <div class="step">4</div>
+        <span class="card-title">Avaliações dos Clientes</span>
+      </div>
+      <span class="card-arrow">▲</span>
+    </div>
+    <div class="card-body">
+      <div class="btn-row">
+        <button class="btn btn-primary btn-sm" onclick="avaliacoesAdmin('todas')">Todas</button>
+        <button class="btn btn-warning btn-sm" onclick="avaliacoesAdmin('pendentes')">Pendentes</button>
+        <button class="btn btn-success btn-sm" onclick="avaliacoesAdmin('concluidas')">Concluídas</button>
+        <button class="btn btn-purple btn-sm" onclick="avaliacoesAdmin('disponiveis')">Disponíveis</button>
+      </div>
+      <div id="av-adm-lista" style="margin-top:10px"></div>
+      <div id="av-adm-resp" class="resp-box"></div>
+    </div>
+  </div>
+
+  <!-- 5. Produtos -->
+  <div class="card">
+    <div class="card-header" onclick="tog(this)">
+      <div class="card-header-left">
+        <div class="step">5</div>
+        <span class="card-title">Produtos</span>
+      </div>
+      <span class="card-arrow">▲</span>
+    </div>
+    <div class="card-body">
+      <button class="btn btn-primary" onclick="listarProdutos()">📋 Listar Produtos</button>
+      <div id="prod-lista" style="margin-top:10px"></div>
+      <hr class="divider">
+      <div class="grid-2">
+        <div>
+          <div class="form-group"><label>Nome</label><input id="prod-nome" value="X-Burguer Especial"></div>
+          <div class="form-group"><label>Descrição</label><input id="prod-desc" value="Blend 180g, queijo, alface, tomate"></div>
+        </div>
+        <div>
+          <div class="form-group"><label>Preço (R$)</label><input id="prod-preco" type="number" step="0.01" value="29.90"></div>
+          <div class="form-group"><label>Quantidade</label><input id="prod-qtd" type="number" value="50"></div>
+          <div class="form-group">
+            <label>Disponível</label>
+            <select id="prod-disp"><option value="true">✅ Sim</option><option value="false">❌ Não</option></select>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-success" onclick="adicionarProduto()">➕ Adicionar Produto</button>
+      <div id="prod-resp" class="resp-box"></div>
+    </div>
+  </div>
+
+  <!-- 6. Cupons -->
+  <div class="card">
+    <div class="card-header" onclick="tog(this)">
+      <div class="card-header-left">
+        <div class="step">6</div>
+        <span class="card-title">Cupons de Desconto</span>
+      </div>
+      <span class="card-arrow">▲</span>
+    </div>
+    <div class="card-body">
+      <button class="btn btn-primary" onclick="listarCupons()">🎟️ Listar Cupons</button>
+      <div id="cupons-lista" style="margin-top:10px"></div>
+      <hr class="divider">
+      <div class="grid-2">
+        <div>
+          <div class="form-group"><label>Código</label><input id="cup-codigo" value="DESCONTO10"></div>
+          <div class="form-group">
+            <label>Tipo de Desconto</label>
+            <select id="cup-tipo"><option value="PORCENTAGEM">Porcentagem (%)</option><option value="VALOR">Valor fixo (R$)</option></select>
+          </div>
+          <div class="form-group"><label>Valor do Desconto</label><input id="cup-valor" type="number" step="0.01" value="10"></div>
+          <div class="form-group"><label>Quantidade</label><input id="cup-qtd" type="number" value="100"></div>
+        </div>
+        <div>
+          <div class="form-group"><label>Pedido Mínimo (R$)</label><input id="cup-min" type="number" value="30"></div>
+          <div class="form-group"><label>Pedido Máximo (R$)</label><input id="cup-max" type="number" value="200"></div>
+          <div class="form-group">
+            <label>Recorrência</label>
+            <select id="cup-rec">
+              <option value="DEZ_DIAS">10 dias</option>
+              <option value="QUINZE_DIAS">15 dias</option>
+              <option value="TRINTA_DIAS">30 dias</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Início (DD/MM/YYYY)</label><input id="cup-dtini" value="01/01/2026"></div>
+          <div class="form-group"><label>Fim</label><input id="cup-dtfim" value="31/12/2026"></div>
+        </div>
+      </div>
+      <button class="btn btn-success" onclick="criarCupom()">➕ Criar Cupom</button>
+      <div id="cupons-resp" class="resp-box"></div>
+    </div>
+  </div>
+
+</div><!-- /col-admin -->
+</div><!-- /layout -->
+
+<script>
+// ── STATE ──
+let cToken = null, opToken = null, pedidoId = null, poll = null;
+
+// ── UTILS ──
+function tog(header) {
+  const body  = header.nextElementSibling;
+  const arrow = header.querySelector('.card-arrow');
+  const open  = body.classList.toggle('open');
+  arrow.classList.toggle('open', open);
+}
+function toggleEl(id) {
+  const el = document.getElementById(id);
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+function v(id)        { return document.getElementById(id).value; }
+function set(id, val) { document.getElementById(id).value = val; }
+
+function show(id, data, err) {
+  const el = document.getElementById(id);
+  el.style.display = 'block';
+  el.className = 'resp-box' + (err ? ' err' : '');
+  el.textContent = typeof data === 'object' ? JSON.stringify(data, null, 2) : String(data);
+}
+function showTok(id, text) {
+  const el = document.getElementById(id);
+  el.style.display = 'block';
+  el.textContent = text;
+}
+
+async function api(method, path, body, token) {
+  const h = { 'Content-Type': 'application/json' };
+  if (token) h['Authorization'] = 'Bearer ' + token;
+  try {
+    const r = await fetch(path, { method, headers: h, body: body ? JSON.stringify(body) : undefined });
+    const t = await r.text();
+    try { return { ok: r.ok, status: r.status, data: JSON.parse(t) }; }
+    catch { return { ok: r.ok, status: r.status, data: t }; }
+  } catch(e) {
+    return { ok: false, status: 0, data: 'Erro de conexão: ' + e.message };
+  }
+}
+
+function extractToken(data) {
+  if (!data?.dados) return null;
+  const d = data.dados;
+  return d.token || d.accessToken || d.jwt
+      || Object.values(d).find(v => typeof v === 'string' && v.startsWith('ey'));
+}
+
+function setStatusDisplay(status) {
+  ['status-cli', 'status-adm'].forEach(id => {
+    const el = document.getElementById(id);
+    el.className = 'status-display s-' + status;
+    el.innerHTML = `
+      <div class="status-label">STATUS DO PEDIDO #${pedidoId || '?'}</div>
+      <div class="status-value">${status}</div>
+      <div class="status-sub">Última atualização: ${new Date().toLocaleTimeString()}</div>
+    `;
+  });
+}
+
+// ── CLIENTE AUTH ──
+async function cadastrarCliente() {
+  const r = await api('POST', '/cliente/cadastro', {
+    nome: v('c-nome'), cpf: v('c-cpf2'), email: v('c-email'),
+    telefone: v('c-tel'), senha: v('c-senha2'),
+    estado: v('c-uf'), cidade: v('c-cidade'), bairro: v('c-bairro'),
+    rua: v('c-rua'), numero: parseInt(v('c-num')), cep: v('c-cep'),
+    complemento: '', referencia: ''
+  });
+  show('c-resp', r.data, !r.ok);
+  if (r.ok) { set('c-cpf', v('c-cpf2')); set('c-senha', v('c-senha2')); }
+}
+
+async function clienteLogin() {
+  const r = await api('POST', '/api/auth/cliente-login', { cpf: v('c-cpf'), senha: v('c-senha') });
+  show('c-resp', r.data, !r.ok);
+  cToken = extractToken(r.data);
+  if (cToken) showTok('c-tok', '✅ Autenticado — ' + cToken.substring(0, 40) + '...');
+}
+
+// ── OPERADOR AUTH ──
+async function cadastrarOperador() {
+  const r = await api('POST', '/operador/cadastro', {
+    nome: v('op-nome2'), cpf: v('op-cpf2'), email: v('op-email2'),
+    telefone: v('op-tel2'), senha: v('op-senha2'),
+    matricula: parseInt(v('op-matricula'))
+  });
+  show('op-resp', r.data, !r.ok);
+  if (r.ok) { set('op-cpf', v('op-cpf2')); set('op-senha', v('op-senha2')); }
+}
+
+async function operadorLogin() {
+  const r = await api('POST', '/api/auth/operador-login', { cpf: v('op-cpf'), senha: v('op-senha') });
+  show('op-resp', r.data, !r.ok);
+  opToken = extractToken(r.data);
+  if (opToken) showTok('op-tok', '✅ Autenticado — ' + opToken.substring(0, 40) + '...');
+}
+
+// ── CARDÁPIO ──
+async function carregarCardapio() {
+  const r = await api('GET', '/cardapio-produto/publico/todas');
+  show('cardapio-resp', r.data, !r.ok);
+  if (!r.ok || !r.data?.dados) return;
+  const cardapios = Array.isArray(r.data.dados) ? r.data.dados : [r.data.dados];
+  document.getElementById('cardapio-lista').innerHTML = cardapios.map(c => {
+    const itens = c.produtos || c.associacoes || c.itens || [];
+    const id = c.id || c.idCardapio;
+    return `<div class="item-card">
+      <strong>📋 Cardápio #${id} — ${c.nome || ''}</strong>
+      <div class="meta">${itens.map(p => `[#${p.idProduto||p.id}] ${p.nomeProduto||p.nome||''} — R$ ${p.precoCustomizado||p.preco||''}`).join(' &nbsp;|&nbsp; ')}</div>
+      <button class="btn btn-ghost btn-sm" style="margin-top:6px" onclick="usarCardapio(${id}, ${JSON.stringify(itens.map(p=>p.idProduto||p.id))})">
+        Usar este cardápio →
+      </button>
+    </div>`;
+  }).join('') || '<p class="empty">Nenhum cardápio disponível</p>';
+}
+
+function usarCardapio(id, pids) {
+  set('p-cid', id);
+  set('p-itens', JSON.stringify(pids.map(pid => ({ idProduto: pid, quantidade: 1, observacao: '' })), null, 2));
+}
+
+// ── PEDIDO ──
+async function criarPedido() {
+  if (!cToken) { alert('Faça login como cliente primeiro!'); return; }
+  let itens; try { itens = JSON.parse(v('p-itens')); } catch { alert('JSON de itens inválido'); return; }
+  const body = { idCardapio: parseInt(v('p-cid')), itens };
+  const cup = v('p-cupom'); if (cup) body.cupom = cup;
+  const r = await api('POST', '/pedido/cliente/criar', body, cToken);
+  show('p-resp', r.data, !r.ok);
+  if (r.ok && r.data?.dados) {
+    pedidoId = r.data.dados.id || r.data.dados.pedidoId;
+    if (pedidoId) { set('status-id', pedidoId); iniciarPolling(); }
+  }
+}
+
+// ── POLLING ──
+function iniciarPolling() {
+  if (poll) clearInterval(poll);
+  const badge = document.getElementById('poll-badge');
+  badge.textContent = '🔴 Acompanhando pedido #' + pedidoId;
+  badge.className = 'active';
+  poll = setInterval(pollStatus, 3000);
+  pollStatus();
+}
+
+async function pollStatus() {
+  if (!cToken || !pedidoId) return;
+  const r = await api('GET', '/pedido/cliente/historico?page=0&size=5', null, cToken);
+  if (!r.ok || !r.data?.dados) return;
+  const pedidos = r.data.dados.content || r.data.dados;
+  const p = Array.isArray(pedidos) ? pedidos.find(x => x.id == pedidoId) || pedidos[0] : pedidos;
+  if (!p?.statusPedido) return;
+  setStatusDisplay(p.statusPedido);
+  document.getElementById('pedido-detalhe').textContent =
+    `Total: R$ ${p.valorTotal || '?'} · Atualizado ${new Date().toLocaleTimeString()}`;
+  if (['ENTREGUE', 'CANCELADO'].includes(p.statusPedido)) {
+    clearInterval(poll);
+    document.getElementById('poll-badge').textContent = '⚫ pedido finalizado';
+    document.getElementById('poll-badge').className = '';
+  }
+}
+
+// ── ADMIN — PEDIDOS ──
+async function pedidosHoje() {
+  if (!opToken) { alert('Faça login como operador primeiro!'); return; }
+  const r = await api('GET', '/pedido/operador/hoje?page=0&size=20', null, opToken);
+  show('pedidos-resp', r.data, !r.ok);
+  if (!r.ok || !r.data?.dados) return;
+  const lista = r.data.dados.content || r.data.dados || [];
+  document.getElementById('pedidos-lista').innerHTML = (Array.isArray(lista) ? lista : []).map(p => `
+    <div class="item-card" style="display:flex; justify-content:space-between; align-items:center">
+      <div>
+        <strong>Pedido #${p.id}</strong>
+        <div class="meta">Status: <strong>${p.statusPedido}</strong> · R$ ${p.valorTotal || '?'}</div>
+      </div>
+      <button class="btn btn-warning btn-sm" onclick="selecionarPedido(${p.id}, '${p.statusPedido}')">
+        Selecionar
+      </button>
+    </div>
+  `).join('') || '<p class="empty">Nenhum pedido hoje</p>';
+}
+
+function selecionarPedido(id, status) {
+  pedidoId = id; set('status-id', id);
+  setStatusDisplay(status);
+  if (cToken) iniciarPolling();
+}
+
+async function atualizarStatus() {
+  if (!opToken) { alert('Faça login como operador primeiro!'); return; }
+  const id = v('status-id'); if (!id) { alert('Informe o ID do pedido'); return; }
+  const r = await api('PATCH', `/pedido/operador/${id}/status`, { statusPedido: v('status-novo') }, opToken);
+  show('status-resp', r.data, !r.ok);
+  if (r.ok && r.data?.dados) {
+    setStatusDisplay(r.data.dados.statusPedido || v('status-novo'));
+    pedidosHoje();
+  }
+}
+
+// ── AVALIAÇÕES CLIENTE ──
+async function buscarAvaliacoesPendentes() {
+  if (!cToken) { alert('Faça login como cliente primeiro!'); return; }
+  const r = await api('GET', '/avaliacao/cliente/pendentes', null, cToken);
+  show('av-pendentes-resp', r.data, !r.ok);
+  if (!r.ok || !r.data?.dados) return;
+  const avs = Array.isArray(r.data.dados) ? r.data.dados : [r.data.dados];
+  document.getElementById('av-pendentes-lista').innerHTML = avs.length === 0
+    ? '<p class="empty">Nenhuma avaliação pendente</p>'
+    : avs.map(av => `
+      <div class="item-card">
+        <strong>Avaliação #${av.avaliacaoId||av.id}</strong> · Pedido #${av.pedidoId}
+        <div class="meta">${(av.itensDoPedido||[]).map(i=>`[#${i.idItem||i.id}] ${i.nomeProduto||''}`).join(', ')}</div>
+        <button class="btn btn-primary btn-sm" style="margin-top:6px"
+          onclick="preencherAv(${av.avaliacaoId||av.id}, ${JSON.stringify(av.itensDoPedido||[])})">
+          Preencher formulário →
+        </button>
+      </div>
+    `).join('');
+}
+
+function preencherAv(id, itens) {
+  set('av-id', id);
+  if (itens?.length) set('av-itens', JSON.stringify(itens.map(i=>({idItem:i.idItem||i.id,nota:5,comentario:''})),null,2));
+}
+
+async function concluirAvaliacao() {
+  if (!cToken) { alert('Faça login como cliente primeiro!'); return; }
+  const nota = v('av-nota');
+  let itens; try { itens = JSON.parse(v('av-itens')); } catch { itens = []; }
+  const r = await api('POST', '/avaliacao/cliente/concluir', {
+    idAvaliacao: parseInt(v('av-id')),
+    avaliacaoDTO: nota ? { nota: parseInt(nota), comentario: v('av-comentario') || null } : null,
+    itensAvaliados: itens
+  }, cToken);
+  show('av-resp', r.data, !r.ok);
+}
+
+// ── AVALIAÇÕES ADMIN ──
+async function avaliacoesAdmin(filtro) {
+  if (!opToken) { alert('Faça login como operador primeiro!'); return; }
+  const r = await api('GET', `/avaliacao/operador/${filtro}`, null, opToken);
+  show('av-adm-resp', r.data, !r.ok);
+  if (!r.ok || !r.data?.dados) return;
+  const avs = Array.isArray(r.data.dados) ? r.data.dados : [r.data.dados];
+  document.getElementById('av-adm-lista').innerHTML = avs.length === 0
+    ? `<p class="empty">Nenhuma avaliação (${filtro})</p>`
+    : avs.map(av => `
+      <div class="item-card">
+        <strong>Avaliação #${av.id}</strong> · Pedido #${av.pedidoId} · Cliente #${av.clienteId}
+        <div class="meta">Status: <strong>${av.status}</strong> · Nota: ${av.nota||'—'} · ${av.classificacao||''}</div>
+      </div>
+    `).join('');
+}
+
+// ── PRODUTOS ──
+async function listarProdutos() {
+  const r = await api('GET', '/produtos/todos-produtos');
+  show('prod-resp', r.data, !r.ok);
+  if (!r.ok || !r.data?.dados) return;
+  const prods = Array.isArray(r.data.dados) ? r.data.dados : [r.data.dados];
+  document.getElementById('prod-lista').innerHTML = prods.map(p => `
+    <div class="item-card">
+      <strong>[#${p.id}] ${p.nome}</strong>
+      <div class="meta">R$ ${p.preco} · Qtd: ${p.quantidadeAtual||p.qtdAtual||0} · ${p.disponibilidade ? '✅ Disponível' : '❌ Indisponível'}</div>
+    </div>
+  `).join('') || '<p class="empty">Nenhum produto cadastrado</p>';
+}
+
+async function adicionarProduto() {
+  if (!opToken) { alert('Faça login como operador primeiro!'); return; }
+  const r = await api('POST', '/produtos/adicionar-produto', {
+    nome: v('prod-nome'), descricao: v('prod-desc'),
+    preco: parseFloat(v('prod-preco')),
+    quantidadeAtual: parseInt(v('prod-qtd')),
+    disponibilidade: v('prod-disp') === 'true'
+  }, opToken);
+  show('prod-resp', r.data, !r.ok);
+  if (r.ok) listarProdutos();
+}
+
+// ── CUPONS ──
+async function listarCupons() {
+  if (!opToken) { alert('Faça login como operador primeiro!'); return; }
+  const r = await api('GET', '/cupom/admin/listar', null, opToken);
+  show('cupons-resp', r.data, !r.ok);
+  if (!r.ok || !r.data?.dados) return;
+  const cupons = Array.isArray(r.data.dados) ? r.data.dados : [r.data.dados];
+  document.getElementById('cupons-lista').innerHTML = cupons.map(c => `
+    <div class="item-card">
+      <strong>🎟️ ${c.codigo||c.valor||'—'}</strong>
+      <div class="meta">${c.tipoDesconto} · ${c.valorDesconto || '?'} · Qtd: ${c.quantidadeRestante||c.quantidade||0} · ${c.estaAtivo ? '✅ Ativo' : '❌ Inativo'}</div>
+    </div>
+  `).join('') || '<p class="empty">Nenhum cupom cadastrado</p>';
+}
+
+async function criarCupom() {
+  if (!opToken) { alert('Faça login como operador primeiro!'); return; }
+  const r = await api('POST', '/cupom/admin/criar', {
+    codigoCupom: v('cup-codigo'), tipoDesconto: v('cup-tipo'),
+    regraRecorrencia: v('cup-rec'),
+    quantidade: parseInt(v('cup-qtd')),
+    valorParaDesconto: parseFloat(v('cup-valor')),
+    valorTotalMinPedido: parseFloat(v('cup-min')),
+    valorTotalMaxPedido: parseFloat(v('cup-max')),
+    estaAtivo: true,
+    periodo: { dataInicio: v('cup-dtini'), horaInicio: '00:00', dataFim: v('cup-dtfim'), horaFim: '23:59' }
+  }, opToken);
+  show('cupons-resp', r.data, !r.ok);
+  if (r.ok) listarCupons();
+}
+
+// init
+carregarCardapio();
+</script>
+</body>
+</html>

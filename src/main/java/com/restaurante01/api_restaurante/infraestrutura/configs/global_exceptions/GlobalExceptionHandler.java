@@ -2,6 +2,7 @@ package com.restaurante01.api_restaurante.infraestrutura.configs.global_exceptio
 
 import com.restaurante01.api_restaurante.compartilhado.dominio.excecao.RegraDeNegocioExcecao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.excecao.AvaliacaoNaoEncontradaExcecao;
+import com.restaurante01.api_restaurante.modulos.fidelidade.dominio.excecao.FidelidadeNaoEncontradaExcecao;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.excecao.*;
 import com.restaurante01.api_restaurante.compartilhado.retorno_padrao_api.ApiError;
 import com.restaurante01.api_restaurante.compartilhado.retorno_padrao_api.ApiResponse;
@@ -89,7 +90,8 @@ public class GlobalExceptionHandler {
         if (ex instanceof ProdutoNaoEncontradoException ||
                 ex instanceof CardapioNaoEncontradoExcecao ||
                 ex instanceof UsuarioNaoEncontradoExcecao ||
-                ex instanceof AssociacaoNaoExisteExcecao) {
+                ex instanceof AssociacaoNaoExisteExcecao ||
+                ex instanceof FidelidadeNaoEncontradaExcecao) {
             status = HttpStatus.NOT_FOUND;
         }
 
