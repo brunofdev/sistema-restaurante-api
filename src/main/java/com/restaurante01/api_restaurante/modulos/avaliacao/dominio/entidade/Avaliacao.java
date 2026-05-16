@@ -4,8 +4,8 @@ import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.enums.Classif
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.enums.StatusAvaliacao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.enums.TentativaNotificacao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.excecao.*;
-import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.ComentarioAvaliacao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.NotaAvaliacao;
+import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.RespostaAvaliacao;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
@@ -16,6 +16,7 @@ import lombok.ToString;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "avaliacoes")
@@ -109,9 +110,16 @@ public class Avaliacao extends Avaliavel {
         throw new AvaliacaoNaoExpiradaExcecao("A data de expiração ainda não chegou para esta avaliação");
 
     }
-    protected void concluirAvaliacao(NotaAvaliacao nota, ComentarioAvaliacao comentario){
-        vincularAvaliacao(nota, comentario);
-        classificarAvaliacao(nota);
+    public void concluirAvaliacao(RespostaAvaliacao resposta, Map<Long, RespostaAvaliacao> respostasPorItemId){
+        for (AvaliacaoItem item : this.itensAvaliados) {
+            Long itemId = item.getId();
+            RespostaAvaliacao respostaDoItem = (itemId != null && respostasPorItemId.containsKey(itemId))
+                    ? respostasPorItemId.get(itemId)
+                    : new RespostaAvaliacao(null, null);
+            item.vincularAvaliacao(respostaDoItem);
+        }
+        vincularAvaliacao(resposta);
+        classificarAvaliacao(resposta != null ? resposta.nota() : null);
         mudarStatusAvaliacao(StatusAvaliacao.CONCLUIDA);
     }
 

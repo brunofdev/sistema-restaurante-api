@@ -1,4 +1,7 @@
 package com.restaurante01.api_restaurante.modulos.avaliacao.dominio.entidade;
+
+import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.RespostaAvaliacao;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +11,7 @@ public class AvaliacaoBuilder {
     private List<AvaliacaoItem> itens = new ArrayList<>();
 
     private AvaliacaoBuilder() {
-        this.itens.add(AvaliacaoItem.criar(1L, "Hamburguer Clássico", null, null));
+        this.itens.add(AvaliacaoItem.criar(1L, "Hamburguer Clássico", new RespostaAvaliacao(null, null)));
     }
 
     public static AvaliacaoBuilder umaAvaliacao() {

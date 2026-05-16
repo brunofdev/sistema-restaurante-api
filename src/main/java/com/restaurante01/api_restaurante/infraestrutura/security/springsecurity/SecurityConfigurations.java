@@ -49,7 +49,8 @@ public class SecurityConfigurations {
     private static final List<Map.Entry<String, Role>> PROTECTED_ROUTES = List.of(
             // Apenas USER+
             entry("/pedido/cliente/**", Role.USER),
-            entry("/avaliacao/cliente/**", Role.CLIENT),
+            entry("/avaliacao/cliente/pendentes", Role.CLIENT),
+            entry("/avaliacao/cliente/concluir", Role.CLIENT),
 
             // Apenas ADMIN1+
             entry("/produtos/adicionar-produto", Role.ADMIN1),

@@ -23,7 +23,7 @@ import java.util.List;
 @RequestMapping("/avaliacao/cliente")
 @CrossOrigin(origins = "*")
 @Validated
-@Tag(name = "-> Avaliacao - Cliente", description = "Ações exclusivas do aplicativo do cliente para manipular avaliacoes")
+@Tag(name = "-> Avaliacao - Operadores Teste apenas", description = "Ações exclusivas do aplicativo do cliente para manipular avaliacoes")
 @SecurityRequirement(name = "bearerAuth")
 public class AvaliacaoControladorPublico {
 

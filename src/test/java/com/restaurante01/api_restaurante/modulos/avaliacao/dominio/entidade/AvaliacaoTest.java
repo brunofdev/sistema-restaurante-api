@@ -7,6 +7,9 @@ import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.enums.Tentati
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.excecao.*;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.ComentarioAvaliacao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.NotaAvaliacao;
+import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.RespostaAvaliacao;
+
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -73,7 +76,7 @@ class AvaliacaoTest {
 
         ReflectionTestUtils.setField(avaliacao, "status", StatusAvaliacao.DISPONIVEL);
 
-        avaliacao.concluirAvaliacao(nota, comentario);
+        avaliacao.concluirAvaliacao(new RespostaAvaliacao(nota, comentario), Map.of());
 
         assertThat(avaliacao.getStatus()).isEqualTo(StatusAvaliacao.CONCLUIDA);
         assertThat(avaliacao.getNota()).isEqualTo(nota);
@@ -88,7 +91,7 @@ class AvaliacaoTest {
         NotaAvaliacao nota = new NotaAvaliacao(3);
         ReflectionTestUtils.setField(avaliacao, "status", StatusAvaliacao.DISPONIVEL);
 
-        avaliacao.concluirAvaliacao(nota, null);
+        avaliacao.concluirAvaliacao(new RespostaAvaliacao(nota, null), Map.of());
 
         assertThat(avaliacao.getStatus()).isEqualTo(StatusAvaliacao.CONCLUIDA);
         assertThat(avaliacao.getNota()).isEqualTo(nota);
@@ -102,7 +105,7 @@ class AvaliacaoTest {
         Avaliacao avaliacao = AvaliacaoBuilder.umaAvaliacao().construir();
         ReflectionTestUtils.setField(avaliacao, "status", StatusAvaliacao.DISPONIVEL);
 
-        avaliacao.concluirAvaliacao(null, null);
+        avaliacao.concluirAvaliacao(new RespostaAvaliacao(null, null), Map.of());
 
         assertThat(avaliacao.getStatus()).isEqualTo(StatusAvaliacao.CONCLUIDA);
         assertThat(avaliacao.getNota()).isNull();
@@ -117,7 +120,7 @@ class AvaliacaoTest {
         ComentarioAvaliacao comentario = new ComentarioAvaliacao("Chegou frio");
         ReflectionTestUtils.setField(avaliacao, "status", StatusAvaliacao.DISPONIVEL);
 
-        assertThatThrownBy(() -> avaliacao.concluirAvaliacao(null, comentario))
+        assertThatThrownBy(() -> avaliacao.concluirAvaliacao(new RespostaAvaliacao(null, comentario), Map.of()))
                 .isInstanceOf(AvaliacaoInvalidaExcecao.class)
                 .hasMessage("Avaliação obrigatoriamente deve possuir uma Nota.");
     }
@@ -132,7 +135,7 @@ class AvaliacaoTest {
         Avaliacao avaliacao = AvaliacaoBuilder.umaAvaliacao().construir();
         ReflectionTestUtils.setField(avaliacao, "status", StatusAvaliacao.CONCLUIDA);
 
-        assertThatThrownBy(() -> avaliacao.concluirAvaliacao(new NotaAvaliacao(5), null))
+        assertThatThrownBy(() -> avaliacao.concluirAvaliacao(new RespostaAvaliacao(new NotaAvaliacao(5), null), Map.of()))
                 .isInstanceOf(StatusAvaliacaoInvalidoExcecao.class);
     }
 
