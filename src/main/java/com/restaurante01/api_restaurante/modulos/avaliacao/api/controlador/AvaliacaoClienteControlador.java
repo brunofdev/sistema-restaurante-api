@@ -1,5 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.avaliacao.api.controlador;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.restaurante01.api_restaurante.compartilhado.retorno_padrao_api.ApiResponse;
 import com.restaurante01.api_restaurante.modulos.avaliacao.api.dto.entrada.ResponderAvaliacaoDTO;
 import com.restaurante01.api_restaurante.modulos.avaliacao.api.dto.saida.AvaliacaoPendenteClienteDTO;
@@ -55,7 +56,7 @@ public class AvaliacaoClienteControlador {
     @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<ApiResponse<Void>> concluir(
             @AuthenticationPrincipal Usuario usuarioLogado,
-            @RequestBody @Valid ResponderAvaliacaoDTO dto) {
+            @RequestBody @Valid ResponderAvaliacaoDTO dto) throws JsonProcessingException {
 
         if (usuarioLogado instanceof Cliente clienteLogado) {
             concluirAvaliacao.executar(clienteLogado.getId(), dto);
