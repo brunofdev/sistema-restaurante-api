@@ -33,6 +33,9 @@ public class SecurityConfigurations {
 
     // ROTAS PUBLICAS
     private static final String[] PUBLIC_ENDPOINTS = {
+            "/",
+            "/index.html",
+            "/favicon.ico",
             "/api/auth/cliente-login",
             "/api/auth/operador-login",
             "/v3/api-docs/**",

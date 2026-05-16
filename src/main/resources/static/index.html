@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Restaurante API — Painel de Testes</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: monospace; background: #0f0f0f; color: #ddd; height: 100vh; overflow: hidden; font-size: 12px; }
+
+header {
+    background: #1a1a1a; padding: 8px 16px; border-bottom: 2px solid #333;
+    display: flex; align-items: center; justify-content: space-between;
+}
+header h1 { font-size: 14px; color: #4ade80; }
+#polling-indicator { font-size: 11px; color: #666; }
+
+.container { display: flex; height: calc(100vh - 38px); overflow: hidden; }
+
+.panel { flex: 1; padding: 10px; overflow-y: auto; border-right: 1px solid #333; }
+.panel:last-child { border-right: none; }
+
+.panel-header {
+    font-size: 13px; font-weight: bold; padding: 6px 0 8px 0;
+    margin-bottom: 8px; border-bottom: 2px solid;
+}
+.cliente .panel-header { color: #60a5fa; border-color: #60a5fa; }
+.admin .panel-header { color: #f87171; border-color: #f87171; }
+
+.section { background: #1a1a1a; border: 1px solid #333; border-radius: 4px; margin-bottom: 8px; }
+.section-title {
+    padding: 7px 10px; font-weight: bold; cursor: pointer;
+    display: flex; justify-content: space-between; background: #222;
+    border-radius: 4px 4px 0 0; user-select: none; color: #bbb;
+}
+.section-title:hover { background: #2a2a2a; }
+.section-body { padding: 10px; display: none; }
+.section-body.open { display: block; }
+
+input, select, textarea {
+    width: 100%; background: #0f0f0f; border: 1px solid #444; color: #ddd;
+    padding: 5px 7px; font-family: monospace; font-size: 11px;
+    border-radius: 3px; margin-bottom: 5px;
+}
+textarea { height: 55px; resize: vertical; }
+label { font-size: 10px; color: #888; margin-bottom: 2px; display: block; }
+
+.btn {
+    padding: 5px 10px; border: none; border-radius: 3px; cursor: pointer;
+    font-family: monospace; font-size: 11px; font-weight: bold; margin: 2px 2px 2px 0;
+}
+.btn-g { background: #16a34a; color: #fff; }
+.btn-b { background: #2563eb; color: #fff; }
+.btn-r { background: #dc2626; color: #fff; }
+.btn-y { background: #d97706; color: #fff; }
+.btn-p { background: #7c3aed; color: #fff; }
+.btn:hover { opacity: 0.8; }
+.btn-sm { padding: 3px 7px; font-size: 10px; }
+
+.resp {
+    background: #0a0a0a; border: 1px solid #2a2a2a; padding: 6px; margin-top: 6px;
+    font-size: 10px; max-height: 120px; overflow-y: auto; white-space: pre-wrap;
+    border-radius: 3px; color: #4ade80; display: none;
+}
+.resp.err { color: #f87171; }
+
+.row { display: flex; gap: 6px; }
+.row > div { flex: 1; }
+
+.status-box {
+    text-align: center; padding: 12px; border-radius: 4px; margin: 6px 0;
+    font-size: 15px; font-weight: bold; transition: all 0.4s; background: #111; color: #555;
+}
+
+.card {
+    background: #111; border: 1px solid #333; border-radius: 3px;
+    padding: 7px; margin-bottom: 5px; font-size: 11px;
+}
+
+.tok { font-size: 10px; color: #4ade80; margin-top: 4px; word-break: break-all; display: none; }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>🍔 Restaurante API — Painel de Testes</h1>
+    <div>
+        <span id="polling-indicator">⚫ sem pedido ativo</span>
+        &nbsp;|&nbsp; <code style="color:#888">localhost:8080</code>
+        &nbsp;|&nbsp; <a href="/swagger-ui.html" target="_blank" style="color:#60a5fa; text-decoration:none; font-size:11px;">Swagger UI ↗</a>
+    </div>
+</header>
+
+<div class="container">
+
+<!-- ===================== CLIENTE ===================== -->
+<div class="panel cliente">
+<div class="panel-header">👤 CLIENTE</div>
+
+<!-- 1. Cadastro & Login -->
+<div class="section">
+    <div class="section-title" onclick="tog(this)">🔐 1. Cadastro & Login <span>▼</span></div>
+    <div class="section-body open">
+        <div class="row">
+            <div>
+                <label>CPF</label><input id="c-cpf" value="12345678901">
+                <label>Senha</label><input id="c-senha" type="password" value="Teste@123">
+                <button class="btn btn-g" onclick="clienteLogin()">Entrar</button>
+                <button class="btn btn-b" onclick="toggleEl('cad-cli')">Cadastrar</button>
+            </div>
+        </div>
+        <div id="cad-cli" style="display:none; margin-top:8px; padding-top:8px; border-top:1px solid #333">
+            <div class="row">
+                <div>
+                    <label>Nome</label><input id="c-nome" value="João da Silva">
+                    <label>CPF</label><input id="c-cpf2" value="11122233344">
+                    <label>Email</label><input id="c-email" value="joao@email.com">
+                    <label>Telefone</label><input id="c-tel" value="11987654321">
+                    <label>Senha</label><input id="c-senha2" value="Teste@123">
+                </div>
+                <div>
+                    <label>Estado</label><input id="c-uf" value="SP">
+                    <label>Cidade</label><input id="c-cidade" value="São Paulo">
+                    <label>Bairro</label><input id="c-bairro" value="Centro">
+                    <label>Rua</label><input id="c-rua" value="Rua das Flores">
+                    <label>Número</label><input id="c-num" type="number" value="100">
+                    <label>CEP</label><input id="c-cep" value="01310-100">
+                </div>
+            </div>
+            <button class="btn btn-g" onclick="cadastrarCliente()">Confirmar Cadastro</button>
+        </div>
+        <div id="c-tok" class="tok"></div>
+        <div id="c-resp" class="resp"></div>
+    </div>
+</div>
+
+<!-- 2. Cardápio Público -->
+<div class="section">
+    <div class="section-title" onclick="tog(this)">📋 2. Cardápio (público) <span>▶</span></div>
+    <div class="section-body">
+        <button class="btn btn-b" onclick="carregarCardapio()">Carregar Cardápio</button>
+        <div id="cardapio-lista" style="margin-top:6px"></div>
+        <div id="cardapio-resp" class="resp"></div>
+    </div>
+</div>
+
+<!-- 3. Fazer Pedido -->
+<div class="section">
+    <div class="section-title" onclick="tog(this)">🛒 3. Fazer Pedido <span>▶</span></div>
+    <div class="section-body">
+        <label>ID do Cardápio</label><input id="p-cid" type="number" value="1">
+        <label>Itens (JSON)</label>
+        <textarea id="p-itens">[{"idProduto": 1, "quantidade": 1, "observacao": ""}]</textarea>
+        <label>Cupom (opcional)</label><input id="p-cupom" placeholder="ex: DESCONTO10">
+        <button class="btn btn-g" onclick="criarPedido()">Fazer Pedido</button>
+        <div id="p-resp" class="resp"></div>
+    </div>
+</div>
+
+<!-- 4. Status ao vivo -->
+<div class="section">
+    <div class="section-title" onclick="tog(this)">📦 4. Status do Pedido (ao vivo) <span>▶</span></div>
+    <div class="section-body">
+        <div id="status-cli" class="status-box">Nenhum pedido ativo</div>
+        <div id="status-info" style="text-align:center; font-size:10px; color:#555; margin-bottom:4px">
+            Atualiza a cada 3s após fazer um pedido
+        </div>
+        <div id="pedido-detalhe" style="font-size:10px; color:#888"></div>
+    </div>
+</div>
+
+<!-- 5. Avaliações -->
+<div class="section">
+    <div class="section-title" onclick="tog(this)">⭐ 5. Avaliações <span>▶</span></div>
+    <div class="section-body">
+        <button class="btn btn-b" onclick="buscarAvaliacoesPendentes()">Ver Pendentes</button>
+        <div id="av-pendentes-lista" style="margin-top:6px"></div>
+        <div id="av-pendentes-resp" class="resp"></div>
+
+        <div style="margin-top:10px; padding-top:8px; border-top:1px solid #333">
+            <label>ID da Avaliação</label><input id="av-id" type="number" placeholder="ID">
+            <label>Nota geral (1-5, vazio = sem nota)</label>
+            <input id="av-nota" type="number" min="1" max="5" placeholder="1-5">
+            <label>Comentário (opcional)</label>
+            <input id="av-comentario" placeholder="Ótimo atendimento!">
+            <label>Itens avaliados (JSON)</label>
+            <textarea id="av-itens">[]</textarea>
+            <button class="btn btn-g" onclick="concluirAvaliacao()">Enviar Avaliação</button>
+            <div id="av-resp" class="resp"></div>
+        </div>
+    </div>
+</div>
+
+</div><!-- /panel cliente -->
+
+<!-- ===================== ADMIN ===================== -->
+<div class="panel admin">
+<div class="panel-header">🔧 OPERADOR / ADMIN</div>
+
+<!-- 1. Login Operador -->
+<div class="section">
+    <div class="section-title" onclick="tog(this)">🔐 1. Login Operador <span>▼</span></div>
+    <div class="section-body open">
+        <label>CPF</label><input id="op-cpf" value="99988877766">
+        <label>Senha</label><input id="op-senha" type="password" value="Admin@123">
+        <button class="btn btn-r" onclick="operadorLogin()">Entrar como Operador</button>
+        <button class="btn btn-b" onclick="toggleEl('cad-op')">Cadastrar Operador</button>
+        <div id="cad-op" style="display:none; margin-top:8px; padding-top:8px; border-top:1px solid #333">
+            <div class="row">
+                <div>
+                    <label>Nome</label><input id="op-nome2" value="Admin Principal">
+                    <label>CPF</label><input id="op-cpf2" value="99988877766">
+                    <label>Email</label><input id="op-email2" value="admin@restaurante.com">
+                    <label>Telefone</label><input id="op-tel2" value="11999887766">
+                </div>
+                <div>
+                    <label>Senha</label><input id="op-senha2" value="Admin@123">
+                    <label>Matrícula (1000-999999)</label>
+                    <input id="op-matricula" type="number" value="10001">
+                </div>
+            </div>
+            <button class="btn btn-r" onclick="cadastrarOperador()">Confirmar Cadastro</button>
+        </div>
+        <div id="op-tok" class="tok"></div>
+        <div id="op-resp" class="resp"></div>
+    </div>
+</div>
+
+<!-- 2. Pedidos do Dia -->
+<div class="section">
+    <div class="section-title" onclick="tog(this)">📋 2. Pedidos do Dia <span>▶</span></div>
+    <div class="section-body">
+        <button class="btn btn-b" onclick="pedidosHoje()">Carregar Pedidos de Hoje</button>
+        <div id="pedidos-lista" style="margin-top:6px"></div>
+        <div id="pedidos-resp" class="resp"></div>
+    </div>
+</div>
+
+<!-- 3. Atualizar Status -->
+<div class="section">
+    <div class="section-title" onclick="tog(this)">🔄 3. Mover Status do Pedido <span>▶</span></div>
+    <div class="section-body">
+        <div id="status-adm" class="status-box">Nenhum pedido selecionado</div>
+        <label>ID do Pedido</label><input id="status-id" type="number" placeholder="ID do pedido">
+        <label>Novo Status</label>
+        <select id="status-novo">
+            <option value="PREPARANDO">PREPARANDO</option>
+            <option value="PRONTO">PRONTO</option>
+            <option value="SAIU_PARA_ENTREGA">SAIU_PARA_ENTREGA</option>
+            <option value="ENTREGUE">ENTREGUE</option>
+            <option value="CANCELADO">CANCELADO</option>
+        </select>
+        <button class="btn btn-y" onclick="atualizarStatus()">Atualizar Status</button>
+        <div id="status-resp" class="resp"></div>
+    </div>
+</div>
+
+<!-- 4. Avaliações Admin -->
+<div class="section">
+    <div class="section-title" onclick="tog(this)">⭐ 4. Avaliações (Admin) <span>▶</span></div>
+    <div class="section-body">
+        <button class="btn btn-b btn-sm" onclick="avaliacoesAdmin('todas')">Todas</button>
+        <button class="btn btn-y btn-sm" onclick="avaliacoesAdmin('pendentes')">Pendentes</button>
+        <button class="btn btn-g btn-sm" onclick="avaliacoesAdmin('concluidas')">Concluídas</button>
+        <button class="btn btn-p btn-sm" onclick="avaliacoesAdmin('disponiveis')">Disponíveis</button>
+        <div id="av-adm-lista" style="margin-top:6px"></div>
+        <div id="av-adm-resp" class="resp"></div>
+    </div>
+</div>
+
+<!-- 5. Produtos -->
+<div class="section">
+    <div class="section-title" onclick="tog(this)">🍔 5. Produtos <span>▶</span></div>
+    <div class="section-body">
+        <button class="btn btn-b" onclick="listarProdutos()">Listar Todos</button>
+        <div id="prod-lista" style="margin-top:6px"></div>
+        <div style="margin-top:8px; padding-top:8px; border-top:1px solid #333">
+            <label>Nome</label><input id="prod-nome" value="X-Burguer Especial">
+            <label>Descrição</label><input id="prod-desc" value="Blend 180g, queijo, alface, tomate">
+            <div class="row">
+                <div><label>Preço</label><input id="prod-preco" type="number" step="0.01" value="29.90"></div>
+                <div><label>Qtd</label><input id="prod-qtd" type="number" value="50"></div>
+                <div>
+                    <label>Disponível</label>
+                    <select id="prod-disp"><option value="true">Sim</option><option value="false">Não</option></select>
+                </div>
+            </div>
+            <button class="btn btn-g" onclick="adicionarProduto()">Adicionar Produto</button>
+        </div>
+        <div id="prod-resp" class="resp"></div>
+    </div>
+</div>
+
+<!-- 6. Cupons -->
+<div class="section">
+    <div class="section-title" onclick="tog(this)">🎟️ 6. Cupons <span>▶</span></div>
+    <div class="section-body">
+        <button class="btn btn-b" onclick="listarCupons()">Listar Cupons</button>
+        <div id="cupons-lista" style="margin-top:6px"></div>
+        <div style="margin-top:8px; padding-top:8px; border-top:1px solid #333">
+            <div class="row">
+                <div>
+                    <label>Código</label><input id="cup-codigo" value="DESCONTO10">
+                    <label>Tipo</label>
+                    <select id="cup-tipo"><option value="PORCENTAGEM">PORCENTAGEM</option><option value="VALOR">VALOR</option></select>
+                    <label>Valor Desconto</label><input id="cup-valor" type="number" step="0.01" value="10">
+                    <label>Quantidade</label><input id="cup-qtd" type="number" value="100">
+                </div>
+                <div>
+                    <label>Pedido Mínimo</label><input id="cup-min" type="number" value="30">
+                    <label>Pedido Máximo</label><input id="cup-max" type="number" value="200">
+                    <label>Recorrência</label>
+                    <select id="cup-rec">
+                        <option value="DEZ_DIAS">DEZ_DIAS</option>
+                        <option value="QUINZE_DIAS">QUINZE_DIAS</option>
+                        <option value="TRINTA_DIAS">TRINTA_DIAS</option>
+                    </select>
+                    <label>Data Início (DD/MM/YYYY)</label><input id="cup-dtini" value="01/01/2026">
+                    <label>Data Fim</label><input id="cup-dtfim" value="31/12/2026">
+                </div>
+            </div>
+            <button class="btn btn-g" onclick="criarCupom()">Criar Cupom</button>
+        </div>
+        <div id="cupons-resp" class="resp"></div>
+    </div>
+</div>
+
+</div><!-- /panel admin -->
+</div><!-- /container -->
+
+<script>
+// ===================== STATE =====================
+let cToken = null, opToken = null, pedidoId = null, poll = null;
+const B = '';
+
+// ===================== UTILS =====================
+function tog(el) {
+    const b = el.nextElementSibling, a = el.querySelector('span');
+    const o = b.classList.toggle('open');
+    a.textContent = o ? '▼' : '▶';
+}
+function toggleEl(id) {
+    const el = document.getElementById(id);
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+function show(id, data, err) {
+    const el = document.getElementById(id);
+    el.style.display = 'block';
+    el.className = 'resp' + (err ? ' err' : '');
+    el.textContent = typeof data === 'object' ? JSON.stringify(data, null, 2) : String(data);
+}
+async function api(method, path, body, token) {
+    const h = { 'Content-Type': 'application/json' };
+    if (token) h['Authorization'] = 'Bearer ' + token;
+    const r = await fetch(B + path, { method, headers: h, body: body ? JSON.stringify(body) : undefined });
+    const t = await r.text();
+    try { return { ok: r.ok, status: r.status, data: JSON.parse(t) }; }
+    catch { return { ok: r.ok, status: r.status, data: t }; }
+}
+function extractToken(data) {
+    if (!data || !data.dados) return null;
+    const d = data.dados;
+    return d.token || d.accessToken || d.jwt
+        || Object.values(d).find(v => typeof v === 'string' && v.startsWith('ey'));
+}
+function statusStyle(s) {
+    const m = {
+        PENDENTE:          ['#0d1b2a','#60a5fa'],
+        PREPARANDO:        ['#1a2e0d','#86efac'],
+        PRONTO:            ['#2e1a0d','#fcd34d'],
+        SAIU_PARA_ENTREGA: ['#2e0d1a','#f9a8d4'],
+        ENTREGUE:          ['#0d2e0d','#4ade80'],
+        CANCELADO:         ['#2e0d0d','#f87171'],
+    };
+    return m[s] || ['#111','#666'];
+}
+function setStatus(status) {
+    ['status-cli','status-adm'].forEach(id => {
+        const el = document.getElementById(id);
+        const [bg, color] = statusStyle(status);
+        el.style.background = bg; el.style.color = color;
+        el.textContent = '📦 ' + status;
+    });
+}
+
+// ===================== CLIENTE AUTH =====================
+async function cadastrarCliente() {
+    const r = await api('POST', '/cliente/cadastro', {
+        nome: v('c-nome'), cpf: v('c-cpf2'), email: v('c-email'),
+        telefone: v('c-tel'), senha: v('c-senha2'),
+        estado: v('c-uf'), cidade: v('c-cidade'), bairro: v('c-bairro'),
+        rua: v('c-rua'), numero: parseInt(v('c-num')), cep: v('c-cep'),
+        complemento: '', referencia: ''
+    });
+    show('c-resp', r.data, !r.ok);
+    if (r.ok) { set('c-cpf', v('c-cpf2')); set('c-senha', v('c-senha2')); }
+}
+async function clienteLogin() {
+    const r = await api('POST', '/api/auth/cliente-login', { cpf: v('c-cpf'), senha: v('c-senha') });
+    show('c-resp', r.data, !r.ok);
+    cToken = extractToken(r.data);
+    if (cToken) { show2('c-tok', '✅ Logado — ' + cToken.substring(0,30) + '...'); }
+}
+
+// ===================== OPERADOR AUTH =====================
+async function cadastrarOperador() {
+    const r = await api('POST', '/operador/cadastro', {
+        nome: v('op-nome2'), cpf: v('op-cpf2'), email: v('op-email2'),
+        telefone: v('op-tel2'), senha: v('op-senha2'),
+        matricula: parseInt(v('op-matricula'))
+    });
+    show('op-resp', r.data, !r.ok);
+    if (r.ok) { set('op-cpf', v('op-cpf2')); set('op-senha', v('op-senha2')); }
+}
+async function operadorLogin() {
+    const r = await api('POST', '/api/auth/operador-login', { cpf: v('op-cpf'), senha: v('op-senha') });
+    show('op-resp', r.data, !r.ok);
+    opToken = extractToken(r.data);
+    if (opToken) { show2('op-tok', '✅ Logado — ' + opToken.substring(0,30) + '...'); }
+}
+
+// ===================== CARDÁPIO =====================
+async function carregarCardapio() {
+    const r = await api('GET', '/cardapio-produto/publico/todas');
+    show('cardapio-resp', r.data, !r.ok);
+    if (!r.ok || !r.data || !r.data.dados) return;
+    const cardapios = Array.isArray(r.data.dados) ? r.data.dados : [r.data.dados];
+    document.getElementById('cardapio-lista').innerHTML = cardapios.map(c => {
+        const itens = c.produtos || c.associacoes || c.itens || [];
+        const id = c.id || c.idCardapio;
+        return `<div class="card">
+            <strong>📋 Cardápio #${id} — ${c.nome || ''}</strong>
+            ${itens.map(p => `<div style="color:#888;padding:1px 6px">▸ [#${p.idProduto||p.id}] ${p.nomeProduto||p.nome||''} — R$ ${p.precoCustomizado||p.preco||''}</div>`).join('')}
+            <button class="btn btn-b btn-sm" style="margin-top:4px" onclick="usarCardapio(${id},${JSON.stringify(itens.map(p=>p.idProduto||p.id))})">
+                Usar este cardápio
+            </button>
+        </div>`;
+    }).join('') || '<div style="color:#555">Nenhum cardápio encontrado</div>';
+}
+function usarCardapio(id, pids) {
+    set('p-cid', id);
+    set('p-itens', JSON.stringify(pids.map(pid => ({ idProduto: pid, quantidade: 1, observacao: '' })), null, 2));
+}
+
+// ===================== PEDIDO =====================
+async function criarPedido() {
+    if (!cToken) { alert('Faça login como cliente primeiro!'); return; }
+    let itens; try { itens = JSON.parse(v('p-itens')); } catch { alert('JSON inválido'); return; }
+    const body = { idCardapio: parseInt(v('p-cid')), itens };
+    const cup = v('p-cupom'); if (cup) body.cupom = cup;
+    const r = await api('POST', '/pedido/cliente/criar', body, cToken);
+    show('p-resp', r.data, !r.ok);
+    if (r.ok && r.data && r.data.dados) {
+        pedidoId = r.data.dados.id || r.data.dados.pedidoId;
+        set('status-id', pedidoId);
+        iniciarPolling();
+    }
+}
+
+// ===================== POLLING =====================
+function iniciarPolling() {
+    if (poll) clearInterval(poll);
+    document.getElementById('polling-indicator').textContent = '🔴 polling ativo (pedido #' + pedidoId + ')';
+    poll = setInterval(pollStatus, 3000);
+    pollStatus();
+}
+async function pollStatus() {
+    if (!cToken || !pedidoId) return;
+    const r = await api('GET', '/pedido/cliente/historico?page=0&size=5', null, cToken);
+    if (!r.ok || !r.data || !r.data.dados) return;
+    const pedidos = r.data.dados.content || r.data.dados;
+    const p = Array.isArray(pedidos) ? pedidos.find(x => x.id == pedidoId) || pedidos[0] : pedidos;
+    if (!p || !p.statusPedido) return;
+    setStatus(p.statusPedido);
+    document.getElementById('pedido-detalhe').textContent =
+        `Pedido #${p.id} | Total: R$ ${p.valorTotal||'?'} | ${new Date().toLocaleTimeString()}`;
+    if (['ENTREGUE','CANCELADO'].includes(p.statusPedido)) {
+        clearInterval(poll);
+        document.getElementById('polling-indicator').textContent = '⚫ pedido finalizado';
+    }
+}
+
+// ===================== ADMIN — PEDIDOS =====================
+async function pedidosHoje() {
+    if (!opToken) { alert('Faça login como operador primeiro!'); return; }
+    const r = await api('GET', '/pedido/operador/hoje?page=0&size=20', null, opToken);
+    show('pedidos-resp', r.data, !r.ok);
+    if (!r.ok || !r.data || !r.data.dados) return;
+    const lista = r.data.dados.content || r.data.dados || [];
+    document.getElementById('pedidos-lista').innerHTML = (Array.isArray(lista) ? lista : []).map(p => `
+        <div class="card">
+            <strong>Pedido #${p.id}</strong> | Status: <strong>${p.statusPedido}</strong> | R$ ${p.valorTotal||'?'}
+            <button class="btn btn-y btn-sm" style="float:right" onclick="selecionarPedido(${p.id}, '${p.statusPedido}')">Selecionar</button>
+        </div>
+    `).join('') || '<div style="color:#555">Nenhum pedido hoje</div>';
+}
+function selecionarPedido(id, status) {
+    pedidoId = id; set('status-id', id);
+    setStatus(status);
+    if (cToken) iniciarPolling();
+}
+
+async function atualizarStatus() {
+    if (!opToken) { alert('Faça login como operador primeiro!'); return; }
+    const id = v('status-id'); if (!id) { alert('Informe o ID do pedido'); return; }
+    const r = await api('PATCH', `/pedido/operador/${id}/status`, { statusPedido: v('status-novo') }, opToken);
+    show('status-resp', r.data, !r.ok);
+    if (r.ok && r.data && r.data.dados) {
+        setStatus(r.data.dados.statusPedido || v('status-novo'));
+        pedidosHoje();
+    }
+}
+
+// ===================== AVALIAÇÕES CLIENTE =====================
+async function buscarAvaliacoesPendentes() {
+    if (!cToken) { alert('Faça login como cliente primeiro!'); return; }
+    const r = await api('GET', '/avaliacao/cliente/pendentes', null, cToken);
+    show('av-pendentes-resp', r.data, !r.ok);
+    if (!r.ok || !r.data || !r.data.dados) return;
+    const avs = Array.isArray(r.data.dados) ? r.data.dados : [r.data.dados];
+    document.getElementById('av-pendentes-lista').innerHTML = avs.length === 0
+        ? '<div style="color:#555">Nenhuma avaliação pendente</div>'
+        : avs.map(av => `
+            <div class="card">
+                <strong>Avaliação #${av.avaliacaoId||av.id}</strong> | Pedido #${av.pedidoId}
+                <br><span style="color:#888">${(av.itensDoPedido||[]).map(i=>`[${i.idItem||i.id}] ${i.nomeProduto||''}`).join(', ')}</span>
+                <button class="btn btn-b btn-sm" style="margin-top:4px"
+                    onclick="preencherAv(${av.avaliacaoId||av.id}, ${JSON.stringify(av.itensDoPedido||[])})">
+                    Preencher
+                </button>
+            </div>
+        `).join('');
+}
+function preencherAv(id, itens) {
+    set('av-id', id);
+    if (itens && itens.length > 0) {
+        set('av-itens', JSON.stringify(itens.map(i => ({ idItem: i.idItem||i.id, nota: 5, comentario: '' })), null, 2));
+    }
+}
+async function concluirAvaliacao() {
+    if (!cToken) { alert('Faça login como cliente primeiro!'); return; }
+    const nota = v('av-nota'); let itens;
+    try { itens = JSON.parse(v('av-itens')); } catch { itens = []; }
+    const body = {
+        idAvaliacao: parseInt(v('av-id')),
+        avaliacaoDTO: nota ? { nota: parseInt(nota), comentario: v('av-comentario') || null } : null,
+        itensAvaliados: itens
+    };
+    const r = await api('POST', '/avaliacao/cliente/concluir', body, cToken);
+    show('av-resp', r.data, !r.ok);
+}
+
+// ===================== AVALIAÇÕES ADMIN =====================
+async function avaliacoesAdmin(filtro) {
+    if (!opToken) { alert('Faça login como operador primeiro!'); return; }
+    const r = await api('GET', `/avaliacao/operador/${filtro}`, null, opToken);
+    show('av-adm-resp', r.data, !r.ok);
+    if (!r.ok || !r.data || !r.data.dados) return;
+    const avs = Array.isArray(r.data.dados) ? r.data.dados : [r.data.dados];
+    document.getElementById('av-adm-lista').innerHTML = avs.length === 0
+        ? `<div style="color:#555">Nenhuma avaliação (${filtro})</div>`
+        : avs.map(av => `
+            <div class="card">
+                <strong>#${av.id}</strong> | Pedido #${av.pedidoId} | Cliente #${av.clienteId}
+                <br>Status: <strong>${av.status}</strong> | Nota: ${av.nota||'-'} | ${av.classificacao||''}
+            </div>
+        `).join('');
+}
+
+// ===================== PRODUTOS =====================
+async function listarProdutos() {
+    const r = await api('GET', '/produtos/todos-produtos');
+    show('prod-resp', r.data, !r.ok);
+    if (!r.ok || !r.data || !r.data.dados) return;
+    const prods = Array.isArray(r.data.dados) ? r.data.dados : [r.data.dados];
+    document.getElementById('prod-lista').innerHTML = prods.map(p => `
+        <div class="card">
+            [#${p.id}] <strong>${p.nome}</strong> — R$ ${p.preco} | Qtd: ${p.quantidadeAtual||p.qtdAtual||0} | ${p.disponibilidade ? '✅' : '❌'}
+        </div>
+    `).join('');
+}
+async function adicionarProduto() {
+    if (!opToken) { alert('Faça login como operador primeiro!'); return; }
+    const r = await api('POST', '/produtos/adicionar-produto', {
+        nome: v('prod-nome'), descricao: v('prod-desc'),
+        preco: parseFloat(v('prod-preco')),
+        quantidadeAtual: parseInt(v('prod-qtd')),
+        disponibilidade: v('prod-disp') === 'true'
+    }, opToken);
+    show('prod-resp', r.data, !r.ok);
+    if (r.ok) listarProdutos();
+}
+
+// ===================== CUPONS =====================
+async function listarCupons() {
+    if (!opToken) { alert('Faça login como operador primeiro!'); return; }
+    const r = await api('GET', '/cupom/admin/listar', null, opToken);
+    show('cupons-resp', r.data, !r.ok);
+    if (!r.ok || !r.data || !r.data.dados) return;
+    const cupons = Array.isArray(r.data.dados) ? r.data.dados : [r.data.dados];
+    document.getElementById('cupons-lista').innerHTML = cupons.map(c => `
+        <div class="card">
+            <strong>${c.codigo||c.valor}</strong> | ${c.tipoDesconto} ${c.valorDesconto}
+            | Qtd: ${c.quantidadeRestante||c.quantidade||0} | ${c.estaAtivo ? '✅' : '❌'}
+        </div>
+    `).join('') || '<div style="color:#555">Nenhum cupom</div>';
+}
+async function criarCupom() {
+    if (!opToken) { alert('Faça login como operador primeiro!'); return; }
+    const body = {
+        codigoCupom: v('cup-codigo'), tipoDesconto: v('cup-tipo'),
+        regraRecorrencia: v('cup-rec'),
+        quantidade: parseInt(v('cup-qtd')),
+        valorParaDesconto: parseFloat(v('cup-valor')),
+        valorTotalMinPedido: parseFloat(v('cup-min')),
+        valorTotalMaxPedido: parseFloat(v('cup-max')),
+        estaAtivo: true,
+        periodo: {
+            dataInicio: v('cup-dtini'), horaInicio: '00:00',
+            dataFim: v('cup-dtfim'), horaFim: '23:59'
+        }
+    };
+    const r = await api('POST', '/cupom/admin/criar', body, opToken);
+    show('cupons-resp', r.data, !r.ok);
+    if (r.ok) listarCupons();
+}
+
+// ===================== HELPERS =====================
+function v(id) { return document.getElementById(id).value; }
+function set(id, val) { document.getElementById(id).value = val; }
+function show2(id, txt) { const el = document.getElementById(id); el.style.display = 'block'; el.textContent = txt; }
+
+// Carrega cardápio automaticamente ao abrir
+carregarCardapio();
+</script>
+</body>
+</html>
