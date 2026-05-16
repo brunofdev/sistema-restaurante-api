@@ -218,10 +218,8 @@
   /* ── STATUS COLORS ── */
   .s-PENDENTE          { background: #1e3a5f; border-color: #2563eb; }
   .s-PENDENTE          .status-value { color: #60a5fa; }
-  .s-PREPARANDO        { background: #1a3323; border-color: #16a34a; }
-  .s-PREPARANDO        .status-value { color: #4ade80; }
-  .s-PRONTO            { background: #3b2a0a; border-color: #d97706; }
-  .s-PRONTO            .status-value { color: #fcd34d; }
+  .s-EM_PREPARACAO     { background: #1a3323; border-color: #16a34a; }
+  .s-EM_PREPARACAO     .status-value { color: #4ade80; }
   .s-SAIU_PARA_ENTREGA { background: #3b1f5e; border-color: #7c3aed; }
   .s-SAIU_PARA_ENTREGA .status-value { color: #c4b5fd; }
   .s-ENTREGUE          { background: #14532d; border-color: #16a34a; }
@@ -516,9 +514,8 @@
         <div class="form-group">
           <label>Novo Status</label>
           <select id="status-novo">
-            <option value="PREPARANDO">🍳 PREPARANDO</option>
-            <option value="PRONTO">✅ PRONTO</option>
-            <option value="SAIU_PARA_ENTREGA">🛵 SAIU_PARA_ENTREGA</option>
+            <option value="EM_PREPARACAO">🍳 EM PREPARAÇÃO</option>
+            <option value="SAIU_PARA_ENTREGA">🛵 SAIU PARA ENTREGA</option>
             <option value="ENTREGUE">📦 ENTREGUE</option>
             <option value="CANCELADO">❌ CANCELADO</option>
           </select>
