@@ -100,6 +100,18 @@ class AvaliacaoTest {
     }
 
     @Test
+    @DisplayName("Dado nota 2, Quando concluir avaliação, Então classifica como INSATISFEITO")
+    void deveConcluirComNotaInsatisfeita() {
+        Avaliacao avaliacao = AvaliacaoBuilder.umaAvaliacao().construir();
+        ReflectionTestUtils.setField(avaliacao, "status", StatusAvaliacao.DISPONIVEL);
+
+        avaliacao.concluirAvaliacao(new RespostaAvaliacao(new NotaAvaliacao(2), null), Map.of());
+
+        assertThat(avaliacao.getStatus()).isEqualTo(StatusAvaliacao.CONCLUIDA);
+        assertThat(avaliacao.getAvaliacao()).isEqualTo(ClassificacaoAvaliacao.INSATISFEITO);
+    }
+
+    @Test
     @DisplayName("Dado ausência de nota e comentário (voto em branco), Quando concluir avaliação, Então classifica como NAO_AVALIADO")
     void devePermitirVotoEmBranco() {
         Avaliacao avaliacao = AvaliacaoBuilder.umaAvaliacao().construir();
@@ -111,6 +123,23 @@ class AvaliacaoTest {
         assertThat(avaliacao.getNota()).isNull();
         assertThat(avaliacao.getComentarioAvaliacao()).isNull();
         assertThat(avaliacao.getAvaliacao()).isEqualTo(ClassificacaoAvaliacao.NAO_AVALIADO);
+    }
+
+    @Test
+    @DisplayName("Dado mapa com resposta para um item, Quando concluir, Então o item recebe a resposta do mapa")
+    void deveAplicarRespostaDoMapaAosItens() {
+        Avaliacao avaliacao = AvaliacaoBuilder.umaAvaliacao().construir();
+        ReflectionTestUtils.setField(avaliacao, "status", StatusAvaliacao.DISPONIVEL);
+        AvaliacaoItem item = avaliacao.getItensAvaliados().get(0);
+        ReflectionTestUtils.setField(item, "id", 10L);
+
+        NotaAvaliacao nota = new NotaAvaliacao(4);
+        Map<Long, RespostaAvaliacao> mapa = Map.of(10L, new RespostaAvaliacao(nota, null));
+
+        avaliacao.concluirAvaliacao(new RespostaAvaliacao(null, null), mapa);
+
+        assertThat(item.getNota()).isEqualTo(nota);
+        assertThat(item.getComentarioAvaliacao().valor()).isEqualTo("Avaliação feita sem comentário");
     }
 
     @Test
@@ -140,6 +169,15 @@ class AvaliacaoTest {
     }
 
     @Test
+    @DisplayName("Dado uma avaliação com status PENDENTE, Quando tentar concluir, Então lança erro de transição")
+    void naoDeveConcluirAvaliacaoPendente() {
+        Avaliacao avaliacao = AvaliacaoBuilder.umaAvaliacao().construir();
+
+        assertThatThrownBy(() -> avaliacao.concluirAvaliacao(new RespostaAvaliacao(null, null), Map.of()))
+                .isInstanceOf(StatusAvaliacaoInvalidoExcecao.class);
+    }
+
+    @Test
     @DisplayName("Dado uma avaliação PENDENTE, Quando a data de expiração não chegou, Então falha ao tentar expirar")
     void naoDeveExpirarAntesDaData() {
         Avaliacao avaliacao = AvaliacaoBuilder.umaAvaliacao().construir();
@@ -158,6 +196,16 @@ class AvaliacaoTest {
         avaliacao.expirarAvaliacao();
 
         assertThat(avaliacao.getStatus()).isEqualTo(StatusAvaliacao.EXPIRADA);
+    }
+
+    @Test
+    @DisplayName("Dado uma avaliação PENDENTE com data vencida, Quando tentar expirar, Então lança erro de transição")
+    void naoDeveExpirarAvaliacaoPendenteMesmoComDataVencida() {
+        Avaliacao avaliacao = AvaliacaoBuilder.umaAvaliacao().construir();
+        ReflectionTestUtils.setField(avaliacao, "dataExpiracao", LocalDateTime.now().minusDays(1));
+
+        assertThatThrownBy(avaliacao::expirarAvaliacao)
+                .isInstanceOf(StatusAvaliacaoInvalidoExcecao.class);
     }
 
     // ==========================================

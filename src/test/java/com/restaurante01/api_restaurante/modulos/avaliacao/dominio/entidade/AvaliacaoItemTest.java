@@ -94,6 +94,17 @@ class AvaliacaoItemTest {
     }
 
     @Test
+    @DisplayName("Dado resposta nula, Quando vincular, Então mantém nulos (equivalente a voto em branco)")
+    void devePermitirVotoEmBrancoComRespostaNula() {
+        AvaliacaoItem item = AvaliacaoItemBuilder.umItem().construir();
+
+        item.vincularAvaliacao(null);
+
+        assertThat(item.getNota()).isNull();
+        assertThat(item.getComentarioAvaliacao()).isNull();
+    }
+
+    @Test
     @DisplayName("Dado comentário sem nota, Quando vincular, Então lança exceção")
     void naoDeveAceitarComentarioSemNota() {
         AvaliacaoItem item = AvaliacaoItemBuilder.umItem().construir();
