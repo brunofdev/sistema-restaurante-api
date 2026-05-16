@@ -53,6 +53,7 @@ public class SecurityConfigurations {
             entry("/avaliacao/cliente/concluir", Role.CLIENT),
 
             // Apenas ADMIN1+
+            entry("/avaliacao/operador/**", Role.ADMIN1),
             entry("/produtos/adicionar-produto", Role.ADMIN1),
             entry("/cardapio-produto/operador/**", Role.ADMIN1),
             entry("/pedido/operador/*/status", Role.ADMIN1),
