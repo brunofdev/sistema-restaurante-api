@@ -20,4 +20,5 @@ public interface AvaliacaoRepositorio {
     List<Avaliacao> buscarPendentesDeRenotificacao(StatusAvaliacao status, TentativaNotificacao TentativaNotificacao, LocalDateTime horario);
     List<Avaliacao> buscarAvaliacoesPorClienteId(StatusAvaliacao statusAvaliacao, Long idCliente);
     List<Avaliacao> buscarTodosPorClienteId(Long idCliente);
+    List<Avaliacao> buscarTodasPorStatus(StatusAvaliacao statusAvaliacao);
 }
