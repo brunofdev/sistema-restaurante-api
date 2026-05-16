@@ -36,7 +36,7 @@ public class PedidoJpaAdaptador implements PedidoRepositorio {
 
     @Override
     public Page<Pedido> buscarPorCliente(Cliente cliente, Pageable pageable) {
-        return jpa.findByCliente(cliente, pageable);
+        return jpa.findByCliente_ClienteId(cliente.getId(), pageable);
     }
 
     @Override
