@@ -1,8 +1,11 @@
 package com.restaurante01.api_restaurante.modulos.avaliacao.aplicacao.casodeuso;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.restaurante01.api_restaurante.compartilhado.dominio.repositorio.OutboxRepositorio;
 import com.restaurante01.api_restaurante.modulos.avaliacao.api.dto.entrada.AvaliacaoDTO;
 import com.restaurante01.api_restaurante.modulos.avaliacao.api.dto.entrada.ItemAvaliadoDTO;
 import com.restaurante01.api_restaurante.modulos.avaliacao.api.dto.entrada.ResponderAvaliacaoDTO;
+import com.restaurante01.api_restaurante.modulos.avaliacao.aplicacao.evento.AvaliacaoConcluidaEvento;
 import com.restaurante01.api_restaurante.modulos.avaliacao.aplicacao.mapeador.AvaliacaoMapeador;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.entidade.Avaliacao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.entidade.AvaliacaoBuilder;
@@ -18,9 +21,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
@@ -40,6 +45,15 @@ class ConcluirAvaliacaoAvaliadaCasoDeUsoTest {
 
     @Mock
     private AvaliacaoMapeador mapeador;
+
+    @Mock
+    private ApplicationEventPublisher publicadorDeEvento;
+
+    @Mock
+    private OutboxRepositorio outboxRepositorio;
+
+    @Mock
+    private ObjectMapper objectMapper;
 
     @InjectMocks
     private ConcluirAvaliacaoAvaliadaCasoDeUso casoDeUso;
@@ -61,7 +75,7 @@ class ConcluirAvaliacaoAvaliadaCasoDeUsoTest {
 
     @Test
     @DisplayName("Dado DTO completo com nota e itens, Quando executar, Então conclui e salva a avaliação")
-    void deveConcluirAvaliacaoComSucesso() {
+    void deveConcluirAvaliacaoComSucesso() throws Exception {
         Avaliacao avaliacao = avaliacaoDisponivel();
         AvaliacaoDTO avaliacaoDTO = new AvaliacaoDTO(5, "Excelente!");
         ItemAvaliadoDTO itemDTO = new ItemAvaliadoDTO(1L, 1L, avaliacaoDTO);
@@ -72,6 +86,7 @@ class ConcluirAvaliacaoAvaliadaCasoDeUsoTest {
         when(repositorio.buscarPorId(1L)).thenReturn(Optional.of(avaliacao));
         when(mapeador.mapearRespostaAvaliacao(5, "Excelente!")).thenReturn(respostaMapeada);
         when(mapeador.mapearListaItensAvaliados(List.of(itemDTO))).thenReturn(Map.of());
+        when(objectMapper.writeValueAsString(any())).thenReturn("{}");
 
         casoDeUso.executar(CLIENTE_ID, dto);
 
@@ -81,8 +96,32 @@ class ConcluirAvaliacaoAvaliadaCasoDeUsoTest {
     }
 
     @Test
-    @DisplayName("Dado DTO apenas com idAvaliacao (voto em branco), Quando executar, Então conclui como NAO_AVALIADO")
-    void deveConcluirComVotoEmBranco() {
+    @DisplayName("Dado avaliação com nota, Quando executar, Então salva outbox antes de publicar evento com dados corretos")
+    void deveRegistrarOutboxAntesDePublicarEventoComDadosCorretos() throws Exception {
+        Avaliacao avaliacao = avaliacaoDisponivel();
+        AvaliacaoDTO avaliacaoDTO = new AvaliacaoDTO(5, null);
+        ResponderAvaliacaoDTO dto = new ResponderAvaliacaoDTO(1L, avaliacaoDTO, null);
+
+        when(repositorio.buscarPorId(1L)).thenReturn(Optional.of(avaliacao));
+        when(mapeador.mapearRespostaAvaliacao(5, null)).thenReturn(new RespostaAvaliacao(new NotaAvaliacao(5), null));
+        when(objectMapper.writeValueAsString(any())).thenReturn("{}");
+
+        casoDeUso.executar(CLIENTE_ID, dto);
+
+        InOrder ordem = inOrder(outboxRepositorio, publicadorDeEvento);
+        ordem.verify(outboxRepositorio).salvar(any());
+        ordem.verify(publicadorDeEvento).publishEvent(any());
+
+        ArgumentCaptor<AvaliacaoConcluidaEvento> eventoCaptor = ArgumentCaptor.forClass(AvaliacaoConcluidaEvento.class);
+        verify(publicadorDeEvento).publishEvent(eventoCaptor.capture());
+        assertThat(eventoCaptor.getValue().clienteId()).isEqualTo(CLIENTE_ID);
+        assertThat(eventoCaptor.getValue().classificacaoAvaliacao()).isEqualTo(ClassificacaoAvaliacao.SATISFEITO);
+        assertThat(eventoCaptor.getValue().totalDeItensAvaliados()).isZero();
+    }
+
+    @Test
+    @DisplayName("Dado voto em branco, Quando executar, Então conclui como NAO_AVALIADO sem publicar evento nem registrar outbox")
+    void deveConcluirComVotoEmBrancoSemPublicarEvento() throws Exception {
         Avaliacao avaliacao = avaliacaoDisponivel();
         ResponderAvaliacaoDTO dto = new ResponderAvaliacaoDTO(1L, null, null);
 
@@ -95,6 +134,8 @@ class ConcluirAvaliacaoAvaliadaCasoDeUsoTest {
         verify(repositorio).salvar(avaliacaoCaptor.capture());
         assertThat(avaliacaoCaptor.getValue().getStatus()).isEqualTo(StatusAvaliacao.CONCLUIDA);
         assertThat(avaliacaoCaptor.getValue().getAvaliacao()).isEqualTo(ClassificacaoAvaliacao.NAO_AVALIADO);
+        verify(outboxRepositorio, never()).salvar(any());
+        verify(publicadorDeEvento, never()).publishEvent(any());
     }
 
     // ==========================================
@@ -133,7 +174,7 @@ class ConcluirAvaliacaoAvaliadaCasoDeUsoTest {
     @Test
     @DisplayName("Dado avaliação com status PENDENTE, Quando executar, Então lança AvaliacaoInvalidaExcecao e não salva")
     void deveLancarExcecaoSeAvaliacaoNaoDisponivel() {
-        Avaliacao avaliacao = AvaliacaoBuilder.umaAvaliacao().construir(); // status PENDENTE
+        Avaliacao avaliacao = AvaliacaoBuilder.umaAvaliacao().construir();
         ResponderAvaliacaoDTO dto = new ResponderAvaliacaoDTO(1L, null, null);
 
         when(repositorio.buscarPorId(1L)).thenReturn(Optional.of(avaliacao));
