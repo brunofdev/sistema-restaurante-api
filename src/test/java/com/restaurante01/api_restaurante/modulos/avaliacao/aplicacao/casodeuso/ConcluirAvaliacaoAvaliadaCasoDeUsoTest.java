@@ -110,7 +110,7 @@ class ConcluirAvaliacaoAvaliadaCasoDeUsoTest {
 
         InOrder ordem = inOrder(outboxRepositorio, publicadorDeEvento);
         ordem.verify(outboxRepositorio).salvar(any());
-        ordem.verify(publicadorDeEvento).publishEvent(any());
+        ordem.verify(publicadorDeEvento).publishEvent(any(AvaliacaoConcluidaEvento.class));
 
         ArgumentCaptor<AvaliacaoConcluidaEvento> eventoCaptor = ArgumentCaptor.forClass(AvaliacaoConcluidaEvento.class);
         verify(publicadorDeEvento).publishEvent(eventoCaptor.capture());
