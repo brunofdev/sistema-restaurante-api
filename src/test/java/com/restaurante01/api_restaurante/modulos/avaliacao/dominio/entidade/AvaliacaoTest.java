@@ -7,6 +7,9 @@ import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.enums.Tentati
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.excecao.*;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.ComentarioAvaliacao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.NotaAvaliacao;
+import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.RespostaAvaliacao;
+
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -73,7 +76,7 @@ class AvaliacaoTest {
 
         ReflectionTestUtils.setField(avaliacao, "status", StatusAvaliacao.DISPONIVEL);
 
-        avaliacao.concluirAvaliacao(nota, comentario);
+        avaliacao.concluirAvaliacao(new RespostaAvaliacao(nota, comentario), Map.of());
 
         assertThat(avaliacao.getStatus()).isEqualTo(StatusAvaliacao.CONCLUIDA);
         assertThat(avaliacao.getNota()).isEqualTo(nota);
@@ -88,7 +91,7 @@ class AvaliacaoTest {
         NotaAvaliacao nota = new NotaAvaliacao(3);
         ReflectionTestUtils.setField(avaliacao, "status", StatusAvaliacao.DISPONIVEL);
 
-        avaliacao.concluirAvaliacao(nota, null);
+        avaliacao.concluirAvaliacao(new RespostaAvaliacao(nota, null), Map.of());
 
         assertThat(avaliacao.getStatus()).isEqualTo(StatusAvaliacao.CONCLUIDA);
         assertThat(avaliacao.getNota()).isEqualTo(nota);
@@ -97,17 +100,46 @@ class AvaliacaoTest {
     }
 
     @Test
+    @DisplayName("Dado nota 2, Quando concluir avaliação, Então classifica como INSATISFEITO")
+    void deveConcluirComNotaInsatisfeita() {
+        Avaliacao avaliacao = AvaliacaoBuilder.umaAvaliacao().construir();
+        ReflectionTestUtils.setField(avaliacao, "status", StatusAvaliacao.DISPONIVEL);
+
+        avaliacao.concluirAvaliacao(new RespostaAvaliacao(new NotaAvaliacao(2), null), Map.of());
+
+        assertThat(avaliacao.getStatus()).isEqualTo(StatusAvaliacao.CONCLUIDA);
+        assertThat(avaliacao.getAvaliacao()).isEqualTo(ClassificacaoAvaliacao.INSATISFEITO);
+    }
+
+    @Test
     @DisplayName("Dado ausência de nota e comentário (voto em branco), Quando concluir avaliação, Então classifica como NAO_AVALIADO")
     void devePermitirVotoEmBranco() {
         Avaliacao avaliacao = AvaliacaoBuilder.umaAvaliacao().construir();
         ReflectionTestUtils.setField(avaliacao, "status", StatusAvaliacao.DISPONIVEL);
 
-        avaliacao.concluirAvaliacao(null, null);
+        avaliacao.concluirAvaliacao(new RespostaAvaliacao(null, null), Map.of());
 
         assertThat(avaliacao.getStatus()).isEqualTo(StatusAvaliacao.CONCLUIDA);
         assertThat(avaliacao.getNota()).isNull();
         assertThat(avaliacao.getComentarioAvaliacao()).isNull();
         assertThat(avaliacao.getAvaliacao()).isEqualTo(ClassificacaoAvaliacao.NAO_AVALIADO);
+    }
+
+    @Test
+    @DisplayName("Dado mapa com resposta para um item, Quando concluir, Então o item recebe a resposta do mapa")
+    void deveAplicarRespostaDoMapaAosItens() {
+        Avaliacao avaliacao = AvaliacaoBuilder.umaAvaliacao().construir();
+        ReflectionTestUtils.setField(avaliacao, "status", StatusAvaliacao.DISPONIVEL);
+        AvaliacaoItem item = avaliacao.getItensAvaliados().get(0);
+        ReflectionTestUtils.setField(item, "id", 10L);
+
+        NotaAvaliacao nota = new NotaAvaliacao(4);
+        Map<Long, RespostaAvaliacao> mapa = Map.of(10L, new RespostaAvaliacao(nota, null));
+
+        avaliacao.concluirAvaliacao(new RespostaAvaliacao(null, null), mapa);
+
+        assertThat(item.getNota()).isEqualTo(nota);
+        assertThat(item.getComentarioAvaliacao().valor()).isEqualTo("Avaliação feita sem comentário");
     }
 
     @Test
@@ -117,7 +149,7 @@ class AvaliacaoTest {
         ComentarioAvaliacao comentario = new ComentarioAvaliacao("Chegou frio");
         ReflectionTestUtils.setField(avaliacao, "status", StatusAvaliacao.DISPONIVEL);
 
-        assertThatThrownBy(() -> avaliacao.concluirAvaliacao(null, comentario))
+        assertThatThrownBy(() -> avaliacao.concluirAvaliacao(new RespostaAvaliacao(null, comentario), Map.of()))
                 .isInstanceOf(AvaliacaoInvalidaExcecao.class)
                 .hasMessage("Avaliação obrigatoriamente deve possuir uma Nota.");
     }
@@ -132,7 +164,16 @@ class AvaliacaoTest {
         Avaliacao avaliacao = AvaliacaoBuilder.umaAvaliacao().construir();
         ReflectionTestUtils.setField(avaliacao, "status", StatusAvaliacao.CONCLUIDA);
 
-        assertThatThrownBy(() -> avaliacao.concluirAvaliacao(new NotaAvaliacao(5), null))
+        assertThatThrownBy(() -> avaliacao.concluirAvaliacao(new RespostaAvaliacao(new NotaAvaliacao(5), null), Map.of()))
+                .isInstanceOf(StatusAvaliacaoInvalidoExcecao.class);
+    }
+
+    @Test
+    @DisplayName("Dado uma avaliação com status PENDENTE, Quando tentar concluir, Então lança erro de transição")
+    void naoDeveConcluirAvaliacaoPendente() {
+        Avaliacao avaliacao = AvaliacaoBuilder.umaAvaliacao().construir();
+
+        assertThatThrownBy(() -> avaliacao.concluirAvaliacao(new RespostaAvaliacao(null, null), Map.of()))
                 .isInstanceOf(StatusAvaliacaoInvalidoExcecao.class);
     }
 
@@ -155,6 +196,16 @@ class AvaliacaoTest {
         avaliacao.expirarAvaliacao();
 
         assertThat(avaliacao.getStatus()).isEqualTo(StatusAvaliacao.EXPIRADA);
+    }
+
+    @Test
+    @DisplayName("Dado uma avaliação PENDENTE com data vencida, Quando tentar expirar, Então lança erro de transição")
+    void naoDeveExpirarAvaliacaoPendenteMesmoComDataVencida() {
+        Avaliacao avaliacao = AvaliacaoBuilder.umaAvaliacao().construir();
+        ReflectionTestUtils.setField(avaliacao, "dataExpiracao", LocalDateTime.now().minusDays(1));
+
+        assertThatThrownBy(avaliacao::expirarAvaliacao)
+                .isInstanceOf(StatusAvaliacaoInvalidoExcecao.class);
     }
 
     // ==========================================

@@ -18,5 +18,5 @@ public interface AvaliacaoRepositorio {
     List<Avaliacao> buscarExpiradas(StatusAvaliacao status, LocalDateTime horarioAgora);
     List<Avaliacao> buscarTodasCriadasAte(StatusAvaliacao status, LocalDateTime horario);
     List<Avaliacao> buscarPendentesDeRenotificacao(StatusAvaliacao status, TentativaNotificacao TentativaNotificacao, LocalDateTime horario);
-
+    List<Avaliacao> buscarAvaliacoesPorClienteId(StatusAvaliacao statusAvaliacao, Long idCliente);
 }

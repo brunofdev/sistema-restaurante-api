@@ -3,8 +3,7 @@ package com.restaurante01.api_restaurante.modulos.avaliacao.dominio.entidade;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.excecao.IdItemAvaliacaoVazioExcecao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.excecao.ItemAvaliadoVazioExcecao;
-import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.ComentarioAvaliacao;
-import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.NotaAvaliacao;
+import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.RespostaAvaliacao;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -33,11 +32,11 @@ public class AvaliacaoItem extends Avaliavel {
     private Long produtoId;
     private String nomeProdutoAvaliacao;
 
-    public static AvaliacaoItem criar(Long produtoId, String nomeItemPedido, NotaAvaliacao notaAvaliacao, ComentarioAvaliacao comentarioAvaliacao) {
+    public static AvaliacaoItem criar(Long produtoId, String nomeItemPedido, RespostaAvaliacao resposta) {
         AvaliacaoItem avaliacaoItem = new AvaliacaoItem();
         avaliacaoItem.setProdutoId(produtoId);
         avaliacaoItem.setNomeProdutoAvaliacao(nomeItemPedido);
-        avaliacaoItem.vincularAvaliacao(notaAvaliacao, comentarioAvaliacao);
+        avaliacaoItem.vincularAvaliacao(resposta);
         return avaliacaoItem;
     }
 

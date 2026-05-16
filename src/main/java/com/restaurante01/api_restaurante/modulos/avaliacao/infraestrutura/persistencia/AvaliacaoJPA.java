@@ -13,6 +13,7 @@ public interface AvaliacaoJPA extends JpaRepository<Avaliacao, Long> {
     Optional<Avaliacao>  findByPedidoId(Long idPedido);
     List<Avaliacao>findByStatusAndDataExpiracaoBefore(StatusAvaliacao status, LocalDateTime dataExpiracao);
     List<Avaliacao>findByStatusAndDataCriacaoBefore(StatusAvaliacao status, LocalDateTime dataCriacao);
-    List<Avaliacao> findByStatusAndNumeroNotificacaoClienteAndDataCriacaoBefore(StatusAvaliacao statusAvaliacao, TentativaNotificacao TentativaNotificacao, LocalDateTime dataCriacao);
+    List<Avaliacao>findByStatusAndNumeroNotificacaoClienteAndDataCriacaoBefore(StatusAvaliacao statusAvaliacao, TentativaNotificacao TentativaNotificacao, LocalDateTime dataCriacao);
+    List<Avaliacao>findByStatusAndClienteId(StatusAvaliacao statusAvaliacao, Long idCliente);
 }
 

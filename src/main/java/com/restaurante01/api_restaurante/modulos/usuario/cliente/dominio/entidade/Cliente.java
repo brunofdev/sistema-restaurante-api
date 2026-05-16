@@ -47,7 +47,7 @@ public class Cliente extends Usuario {
                 senha,
                 email,
                 cpf,
-                Role.USER,
+                Role.CLIENT,
                 true,
                 PontuacaoFidelidade.criar(),
                 enderecoCliente,

@@ -5,6 +5,7 @@ import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.excecao.IdIte
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.excecao.ItemAvaliadoVazioExcecao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.ComentarioAvaliacao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.NotaAvaliacao;
+import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.RespostaAvaliacao;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -63,7 +64,7 @@ class AvaliacaoItemTest {
         NotaAvaliacao nota = new NotaAvaliacao(5);
         ComentarioAvaliacao comentario = new ComentarioAvaliacao("Muito crocante!");
 
-        item.vincularAvaliacao(nota, comentario);
+        item.vincularAvaliacao(new RespostaAvaliacao(nota, comentario));
 
         assertThat(item.getNota()).isEqualTo(nota);
         assertThat(item.getComentarioAvaliacao()).isEqualTo(comentario);
@@ -75,7 +76,7 @@ class AvaliacaoItemTest {
         AvaliacaoItem item = AvaliacaoItemBuilder.umItem().construir();
         NotaAvaliacao nota = new NotaAvaliacao(4);
 
-        item.vincularAvaliacao(nota, null);
+        item.vincularAvaliacao(new RespostaAvaliacao(nota, null));
 
         assertThat(item.getNota()).isEqualTo(nota);
         assertThat(item.getComentarioAvaliacao().valor()).isEqualTo("Avaliação feita sem comentário");
@@ -86,7 +87,18 @@ class AvaliacaoItemTest {
     void devePermitirVotoEmBrancoNoItem() {
         AvaliacaoItem item = AvaliacaoItemBuilder.umItem().construir();
 
-        item.vincularAvaliacao(null, null);
+        item.vincularAvaliacao(new RespostaAvaliacao(null, null));
+
+        assertThat(item.getNota()).isNull();
+        assertThat(item.getComentarioAvaliacao()).isNull();
+    }
+
+    @Test
+    @DisplayName("Dado resposta nula, Quando vincular, Então mantém nulos (equivalente a voto em branco)")
+    void devePermitirVotoEmBrancoComRespostaNula() {
+        AvaliacaoItem item = AvaliacaoItemBuilder.umItem().construir();
+
+        item.vincularAvaliacao(null);
 
         assertThat(item.getNota()).isNull();
         assertThat(item.getComentarioAvaliacao()).isNull();
@@ -98,7 +110,7 @@ class AvaliacaoItemTest {
         AvaliacaoItem item = AvaliacaoItemBuilder.umItem().construir();
         ComentarioAvaliacao comentario = new ComentarioAvaliacao("Faltou sal");
 
-        assertThatThrownBy(() -> item.vincularAvaliacao(null, comentario))
+        assertThatThrownBy(() -> item.vincularAvaliacao(new RespostaAvaliacao(null, comentario)))
                 .isInstanceOf(AvaliacaoInvalidaExcecao.class)
                 .hasMessage("Avaliação obrigatoriamente deve possuir uma Nota.");
     }

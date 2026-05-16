@@ -3,6 +3,7 @@ package com.restaurante01.api_restaurante.modulos.avaliacao.aplicacao.casodeuso;
 import com.restaurante01.api_restaurante.modulos.avaliacao.aplicacao.mapeador.AvaliacaoMapeador;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.entidade.Avaliacao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.entidade.AvaliacaoItem;
+import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.RespostaAvaliacao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.excecao.ItemAvaliadoVazioExcecao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.repositorio.AvaliacaoRepositorio;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.ItemPedidoAvaliacaoPayload;
@@ -45,7 +46,7 @@ class CriarAvaliacaoCasoDeUsoTest {
 
         List<ItemPedidoAvaliacaoPayload> itensPayload = List.of(mock(ItemPedidoAvaliacaoPayload.class));
 
-        List<AvaliacaoItem> itensMapeados = List.of(AvaliacaoItem.criar(1L, "Pizza", null, null));
+        List<AvaliacaoItem> itensMapeados = List.of(AvaliacaoItem.criar(1L, "Pizza", new RespostaAvaliacao(null, null)));
 
         when(mapeador.mapearItensPedido(itensPayload)).thenReturn(itensMapeados);
 

@@ -5,6 +5,7 @@ import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.entidade.Aval
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.enums.StatusAvaliacao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.ComentarioAvaliacao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.NotaAvaliacao;
+import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.RespostaAvaliacao;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.Cupom;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.PeriodoCupom;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.RegraRecorrencia;
@@ -30,7 +31,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -358,7 +358,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                 avalItem(wrap), avalItem(suco), avalItem(brownie)));
         av5.mudarStatusAvaliacao(StatusAvaliacao.DISPONIVEL);
         av5.foiEnviadaAoCliente();
-        concluirAvaliacao(av5, null, null);
+        concluirAvaliacao(av5, new RespostaAvaliacao(null, null));
         entityManager.persist(av5);
 
         // 6. CONCLUIDA COMPLETA — nota 5, SATISFEITO, com comentário e itens avaliados
@@ -367,7 +367,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                 avalItemComNota(suco, 4, null)));
         av6.mudarStatusAvaliacao(StatusAvaliacao.DISPONIVEL);
         av6.foiEnviadaAoCliente();
-        concluirAvaliacao(av6, new NotaAvaliacao(5), new ComentarioAvaliacao("Pedido excelente! Tudo chegou no prazo e bem fresquinho."));
+        concluirAvaliacao(av6, new RespostaAvaliacao(new NotaAvaliacao(5), new ComentarioAvaliacao("Pedido excelente! Tudo chegou no prazo e bem fresquinho.")));
         entityManager.persist(av6);
 
         // 7. DISPONIVEL — PRIMEIRA_TENTATIVA há 4 dias → candidata à renotificação (regra: > 3 dias)
@@ -445,14 +445,14 @@ public class DatabaseSeeder implements CommandLineRunner {
     }
 
     private AvaliacaoItem avalItem(Produto produto) {
-        return AvaliacaoItem.criar(produto.getId(), produto.getNome(), null, null);
+        return AvaliacaoItem.criar(produto.getId(), produto.getNome(), new RespostaAvaliacao(null, null));
     }
 
     private AvaliacaoItem avalItemComNota(Produto produto, int nota, String comentario) {
         return AvaliacaoItem.criar(
                 produto.getId(), produto.getNome(),
-                new NotaAvaliacao(nota),
-                comentario != null ? new ComentarioAvaliacao(comentario) : null);
+                new RespostaAvaliacao(new NotaAvaliacao(nota),
+                        comentario != null ? new ComentarioAvaliacao(comentario) : null));
     }
 
     private void setarCampo(Object obj, String nomeCampo, Object valor) {
@@ -465,13 +465,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         }
     }
 
-    private void concluirAvaliacao(Avaliacao avaliacao, NotaAvaliacao nota, ComentarioAvaliacao comentario) {
-        try {
-            Method method = Avaliacao.class.getDeclaredMethod("concluirAvaliacao", NotaAvaliacao.class, ComentarioAvaliacao.class);
-            method.setAccessible(true);
-            method.invoke(avaliacao, nota, comentario);
-        } catch (Exception e) {
-            throw new RuntimeException("Seeder: erro ao invocar concluirAvaliacao", e);
-        }
+    private void concluirAvaliacao(Avaliacao avaliacao, RespostaAvaliacao resposta) {
+        avaliacao.concluirAvaliacao(resposta, new java.util.HashMap<>());
     }
 }

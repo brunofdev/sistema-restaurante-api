@@ -4,8 +4,8 @@ import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.enums.Classif
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.enums.StatusAvaliacao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.enums.TentativaNotificacao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.excecao.*;
-import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.ComentarioAvaliacao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.NotaAvaliacao;
+import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.RespostaAvaliacao;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
@@ -16,6 +16,7 @@ import lombok.ToString;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "avaliacoes")
@@ -59,7 +60,6 @@ public class Avaliacao extends Avaliavel {
         avaliacao.dataExpiracao = LocalDateTime.now().plusDays(7);
         return avaliacao;
     }
-
     private void setPedidoId(Long pedidoId){
         if(pedidoId == null) {
             throw new IdPedidoAvaliacaoVazioExcecao("Id pedido não pode ser Vazio");
@@ -72,7 +72,6 @@ public class Avaliacao extends Avaliavel {
         }
         this.clienteId = clienteId;
     }
-
     public void mudarStatusAvaliacao(StatusAvaliacao status){
         if (!this.status.podeTransicionarPara(status)) {
             throw new StatusAvaliacaoInvalidoExcecao(
@@ -81,7 +80,6 @@ public class Avaliacao extends Avaliavel {
         }
         this.status = status;
     }
-
     public void foiEnviadaAoCliente(){
         if(this.numeroNotificacaoCliente == null) {
             this.numeroNotificacaoCliente = TentativaNotificacao.PRIMEIRA_TENTATIVA;
@@ -90,8 +88,6 @@ public class Avaliacao extends Avaliavel {
         this.numeroNotificacaoCliente = numeroNotificacaoCliente.proxima();
 
     }
-
-    //um item não deve ser obrigado a ser avaliado, entao aceita null
     private void adicionarListaDeItensParaAvaliacao(List<AvaliacaoItem> itensParaAvaliar){
         if(itensParaAvaliar.isEmpty()) {
             throw new ItemAvaliadoVazioExcecao("É obrigatório informar os produtos para serem avaliados");
@@ -109,12 +105,18 @@ public class Avaliacao extends Avaliavel {
         throw new AvaliacaoNaoExpiradaExcecao("A data de expiração ainda não chegou para esta avaliação");
 
     }
-    protected void concluirAvaliacao(NotaAvaliacao nota, ComentarioAvaliacao comentario){
-        vincularAvaliacao(nota, comentario);
-        classificarAvaliacao(nota);
+    public void concluirAvaliacao(RespostaAvaliacao resposta, Map<Long, RespostaAvaliacao> respostasPorItemId){
+        for (AvaliacaoItem item : this.itensAvaliados) {
+            Long itemId = item.getId();
+            RespostaAvaliacao respostaDoItem = (itemId != null && respostasPorItemId.containsKey(itemId))
+                    ? respostasPorItemId.get(itemId)
+                    : new RespostaAvaliacao(null, null);
+            item.vincularAvaliacao(respostaDoItem);
+        }
+        vincularAvaliacao(resposta);
+        classificarAvaliacao(resposta != null ? resposta.nota() : null);
         mudarStatusAvaliacao(StatusAvaliacao.CONCLUIDA);
     }
-
     private void classificarAvaliacao(NotaAvaliacao nota){
         if(nota == null) {
             this.avaliacao = ClassificacaoAvaliacao.NAO_AVALIADO;
