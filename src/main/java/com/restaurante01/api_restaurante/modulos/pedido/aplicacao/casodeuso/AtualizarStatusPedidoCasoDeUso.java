@@ -54,7 +54,7 @@ public class AtualizarStatusPedidoCasoDeUso {
     private void publicaEventosSeEntregue(Pedido pedido) throws JsonProcessingException {
         List<ItemPedidoAvaliacaoPayload> itensParaAvaliacao = pedidoMapeador.mapearItemPedidoAvaliacaoPayload(pedido.getItens());
         PedidoEntregueAvaliacaoPayload pedidoEntregueAvaliacaoPayload = new PedidoEntregueAvaliacaoPayload(pedido.getId(), pedido.getCliente().clienteId(), itensParaAvaliacao);
-        PedidoEntregueClientePayload pedidoEntregueClientePayload = new PedidoEntregueClientePayload(pedido.getId(),pedido.getCliente().clienteId(),pedido.getValorBruto(),LocalDateTime.now());
+        PedidoEntregueClientePayload pedidoEntregueClientePayload = new PedidoEntregueClientePayload(pedido.getId(),pedido.getCliente().clienteId(),pedido.getValorTotal(),LocalDateTime.now());
         pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO, pedido.getId(), GatilhoEvento.PEDIDO_ENTREGUE, TipoEvento.COMPUTAR_PONTUACAO_FIDELIDADE, objectMapper.writeValueAsString(pedidoEntregueClientePayload));
         pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO, pedido.getId(), GatilhoEvento.PEDIDO_ENTREGUE, TipoEvento.CRIAR_AVALIACAO, objectMapper.writeValueAsString(pedidoEntregueAvaliacaoPayload));
         publicarEvento.publishEvent(new PedidoEntregueEvento(pedido, itensParaAvaliacao));
