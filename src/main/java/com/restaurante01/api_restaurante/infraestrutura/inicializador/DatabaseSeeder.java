@@ -1,6 +1,7 @@
 package com.restaurante01.api_restaurante.infraestrutura.inicializador;
 
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.entidade.Avaliacao;
+import com.restaurante01.api_restaurante.modulos.fidelidade.dominio.entidade.Fidelidade;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.entidade.AvaliacaoItem;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.enums.StatusAvaliacao;
 import com.restaurante01.api_restaurante.modulos.avaliacao.dominio.objeto_de_valor.ComentarioAvaliacao;
@@ -77,6 +78,30 @@ public class DatabaseSeeder implements CommandLineRunner {
                 new EnderecoCliente("Av. Ipiranga", 500, "Partenon", "Porto Alegre", "RS", "90160093", "Casa", ""),
                 "51999990002");
         entityManager.persist(joao);
+
+        entityManager.flush(); // garante IDs dos clientes antes de criar fidelidades
+
+        // -------------------------------------------------------------------------
+        // FIDELIDADE
+        // -------------------------------------------------------------------------
+        Fidelidade fidelidadeMaria = Fidelidade.criar(maria.getId());
+        fidelidadeMaria.creditarPontos(1, "Pontuação por pedido entregue");
+        fidelidadeMaria.creditarPontos(2, "Pontuação por pedido entregue");
+        fidelidadeMaria.creditarPontos(2, "Pontuação por pedido entregue");
+        fidelidadeMaria.creditarPontos(1, "Pontuação por pedido entregue");
+        entityManager.persist(fidelidadeMaria);
+
+        Fidelidade fidelidadeJoao = Fidelidade.criar(joao.getId());
+        fidelidadeJoao.creditarPontos(1, "Pontuação por pedido entregue");
+        fidelidadeJoao.creditarPontos(2, "Pontuação por pedido entregue");
+        fidelidadeJoao.creditarPontos(1, "Pontuação por pedido entregue");
+        fidelidadeJoao.creditarPontos(1, "Pontuação por pedido entregue");
+        entityManager.persist(fidelidadeJoao);
+
+        entityManager.flush(); // garante IDs das fidelidades antes de vincular ao cliente
+
+        maria.vincularFidelidade(fidelidadeMaria.getId());
+        joao.vincularFidelidade(fidelidadeJoao.getId());
 
         // -------------------------------------------------------------------------
         // PRODUTOS (10)
