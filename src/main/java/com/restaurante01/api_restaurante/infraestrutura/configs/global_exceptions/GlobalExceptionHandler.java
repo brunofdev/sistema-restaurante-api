@@ -20,6 +20,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
 
@@ -100,6 +101,13 @@ public class GlobalExceptionHandler {
         }
 
         return buildError(status, status.getReasonPhrase(), ex.getMessage(), "Erro ao processar a requisição.");
+    }
+
+    // --- Recurso estático não encontrado (404 silencioso) ---
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiResponse<Object>> handleNoResource(NoResourceFoundException ex) {
+        return buildError(HttpStatus.NOT_FOUND, "Not Found", ex.getMessage(), "Recurso não encontrado.");
     }
 
     // --- Exceção Genérica (Failsafe) ---
