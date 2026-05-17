@@ -15,9 +15,6 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class Cliente extends Usuario {
 
-
-    private PontuacaoFidelidade pontuacaoFidelidade;
-
     @Embedded
     private FidelidadeReferenciaId fidelidadeReferenciaId;
 
@@ -30,36 +27,20 @@ public class Cliente extends Usuario {
     @Embedded
     EnderecoCliente enderecoCliente;
 
-     Cliente(Long id, String nome, String senha, Email email, Cpf cpf, Role role, boolean contaAtiva, PontuacaoFidelidade pontuacaoFidelidade, String telefone, EnderecoCliente enderecoCliente) {
+    Cliente(Long id, String nome, String senha, Email email, Cpf cpf, Role role, boolean contaAtiva, String telefone, EnderecoCliente enderecoCliente) {
         super(id, nome, senha, email, cpf, role, contaAtiva);
-        this.pontuacaoFidelidade = pontuacaoFidelidade;
         this.telefone = telefone;
         this.enderecoCliente = enderecoCliente;
     }
 
-    public Cliente(String nome, String senha, Email email, Cpf cpf, Role role, boolean contaAtiva, PontuacaoFidelidade pontuacaoFidelidade, EnderecoCliente enderecoCliente, String telefone) {
+    public static Cliente criar(String nome, String senha, Email email, Cpf cpf, EnderecoCliente enderecoCliente, String telefone) {
+        return new Cliente(nome, senha, email, cpf, Role.CLIENT, true, enderecoCliente, telefone);
+    }
+
+    public Cliente(String nome, String senha, Email email, Cpf cpf, Role role, boolean contaAtiva, EnderecoCliente enderecoCliente, String telefone) {
         super(nome, senha, email, cpf, role, contaAtiva);
-        this.pontuacaoFidelidade = pontuacaoFidelidade;
         this.enderecoCliente = enderecoCliente;
         this.telefone = telefone;
-    }
-
-    public static Cliente criar(String nome, String senha, Email email, Cpf cpf, EnderecoCliente enderecoCliente, String telefone){
-        return new Cliente(
-                nome,
-                senha,
-                email,
-                cpf,
-                Role.CLIENT,
-                true,
-                PontuacaoFidelidade.criar(),
-                enderecoCliente,
-                telefone
-        );
-    }
-
-    public void acrescentarPontuacao(int pontos){
-        this.pontuacaoFidelidade = this.pontuacaoFidelidade.acrescentar(pontos);
     }
 
     public void vincularFidelidade(Long fidelidadeId) {

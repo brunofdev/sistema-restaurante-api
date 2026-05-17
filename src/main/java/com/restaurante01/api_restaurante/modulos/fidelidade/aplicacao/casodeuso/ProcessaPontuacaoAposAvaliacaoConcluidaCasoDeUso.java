@@ -35,7 +35,3 @@ public class ProcessaPontuacaoAposAvaliacaoConcluidaCasoDeUso {
     }
 
 }
-
-
-//AVALIACAO DE ITEM  = 2 PONTOS POR ITEM AVALIADO
-//AVALIACAO GERAL NOTA = 3 PONTOS

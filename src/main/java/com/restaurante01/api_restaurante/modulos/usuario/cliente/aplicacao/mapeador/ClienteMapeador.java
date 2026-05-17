@@ -36,12 +36,15 @@ public class ClienteMapeador {
         );
     }
     public ClienteDTO mapearClienteParaClienteDTO(Cliente novoCliente) {
+        Long fidelidadeId = novoCliente.getFidelidadeReferenciaId() != null
+                ? novoCliente.getFidelidadeReferenciaId().getValor()
+                : null;
         return new ClienteDTO(
                 novoCliente.getId(),
                 novoCliente.getNome(),
                 novoCliente.getUsername(),
                 novoCliente.getRole(),
-                novoCliente.getPontuacaoFidelidade().getValor());
+                fidelidadeId);
     }
     public List<ClienteDTO> mapearListaClienteParaClienteDTO(List<Cliente> clientes){
         return clientes.stream()

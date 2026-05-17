@@ -1,42 +1,35 @@
-package com.restaurante01.api_restaurante.modulos.usuario.cliente.aplicacao.ouvinte;
+package com.restaurante01.api_restaurante.modulos.fidelidade.aplicacao.ouvinte;
 
 import com.restaurante01.api_restaurante.compartilhado.dominio.entidade.OutboxEvento;
 import com.restaurante01.api_restaurante.compartilhado.dominio.enums.Agregado;
 import com.restaurante01.api_restaurante.compartilhado.dominio.enums.TipoEvento;
 import com.restaurante01.api_restaurante.compartilhado.dominio.repositorio.OutboxRepositorio;
-import com.restaurante01.api_restaurante.modulos.usuario.cliente.aplicacao.casodeuso.AtualizarFidelidadeClienteCasoDeUso;
+import com.restaurante01.api_restaurante.modulos.fidelidade.aplicacao.casodeuso.ProcessarPontuacaoAposPedidoEntregueCasoDeUso;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.evento.PedidoEntregueEvento;
+import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
-public class AtualizaFidelidadeOuvinte {
+@AllArgsConstructor
+public class PedidoEntregueOuvinte {
 
-    private final AtualizarFidelidadeClienteCasoDeUso atualizarFidelidade;
+    private final ProcessarPontuacaoAposPedidoEntregueCasoDeUso casoDeUso;
     private final OutboxRepositorio outboxRepositorio;
 
-
-    public AtualizaFidelidadeOuvinte(AtualizarFidelidadeClienteCasoDeUso atualizarFidelidade, OutboxRepositorio outboxRepositorio) {
-        this.atualizarFidelidade = atualizarFidelidade;
-        this.outboxRepositorio = outboxRepositorio;
-    }
-
     @Async
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @TransactionalEventListener
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void quandoPedidoStatusEntregue(PedidoEntregueEvento evento) {
-        OutboxEvento outbox = outboxRepositorio
-                .buscarPorAgregadoEIdAgregadoETipoEvento(Agregado.PEDIDO,
-                        evento.pedido().getId(), TipoEvento.COMPUTAR_PONTUACAO_FIDELIDADE);
+    public void quandoPedidoEntregue(PedidoEntregueEvento evento) {
+        OutboxEvento outbox = outboxRepositorio.buscarPorAgregadoEIdAgregadoETipoEvento(
+                Agregado.PEDIDO, evento.pedido().getId(), TipoEvento.COMPUTAR_PONTUACAO_FIDELIDADE);
         try {
-            atualizarFidelidade.executar(
+            casoDeUso.executar(
                     evento.pedido().getCliente().clienteId(),
-                    evento.pedido().getValorTotal()
-            );
+                    evento.pedido().getValorTotal());
             outbox.processar();
         } catch (Exception e) {
             outbox.registrarFalha();

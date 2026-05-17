@@ -17,7 +17,6 @@ public class ClienteBuilder {
     private boolean contaAtiva = true;
 
     // --- CAMPOS DO CLIENTE ---
-    private int pontuacaoFidelidade = 0;
     private String telefone = "48999999999";
 
     // --- FACTORY METHOD ---
@@ -79,22 +78,16 @@ public class ClienteBuilder {
 
 
 
-    public ClienteBuilder comPontuacao(int pontos) {
-        this.pontuacaoFidelidade = pontos;
-        return this;
-    }
-
     // --- BUILD ---
     public Cliente build() {
-        Cliente cliente =  new Cliente(
+        return new Cliente(
                 id,
                 nome,
                 senha,
                 new Email(email),
                 new Cpf(cpf),
                 role,
-                true,
-                PontuacaoFidelidade.criar(),
+                contaAtiva,
                 telefone,
                 new EnderecoCliente(
                 "Tres pinheiros um",
@@ -106,7 +99,5 @@ public class ClienteBuilder {
                 "casa",
                 "51989043802")
         );
-
-        return cliente;
     }
 }
