@@ -40,7 +40,9 @@ public class PedidoMapeador {
                 mapearValoresPedidoDTO(pedido.getValores()),
                 pedido.getStatusPedido(),
                 mapearEndereco(pedido.getEnderecoPedidoEntrega()),
-                (pedido.getCupom() == null ? "Nenhum cupom aplicado" : pedido.getCupom().codigoCupom())
+                (pedido.getCupom() == null ? "Nenhum cupom aplicado" : pedido.getCupom().codigoCupom()),
+                pedido.getDataCriacao(),
+                pedido.getDataAtualizacao()
         );
     }
     public PedidoDetalhadoDTO mapearPedidoDetalhadoDto (Pedido pedido){
