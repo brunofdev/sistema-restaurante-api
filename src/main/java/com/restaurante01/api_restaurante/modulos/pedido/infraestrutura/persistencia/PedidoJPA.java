@@ -16,10 +16,10 @@ import java.util.Optional;
 @Repository
 public interface PedidoJPA extends JpaRepository<Pedido, Long> {
     Page<Pedido> findByCliente_ClienteId(Long clienteId, Pageable pageable);
-
     Page<Pedido> findByDataCriacaoBetween(LocalDateTime inicio, LocalDateTime fim, Pageable pageable);
-
     List<Pedido> findByStatusPedidoOrderByDataCriacao(StatusPedido statusPedido);
+    List<Pedido> findByStatusPedidoNot(StatusPedido statusPedido);
+    List<Pedido> findByStatusPedidoAndDataAtualizacaoAfter(StatusPedido statusPedido, LocalDateTime limite);
 
     @Query(
             """

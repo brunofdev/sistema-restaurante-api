@@ -18,5 +18,8 @@ public interface PedidoRepositorio {
     Page<Pedido> buscarPorDataCriacaoEntre(LocalDateTime inicio, LocalDateTime fim, Pageable pageable);
     Optional<LocalDateTime> encontrarPedidoComCupomRecorrente(Long clienteId, String codigoCupom);
     List<Pedido> buscarPorStatus(StatusPedido statusPedido);
+    List<Pedido> buscarPorTodosStatusMenos(StatusPedido statusPedido);
+    List<Pedido> buscarCanceladosRecentes12Horas();
+
 }
 

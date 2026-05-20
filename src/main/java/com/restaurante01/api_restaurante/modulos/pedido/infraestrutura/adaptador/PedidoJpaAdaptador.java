@@ -6,12 +6,9 @@ import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.repositorio.PedidoRepositorio;
 import com.restaurante01.api_restaurante.modulos.pedido.infraestrutura.persistencia.PedidoJPA;
 import lombok.AllArgsConstructor;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -53,4 +50,13 @@ public class PedidoJpaAdaptador implements PedidoRepositorio {
     public List<Pedido> buscarPorStatus(StatusPedido statusPedido){
         return jpa.findByStatusPedidoOrderByDataCriacao(statusPedido);
     };
+    @Override
+    public List<Pedido> buscarPorTodosStatusMenos(StatusPedido statusPedido){
+        return jpa.findByStatusPedidoNot(statusPedido);
+    }
+    @Override
+    public List<Pedido> buscarCanceladosRecentes12Horas(){
+        return jpa.findByStatusPedidoAndDataAtualizacaoAfter(StatusPedido.CANCELADO, LocalDateTime.now().minusHours(12));
+
+    }
 }
