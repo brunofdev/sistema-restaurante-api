@@ -1,5 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.pedido.infraestrutura.adaptador;
 
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.enums.StatusPedido;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.Cliente;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.repositorio.PedidoRepositorio;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -47,4 +49,8 @@ public class PedidoJpaAdaptador implements PedidoRepositorio {
     public Optional<LocalDateTime> encontrarPedidoComCupomRecorrente (Long idCliente, String codigoCupom){
         return jpa.buscarDataUltimoUsoDoCupomPeloCliente(idCliente, codigoCupom);
     }
+    @Override
+    public List<Pedido> buscarPorStatus(StatusPedido statusPedido){
+        return jpa.findByStatusPedidoOrderByDataCriacao(statusPedido);
+    };
 }

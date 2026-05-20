@@ -1,11 +1,13 @@
 package com.restaurante01.api_restaurante.modulos.pedido.dominio.repositorio;
 
+import com.restaurante01.api_restaurante.modulos.pedido.dominio.enums.StatusPedido;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.Cliente;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface PedidoRepositorio {
@@ -15,5 +17,6 @@ public interface PedidoRepositorio {
     Page<Pedido> buscarPorCliente(Cliente cliente, Pageable pageable);
     Page<Pedido> buscarPorDataCriacaoEntre(LocalDateTime inicio, LocalDateTime fim, Pageable pageable);
     Optional<LocalDateTime> encontrarPedidoComCupomRecorrente(Long clienteId, String codigoCupom);
+    List<Pedido> buscarPorStatus(StatusPedido statusPedido);
 }
 
