@@ -496,7 +496,7 @@ function adicionarCard(containerId, countId, dto, schedulerKey = null) {
     <div class="pc-header">
       <div>
         <div class="pc-id">PEDIDO #${dto.id}</div>
-        <div class="pc-data">${fmtData(dto.dataCriacao)}</div>
+        <div class="pc-data">${clearKey ? 'Atualizado em:' : 'Criado em:'} ${fmtData(clearKey ? dto.dataAtualizacao : dto.dataCriacao)}</div>
       </div>
       <span class="card-status st-${status}">${status.replace(/_/g, ' ')}</span>
     </div>
