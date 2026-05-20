@@ -42,21 +42,34 @@ public class PedidoJpaAdaptador implements PedidoRepositorio {
     public Page<Pedido> buscarPorDataCriacaoEntre(LocalDateTime inicio, LocalDateTime fim, Pageable pageable) {
         return jpa.findByDataCriacaoBetween(inicio, fim, pageable);
     }
+
     @Override
-    public Optional<LocalDateTime> encontrarPedidoComCupomRecorrente (Long idCliente, String codigoCupom){
+    public Optional<LocalDateTime> encontrarPedidoComCupomRecorrente(Long idCliente, String codigoCupom) {
         return jpa.buscarDataUltimoUsoDoCupomPeloCliente(idCliente, codigoCupom);
     }
+
     @Override
-    public List<Pedido> buscarPorStatus(StatusPedido statusPedido){
+    public List<Pedido> buscarPorStatus(StatusPedido statusPedido) {
         return jpa.findByStatusPedidoOrderByDataCriacao(statusPedido);
-    };
-    @Override
-    public List<Pedido> buscarPorTodosStatusMenos(StatusPedido statusPedido){
-        return jpa.findByStatusPedidoNot(statusPedido);
     }
     @Override
-    public List<Pedido> buscarCanceladosRecentes12Horas(){
+    public List<Pedido> buscarPorTodosStatusMenos(List<StatusPedido> statusPedido) {
+        return jpa.findByStatusPedidoNotIn(statusPedido);
+    }
+    @Override
+    public List<Pedido> buscarCanceladosRecentes12Horas() {
         return jpa.findByStatusPedidoAndDataAtualizacaoAfter(StatusPedido.CANCELADO, LocalDateTime.now().minusHours(12));
-
+    }
+    @Override
+    public List<Pedido> buscarEntreguesRecentes12Horas() {
+        return jpa.findByStatusPedidoAndDataAtualizacaoAfter(StatusPedido.ENTREGUE, LocalDateTime.now().minusHours(12));
+    }
+    @Override
+    public List<Pedido> buscarParaScheduler() {
+        return jpa.buscarParaScheduler(
+                List.of(StatusPedido.EM_PREPARACAO, StatusPedido.SAIU_PARA_ENTREGA),
+                List.of(StatusPedido.CANCELADO, StatusPedido.ENTREGUE),
+                LocalDateTime.now().minusHours(12)
+        );
     }
 }

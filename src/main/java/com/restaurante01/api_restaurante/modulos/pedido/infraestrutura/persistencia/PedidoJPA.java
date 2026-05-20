@@ -18,7 +18,7 @@ public interface PedidoJPA extends JpaRepository<Pedido, Long> {
     Page<Pedido> findByCliente_ClienteId(Long clienteId, Pageable pageable);
     Page<Pedido> findByDataCriacaoBetween(LocalDateTime inicio, LocalDateTime fim, Pageable pageable);
     List<Pedido> findByStatusPedidoOrderByDataCriacao(StatusPedido statusPedido);
-    List<Pedido> findByStatusPedidoNot(StatusPedido statusPedido);
+    List<Pedido> findByStatusPedidoNotIn(List<StatusPedido> statusPedido);
     List<Pedido> findByStatusPedidoAndDataAtualizacaoAfter(StatusPedido statusPedido, LocalDateTime limite);
 
     @Query(
@@ -33,4 +33,17 @@ public interface PedidoJPA extends JpaRepository<Pedido, Long> {
     Optional<LocalDateTime> buscarDataUltimoUsoDoCupomPeloCliente(
             @Param("clienteId") Long clienteId,
             @Param("codigoCupom") String codigoCupom);
-    }
+
+    @Query("""
+    SELECT p FROM Pedido p
+    WHERE p.statusPedido IN :ativos
+    OR (p.statusPedido IN :recentes 
+        AND p.dataAtualizacao >= :limite)
+""")
+    List<Pedido> buscarParaScheduler(
+            @Param("ativos") List<StatusPedido> ativos,
+            @Param("recentes") List<StatusPedido> recentes,
+            @Param("limite") LocalDateTime limite
+    );
+
+}
