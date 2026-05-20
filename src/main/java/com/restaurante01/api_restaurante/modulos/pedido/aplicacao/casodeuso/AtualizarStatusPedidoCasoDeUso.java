@@ -40,9 +40,8 @@ public class AtualizarStatusPedidoCasoDeUso {
     }
 
     @Transactional
-    public PedidoCriadoDTO executar(Long id, StatusPedidoDTO novoStatusDto) throws JsonProcessingException {
-        Pedido pedido = pedidoRepository.buscarPorId(id)
-                .orElseThrow(() -> new PedidoNaoEncontradoExcecao("Pedido não localizado: " + id));
+    public PedidoCriadoDTO executar(Long idPedido, StatusPedidoDTO novoStatusDto) throws JsonProcessingException {
+        Pedido pedido = buscarPedido(idPedido);
         pedido.mudarStatus(novoStatusDto.statusPedido());
         Pedido pedidoAtualizado = pedidoRepository.salvar(pedido);
         switch (pedido.getStatusPedido()) {
@@ -50,6 +49,10 @@ public class AtualizarStatusPedidoCasoDeUso {
             case CANCELADO -> publicaEventosSeCancelado(pedidoAtualizado);
         }
         return pedidoMapeador.mapearPedidoCriadoDto(pedidoAtualizado);
+    }
+
+    private Pedido buscarPedido(Long idPedido){
+        return pedidoRepository.buscarPorId(idPedido).orElseThrow(() -> new PedidoNaoEncontradoExcecao("Pedido não localizado: " + idPedido));
     }
     private void publicaEventosSeEntregue(Pedido pedido) throws JsonProcessingException {
         List<ItemPedidoAvaliacaoPayload> itensParaAvaliacao = pedidoMapeador.mapearItemPedidoAvaliacaoPayload(pedido.getItens());
