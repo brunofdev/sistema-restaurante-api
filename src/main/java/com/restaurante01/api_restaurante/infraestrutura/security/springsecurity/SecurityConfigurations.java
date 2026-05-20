@@ -35,6 +35,7 @@ public class SecurityConfigurations {
     private static final String[] PUBLIC_ENDPOINTS = {
             "/",
             "/index.html",
+            "/dashboard.html",
             "/favicon.ico",
             "/api/auth/cliente-login",
             "/api/auth/operador-login",
@@ -45,7 +46,8 @@ public class SecurityConfigurations {
             "/cardapio-produto/publico/**",
             "/cliente/cadastro",
             "/operador/cadastro", //teste apenas
-            "/h2-console/**"
+            "/h2-console/**",
+            "/ws/**"
     };
 
     // ROTAS PROTEGIDAS — ordem importa: rotas exatas devem vir antes de padrões com variáveis de path
