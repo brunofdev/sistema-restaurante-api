@@ -67,7 +67,7 @@ public class PedidoJpaAdaptador implements PedidoRepositorio {
     @Override
     public List<Pedido> buscarParaScheduler() {
         return jpa.buscarParaScheduler(
-                List.of(StatusPedido.EM_PREPARACAO, StatusPedido.SAIU_PARA_ENTREGA),
+                List.of(StatusPedido.PENDENTE, StatusPedido.EM_PREPARACAO, StatusPedido.SAIU_PARA_ENTREGA),
                 List.of(StatusPedido.CANCELADO, StatusPedido.ENTREGUE),
                 LocalDateTime.now().minusHours(12)
         );
