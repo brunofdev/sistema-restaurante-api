@@ -35,6 +35,7 @@ public class SecurityConfigurations {
     private static final String[] PUBLIC_ENDPOINTS = {
             "/",
             "/index.html",
+            "/dashboard",
             "/dashboard.html",
             "/favicon.ico",
             "/api/auth/cliente-login",
