@@ -41,7 +41,7 @@ class OutboxDespachanteIntegrationTest {
 
         @Override
         public TipoEvento tipoEvento() {
-            return TipoEvento.COMPUTAR_PONTUACAO_FIDELIDADE;
+            return TipoEvento.COMPUTAR_PONTUACAO_PEDIDO_ENTREGUE;
         }
 
         @Override
@@ -99,7 +99,7 @@ class OutboxDespachanteIntegrationTest {
                 agregado,
                 agregadoId,
                 GatilhoEvento.PEDIDO_ENTREGUE,
-                TipoEvento.COMPUTAR_PONTUACAO_FIDELIDADE,
+                TipoEvento.COMPUTAR_PONTUACAO_PEDIDO_ENTREGUE,
                 "{}"
         );
         Field field = OutboxEvento.class.getDeclaredField("criadoEm");

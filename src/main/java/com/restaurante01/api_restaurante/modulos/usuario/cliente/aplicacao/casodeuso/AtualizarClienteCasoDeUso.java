@@ -4,24 +4,24 @@ import com.restaurante01.api_restaurante.modulos.usuario.cliente.api.dto.saida.C
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.aplicacao.mapeador.ClienteMapeador;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.aplicacao.validador.ClienteValidador; // Import adicionado
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.Cliente;
+import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.porta.ClienteFidelidadePorta;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.repositorio.ClienteRepositorio;
 import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.exceptions.UsuarioNaoEncontradoExcecao;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@AllArgsConstructor
 public class AtualizarClienteCasoDeUso {
 
     private final ClienteRepositorio repository;
     private final ClienteMapeador mapper;
     private final ClienteValidador validator;
+    private final ClienteFidelidadePorta clienteFidelidadePorta;
 
-    public AtualizarClienteCasoDeUso(ClienteRepositorio repository, ClienteMapeador mapper, ClienteValidador validator) {
-        this.repository = repository;
-        this.mapper = mapper;
-        this.validator = validator;
-    }
-      //atualizar precisa de ajuste, nao esta funcionando
+
+    //atualizar precisa de ajuste, nao esta funcionando
     @Transactional
     public ClienteDTO executar(Long id, ClienteDTO dto) {
        Cliente clienteExistente = repository.buscarPorId(id)
@@ -29,7 +29,6 @@ public class AtualizarClienteCasoDeUso {
         validator.validarAtualizacao(dto, clienteExistente);
         mapper.atualizarEntidade(clienteExistente, dto);
         repository.salvar(clienteExistente);
-
-        return mapper.mapearClienteParaClienteDTO(clienteExistente);
+        return mapper.mapearClienteParaClienteDTO(clienteExistente, clienteFidelidadePorta.obterPontuacaoFidelidade(clienteExistente.getId()));
     }
 }

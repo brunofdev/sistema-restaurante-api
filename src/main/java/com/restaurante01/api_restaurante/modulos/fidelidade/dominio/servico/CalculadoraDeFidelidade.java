@@ -1,4 +1,4 @@
-package com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.servico;
+package com.restaurante01.api_restaurante.modulos.fidelidade.dominio.servico;
 
 
 

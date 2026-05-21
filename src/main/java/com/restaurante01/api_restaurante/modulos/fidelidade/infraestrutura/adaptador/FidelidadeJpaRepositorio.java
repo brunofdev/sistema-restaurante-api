@@ -6,6 +6,7 @@ import com.restaurante01.api_restaurante.modulos.fidelidade.infraestrutura.persi
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -37,5 +38,10 @@ public class FidelidadeJpaRepositorio implements FidelidadeRepositorio {
     @Override
     public boolean existePorClienteId(Long clienteId) {
         return jpa.existsByClienteId(clienteId);
+    }
+
+    @Override
+    public List<Fidelidade> buscarTodosPorListaDeIds(List<Long> idsCliente){
+        return jpa.findByClienteIdIn(idsCliente);
     }
 }

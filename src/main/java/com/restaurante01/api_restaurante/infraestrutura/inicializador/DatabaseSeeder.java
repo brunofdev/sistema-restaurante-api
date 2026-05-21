@@ -10,6 +10,7 @@ import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.Cupom;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.PeriodoCupom;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.RegraRecorrencia;
 import com.restaurante01.api_restaurante.modulos.cupom.dominio.entidade.TipoDesconto;
+import com.restaurante01.api_restaurante.modulos.fidelidade.dominio.entidade.Fidelidade;
 import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Cpf;
 import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Email;
 import com.restaurante01.api_restaurante.modulos.cardapio.dominio.entidade.Cardapio;
@@ -70,6 +71,9 @@ public class DatabaseSeeder implements CommandLineRunner {
                 new EnderecoCliente("Rua das Flores", 100, "Centro", "Porto Alegre", "RS", "90010010", "Apto 12", ""),
                 "51999990001");
         entityManager.persist(maria);
+        Fidelidade fidelidadeMaria = Fidelidade.criar(maria.getId());
+        entityManager.persist(fidelidadeMaria);
+        maria.vincularFidelidade(fidelidadeMaria.getId());
 
         Cliente joao = Cliente.criar(
                 "João Pereira", senha,
@@ -77,6 +81,9 @@ public class DatabaseSeeder implements CommandLineRunner {
                 new EnderecoCliente("Av. Ipiranga", 500, "Partenon", "Porto Alegre", "RS", "90160093", "Casa", ""),
                 "51999990002");
         entityManager.persist(joao);
+        Fidelidade fidelidadeJoao = Fidelidade.criar(joao.getId());
+        entityManager.persist(fidelidadeJoao);
+        joao.vincularFidelidade(fidelidadeJoao.getId());
 
         // -------------------------------------------------------------------------
         // PRODUTOS (10)

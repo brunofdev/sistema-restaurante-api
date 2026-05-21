@@ -13,12 +13,15 @@ import com.restaurante01.api_restaurante.modulos.usuario.cliente.aplicacao.paylo
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.aplicacao.validador.ClienteValidador;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.Cliente;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.evento.ClienteCriadoEvento;
+import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.porta.ClienteFidelidadePorta;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.repositorio.ClienteRepositorio;
+import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@AllArgsConstructor
 public class CadastrarClienteCasoDeUso {
 
     private final ClienteRepositorio repository;
@@ -27,17 +30,8 @@ public class CadastrarClienteCasoDeUso {
     private final ApplicationEventPublisher publicadorDeEvento;
     private final OutboxRepositorio outboxRepositorio;
     private final ObjectMapper objectMapper;
+    private final ClienteFidelidadePorta clienteFidelidadePorta;
 
-    public CadastrarClienteCasoDeUso(ClienteRepositorio repository, ClienteValidador validator, ClienteMapeador mapper,
-                                     ApplicationEventPublisher publicadorDeEvento, OutboxRepositorio outboxRepositorio,
-                                     ObjectMapper objectMapper) {
-        this.repository = repository;
-        this.validator = validator;
-        this.mapper = mapper;
-        this.publicadorDeEvento = publicadorDeEvento;
-        this.outboxRepositorio = outboxRepositorio;
-        this.objectMapper = objectMapper;
-    }
 
     @Transactional
     public ClienteDTO executar(CadastrarClienteDTO dto) {
@@ -45,7 +39,7 @@ public class CadastrarClienteCasoDeUso {
         Cliente cliente = mapper.mappearNovoCliente(dto);
         Cliente clienteSalvo = repository.salvar(cliente);
         publicarEvento(clienteSalvo.getId());
-        return mapper.mapearClienteParaClienteDTO(clienteSalvo);
+        return mapper.mapearClienteParaClienteDTO(clienteSalvo, clienteFidelidadePorta.obterPontuacaoFidelidade(cliente.getId()));
     }
 
     private void publicarEvento(Long clienteId) {

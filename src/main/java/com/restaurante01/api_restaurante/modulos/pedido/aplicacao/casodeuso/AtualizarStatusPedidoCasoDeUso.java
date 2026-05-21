@@ -18,7 +18,6 @@ import com.restaurante01.api_restaurante.modulos.pedido.dominio.repositorio.Pedi
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.*;
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,8 +51,8 @@ public class AtualizarStatusPedidoCasoDeUso {
     private void publicaEventosSeEntregue(Pedido pedido) throws JsonProcessingException {
         List<ItemPedidoAvaliacaoPayload> itensParaAvaliacao = pedidoMapeador.mapearItemPedidoAvaliacaoPayload(pedido.getItens());
         PedidoEntregueAvaliacaoPayload pedidoEntregueAvaliacaoPayload = new PedidoEntregueAvaliacaoPayload(pedido.getId(), pedido.getCliente().clienteId(), itensParaAvaliacao);
-        PedidoEntregueClientePayload pedidoEntregueClientePayload = new PedidoEntregueClientePayload(pedido.getId(),pedido.getCliente().clienteId(),pedido.getValorBruto(),LocalDateTime.now());
-        pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO, pedido.getId(), GatilhoEvento.PEDIDO_ENTREGUE, TipoEvento.COMPUTAR_PONTUACAO_FIDELIDADE, objectMapper.writeValueAsString(pedidoEntregueClientePayload));
+        PedidoEntregueFidelidadePayload pedidoEntregueFidelidadePayload = new PedidoEntregueFidelidadePayload(pedido.getId(),pedido.getCliente().clienteId(),pedido.getValorBruto(),LocalDateTime.now());
+        pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO, pedido.getId(), GatilhoEvento.PEDIDO_ENTREGUE, TipoEvento.COMPUTAR_PONTUACAO_PEDIDO_ENTREGUE, objectMapper.writeValueAsString(pedidoEntregueFidelidadePayload));
         pedidoOutboxPorta.guardarEvento(Agregado.PEDIDO, pedido.getId(), GatilhoEvento.PEDIDO_ENTREGUE, TipoEvento.CRIAR_AVALIACAO, objectMapper.writeValueAsString(pedidoEntregueAvaliacaoPayload));
         publicarEvento.publishEvent(new PedidoEntregueEvento(pedido, itensParaAvaliacao));
     }

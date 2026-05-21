@@ -1,6 +1,6 @@
 package com.restaurante01.api_restaurante.modulos.usuario.cliente.infraestrutura.adaptador;
 
-import com.restaurante01.api_restaurante.modulos.fidelidade.dominio.porta.AtualizarReferenciaClientePorta;
+import com.restaurante01.api_restaurante.modulos.fidelidade.dominio.porta.FidelidadeClientePorta;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.Cliente;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.excecao.ClienteNaoEncontradoExcecao;
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.repositorio.ClienteRepositorio;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class FidelidadeClienteAdaptador implements AtualizarReferenciaClientePorta {
+public class ClienteFidelidadeAdaptador implements FidelidadeClientePorta {
 
     private final ClienteRepositorio clienteRepositorio;
 

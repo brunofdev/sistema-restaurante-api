@@ -6,7 +6,6 @@ import com.restaurante01.api_restaurante.compartilhado.dominio.entidade.OutboxEv
 import com.restaurante01.api_restaurante.compartilhado.dominio.enums.TipoEvento;
 import com.restaurante01.api_restaurante.modulos.avaliacao.aplicacao.casodeuso.CriarAvaliacaoCasoDeUso;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.PedidoEntregueAvaliacaoPayload;
-import com.restaurante01.api_restaurante.modulos.pedido.dominio.valorobjeto.PedidoEntregueClientePayload;
 import org.springframework.stereotype.Component;
 
 @Component

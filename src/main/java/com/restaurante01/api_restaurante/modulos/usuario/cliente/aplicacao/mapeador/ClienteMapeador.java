@@ -7,9 +7,9 @@ import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidad
 import com.restaurante01.api_restaurante.modulos.usuario.cliente.dominio.entidade.EnderecoCliente;
 import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Cpf;
 import com.restaurante01.api_restaurante.modulos.usuario.usuario_super.entidade.Email;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
+import java.util.Map;
 
 @Component
 public class ClienteMapeador {
@@ -35,17 +35,23 @@ public class ClienteMapeador {
                 dto.telefone()
         );
     }
-    public ClienteDTO mapearClienteParaClienteDTO(Cliente novoCliente) {
+    public ClienteDTO mapearClienteParaClienteDTO(Cliente novoCliente, Integer pontuacaoFidelidade) {
         return new ClienteDTO(
                 novoCliente.getId(),
                 novoCliente.getNome(),
                 novoCliente.getUsername(),
                 novoCliente.getRole(),
-                novoCliente.getPontuacaoFidelidade().getValor());
+                (pontuacaoFidelidade == null) ? 0 : pontuacaoFidelidade);
     }
-    public List<ClienteDTO> mapearListaClienteParaClienteDTO(List<Cliente> clientes){
-        return clientes.stream()
-                .map(this::mapearClienteParaClienteDTO).toList();
+    public Page<ClienteDTO> mapearListaClienteParaClienteDTO(
+            Page<Cliente> clientes,
+            Map<Long, Integer> pontuacoes) {
+        return clientes.map(cliente ->
+                mapearClienteParaClienteDTO(
+                        cliente,
+                        pontuacoes.getOrDefault(cliente.getId(), 0) //default valor de teste
+                )
+        );
     }
     public void atualizarEntidade(Cliente clienteExistente, ClienteDTO dto) {
         if (dto.nome() != null) {

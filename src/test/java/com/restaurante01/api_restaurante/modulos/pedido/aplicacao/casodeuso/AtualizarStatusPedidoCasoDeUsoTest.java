@@ -73,7 +73,7 @@ class AtualizarStatusPedidoCasoDeUsoTest {
 
         verify(organizaPedidosPorStatusHandler).executar();
         verify(pedidoOutboxPorta).guardarEvento(
-                eq(Agregado.PEDIDO), any(), eq(GatilhoEvento.PEDIDO_ENTREGUE), eq(TipoEvento.COMPUTAR_PONTUACAO_FIDELIDADE), any());
+                eq(Agregado.PEDIDO), any(), eq(GatilhoEvento.PEDIDO_ENTREGUE), eq(TipoEvento.COMPUTAR_PONTUACAO_PEDIDO_ENTREGUE), any());
         verify(pedidoOutboxPorta).guardarEvento(
                 eq(Agregado.PEDIDO), any(), eq(GatilhoEvento.PEDIDO_ENTREGUE), eq(TipoEvento.CRIAR_AVALIACAO), any());
         verify(publicarEvento).publishEvent(any(PedidoEntregueEvento.class));
