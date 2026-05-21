@@ -7,6 +7,7 @@ import com.restaurante01.api_restaurante.compartilhado.dominio.enums.TipoEvento;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.entrada.StatusPedidoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.api.dto.saida.PedidoCriadoDTO;
 import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.mapeador.PedidoMapeador;
+import com.restaurante01.api_restaurante.modulos.pedido.aplicacao.schuduler.OrganizaPedidosPorStatusHandler;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.ItemPedidoBuilder;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.Pedido;
 import com.restaurante01.api_restaurante.modulos.pedido.dominio.entidade.PedidoBuilder;
@@ -42,6 +43,7 @@ class AtualizarStatusPedidoCasoDeUsoTest {
     @Mock private ApplicationEventPublisher publicarEvento;
     @Mock private PedidoOutboxPorta pedidoOutboxPorta;
     @Mock private ObjectMapper objectMapper;
+    @Mock private OrganizaPedidosPorStatusHandler organizaPedidosPorStatusHandler;
 
     @InjectMocks
     private AtualizarStatusPedidoCasoDeUso casoDeUso;
@@ -69,6 +71,7 @@ class AtualizarStatusPedidoCasoDeUsoTest {
 
         casoDeUso.executar(1L, new StatusPedidoDTO(StatusPedido.ENTREGUE));
 
+        verify(organizaPedidosPorStatusHandler).executar();
         verify(pedidoOutboxPorta).guardarEvento(
                 eq(Agregado.PEDIDO), any(), eq(GatilhoEvento.PEDIDO_ENTREGUE), eq(TipoEvento.COMPUTAR_PONTUACAO_FIDELIDADE), any());
         verify(pedidoOutboxPorta).guardarEvento(
@@ -87,6 +90,7 @@ class AtualizarStatusPedidoCasoDeUsoTest {
 
         casoDeUso.executar(1L, new StatusPedidoDTO(StatusPedido.CANCELADO));
 
+        verify(organizaPedidosPorStatusHandler).executar();
         verify(pedidoOutboxPorta).guardarEvento(
                 eq(Agregado.PEDIDO), any(), eq(GatilhoEvento.PEDIDO_CANCELADO), eq(TipoEvento.ESTORNAR_ESTOQUE_ASSOCIACAO), any());
         verify(pedidoOutboxPorta).guardarEvento(
@@ -105,6 +109,7 @@ class AtualizarStatusPedidoCasoDeUsoTest {
 
         casoDeUso.executar(1L, new StatusPedidoDTO(StatusPedido.EM_PREPARACAO));
 
+        verify(organizaPedidosPorStatusHandler).executar();
         verifyNoInteractions(pedidoOutboxPorta);
         verifyNoInteractions(publicarEvento);
     }
