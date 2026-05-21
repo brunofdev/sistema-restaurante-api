@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class OutboxEvento {
+public class OutboxEvento implements Comparable<OutboxEvento> {
 
     private static final int MAX_TENTATIVAS = 3;
 
@@ -99,5 +99,14 @@ public class OutboxEvento {
 
     public boolean esgotouTentativas() {
         return this.tentativas >= MAX_TENTATIVAS;
+    }
+
+    @Override
+    public int compareTo(OutboxEvento outroEvento) {
+        int resultado = this.criadoEm.compareTo(outroEvento.criadoEm);
+        if (resultado == 0) {
+            return Long.compare(this.id, outroEvento.id);
+        }
+        return resultado;
     }
 }

@@ -388,6 +388,23 @@ public class DatabaseSeeder implements CommandLineRunner {
         entityManager.persist(av8);
 
         entityManager.flush();
+
+        // -------------------------------------------------------------------------
+        // RETRODATA PEDIDOS ENTREGUES E CANCELADOS (exceto um de cada)
+        // -------------------------------------------------------------------------
+        LocalDateTime doisDiasAtras = LocalDateTime.now().minusDays(2);
+
+        entityManager.createQuery(
+                "UPDATE Pedido p SET p.dataCriacao = :d, p.dataAtualizacao = :d WHERE p.id IN :ids")
+                .setParameter("d", doisDiasAtras)
+                .setParameter("ids", List.of(p1.getId(), p2.getId(), p3.getId(), p4.getId(), p5.getId(), p6.getId(), p21.getId()))
+                .executeUpdate();
+
+        entityManager.createQuery(
+                "UPDATE Pedido p SET p.dataCriacao = :d, p.dataAtualizacao = :d WHERE p.id = :id")
+                .setParameter("d", doisDiasAtras)
+                .setParameter("id", p19.getId())
+                .executeUpdate();
     }
 
     // -------------------------------------------------------------------------

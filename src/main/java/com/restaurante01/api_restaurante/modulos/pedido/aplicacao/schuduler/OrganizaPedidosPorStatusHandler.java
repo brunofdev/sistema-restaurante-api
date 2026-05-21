@@ -48,21 +48,21 @@ public class OrganizaPedidosPorStatusHandler {
         enviaPedidosEntregues(pedidosEntregues);
     }
 
-    public void enviaPedidosPendentes(PriorityQueue<Pedido> pedidosPendentes) {
+    private void enviaPedidosPendentes(PriorityQueue<Pedido> pedidosPendentes) {
         while (!pedidosPendentes.isEmpty()){
             Pedido pedido = pedidosPendentes.poll();
             PedidoCriadoDTO dto = mapeador.mapearPedidoCriadoDto(pedido);
             messagingTemplate.convertAndSend("/topico/pedidos/pendentes", dto);
         }
     }
-    public void enviaPedidosEmPreparacao(PriorityQueue<Pedido> pedidosEmPreparacao){
+    private void enviaPedidosEmPreparacao(PriorityQueue<Pedido> pedidosEmPreparacao){
         while (!pedidosEmPreparacao.isEmpty()){
             Pedido pedido = pedidosEmPreparacao.poll();
             PedidoCriadoDTO dto = mapeador.mapearPedidoCriadoDto(pedido);
             messagingTemplate.convertAndSend("/topico/pedidos/em-preparacao", dto);
         }
     }
-    public void enviaPedidosEmEntrega(PriorityQueue<Pedido> pedidosEmEntrega){
+    private void enviaPedidosEmEntrega(PriorityQueue<Pedido> pedidosEmEntrega){
         while (!pedidosEmEntrega.isEmpty()){
             Pedido pedido = pedidosEmEntrega.poll();
             PedidoCriadoDTO dto = mapeador.mapearPedidoCriadoDto(pedido);
@@ -70,14 +70,14 @@ public class OrganizaPedidosPorStatusHandler {
 
         }
     }
-    public void enviaPedidosCancelados(PriorityQueue<Pedido> pedidosCancelados){
+    private void enviaPedidosCancelados(PriorityQueue<Pedido> pedidosCancelados){
         while (!pedidosCancelados.isEmpty()){
             Pedido pedido = pedidosCancelados.poll();
             PedidoCriadoDTO dto = mapeador.mapearPedidoCriadoDto(pedido);
             messagingTemplate.convertAndSend("/topico/pedidos/cancelados-recente", dto);
         }
     }
-    public void enviaPedidosEntregues(PriorityQueue<Pedido> pedidosEntregue){
+    private void enviaPedidosEntregues(PriorityQueue<Pedido> pedidosEntregue){
         while (!pedidosEntregue.isEmpty()){
             Pedido pedido = pedidosEntregue.poll();
             PedidoCriadoDTO dto = mapeador.mapearPedidoCriadoDto(pedido);

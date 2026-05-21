@@ -1,6 +1,7 @@
 package com.restaurante01.api_restaurante.compartilhado.infraestrutura.scheduler;
 
 import com.restaurante01.api_restaurante.compartilhado.aplicacao.OutboxEventoHandler;
+import com.restaurante01.api_restaurante.compartilhado.dominio.entidade.OutboxEvento;
 import com.restaurante01.api_restaurante.compartilhado.dominio.enums.TipoEvento;
 import com.restaurante01.api_restaurante.compartilhado.dominio.repositorio.OutboxRepositorio;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,19 +31,27 @@ public class OutboxDespachante {
     @Scheduled(fixedDelay = 60000)
     @Transactional
     public void reprocessarPendentes() {
-        outboxRepositorio.buscarPendentes().forEach(evento -> {
+        List<OutboxEvento> eventosPendentes = outboxRepositorio.buscarPendentes();
+        PriorityQueue<OutboxEvento> filaDeEventosParaProcessar = new PriorityQueue<>();
+
+        for (OutboxEvento evento : eventosPendentes) {
+            filaDeEventosParaProcessar.offer(evento);
+        }
+        while (!filaDeEventosParaProcessar.isEmpty()) {
+            OutboxEvento evento = filaDeEventosParaProcessar.poll();
             OutboxEventoHandler handler = handlers.get(evento.getTipo());
             if (handler == null) {
                 log.warn("Sem handler para tipo {}", evento.getTipo());
-                return;
+                continue;
             }
             try {
                 handler.processar(evento);
                 evento.processar();
-            } catch (Exception e) {
+            } catch (Exception ex) {
                 evento.registrarFalha();
+            } finally {
+                outboxRepositorio.salvar(evento);
             }
-            outboxRepositorio.salvar(evento);
-        });
+        }
     }
 }

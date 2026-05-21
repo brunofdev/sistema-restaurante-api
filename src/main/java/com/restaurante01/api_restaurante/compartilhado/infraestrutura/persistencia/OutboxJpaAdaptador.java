@@ -31,7 +31,7 @@ public class OutboxJpaAdaptador implements OutboxRepositorio {
 
     @Override
     public List<OutboxEvento> buscarPendentes(){
-        return jpa.findByStatus(StatusOutbox.PENDENTE);
+        return jpa.findByStatusOrderByCriadoEmAsc(StatusOutbox.PENDENTE);
     }
 
 }

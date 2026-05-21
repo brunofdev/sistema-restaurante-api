@@ -449,7 +449,7 @@ function adicionarCard(containerId, countId, dto, schedulerKey = null) {
       cicloLimpo.add(clearKey);
     }
     clearTimeout(cicloTimers[clearKey]);
-    cicloTimers[clearKey] = setTimeout(() => cicloLimpo.delete(clearKey), 2000);
+    cicloTimers[clearKey] = setTimeout(() => cicloLimpo.delete(clearKey), 500);
   } else {
     const empty = container.querySelector('.empty-col');
     if (empty) empty.remove();
