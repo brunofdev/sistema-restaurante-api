@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kanban — Restaurante</title>
+<style>
+  :root {
+    --bg:        #111827;
+    --surface:   #1f2937;
+    --border:    #374151;
+    --text:      #f3f4f6;
+    --muted:     #9ca3af;
+    --blue:      #3b82f6;
+    --green:     #22c55e;
+    --red:       #ef4444;
+    --yellow:    #f59e0b;
+    --purple:    #8b5cf6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;
+    font-size: 13px;
+  }
+
+  /* ── LOGIN ── */
+  #tela-login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+
+  .login-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    width: 340px;
+  }
+
+  .login-box h2 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .login-box h2 span { color: var(--green); }
+  .login-box p { color: var(--muted); font-size: 12px; margin-bottom: 24px; }
+
+  .form-group { margin-bottom: 14px; }
+  label {
+    display: block; font-size: 11px; font-weight: 600; color: var(--muted);
+    margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.03em;
+  }
+  input {
+    width: 100%; background: var(--bg); border: 1px solid var(--border);
+    color: var(--text); padding: 9px 12px; border-radius: 7px;
+    font-size: 13px; font-family: inherit; outline: none; transition: border-color 0.15s;
+  }
+  input:focus { border-color: var(--blue); }
+
+  .btn-login {
+    width: 100%; padding: 10px; background: var(--blue); color: #fff;
+    border: none; border-radius: 7px; font-size: 14px; font-weight: 600;
+    font-family: inherit; cursor: pointer; margin-top: 4px; transition: opacity 0.15s;
+  }
+  .btn-login:hover { opacity: 0.85; }
+  .btn-login:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  #login-erro { color: var(--red); font-size: 12px; text-align: center; margin-top: 12px; display: none; }
+
+  /* ── KANBAN ── */
+  #tela-kanban { display: none; height: 100vh; flex-direction: column; }
+
+  header {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 0 20px; display: flex; align-items: center; justify-content: space-between;
+    height: 48px; flex-shrink: 0;
+  }
+  header h1 { font-size: 15px; font-weight: 700; }
+  header h1 span { color: var(--green); }
+
+  .header-right { display: flex; align-items: center; gap: 14px; }
+
+  #ws-badge {
+    padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: 600;
+    background: var(--border); color: var(--muted);
+  }
+  #ws-badge.conectado { background: #14532d; color: #4ade80; }
+  #ws-badge.erro      { background: #450a0a; color: #fca5a5; }
+
+  .btn-sair {
+    padding: 5px 12px; background: var(--border); color: var(--muted);
+    border: none; border-radius: 6px; font-size: 12px; font-family: inherit; cursor: pointer;
+  }
+  .btn-sair:hover { color: var(--text); }
+
+  .kanban {
+    display: flex; align-items: stretch; gap: 12px; padding: 16px;
+    height: calc(100vh - 48px); overflow-x: auto; overflow-y: hidden;
+    box-sizing: border-box;
+  }
+
+  .kanban-col {
+    flex: 0 0 500px; display: flex; flex-direction: column;
+    min-height: 0; max-height: 100%;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+  }
+
+  .kanban-col-header {
+    padding: 12px 14px; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.05em; text-transform: uppercase; border-bottom: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+  }
+
+  .kanban-col-header .cnt {
+    padding: 2px 8px; border-radius: 99px; font-size: 10px; font-weight: 700;
+    background: var(--border); color: var(--muted);
+  }
+
+  .col-novos      .kanban-col-header { color: var(--blue);   border-color: var(--blue); }
+  .col-preparacao .kanban-col-header { color: var(--yellow);  border-color: var(--yellow); }
+  .col-entrega    .kanban-col-header { color: var(--purple);  border-color: var(--purple); }
+  .col-cancelados .kanban-col-header { color: var(--red);     border-color: var(--red); }
+  .col-entregues  .kanban-col-header { color: var(--green);   border-color: var(--green); }
+
+  .kanban-cards {
+    flex: 1 1 0; min-height: 0; overflow-y: auto; padding: 10px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+
+  /* ── CARD ── */
+  .pedido-card {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0; font-size: 12px;
+    animation: slideIn 0.2s ease; overflow: hidden; flex-shrink: 0;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .pc-section { padding: 8px 12px; }
+
+  .pc-divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+  /* cabeçalho */
+  .pc-header { padding: 8px 12px; display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; }
+  .pc-id     { font-size: 11px; font-weight: 800; color: var(--text); letter-spacing: 0.03em; }
+  .pc-data   { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  .card-status {
+    display: inline-block; padding: 2px 7px; border-radius: 4px; flex-shrink: 0;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.03em; white-space: nowrap;
+  }
+
+  .st-PENDENTE          { background: #1e3a5f; color: #60a5fa; }
+  .st-EM_PREPARACAO     { background: #1f3020; color: #4ade80; }
+  .st-SAIU_PARA_ENTREGA { background: #2d1f4e; color: #c4b5fd; }
+  .st-ENTREGUE          { background: #14532d; color: #86efac; }
+  .st-CANCELADO         { background: #450a0a; color: #fca5a5; }
+
+  /* cliente */
+  .pc-nome { font-weight: 600; color: var(--text); }
+  .pc-meta { font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.6; }
+
+  /* itens */
+  .pc-label    { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .pc-item     { margin-bottom: 7px; }
+  .pc-item-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .pc-item-nome{ color: var(--text); font-size: 12px; flex: 1; line-height: 1.4; }
+  .pc-item-sub { font-weight: 700; color: var(--text); font-size: 12px; white-space: nowrap; flex-shrink: 0; }
+  .pc-item-bot { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .pc-item-obs { font-size: 10px; font-style: italic; color: var(--yellow); margin-top: 2px; padding-left: 4px; }
+
+  /* valores */
+  .pc-val-row   { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 2px; }
+  .pc-desconto  { color: var(--red); }
+  .pc-cupom-tag { display: inline-block; padding: 1px 6px; border-radius: 3px; background: #3b1f06; color: var(--yellow); font-size: 10px; font-weight: 700; margin-left: 4px; }
+  .pc-total     { font-size: 13px; font-weight: 700; color: var(--green); margin-top: 4px; }
+
+  /* endereço */
+  .pc-endereco { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+  /* ações */
+  .pc-acoes { padding: 8px 12px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .pc-btn {
+    padding: 5px 13px; border: none; border-radius: 5px; font-size: 11px; font-weight: 600;
+    font-family: inherit; cursor: pointer; transition: opacity 0.15s;
+  }
+  .pc-btn:hover:not(:disabled) { opacity: 0.82; }
+  .pc-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .pc-btn-avancar  { background: var(--blue);  color: #fff; }
+  .pc-btn-cancelar { background: #3b0808; color: #fca5a5; border: 1px solid #7f1d1d; }
+  .pc-erro-inline  { font-size: 11px; color: var(--red); width: 100%; margin-top: 2px; display: none; }
+
+  .empty-col { color: var(--muted); font-size: 11px; text-align: center; padding: 20px 0; }
+
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ LOGIN ═══════════ -->
+<div id="tela-login">
+  <div class="login-box">
+    <h2>🍔 Kanban <span>Operador</span></h2>
+    <p>Painel em tempo real via WebSocket</p>
+    <div class="form-group">
+      <label>CPF</label>
+      <input id="l-cpf" type="text" value="00000000000" maxlength="11">
+    </div>
+    <div class="form-group">
+      <label>Senha</label>
+      <input id="l-senha" type="password" value="123456">
+    </div>
+    <button class="btn-login" id="btn-entrar" onclick="entrar()">Entrar</button>
+    <div id="login-erro"></div>
+  </div>
+</div>
+
+<!-- ═══════════ KANBAN ═══════════ -->
+<div id="tela-kanban">
+  <header>
+    <h1>🍔 <span>Restaurante</span> — Kanban Tempo Real</h1>
+    <div class="header-right">
+      <span id="ws-badge">⚫ desconectado</span>
+      <span id="op-nome" style="font-size:12px; color:var(--muted)"></span>
+      <button class="btn-sair" onclick="sair()">Sair</button>
+    </div>
+  </header>
+
+  <div class="kanban">
+
+    <div class="kanban-col col-novos">
+      <div class="kanban-col-header">
+        <span>Novos Pedidos</span>
+        <span class="cnt" id="cnt-novos">0</span>
+      </div>
+      <div class="kanban-cards" id="cards-novos">
+        <div class="empty-col">Aguardando pedidos...</div>
+      </div>
+    </div>
+
+    <div class="kanban-col col-preparacao">
+      <div class="kanban-col-header">
+        <span>Em Preparação</span>
+        <span class="cnt" id="cnt-preparacao">0</span>
+      </div>
+      <div class="kanban-cards" id="cards-preparacao">
+        <div class="empty-col">Nenhum</div>
+      </div>
+    </div>
+
+    <div class="kanban-col col-entrega">
+      <div class="kanban-col-header">
+        <span>Saiu p/ Entrega</span>
+        <span class="cnt" id="cnt-entrega">0</span>
+      </div>
+      <div class="kanban-cards" id="cards-entrega">
+        <div class="empty-col">Nenhum</div>
+      </div>
+    </div>
+
+    <div class="kanban-col col-cancelados">
+      <div class="kanban-col-header">
+        <span>Cancelados</span>
+        <span class="cnt" id="cnt-cancelados">0</span>
+      </div>
+      <div class="kanban-cards" id="cards-cancelados">
+        <div class="empty-col">Nenhum</div>
+      </div>
+    </div>
+
+    <div class="kanban-col col-entregues">
+      <div class="kanban-col-header">
+        <span>Entregues</span>
+        <span class="cnt" id="cnt-entregues">0</span>
+      </div>
+      <div class="kanban-cards" id="cards-entregues">
+        <div class="empty-col">Nenhum</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@6/bundles/stomp.umd.min.js"></script>
+<script>
+let token = null;
+let stompClient = null;
+
+const COLUNAS_SCHEDULER = new Set(['cards-preparacao','cards-entrega','cards-cancelados','cards-entregues']);
+const cicloLimpo  = new Set();
+const cicloTimers = {};
+
+// ── LOGIN ──
+async function entrar() {
+  const cpf   = document.getElementById('l-cpf').value.trim();
+  const senha = document.getElementById('l-senha').value;
+  const btn   = document.getElementById('btn-entrar');
+  const erro  = document.getElementById('login-erro');
+
+  btn.disabled = true;
+  btn.textContent = 'Autenticando...';
+  erro.style.display = 'none';
+
+  try {
+    const r = await fetch('/api/auth/operador-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cpf, senha })
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data?.mensagem || 'Credenciais inválidas');
+
+    const d = data?.dados;
+    token = d?.token || d?.accessToken || d?.jwt
+         || Object.values(d || {}).find(v => typeof v === 'string' && v.startsWith('ey'));
+    if (!token) throw new Error('Token não encontrado na resposta');
+
+    document.getElementById('op-nome').textContent = d?.operadorDTO?.nome || d?.nome || '';
+    document.getElementById('tela-login').style.display = 'none';
+    document.getElementById('tela-kanban').style.display = 'flex';
+    conectarWebSocket();
+  } catch (e) {
+    erro.textContent = e.message;
+    erro.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Entrar';
+  }
+}
+
+document.getElementById('l-senha').addEventListener('keydown', e => {
+  if (e.key === 'Enter') entrar();
+});
+
+// ── WEBSOCKET ──
+function conectarWebSocket() {
+  setBadge('', '🟡 conectando...');
+
+  stompClient = new StompJs.Client({
+    webSocketFactory: () => new SockJS('/ws'),
+    connectHeaders: { Authorization: 'Bearer ' + token },
+    reconnectDelay: 5000,
+    onConnect: () => {
+      setBadge('conectado', '🟢 conectado');
+      stompClient.subscribe('/topico/admin-pedidos',              msg => adicionarCard('cards-novos',      'cnt-novos',      JSON.parse(msg.body)));
+      stompClient.subscribe('/topico/pedidos/pendentes',          msg => adicionarCard('cards-novos',      'cnt-novos',      JSON.parse(msg.body), 'pendentes-sched'));
+      stompClient.subscribe('/topico/pedidos/em-preparacao',      msg => adicionarCard('cards-preparacao', 'cnt-preparacao', JSON.parse(msg.body)));
+      stompClient.subscribe('/topico/pedidos/em-entrega',         msg => adicionarCard('cards-entrega',    'cnt-entrega',    JSON.parse(msg.body)));
+      stompClient.subscribe('/topico/pedidos/cancelados-recente', msg => adicionarCard('cards-cancelados', 'cnt-cancelados', JSON.parse(msg.body)));
+      stompClient.subscribe('/topico/pedidos/entregues-recente',  msg => adicionarCard('cards-entregues',  'cnt-entregues',  JSON.parse(msg.body)));
+    },
+    onDisconnect:    () => setBadge('',    '⚫ desconectado'),
+    onStompError:    () => setBadge('erro','🔴 erro de conexão'),
+    onWebSocketClose:() => setBadge('erro','🔴 conexão perdida'),
+  });
+
+  stompClient.activate();
+}
+
+function setBadge(cls, texto) {
+  const el = document.getElementById('ws-badge');
+  el.className = cls;
+  el.textContent = texto;
+}
+
+// ── TRANSIÇÕES DE STATUS ──
+const TRANSICOES = {
+  PENDENTE:          [{ status: 'EM_PREPARACAO',     label: 'Iniciar Preparo',  cor: 'avancar'  },
+                      { status: 'CANCELADO',          label: 'Cancelar',         cor: 'cancelar' }],
+  EM_PREPARACAO:     [{ status: 'SAIU_PARA_ENTREGA', label: 'Saiu p/ Entrega',  cor: 'avancar'  },
+                      { status: 'CANCELADO',          label: 'Cancelar',         cor: 'cancelar' }],
+  SAIU_PARA_ENTREGA: [{ status: 'ENTREGUE',          label: 'Marcar Entregue',  cor: 'avancar'  },
+                      { status: 'CANCELADO',          label: 'Cancelar',         cor: 'cancelar' }],
+};
+
+async function mudarStatus(pedidoId, novoStatus, btnEl) {
+  const acoes = btnEl.closest('.pc-acoes');
+  const erroEl = acoes.querySelector('.pc-erro-inline');
+  const btns   = acoes.querySelectorAll('.pc-btn');
+  const label  = btnEl.textContent;
+
+  btns.forEach(b => b.disabled = true);
+  btnEl.textContent = 'Atualizando...';
+  erroEl.style.display = 'none';
+
+  try {
+    const r = await fetch(`/pedido/operador/${pedidoId}/status`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ statusPedido: novoStatus })
+    });
+    if (!r.ok) {
+      const data = await r.json().catch(() => ({}));
+      throw new Error(data?.mensagem || data?.message || `Erro ${r.status}`);
+    }
+    const card = btnEl.closest('.pedido-card');
+    const cardsContainer = card.closest('.kanban-cards');
+    const countId = cardsContainer.id.replace('cards-', 'cnt-');
+    card.remove();
+    const restantes = cardsContainer.querySelectorAll('.pedido-card').length;
+    document.getElementById(countId).textContent = restantes;
+    if (restantes === 0) cardsContainer.innerHTML = '<div class="empty-col">Nenhum</div>';
+  } catch (e) {
+    erroEl.textContent = e.message;
+    erroEl.style.display = 'block';
+    btns.forEach(b => b.disabled = false);
+    btnEl.textContent = label;
+  }
+}
+
+// ── UTILS ──
+function brl(v) {
+  return v != null ? 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : '—';
+}
+function fmtCpf(c) {
+  if (!c) return '—';
+  return c.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+}
+function fmtData(iso) {
+  if (!iso) return '—';
+  const [datePart, timePart = ''] = iso.split('T');
+  const [year, month, day] = datePart.split('-');
+  const [hour = '00', minute = '00', rawSec = '00'] = timePart.split(':');
+  const second = rawSec.split('.')[0];
+  return `${day}/${month}/${year} às ${hour}:${minute}:${second}`;
+}
+
+// ── CARDS ──
+// schedulerKey: quando informado, trata a mensagem como parte de um lote do scheduler
+// (limpa a coluna na primeira msg do lote; msgs subsequentes em até 2 s apenas acumulam).
+// Sem schedulerKey e sem COLUNAS_SCHEDULER, apenas acumula (comportamento tempo-real).
+function adicionarCard(containerId, countId, dto, schedulerKey = null) {
+  const container = document.getElementById(containerId);
+  const clearKey  = schedulerKey ?? (COLUNAS_SCHEDULER.has(containerId) ? containerId : null);
+
+  if (clearKey) {
+    if (!cicloLimpo.has(clearKey)) {
+      container.innerHTML = '';
+      document.getElementById(countId).textContent = '0';
+      cicloLimpo.add(clearKey);
+    }
+    clearTimeout(cicloTimers[clearKey]);
+    cicloTimers[clearKey] = setTimeout(() => cicloLimpo.delete(clearKey), 500);
+  } else {
+    const empty = container.querySelector('.empty-col');
+    if (empty) empty.remove();
+  }
+
+  const status    = dto?.statusPedido || '';
+  const v         = dto?.valores || {};
+  const end       = dto?.enderecoDeEntrega;
+  const itens     = Array.isArray(dto?.itens) ? dto.itens : [];
+  const desconto  = Number(v.desconto || 0);
+  const transicoes = TRANSICOES[status] || [];
+
+  // ── itens HTML ──
+  const itensHtml = itens.map(it => {
+    const obs = it.observacao && it.observacao.trim()
+      ? `<div class="pc-item-obs">↳ ${it.observacao}</div>` : '';
+    return `
+      <div class="pc-item">
+        <div class="pc-item-top">
+          <span class="pc-item-nome">${it.nomeProduto || '?'}</span>
+          <span class="pc-item-sub">${brl(it.subTotal)}</span>
+        </div>
+        <div class="pc-item-bot">${it.quantidade} × ${brl(it.precoUnitario)}</div>
+        ${obs}
+      </div>`;
+  }).join('');
+
+  // ── desconto HTML ──
+  const cupom = dto.cupomAplicado && dto.cupomAplicado.trim() ? dto.cupomAplicado.trim() : null;
+  const descontoHtml = desconto > 0 ? `
+    <div class="pc-val-row pc-desconto">
+      <span>Desconto${cupom ? ` <span class="pc-cupom-tag">${cupom}</span>` : ''}</span>
+      <span>-${brl(desconto)}</span>
+    </div>` : '';
+
+  // ── endereço HTML ──
+  const endHtml = end
+    ? `📍 ${end.rua}, nº ${end.numero} · ${end.bairro} · ${end.cidade}/${end.estado}`
+    : '—';
+
+  const card = document.createElement('div');
+  card.className = 'pedido-card';
+  card.innerHTML = `
+    <div class="pc-header">
+      <div>
+        <div class="pc-id">PEDIDO #${dto.id}</div>
+        <div class="pc-data">${clearKey ? 'Atualizado em:' : 'Criado em:'} ${fmtData(clearKey ? dto.dataAtualizacao : dto.dataCriacao)}</div>
+      </div>
+      <span class="card-status st-${status}">${status.replace(/_/g, ' ')}</span>
+    </div>
+
+    <div class="pc-divider"></div>
+
+    <div class="pc-section">
+      <div class="pc-nome">${dto.nomeUsuario || 'Cliente'}</div>
+      <div class="pc-meta">
+        CPF: ${fmtCpf(dto.cpfUsuario)}<br>
+        WhatsApp: ${dto.whatsappUsuario || '—'}
+      </div>
+    </div>
+
+    <div class="pc-divider"></div>
+
+    <div class="pc-section">
+      <div class="pc-label">Itens</div>
+      ${itensHtml || '<div style="color:var(--muted);font-size:11px">—</div>'}
+    </div>
+
+    <div class="pc-divider"></div>
+
+    <div class="pc-section">
+      <div class="pc-val-row"><span>Bruto</span><span>${brl(v.bruto)}</span></div>
+      ${descontoHtml}
+      <div class="pc-val-row pc-total"><span>Total</span><span>${brl(v.total)}</span></div>
+    </div>
+
+    <div class="pc-divider"></div>
+
+    <div class="pc-section pc-endereco">${endHtml}</div>
+
+    ${transicoes.length > 0 ? `
+    <div class="pc-divider"></div>
+    <div class="pc-acoes">
+      ${transicoes.map(t =>
+        `<button class="pc-btn pc-btn-${t.cor}" onclick="mudarStatus(${dto.id},'${t.status}',this)">${t.label}</button>`
+      ).join('')}
+      <div class="pc-erro-inline"></div>
+    </div>` : ''}
+  `;
+
+  if (clearKey) {
+    container.append(card);
+  } else {
+    container.prepend(card);
+  }
+  document.getElementById(countId).textContent = container.querySelectorAll('.pedido-card').length;
+}
+
+// ── LOGOUT ──
+function sair() {
+  if (stompClient) stompClient.deactivate();
+  token = null;
+  stompClient = null;
+
+  ['cards-novos','cards-preparacao','cards-entrega','cards-cancelados','cards-entregues'].forEach(id => {
+    document.getElementById(id).innerHTML = '<div class="empty-col">Aguardando...</div>';
+  });
+  ['cnt-novos','cnt-preparacao','cnt-entrega','cnt-cancelados','cnt-entregues'].forEach(id => {
+    document.getElementById(id).textContent = '0';
+  });
+
+  document.getElementById('tela-kanban').style.display = 'none';
+  document.getElementById('tela-login').style.display = 'flex';
+  document.getElementById('btn-entrar').disabled = false;
+  document.getElementById('btn-entrar').textContent = 'Entrar';
+  document.getElementById('op-nome').textContent = '';
+  setBadge('', '⚫ desconectado');
+}
+</script>
+</body>
+</html>

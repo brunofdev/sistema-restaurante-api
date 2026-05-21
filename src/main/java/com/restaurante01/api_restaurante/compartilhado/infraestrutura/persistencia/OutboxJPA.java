@@ -11,6 +11,6 @@ import java.util.Optional;
 
 public interface OutboxJPA extends JpaRepository<OutboxEvento, Long>{
     Optional<OutboxEvento> findByAgregadoTipoAndAgregadoIdAndTipo(Agregado agregadoTipo, Long agregadoId, TipoEvento tipoEvento);
-    List<OutboxEvento> findByStatus(StatusOutbox status);
+    List<OutboxEvento> findByStatusOrderByCriadoEmAsc(StatusOutbox status);
 }
 

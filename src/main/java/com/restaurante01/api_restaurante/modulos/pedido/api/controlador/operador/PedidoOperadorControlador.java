@@ -86,8 +86,6 @@ public class PedidoOperadorControlador {
 
         // Notifica o cliente específico e o painel administrativo
         messagingTemplate.convertAndSend("/topico/pedido/" + id, pedidoAtualizado);
-        messagingTemplate.convertAndSend("/topico/admin-pedidos", pedidoAtualizado);
-
         return ResponseEntity.ok(ApiResponse.success("Recurso Atualizado", pedidoAtualizado));
     }
 }
